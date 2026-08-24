@@ -708,8 +708,8 @@ The capture boundary also supports a bounded continuous observer. It retains onl
 and 30 mode samples in memory, locks the target fingerprint for the session, stops after three
 consecutive capture failures or any target-identity change, and exposes freshness, failure counts,
 seat occupancy, single-board geometry, and non-ambiguous temporal consensus. Ambiguous observations
-can never become accepted consensus. This diagnostic loop does not yet emit betting actions or
-completed hands.
+can never become accepted consensus. The loop now emits bounded provisional action and stack-delta
+candidates, but it does not yet emit canonical betting actions or completed hands.
 
 Seat-panel OCR is now connected as a privacy-scoped candidate channel. Empty seats skip OCR, raw
 panel text and player names are not retained, and only hashed evidence plus structured player-state
@@ -748,6 +748,15 @@ partial ring exposes its active-seat indexes but does not silently substitute a 
 or range set. Stable stack decreases are retained as bounded native-chip candidates with hand epoch,
 street, seat, before/after values, and provenance hash. They remain outside canonical state until a
 same-seat legal action and pot change reconcile.
+
+Action badges are armed independently per seat, preventing a lingering badge elsewhere on the table
+from suppressing a new action. The seat-status pass uses row/column prefix sums and measured about
+68 ms per authorized portrait frame versus about 692 ms before optimization. Amount-bearing actions
+are paired only with a mutually unique same-seat stack decrease within eight frames, the same hand
+epoch, and a compatible street. Shared matches remain ambiguous, missing matches remain pending,
+and fold/check are explicitly amount-free. Live play produced six such provisional matches across
+three hand epochs with zero capture failures; legal order and pot accounting still block canonical
+event promotion.
 
 ### Milestone 9 — Authorized control
 

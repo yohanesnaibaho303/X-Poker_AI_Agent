@@ -1,5 +1,93 @@
 {
   "$defs": {
+    "ActionAmountReconciliation": {
+      "additionalProperties": false,
+      "properties": {
+        "action_event_id": {
+          "maxLength": 64,
+          "minLength": 64,
+          "title": "Action Event Id",
+          "type": "string"
+        },
+        "delta_event_id": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "minLength": 64,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Delta Event Id"
+        },
+        "seat": {
+          "maximum": 8,
+          "minimum": 0,
+          "title": "Seat",
+          "type": "integer"
+        },
+        "action": {
+          "enum": [
+            "fold",
+            "check",
+            "call",
+            "bet",
+            "raise",
+            "all_in"
+          ],
+          "title": "Action",
+          "type": "string"
+        },
+        "amount_native": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Amount Native"
+        },
+        "status": {
+          "enum": [
+            "not_required",
+            "matched",
+            "pending",
+            "ambiguous"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "canonical_event_accepted": {
+          "const": false,
+          "default": false,
+          "title": "Canonical Event Accepted",
+          "type": "boolean"
+        },
+        "reason": {
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "action_event_id",
+        "seat",
+        "action",
+        "status",
+        "reason"
+      ],
+      "title": "ActionAmountReconciliation",
+      "type": "object"
+    },
     "DerivedActionCandidate": {
       "additionalProperties": false,
       "properties": {
@@ -543,6 +631,13 @@
         "$ref": "#/$defs/StackDeltaCandidate"
       },
       "title": "Stack Delta Candidates",
+      "type": "array"
+    },
+    "action_amount_reconciliations": {
+      "items": {
+        "$ref": "#/$defs/ActionAmountReconciliation"
+      },
+      "title": "Action Amount Reconciliations",
       "type": "array"
     },
     "last_error": {

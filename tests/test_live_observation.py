@@ -1,15 +1,18 @@
 import asyncio
 from datetime import UTC, datetime
+from decimal import Decimal
 
 from xpoker_agent.capture.frames import CapturedFrame
 from xpoker_agent.vision.live_observation import LiveObservationService
 from xpoker_agent.vision.models import (
     CardFaceObservation,
     DealerButtonObservation,
+    DerivedActionCandidate,
     LiveCaptureDiagnostic,
     PotObservation,
     SeatActionObservation,
     SeatPanelObservation,
+    StackDeltaCandidate,
 )
 
 
@@ -157,8 +160,61 @@ def test_action_candidate_is_derived_once_after_clear_and_stable_badge() -> None
         assert candidate.street == "flop"
         assert candidate.action == "fold"
         assert candidate.canonical_event_accepted is False
+        reconciliation = status.action_amount_reconciliations[0]
+        assert reconciliation.status == "not_required"
+        assert reconciliation.amount_native == 0
 
     asyncio.run(scenario())
+
+
+def test_action_amount_reconciliation_requires_a_mutually_unique_delta() -> None:
+    async def capture(_: int, sequence: int):
+        return _diagnostic(sequence), CapturedFrame(1, 1, b"\x00" * 4)
+
+    service = LiveObservationService(capture)
+    action = DerivedActionCandidate(
+        event_id="a" * 64,
+        hand_epoch=3,
+        frame_sequence=20,
+        seat=4,
+        street="turn",
+        action="bet",
+        confidence=0.95,
+    )
+    delta = StackDeltaCandidate(
+        event_id="c" * 64,
+        hand_epoch=3,
+        frame_sequence=22,
+        seat=4,
+        street="turn",
+        previous_stack_native=Decimal("100"),
+        current_stack_native=Decimal("94"),
+        committed_native=Decimal("6"),
+    )
+    service._derived_actions.append(action)
+    service._stack_deltas.append(delta)
+
+    result = service._reconcile_action_amounts()
+
+    assert len(result) == 1
+    assert result[0].status == "matched"
+    assert result[0].amount_native == Decimal("6")
+    assert result[0].delta_event_id == delta.event_id
+    assert result[0].canonical_event_accepted is False
+
+    service._derived_actions.append(
+        action.model_copy(
+            update={
+                "event_id": "d" * 64,
+                "frame_sequence": 24,
+                "action": "raise",
+            }
+        )
+    )
+    result = service._reconcile_action_amounts()
+
+    assert [item.status for item in result] == ["ambiguous", "ambiguous"]
+    assert all(item.amount_native is None for item in result)
 
 
 def test_board_cards_require_temporal_consensus_and_physical_uniqueness() -> None:

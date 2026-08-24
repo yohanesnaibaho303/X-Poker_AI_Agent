@@ -32,16 +32,26 @@ def _neutral(red: int, green: int, blue: int) -> bool:
 
 def _plus_strokes(frame: CapturedFrame, box: PixelBox) -> tuple[int, int]:
     radius = max(5, min(12, box.width // 4, box.height // 4))
+    neutral = [
+        [_neutral(*_rgb(frame, box.left + x, box.top + y)) for x in range(box.width)]
+        for y in range(box.height)
+    ]
+    row_prefix = [[0] * (box.width + 1) for _ in range(box.height)]
+    column_prefix = [[0] * (box.height + 1) for _ in range(box.width)]
+    for y in range(box.height):
+        for x in range(box.width):
+            row_prefix[y][x + 1] = row_prefix[y][x] + int(neutral[y][x])
+            column_prefix[x][y + 1] = column_prefix[x][y] + int(neutral[y][x])
     best = (0, 0)
-    for center_y in range(box.top + radius, box.bottom - radius):
-        for center_x in range(box.left + radius, box.right - radius):
-            horizontal = sum(
-                _neutral(*_rgb(frame, x, center_y))
-                for x in range(center_x - radius, center_x + radius + 1)
+    for center_y in range(radius, box.height - radius):
+        for center_x in range(radius, box.width - radius):
+            horizontal = (
+                row_prefix[center_y][center_x + radius + 1]
+                - row_prefix[center_y][center_x - radius]
             )
-            vertical = sum(
-                _neutral(*_rgb(frame, center_x, y))
-                for y in range(center_y - radius, center_y + radius + 1)
+            vertical = (
+                column_prefix[center_x][center_y + radius + 1]
+                - column_prefix[center_x][center_y - radius]
             )
             if (min(horizontal, vertical), horizontal + vertical) > (
                 min(best),

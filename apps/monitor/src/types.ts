@@ -327,6 +327,16 @@ export interface LiveObservationStatus {
     canonical_event_accepted: false;
     reason: string;
   }>;
+  action_amount_reconciliations: Array<{
+    action_event_id: string;
+    delta_event_id: string | null;
+    seat: number;
+    action: "fold" | "check" | "call" | "bet" | "raise" | "all_in";
+    amount_native: string | null;
+    status: "not_required" | "matched" | "pending" | "ambiguous";
+    canonical_event_accepted: false;
+    reason: string;
+  }>;
   last_error: string | null;
   controller_enabled: false;
 }

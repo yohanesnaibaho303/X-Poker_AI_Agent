@@ -125,7 +125,18 @@
   action and pot reconciliation.
 - Changed action-badge arming from a global clear requirement to per-seat clearing so one lingering
   badge cannot block unrelated seats; exactly-once keys remain unchanged.
-- Current full suite: Ruff passed; 255 Pytest/Hypothesis tests, 11 TypeScript tests, and the
+- Replaced repeated full-image seat-anchor scans with row/column prefix sums, reducing the measured
+  per-frame seat-status pass from about 692 ms to 68 ms on the authorized portrait layout. This
+  allowed the observer to retain short-lived badges while the user played normally.
+- Added fail-closed action-amount reconciliation. A call, bet, raise, or all-in receives an amount
+  only when exactly one same-seat stack decrease within eight frames maps back to exactly that one
+  action in the same hand epoch and compatible street. Fold/check are explicitly amount-free;
+  shared matches remain ambiguous and missing matches remain pending.
+- Live validation on the authorized 9-max table captured 185 frames across three provisional hand
+  epochs with zero failures and produced six mutually unique provisional matches: Call 2 and 4,
+  plus Bet 4, 3, 6, and 2 native units. None are canonical events yet because legal order and pot
+  accounting remain outstanding gates.
+- Current full suite: Ruff passed; 256 Pytest/Hypothesis tests, 11 TypeScript tests, and the
   production dashboard build passed. Table control remains disabled.
 
 ## Completed project checkpoints
@@ -149,13 +160,13 @@
 - Connect recorded/live capture, perception evidence, and reconstructed observations to the monitor.
 - Record complete scheduled standard hands and an active single-board Bomb Pot from the authorized
   spectated table for temporal contribution and hand-mode calibration.
-- Convert accepted action badges and amount deltas into exactly-once candidate events, then feed
-  only pot/stack/order-consistent sequences to the existing deterministic hand-state reducer.
+- Feed only mutually unique action/amount matches that also pass clockwise order and pot/stack
+  accounting into the existing deterministic hand-state reducer.
 - Expand held-out board-card replay coverage across every rank/suit and lighting/result-overlay
   state; keep low-margin cards unknown until the ≥99.9% card gate is measured and passed.
 - Combine dealer consensus with stable occupied/Break states to derive provisional 6-max/9-max
   positions, then validate clockwise action order before creating canonical events.
-- Pair same-seat action badges with stable stack decreases and pot deltas; reject rather than infer
+- Reconcile mutually unique same-seat action/stack pairs with pot deltas; reject rather than infer
   a wager when the observer starts mid-action or temporal evidence arrives outside the match window.
 - Continue gradual 3-to-9-player live captures to validate every occupied seat panel, player state,
   stack/bet crop, dealer marker, and clockwise action transition.

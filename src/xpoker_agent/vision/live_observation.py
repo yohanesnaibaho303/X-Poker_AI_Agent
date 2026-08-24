@@ -14,6 +14,7 @@ from typing import Literal
 from xpoker_agent.capture.frames import CapturedFrame
 from xpoker_agent.vision.live import diagnose_authorized_table
 from xpoker_agent.vision.models import (
+    ActionAmountReconciliation,
     DerivedActionCandidate,
     LiveCaptureDiagnostic,
     LiveObservationStatus,
@@ -639,5 +640,74 @@ class LiveObservationService:
             hand_epoch=self._hand_epoch,
             derived_action_candidates=list(self._derived_actions),
             stack_delta_candidates=list(self._stack_deltas),
+            action_amount_reconciliations=self._reconcile_action_amounts(),
             last_error=self._last_error,
         )
+
+    def _reconcile_action_amounts(self) -> list[ActionAmountReconciliation]:
+        amount_actions = {"call", "bet", "raise", "all_in"}
+        candidate_deltas: dict[str, list[StackDeltaCandidate]] = {}
+        reverse_count: dict[str, int] = {}
+        for action in self._derived_actions:
+            if action.action not in amount_actions:
+                continue
+            matches = [
+                delta
+                for delta in self._stack_deltas
+                if delta.hand_epoch == action.hand_epoch
+                and delta.seat == action.seat
+                and abs(delta.frame_sequence - action.frame_sequence) <= 8
+                and (delta.street == "unknown" or delta.street == action.street)
+            ]
+            candidate_deltas[action.event_id] = matches
+            for delta in matches:
+                reverse_count[delta.event_id] = reverse_count.get(delta.event_id, 0) + 1
+        results: list[ActionAmountReconciliation] = []
+        for action in self._derived_actions:
+            if action.action not in amount_actions:
+                results.append(
+                    ActionAmountReconciliation(
+                        action_event_id=action.event_id,
+                        seat=action.seat,
+                        action=action.action,
+                        amount_native=Decimal("0"),
+                        status="not_required",
+                        reason="fold/check has no committed amount; order validation pending",
+                    )
+                )
+                continue
+            matches = candidate_deltas.get(action.event_id, [])
+            if len(matches) == 1 and reverse_count[matches[0].event_id] == 1:
+                delta = matches[0]
+                results.append(
+                    ActionAmountReconciliation(
+                        action_event_id=action.event_id,
+                        delta_event_id=delta.event_id,
+                        seat=action.seat,
+                        action=action.action,
+                        amount_native=delta.committed_native,
+                        status="matched",
+                        reason="mutually unique same-seat temporal stack delta",
+                    )
+                )
+            elif matches:
+                results.append(
+                    ActionAmountReconciliation(
+                        action_event_id=action.event_id,
+                        seat=action.seat,
+                        action=action.action,
+                        status="ambiguous",
+                        reason="multiple actions or deltas share the temporal match window",
+                    )
+                )
+            else:
+                results.append(
+                    ActionAmountReconciliation(
+                        action_event_id=action.event_id,
+                        seat=action.seat,
+                        action=action.action,
+                        status="pending",
+                        reason="no mutually unique same-seat stack delta in the match window",
+                    )
+                )
+        return results
