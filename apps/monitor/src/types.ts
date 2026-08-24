@@ -130,10 +130,15 @@ export interface LiveCaptureDiagnostic {
   capture_latency_ms: number;
   ocr_latency_ms: number;
   visual_role_confidence: number;
+  current_hand_supported: boolean;
+  current_hand_mode: "standard_nlh" | "single_board_bomb_pot" | "ambiguous";
   standard_nlh_supported: boolean;
+  single_board_bomb_pot_supported: boolean;
+  bomb_pot_state: "none" | "scheduled" | "active" | "ambiguous";
+  hands_until_bomb: number | null;
   special_rule: "bomb_pot" | null;
   rule_confidence: number;
-  quarantine_reason: string;
+  mode_reason: string;
   matched_signals: string[];
   rule_text: string;
   pot_text: string;

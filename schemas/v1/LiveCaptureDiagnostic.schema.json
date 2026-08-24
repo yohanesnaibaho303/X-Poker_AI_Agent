@@ -48,8 +48,25 @@
       "title": "Visual Role Confidence",
       "type": "number"
     },
+    "current_hand_supported": {
+      "title": "Current Hand Supported",
+      "type": "boolean"
+    },
+    "current_hand_mode": {
+      "enum": [
+        "standard_nlh",
+        "single_board_bomb_pot",
+        "ambiguous"
+      ],
+      "title": "Current Hand Mode",
+      "type": "string"
+    },
     "standard_nlh_supported": {
       "title": "Standard Nlh Supported",
+      "type": "boolean"
+    },
+    "single_board_bomb_pot_supported": {
+      "title": "Single Board Bomb Pot Supported",
       "type": "boolean"
     },
     "special_rule": {
@@ -65,14 +82,37 @@
       "default": null,
       "title": "Special Rule"
     },
+    "bomb_pot_state": {
+      "enum": [
+        "none",
+        "scheduled",
+        "active",
+        "ambiguous"
+      ],
+      "title": "Bomb Pot State",
+      "type": "string"
+    },
+    "hands_until_bomb": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Hands Until Bomb"
+    },
     "rule_confidence": {
       "maximum": 1.0,
       "minimum": 0.0,
       "title": "Rule Confidence",
       "type": "number"
     },
-    "quarantine_reason": {
-      "title": "Quarantine Reason",
+    "mode_reason": {
+      "title": "Mode Reason",
       "type": "string"
     },
     "matched_signals": {
@@ -123,9 +163,13 @@
     "capture_latency_ms",
     "ocr_latency_ms",
     "visual_role_confidence",
+    "current_hand_supported",
+    "current_hand_mode",
     "standard_nlh_supported",
+    "single_board_bomb_pot_supported",
+    "bomb_pot_state",
     "rule_confidence",
-    "quarantine_reason",
+    "mode_reason",
     "rule_text",
     "pot_text",
     "regions"

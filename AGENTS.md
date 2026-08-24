@@ -19,9 +19,17 @@ supported_seats: [6, 9]
 rake: 0
 default_open_size_bb: 2.0
 objective: chip_ev
+supported_hand_modes: [standard_nlh, single_board_bomb_pot]
 ```
 
 `2 BB` means the default preflop open size. Detect effective stack depth dynamically.
+
+Single-board X-Poker NLH Bomb Pot is supported as a distinct per-hand mode. Detect scheduled versus
+active Bomb Pot state visually. In an active Bomb Pot hand, every participating player makes an
+observed forced contribution, preflop betting is skipped, and normal NLH action begins on the flop.
+Never infer the contribution from a table-label range: reconstruct it from observed commitments,
+stack deltas, and pot accounting. Double-board, Omaha, ambiguous board count, or uncertain forced
+contributions remain unsupported and fail closed.
 
 Use these position orders:
 

@@ -24,6 +24,7 @@ def test_authoritative_game_configuration_loads() -> None:
     assert config.default_open_size_bb == Decimal("2.0")
     assert config.objective == "chip_ev"
     assert config.positions == list(Position)
+    assert config.enabled_special_rules == ["single_board_bomb_pot"]
 
 
 def test_runtime_is_observe_only_and_controller_disabled() -> None:

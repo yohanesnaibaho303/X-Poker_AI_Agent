@@ -4,10 +4,10 @@ from xpoker_agent.research.registry import SourceRegistry
 def test_initial_source_registry_is_valid_and_unique() -> None:
     registry = SourceRegistry.load()
 
-    assert len(registry.records) == 14
+    assert len(registry.records) == 16
     assert len(registry.content_sha256) == 64
-    assert len({record.source_id for record in registry.records}) == 14
-    assert len({record.url for record in registry.records}) == 14
+    assert len({record.source_id for record in registry.records}) == 16
+    assert len({record.url for record in registry.records}) == 16
 
 
 def test_required_license_boundaries_are_encoded() -> None:

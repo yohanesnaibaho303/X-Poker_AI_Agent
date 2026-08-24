@@ -7,6 +7,7 @@ from uuid import NAMESPACE_URL, UUID, uuid5
 
 from xpoker_agent.models import (
     HandEvent,
+    HandMode,
     HandState,
     ParticipationStatus,
     Position,
@@ -114,10 +115,10 @@ class HandStateReducer:
         return state.seats[seat_number]
 
     def _on_hand_started(self, state: HandState, event: HandEvent) -> None:
-        del event
         if state.table_status is not TableStatus.WAITING_FOR_HAND:
             raise StateTransitionError("a hand can start only from its fresh waiting state")
         state.table_status = TableStatus.IN_HAND
+        state.hand_mode = event.hand_mode or HandMode.STANDARD_NLH
         state.street = Street.PREFLOP
         state.board = []
         state.hero_cards = []
@@ -167,6 +168,8 @@ class HandStateReducer:
         return seat, committed + added
 
     def _on_blind_posted(self, state: HandState, event: HandEvent) -> None:
+        if state.hand_mode is not HandMode.STANDARD_NLH:
+            raise StateTransitionError("blinds are invalid in a Bomb Pot hand")
         if state.street is not Street.PREFLOP:
             raise StateTransitionError("blinds can be posted only preflop")
         if state.dealer_seat is None:
@@ -177,6 +180,20 @@ class HandStateReducer:
         if seat.stack_bb == 0:
             seat.participation = ParticipationStatus.ALL_IN
         state.next_to_act_seat = self._next_actionable_after(state, event.actor_seat)
+
+    def _on_bomb_ante_posted(self, state: HandState, event: HandEvent) -> None:
+        if state.hand_mode is not HandMode.SINGLE_BOARD_BOMB_POT:
+            raise StateTransitionError("Bomb Pot contributions require Bomb Pot hand mode")
+        if state.street is not Street.PREFLOP:
+            raise StateTransitionError("Bomb Pot contributions can be posted only before the flop")
+        if state.dealer_seat is None:
+            raise StateTransitionError("dealer must be assigned before Bomb Pot contributions")
+        seat, _ = self._debit(state, event)
+        if seat.stack_bb == 0:
+            seat.participation = ParticipationStatus.ALL_IN
+        state.current_bet_bb = Decimal("0")
+        state.minimum_raise_increment_bb = Decimal("0")
+        state.next_to_act_seat = None
 
     def _on_hole_cards_observed(self, state: HandState, event: HandEvent) -> None:
         self._require_in_hand(state)
@@ -198,6 +215,30 @@ class HandStateReducer:
         }.get((state.street, len(event.cards)))
         if transition is None:
             raise StateTransitionError("illegal board-card count or street transition")
+        if state.hand_mode is HandMode.SINGLE_BOARD_BOMB_POT and state.street is Street.PREFLOP:
+            participants = [
+                seat
+                for seat in state.seats
+                if seat.participation
+                in {ParticipationStatus.ACTIVE, ParticipationStatus.ALL_IN}
+            ]
+            contributions = [
+                seat.committed_by_street_bb.get(Street.PREFLOP, Decimal("0"))
+                for seat in participants
+            ]
+            if len(participants) < 2 or any(amount <= 0 for amount in contributions):
+                raise StateTransitionError(
+                    "Bomb Pot flop requires observed contributions from every participant"
+                )
+            full_contribution = max(contributions)
+            if any(
+                amount != full_contribution
+                and seat.participation is not ParticipationStatus.ALL_IN
+                for seat, amount in zip(participants, contributions, strict=True)
+            ):
+                raise StateTransitionError(
+                    "unequal Bomb Pot contribution is legal only for a stack-exhausted player"
+                )
         if event.street is not transition:
             raise StateTransitionError("board event street does not match resulting street")
         known = set(state.board)
@@ -217,6 +258,8 @@ class HandStateReducer:
         self._require_in_hand(state)
         if event.street is not state.street:
             raise StateTransitionError("betting action street does not match current state")
+        if state.hand_mode is HandMode.SINGLE_BOARD_BOMB_POT and state.street is Street.PREFLOP:
+            raise StateTransitionError("Bomb Pot hands have no preflop betting actions")
         seat = self._seat(state, event.actor_seat)
         if seat.participation is not ParticipationStatus.ACTIVE:
             raise StateTransitionError("betting action requires an active player")

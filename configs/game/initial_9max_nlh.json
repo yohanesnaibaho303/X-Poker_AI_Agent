@@ -12,5 +12,5 @@
   "default_open_size_bb": "2.0",
   "objective": "chip_ev",
   "positions": ["UTG", "UTG+1", "MP", "LJ", "HJ", "CO", "BTN", "SB", "BB"],
-  "enabled_special_rules": []
+  "enabled_special_rules": ["single_board_bomb_pot"]
 }

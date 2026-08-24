@@ -102,7 +102,10 @@ class WindowsOcrResult(StrictModel):
 
 class RuleLabelClassification(StrictModel):
     supported_standard_nlh: bool
+    supported_single_board_bomb_pot: bool = False
     special_rule: Literal["bomb_pot"] | None = None
+    bomb_pot_state: Literal["none", "scheduled", "active", "ambiguous"] = "none"
+    hands_until_bomb: int | None = Field(default=None, ge=0)
     confidence: float = Field(ge=0.0, le=1.0)
     matched_signals: list[str] = Field(default_factory=list)
     reason: str
@@ -118,10 +121,15 @@ class LiveCaptureDiagnostic(StrictModel):
     capture_latency_ms: float = Field(ge=0.0)
     ocr_latency_ms: float = Field(ge=0.0)
     visual_role_confidence: float = Field(ge=0.0, le=1.0)
+    current_hand_supported: bool
+    current_hand_mode: Literal["standard_nlh", "single_board_bomb_pot", "ambiguous"]
     standard_nlh_supported: bool
+    single_board_bomb_pot_supported: bool
     special_rule: Literal["bomb_pot"] | None = None
+    bomb_pot_state: Literal["none", "scheduled", "active", "ambiguous"]
+    hands_until_bomb: int | None = Field(default=None, ge=0)
     rule_confidence: float = Field(ge=0.0, le=1.0)
-    quarantine_reason: str
+    mode_reason: str
     matched_signals: list[str] = Field(default_factory=list)
     rule_text: str
     pot_text: str

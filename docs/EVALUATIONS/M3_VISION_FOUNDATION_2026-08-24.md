@@ -1,5 +1,10 @@
 # Milestone 3 Vision Foundation Checkpoint
 
+> Reinterpretation (2026-08-24): subsequent live evidence established that `After N hands` is a
+> future Bomb Pot countdown. Positive countdown hands are standard NLH rather than unsupported.
+> This document preserves the original checkpoint observation; Decision 0008 defines the corrected
+> scheduled-versus-active behavior.
+
 ## Scope
 
 This checkpoint covers dependency-free image primitives and safety validation. It is not a

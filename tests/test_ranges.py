@@ -19,6 +19,7 @@ from xpoker_agent.ranges.engine import (
     action_frequency,
     aggregate_classes,
     apply_blockers,
+    bomb_pot_participation_range,
     condition_on_action,
     normalized_combo_probabilities,
     uniform_range,
@@ -110,6 +111,35 @@ def test_two_blockers_remove_one_hundred_one_combos() -> None:
     blocked = apply_blockers(original, ["As", "Kd"])
 
     assert len(blocked.combos) == 1225
+
+
+def test_bomb_pot_range_starts_from_full_participation_then_applies_blockers() -> None:
+    weighted = bomb_pot_participation_range(
+        player_ref="villain-1",
+        hand_id=HAND_ID,
+        street=Street.FLOP,
+        visible_cards=["As", "Kd", "Qs", "Jh", "2c"],
+        source={"kind": "deterministic_rule_prior"},
+        version="bomb-pot-v1",
+    )
+
+    assert len(weighted.combos) == 1081
+    assert weighted.source["hand_mode"] == "single_board_bomb_pot"
+    assert weighted.source["range_role"] == "mandatory_participation_prior"
+    assert weighted.blocked_cards == ["2c", "As", "Jh", "Kd", "Qs"]
+    assert "no preflop action filter" in weighted.assumptions[0]
+
+
+def test_bomb_pot_range_cannot_be_created_for_preflop() -> None:
+    with pytest.raises(ValueError, match="begin on the flop"):
+        bomb_pot_participation_range(
+            player_ref="villain-1",
+            hand_id=HAND_ID,
+            street=Street.PREFLOP,
+            visible_cards=[],
+            source={"kind": "deterministic_rule_prior"},
+            version="bomb-pot-v1",
+        )
 
 
 def test_action_conditioning_uses_bayesian_combo_mass() -> None:

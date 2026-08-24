@@ -133,6 +133,17 @@
           "title": "Type",
           "type": "string"
         },
+        "hand_mode": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/HandMode"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
         "actor_seat": {
           "anyOf": [
             {
@@ -239,6 +250,14 @@
       "title": "HandEvent",
       "type": "object"
     },
+    "HandMode": {
+      "enum": [
+        "standard_nlh",
+        "single_board_bomb_pot"
+      ],
+      "title": "HandMode",
+      "type": "string"
+    },
     "HandState": {
       "additionalProperties": false,
       "properties": {
@@ -281,6 +300,10 @@
           ],
           "title": "Table Size",
           "type": "integer"
+        },
+        "hand_mode": {
+          "$ref": "#/$defs/HandMode",
+          "default": "standard_nlh"
         },
         "table_status": {
           "$ref": "#/$defs/TableStatus",

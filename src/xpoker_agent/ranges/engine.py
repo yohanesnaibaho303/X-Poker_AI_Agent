@@ -36,6 +36,36 @@ def uniform_range(
     )
 
 
+def bomb_pot_participation_range(
+    *,
+    player_ref: str,
+    hand_id: UUID,
+    street: Street,
+    visible_cards: Iterable[str],
+    source: dict[str, object],
+    version: str,
+) -> WeightedRange:
+    if street not in {Street.FLOP, Street.TURN, Street.RIVER}:
+        raise ValueError("Bomb Pot participation ranges begin on the flop")
+    base = uniform_range(
+        player_ref=player_ref,
+        hand_id=hand_id,
+        street=street,
+        spot_key=f"single_board_bomb_pot_{street.value}_full_participation",
+        source={
+            **source,
+            "hand_mode": "single_board_bomb_pot",
+            "range_role": "mandatory_participation_prior",
+        },
+        version=version,
+    )
+    base.assumptions.append(
+        "Mandatory Bomb Pot participation gives no preflop action filter; all legal NLH combos "
+        "begin with equal weight before postflop evidence."
+    )
+    return apply_blockers(base, visible_cards)
+
+
 def normalized_combo_probabilities(weighted_range: WeightedRange) -> dict[str, float]:
     total = sum(weighted_range.combos[combo].weight for combo in sorted(weighted_range.combos))
     if total <= 0:

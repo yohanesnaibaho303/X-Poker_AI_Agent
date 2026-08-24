@@ -14,6 +14,7 @@ game:
   rake: 0
   default_open_size_bb: 2.0
   objective: chip_ev
+  supported_hand_modes: [standard_nlh, single_board_bomb_pot]
 ```
 
 `2 BB` is treated as the default preflop open size. Effective stack depth will be detected dynamically for every hand.
@@ -23,6 +24,13 @@ Native chips remain exact internally. Values below 100,000 display as grouped nu
 `10,000`; values from 100,000 to below 1,000,000 display as K, such as `200K`; values from 1,000,000
 upward display as M, such as `1M`. Native chips convert to BB only after the blind is entered or
 reliably detected.
+
+X-Poker single-board NLH Bomb Pot is supported as a separate detected hand mode. Scheduled Bomb Pot
+text does not make ordinary intervening hands unsupported. When a Bomb Pot hand is active, all
+participating seats make observed forced contributions, preflop betting is skipped, and NLH action
+begins on the flop. Contribution amounts are reconstructed from observations and pot/stack
+invariants rather than inferred from a displayed configuration range. Double-board, Omaha,
+ambiguous-board, and uncertain-contribution states remain quarantined.
 
 ## 2. Product Vision
 
@@ -184,6 +192,7 @@ The application still records non-action events required to reconstruct and vali
 HAND_STARTED
 DEALER_ASSIGNED
 BLIND_POSTED
+BOMB_ANTE_POSTED
 HOLE_CARDS_OBSERVED
 BOARD_CARDS_OBSERVED
 SHOWDOWN_STARTED
@@ -204,6 +213,8 @@ The state engine will validate:
 - All-in and side-pot behavior.
 - Heads-up and multiway transitions.
 - Dealer and blind movement between hands.
+- Standard versus single-board Bomb Pot hand mode, including complete observed forced
+  contributions before a Bomb Pot flop and no preflop Bomb Pot actions.
 
 Representative structured state:
 
@@ -677,7 +688,8 @@ history, replay scrubbing, health/latency, deterministic pot odds and SPR, refer
 decision gates, assumptions, and fail-closed strategy/control status are inspectable. A 20-session,
 300-snapshot synthetic soak regression protects stream/state integrity. The authorized capture path
 now shows an in-memory, no-store table frame with declared-region overlays, table-role confidence,
-privacy-scoped rule/pot OCR, and explicit unsupported-rule quarantine. The milestone remains in
+privacy-scoped rule/pot OCR, scheduled-versus-active Bomb Pot classification, and explicit
+ambiguous/unsupported-mode quarantine. The milestone remains in
 progress until component recognition and standard-NLH reconstruction output, opponent ranges,
 resolved strategy/equity/EV views, and complete authorized-session evidence pass their gates.
 

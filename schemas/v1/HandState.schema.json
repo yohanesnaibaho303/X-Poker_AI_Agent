@@ -1,5 +1,13 @@
 {
   "$defs": {
+    "HandMode": {
+      "enum": [
+        "standard_nlh",
+        "single_board_bomb_pot"
+      ],
+      "title": "HandMode",
+      "type": "string"
+    },
     "ParticipationStatus": {
       "enum": [
         "empty",
@@ -264,6 +272,10 @@
       ],
       "title": "Table Size",
       "type": "integer"
+    },
+    "hand_mode": {
+      "$ref": "#/$defs/HandMode",
+      "default": "standard_nlh"
     },
     "table_status": {
       "$ref": "#/$defs/TableStatus",

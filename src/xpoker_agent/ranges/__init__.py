@@ -8,7 +8,12 @@ from xpoker_agent.ranges.cards import (
     combo_class,
     expand_hand_class,
 )
-from xpoker_agent.ranges.engine import apply_blockers, condition_on_action, uniform_range
+from xpoker_agent.ranges.engine import (
+    apply_blockers,
+    bomb_pot_participation_range,
+    condition_on_action,
+    uniform_range,
+)
 from xpoker_agent.ranges.stack import (
     STACK_BUCKETS_BB,
     interpolation_bracket,
@@ -21,6 +26,7 @@ __all__ = [
     "all_combos",
     "all_hand_classes",
     "apply_blockers",
+    "bomb_pot_participation_range",
     "canonical_combo",
     "combo_class",
     "condition_on_action",

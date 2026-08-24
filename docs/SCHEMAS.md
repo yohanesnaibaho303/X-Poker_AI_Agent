@@ -76,9 +76,14 @@ The `seats` discriminator is either `6` or `9`; the positions array must match t
   "default_open_size_bb": "2.0",
   "objective": "chip_ev",
   "positions": ["UTG", "UTG+1", "MP", "LJ", "HJ", "CO", "BTN", "SB", "BB"],
-  "enabled_special_rules": []
+  "enabled_special_rules": ["single_board_bomb_pot"]
 }
 ```
+
+`hand_started.hand_mode` distinguishes `standard_nlh` from `single_board_bomb_pot`.
+Bomb Pot forced contributions use `bomb_ante_posted`; their exact amounts must be observed. A
+single-board Bomb Pot has no blind events or preflop betting actions and enters the ordinary NLH
+betting state machine when the three-card flop is observed.
 
 ### RuntimeConfig
 

@@ -102,6 +102,14 @@
       "title": "EventCategory",
       "type": "string"
     },
+    "HandMode": {
+      "enum": [
+        "standard_nlh",
+        "single_board_bomb_pot"
+      ],
+      "title": "HandMode",
+      "type": "string"
+    },
     "Street": {
       "enum": [
         "none",
@@ -144,6 +152,17 @@
     "type": {
       "title": "Type",
       "type": "string"
+    },
+    "hand_mode": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/HandMode"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
     },
     "actor_seat": {
       "anyOf": [

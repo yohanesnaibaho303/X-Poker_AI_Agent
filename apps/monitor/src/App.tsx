@@ -169,8 +169,10 @@ function CapturePreview({ diagnostic, nonce }: { diagnostic: LiveCaptureDiagnost
     <section className="panel capture-panel">
       <div className="panel-heading compact">
         <div><p className="eyebrow">Authorized evidence</p><h3>Live X-Poker capture</h3></div>
-        <StatusPill tone={diagnostic.standard_nlh_supported ? "ok" : "danger"}>
-          {diagnostic.standard_nlh_supported ? "Supported" : "Quarantined"}
+        <StatusPill tone={diagnostic.current_hand_supported ? "ok" : "danger"}>
+          {diagnostic.current_hand_supported
+            ? diagnostic.current_hand_mode.replaceAll("_", " ")
+            : "Quarantined"}
         </StatusPill>
       </div>
       <div className="capture-frame">
@@ -188,7 +190,12 @@ function CapturePreview({ diagnostic, nonce }: { diagnostic: LiveCaptureDiagnost
         <span>Role confidence <strong>{formatPercent(diagnostic.visual_role_confidence)}</strong></span>
         <span>OCR <strong>{diagnostic.ocr_latency_ms.toFixed(1)} ms</strong></span>
       </div>
-      <p className="quarantine-copy">{diagnostic.quarantine_reason}</p>
+      <p className={`mode-copy ${diagnostic.current_hand_supported ? "supported" : "quarantined"}`}>
+        {diagnostic.mode_reason}
+      </p>
+      {diagnostic.bomb_pot_state === "scheduled" && diagnostic.hands_until_bomb !== null && (
+        <small>Bomb Pot scheduled after {diagnostic.hands_until_bomb} hand{diagnostic.hands_until_bomb === 1 ? "" : "s"}</small>
+      )}
       <small>{diagnostic.rule_text || "No rule label recognized"}</small>
     </section>
   );

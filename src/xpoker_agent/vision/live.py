@@ -24,6 +24,15 @@ def build_live_capture_diagnostic(
     pot_ocr: WindowsOcrResult,
 ) -> LiveCaptureDiagnostic:
     classification = classify_rule_label(rule_ocr.text)
+    current_hand_mode = (
+        "standard_nlh"
+        if classification.supported_standard_nlh
+        else (
+            "single_board_bomb_pot"
+            if classification.supported_single_board_bomb_pot
+            else "ambiguous"
+        )
+    )
     visible_regions = {
         name: (region.x, region.y, region.width, region.height)
         for name, region in layout.regions.items()
@@ -38,10 +47,18 @@ def build_live_capture_diagnostic(
         capture_latency_ms=record.capture_latency_ms,
         ocr_latency_ms=rule_ocr.processing_latency_ms + pot_ocr.processing_latency_ms,
         visual_role_confidence=record.visual_role_confidence,
+        current_hand_supported=(
+            classification.supported_standard_nlh
+            or classification.supported_single_board_bomb_pot
+        ),
+        current_hand_mode=current_hand_mode,
         standard_nlh_supported=classification.supported_standard_nlh,
+        single_board_bomb_pot_supported=classification.supported_single_board_bomb_pot,
         special_rule=classification.special_rule,
+        bomb_pot_state=classification.bomb_pot_state,
+        hands_until_bomb=classification.hands_until_bomb,
         rule_confidence=classification.confidence,
-        quarantine_reason=classification.reason,
+        mode_reason=classification.reason,
         matched_signals=classification.matched_signals,
         rule_text=rule_ocr.text,
         pot_text=pot_ocr.text,

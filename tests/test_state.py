@@ -8,6 +8,7 @@ from hypothesis import strategies as st
 from xpoker_agent.models import (
     EventAmount,
     EventCategory,
+    HandMode,
     ParticipationStatus,
     Position,
     Street,
@@ -15,6 +16,47 @@ from xpoker_agent.models import (
 )
 from xpoker_agent.simulation import run_simulated_hand
 from xpoker_agent.state import HandStateReducer, StateTransitionError, create_initial_state
+
+
+def build_bomb_pot_flop_state():
+    reducer = HandStateReducer()
+    state = make_initial_state()
+    state = reducer.apply(
+        state,
+        make_event(
+            1,
+            EventCategory.LIFECYCLE,
+            "hand_started",
+            hand_mode=HandMode.SINGLE_BOARD_BOMB_POT,
+        ),
+    )
+    state = reducer.apply(
+        state,
+        make_event(2, EventCategory.DEALING, "dealer_assigned", dealer_seat=6),
+    )
+    for sequence, seat in enumerate((6, 7, 8), start=3):
+        state = reducer.apply(
+            state,
+            make_event(
+                sequence,
+                EventCategory.FORCED_WAGER,
+                "bomb_ante_posted",
+                actor_seat=seat,
+                street=Street.PREFLOP,
+                amount=EventAmount(to_bb=Decimal("2"), added_bb=Decimal("2")),
+            ),
+        )
+    state = reducer.apply(
+        state,
+        make_event(
+            6,
+            EventCategory.DEALING,
+            "board_cards_observed",
+            street=Street.FLOP,
+            cards=["Qs", "Jh", "2c"],
+        ),
+    )
+    return reducer, state
 
 
 def test_simulated_hand_reconstructs_end_to_end() -> None:
@@ -46,6 +88,120 @@ def test_simulated_hand_is_reproducible() -> None:
     assert [event.model_dump(mode="json") for event in first_events] == [
         event.model_dump(mode="json") for event in second_events
     ]
+
+
+def test_single_board_bomb_pot_skips_preflop_and_begins_action_on_flop() -> None:
+    reducer, state = build_bomb_pot_flop_state()
+
+    assert state.hand_mode is HandMode.SINGLE_BOARD_BOMB_POT
+    assert state.street is Street.FLOP
+    assert state.pot_main_bb == Decimal("6")
+    assert state.current_bet_bb == 0
+    assert state.next_to_act_seat == 7
+
+    state = reducer.apply(
+        state,
+        make_event(
+            7,
+            EventCategory.BETTING_ACTION,
+            "check",
+            actor_seat=7,
+            street=Street.FLOP,
+        ),
+    )
+    assert state.next_to_act_seat == 8
+
+
+def test_bomb_pot_rejects_preflop_betting_and_blinds() -> None:
+    reducer = HandStateReducer()
+    state = reducer.apply(
+        make_initial_state(),
+        make_event(
+            1,
+            EventCategory.LIFECYCLE,
+            "hand_started",
+            hand_mode=HandMode.SINGLE_BOARD_BOMB_POT,
+        ),
+    )
+    state = reducer.apply(
+        state, make_event(2, EventCategory.DEALING, "dealer_assigned", dealer_seat=6)
+    )
+
+    with pytest.raises(StateTransitionError, match="blinds are invalid"):
+        reducer.apply(
+            state,
+            make_event(
+                3,
+                EventCategory.FORCED_WAGER,
+                "blind_posted",
+                actor_seat=7,
+                street=Street.PREFLOP,
+                amount=EventAmount(to_bb=Decimal("1"), added_bb=Decimal("1")),
+            ),
+        )
+
+    state = reducer.apply(
+        state,
+        make_event(
+            3,
+            EventCategory.FORCED_WAGER,
+            "bomb_ante_posted",
+            actor_seat=6,
+            street=Street.PREFLOP,
+            amount=EventAmount(to_bb=Decimal("2"), added_bb=Decimal("2")),
+        ),
+    )
+    with pytest.raises(StateTransitionError, match="no preflop betting"):
+        reducer.apply(
+            state,
+            make_event(
+                4,
+                EventCategory.BETTING_ACTION,
+                "fold",
+                actor_seat=6,
+                street=Street.PREFLOP,
+            ),
+        )
+
+
+def test_bomb_pot_flop_requires_observed_contribution_from_every_participant() -> None:
+    reducer = HandStateReducer()
+    state = reducer.apply(
+        make_initial_state(),
+        make_event(
+            1,
+            EventCategory.LIFECYCLE,
+            "hand_started",
+            hand_mode=HandMode.SINGLE_BOARD_BOMB_POT,
+        ),
+    )
+    state = reducer.apply(
+        state, make_event(2, EventCategory.DEALING, "dealer_assigned", dealer_seat=6)
+    )
+    for sequence, seat in ((3, 6), (4, 7)):
+        state = reducer.apply(
+            state,
+            make_event(
+                sequence,
+                EventCategory.FORCED_WAGER,
+                "bomb_ante_posted",
+                actor_seat=seat,
+                street=Street.PREFLOP,
+                amount=EventAmount(to_bb=Decimal("2"), added_bb=Decimal("2")),
+            ),
+        )
+
+    with pytest.raises(StateTransitionError, match="every participant"):
+        reducer.apply(
+            state,
+            make_event(
+                5,
+                EventCategory.DEALING,
+                "board_cards_observed",
+                street=Street.FLOP,
+                cards=["Qs", "Jh", "2c"],
+            ),
+        )
 
 
 def test_reducer_does_not_mutate_previous_state(initial_state) -> None:

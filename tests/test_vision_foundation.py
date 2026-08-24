@@ -221,18 +221,25 @@ def test_chip_amount_parser_rejects_ambiguous_or_unsupported_formats(text: str) 
         parse_chip_amount(text, confidence=0.5)
 
 
-@pytest.mark.parametrize(
-    "text",
-    [
-        "Bomb Pot: After 6 hands (1,000-3,000)",
-        "aon-,h Pot: After O handsa 1000-3,000)",
-    ],
-)
-def test_bomb_pot_rule_label_fails_closed_despite_minor_ocr_damage(text: str) -> None:
-    result = classify_rule_label(text)
+def test_scheduled_bomb_pot_does_not_quarantine_current_standard_hand() -> None:
+    result = classify_rule_label("Bomb Pot: After 6 hands (1,000-3,000)")
+
+    assert result.supported_standard_nlh is True
+    assert result.supported_single_board_bomb_pot is False
+    assert result.special_rule == "bomb_pot"
+    assert result.bomb_pot_state == "scheduled"
+    assert result.hands_until_bomb == 6
+    assert result.confidence >= 0.9
+
+
+def test_active_bomb_pot_is_classified_despite_minor_ocr_damage() -> None:
+    result = classify_rule_label("aon-,h Pot: After O handsa 1000-3,000)")
 
     assert result.supported_standard_nlh is False
+    assert result.supported_single_board_bomb_pot is True
     assert result.special_rule == "bomb_pot"
+    assert result.bomb_pot_state == "active"
+    assert result.hands_until_bomb == 0
     assert result.confidence >= 0.9
 
 
@@ -243,7 +250,7 @@ def test_unknown_rule_label_never_establishes_supported_nlh() -> None:
     assert result.special_rule is None
 
 
-def test_live_capture_diagnostic_quarantines_scoped_bomb_pot_evidence() -> None:
+def test_live_capture_diagnostic_supports_countdown_hand_and_exposes_schedule() -> None:
     frame = CapturedFrame(10, 20, b"\x00" * 10 * 20 * 4)
     record = CaptureFrameRecord(
         sequence=0,
@@ -280,7 +287,12 @@ def test_live_capture_diagnostic_quarantines_scoped_bomb_pot_evidence() -> None:
         ),
     )
 
-    assert diagnostic.standard_nlh_supported is False
+    assert diagnostic.current_hand_supported is True
+    assert diagnostic.current_hand_mode == "standard_nlh"
+    assert diagnostic.standard_nlh_supported is True
+    assert diagnostic.single_board_bomb_pot_supported is False
+    assert diagnostic.bomb_pot_state == "scheduled"
+    assert diagnostic.hands_until_bomb == 2
     assert diagnostic.special_rule == "bomb_pot"
     assert diagnostic.rule_confidence == 0.99
     assert diagnostic.pot_text == "POT 4,500"

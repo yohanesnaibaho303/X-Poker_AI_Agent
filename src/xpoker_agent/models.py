@@ -93,6 +93,11 @@ class Street(StrEnum):
     SHOWDOWN = "showdown"
 
 
+class HandMode(StrEnum):
+    STANDARD_NLH = "standard_nlh"
+    SINGLE_BOARD_BOMB_POT = "single_board_bomb_pot"
+
+
 class ParticipationStatus(StrEnum):
     EMPTY = "empty"
     SEATED = "seated"
@@ -115,7 +120,7 @@ class EventCategory(StrEnum):
 EVENT_TYPES: dict[EventCategory, set[str]] = {
     EventCategory.BETTING_ACTION: {"fold", "check", "call", "bet", "raise", "all_in"},
     EventCategory.LIFECYCLE: {"hand_started", "showdown_started", "hand_completed"},
-    EventCategory.FORCED_WAGER: {"blind_posted"},
+    EventCategory.FORCED_WAGER: {"blind_posted", "bomb_ante_posted"},
     EventCategory.DEALING: {
         "dealer_assigned",
         "hole_cards_observed",
@@ -158,8 +163,10 @@ class GameConfig(StrictModel):
             raise ValueError(f"positions must be in authoritative order: {expected}")
         if self.default_open_size_bb != Decimal("2.0"):
             raise ValueError("initial default open size must be 2.0 BB")
-        if self.enabled_special_rules:
-            raise ValueError("special rules are disabled in the initial configuration")
+        if self.enabled_special_rules != [HandMode.SINGLE_BOARD_BOMB_POT.value]:
+            raise ValueError(
+                "only single_board_bomb_pot must be enabled for the initial configuration"
+            )
         return self
 
 
@@ -325,6 +332,7 @@ class HandEvent(StrictModel):
     sequence: int = Field(ge=1)
     category: EventCategory
     type: str
+    hand_mode: HandMode | None = None
     actor_seat: int | None = Field(default=None, ge=0, le=8)
     street: Street = Street.NONE
     amount: EventAmount | None = None
@@ -349,6 +357,8 @@ class HandEvent(StrictModel):
     def validate_event_shape(self) -> HandEvent:
         if self.type not in EVENT_TYPES[self.category]:
             raise ValueError(f"{self.type!r} is not valid for category {self.category}")
+        if self.hand_mode is not None and self.type != "hand_started":
+            raise ValueError("hand_mode metadata is valid only for hand_started")
         needs_actor = self.category in {EventCategory.BETTING_ACTION, EventCategory.FORCED_WAGER}
         if needs_actor and self.actor_seat is None:
             raise ValueError("betting actions and forced wagers require actor_seat")
@@ -366,7 +376,14 @@ class HandEvent(StrictModel):
             raise ValueError("pot_index is valid only for pot_awarded")
         if self.type == "pot_awarded" and self.amount is not None and self.amount.added_bb <= 0:
             raise ValueError("pot_awarded requires a positive award amount")
-        if self.type in {"call", "bet", "raise", "all_in", "blind_posted"} and (
+        if self.type in {
+            "call",
+            "bet",
+            "raise",
+            "all_in",
+            "blind_posted",
+            "bomb_ante_posted",
+        } and (
             self.amount is None or self.amount.added_bb <= 0
         ):
             raise ValueError(f"{self.type} requires a positive added amount")
@@ -424,6 +441,7 @@ class HandState(StrictModel):
     last_event_sequence: int = Field(default=0, ge=0)
     config_version: str
     table_size: Literal[6, 9]
+    hand_mode: HandMode = HandMode.STANDARD_NLH
     table_status: TableStatus = TableStatus.WAITING_FOR_HAND
     street: Street = Street.NONE
     dealer_seat: int | None = Field(default=None, ge=0, le=8)
