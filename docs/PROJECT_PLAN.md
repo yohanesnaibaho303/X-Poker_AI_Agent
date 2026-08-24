@@ -730,6 +730,13 @@ and cannot emit the same key twice. Supported board counts establish the provisi
 stable postflop-to-zero transition advances the provisional hand epoch. These are explicitly not
 `HandEvent` records; dealer, amount, action order, and accounting gates are still required.
 
+Board-card recognition now has an X-Poker-specific, dependency-free candidate path. Versioned
+low-resolution glyph masks cover all ranks without storing raw table/player pixels; deterministic
+palette evidence supplies suit candidates. Rank distance, second-rank margin, suit confidence,
+three-frame slot consensus, and physical-card uniqueness all fail closed independently. This
+calibration path cannot satisfy the card-accuracy exit gate until a larger held-out labeled replay
+set passes it.
+
 ### Milestone 9 — Authorized control
 
 - Add action-target mapping and calibration.

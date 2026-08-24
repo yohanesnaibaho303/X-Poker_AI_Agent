@@ -97,7 +97,19 @@
 - Live validation produced one non-duplicated seat-2 preflop Call candidate and advanced the hand
   epoch on a stable postflop-to-preflop board transition. The candidate was correctly labeled
   non-canonical with accounting pending.
-- Current full suite: Ruff passed; 247 Pytest/Hypothesis tests, 11 TypeScript tests, and the
+- Added a dependency-free, X-Poker-specific board-card candidate recognizer using a versioned
+  18-by-26 glyph-mask artifact covering all thirteen ranks. Suit classification follows the
+  observed X-Poker palette (black spades, red hearts, blue diamonds, green clubs).
+- The artifact stores only derived card-glyph masks, source-frame hashes, intended use, and license
+  boundary; it contains no player names or raw table pixels. Rank distance/margin, suit confidence,
+  assumptions, and provenance remain inspectable.
+- On two newly observed labeled boards, the first pass correctly recognized five of seven cards and
+  failed closed on standard 2 and 6 glyphs; adding only those cropped glyphs made offline replay
+  seven of seven. This is calibration, not held-out promotion evidence.
+- Added three-frame per-slot card consensus and physical-card uniqueness. One subsequent unlabeled
+  live flop reached stable `Jc Kc Td`; a chat overlay prevented visual labeling, so it is not counted
+  as accuracy evidence.
+- Current full suite: Ruff passed; 250 Pytest/Hypothesis tests, 11 TypeScript tests, and the
   production dashboard build passed. Table control remains disabled.
 
 ## Completed project checkpoints
@@ -123,6 +135,8 @@
   spectated table for temporal contribution and hand-mode calibration.
 - Convert accepted action badges and amount deltas into exactly-once candidate events, then feed
   only pot/stack/order-consistent sequences to the existing deterministic hand-state reducer.
+- Expand held-out board-card replay coverage across every rank/suit and lighting/result-overlay
+  state; keep low-margin cards unknown until the ≥99.9% card gate is measured and passed.
 - Continue gradual 3-to-9-player live captures to validate every occupied seat panel, player state,
   stack/bet crop, dealer marker, and clockwise action transition.
 - Add opponent-range, poker-math, exact/abstracted strategy, exploit-frequency, provenance, and

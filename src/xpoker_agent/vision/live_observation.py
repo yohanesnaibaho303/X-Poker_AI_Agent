@@ -48,6 +48,9 @@ class LiveObservationService:
         self._samples: deque[TemporalSample] = deque(maxlen=maximum_samples)
         self._pot_samples: deque[TemporalSample] = deque(maxlen=maximum_samples)
         self._board_samples: deque[TemporalSample] = deque(maxlen=maximum_samples)
+        self._card_samples: dict[int, deque[TemporalSample]] = {
+            index: deque(maxlen=maximum_samples) for index in range(5)
+        }
         self._stack_samples: dict[int, deque[TemporalSample]] = {
             seat: deque(maxlen=maximum_samples) for seat in range(9)
         }
@@ -80,6 +83,10 @@ class LiveObservationService:
         )
         self._pot_consensus = self._empty_consensus("no_samples")
         self._board_consensus = self._empty_consensus("no_samples")
+        self._board_card_consensus: list[TemporalConsensus] = []
+        self._recognized_board_cards: list[str] = []
+        self._board_cards_accepted = False
+        self._board_cards_reason = "no_postflop_board"
         self._stack_consensus = [
             SeatStackConsensus(
                 seat=seat,
@@ -128,6 +135,8 @@ class LiveObservationService:
         self._samples.clear()
         self._pot_samples.clear()
         self._board_samples.clear()
+        for samples in self._card_samples.values():
+            samples.clear()
         for samples in self._stack_samples.values():
             samples.clear()
         for samples in self._action_samples.values():
@@ -140,6 +149,10 @@ class LiveObservationService:
         )
         self._pot_consensus = self._empty_consensus("no_samples")
         self._board_consensus = self._empty_consensus("no_samples")
+        self._board_card_consensus = []
+        self._recognized_board_cards = []
+        self._board_cards_accepted = False
+        self._board_cards_reason = "no_postflop_board"
         self._stack_consensus = [
             SeatStackConsensus(
                 seat=seat,
@@ -250,6 +263,7 @@ class LiveObservationService:
         return consensus(list(samples))
 
     def _record_numeric_observations(self, diagnostic: LiveCaptureDiagnostic) -> None:
+        previous_board_value = self._board_samples[-1].value if self._board_samples else None
         if not diagnostic.board_geometry_supported or diagnostic.board_card_slots not in {
             0,
             3,
@@ -268,6 +282,9 @@ class LiveObservationService:
                     confidence=max(0.9, diagnostic.board_geometry_confidence),
                 ),
             )
+            if previous_board_value != str(diagnostic.board_card_slots):
+                for samples in self._card_samples.values():
+                    samples.clear()
             if self._board_consensus.accepted:
                 board_count = int(self._board_consensus.value or "0")
                 if (
@@ -278,6 +295,8 @@ class LiveObservationService:
                     self._hand_epoch += 1
                     self._actions_armed = False
                 self._last_accepted_board_count = board_count
+
+        self._record_board_cards(diagnostic)
 
         if diagnostic.pot.value_native is None:
             self._pot_samples.clear()
@@ -374,6 +393,48 @@ class LiveObservationService:
                     )
                     self._emitted_action_keys.add(key)
 
+    def _record_board_cards(self, diagnostic: LiveCaptureDiagnostic) -> None:
+        expected = diagnostic.board_card_slots
+        if (
+            not diagnostic.board_geometry_supported
+            or expected not in {3, 4, 5}
+            or len(diagnostic.board_cards) != expected
+            or any(card.card is None for card in diagnostic.board_cards)
+        ):
+            for samples in self._card_samples.values():
+                samples.clear()
+            self._board_card_consensus = []
+            self._recognized_board_cards = []
+            self._board_cards_accepted = False
+            self._board_cards_reason = (
+                "no_postflop_board" if expected == 0 else "current_cards_ambiguous"
+            )
+            return
+        results: list[TemporalConsensus] = []
+        for index, card in enumerate(diagnostic.board_cards):
+            assert card.card is not None
+            results.append(
+                self._append_consecutive(
+                    self._card_samples[index],
+                    TemporalSample(
+                        frame_sequence=diagnostic.frame_sequence,
+                        content_sha256=diagnostic.content_sha256,
+                        value=card.card,
+                        confidence=card.confidence,
+                    ),
+                )
+            )
+        values = [result.value for result in results if result.accepted and result.value]
+        self._board_card_consensus = results
+        self._board_cards_accepted = len(values) == expected and len(set(values)) == expected
+        self._recognized_board_cards = values if self._board_cards_accepted else []
+        if self._board_cards_accepted:
+            self._board_cards_reason = "temporal and card-uniqueness gates passed"
+        elif len(values) == expected:
+            self._board_cards_reason = "duplicate physical card candidate"
+        else:
+            self._board_cards_reason = "insufficient stable card frames"
+
     def _record_failure(self, error: Exception) -> None:
         self._frames_failed += 1
         self._consecutive_failures += 1
@@ -428,6 +489,10 @@ class LiveObservationService:
             ),
             mode_consensus=self._mode_consensus,
             board_consensus=self._board_consensus,
+            board_card_consensus=self._board_card_consensus,
+            recognized_board_cards=self._recognized_board_cards,
+            board_cards_accepted=self._board_cards_accepted,
+            board_cards_reason=self._board_cards_reason,
             pot_consensus=self._pot_consensus,
             seat_stack_consensus=self._stack_consensus,
             seat_action_consensus=self._action_consensus,

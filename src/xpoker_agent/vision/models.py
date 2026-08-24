@@ -69,6 +69,21 @@ class CardRecognition(StrictModel):
         return self
 
 
+class CardFaceObservation(StrictModel):
+    card: str | None = None
+    confidence: float = Field(ge=0.0, le=1.0)
+    rank_distance: float = Field(ge=0.0, le=1.0)
+    rank_margin: float = Field(ge=0.0, le=1.0)
+    accepted: Literal[False] = False
+    reason: str
+
+    @model_validator(mode="after")
+    def validate_optional_card(self) -> CardFaceObservation:
+        if self.card is not None and not CARD_PATTERN.fullmatch(self.card):
+            raise ValueError("card candidate must use rank plus lowercase suit")
+        return self
+
+
 class TemporalSample(StrictModel):
     frame_sequence: int = Field(ge=0)
     content_sha256: str = Field(min_length=64, max_length=64)
@@ -208,6 +223,7 @@ class LiveCaptureDiagnostic(StrictModel):
     board_geometry_supported: bool
     board_geometry_confidence: float = Field(ge=0.0, le=1.0)
     board_geometry_reasons: list[str] = Field(default_factory=list)
+    board_cards: list[CardFaceObservation] = Field(default_factory=list)
     regions: dict[str, tuple[float, float, float, float]]
     seat_observations: list[SeatOccupancyObservation] = Field(default_factory=list)
     seat_panels: list[SeatPanelObservation] = Field(default_factory=list)
@@ -239,6 +255,10 @@ class LiveObservationStatus(StrictModel):
     current_hand_supported: bool
     mode_consensus: TemporalConsensus
     board_consensus: TemporalConsensus
+    board_card_consensus: list[TemporalConsensus] = Field(default_factory=list)
+    recognized_board_cards: list[str] = Field(default_factory=list)
+    board_cards_accepted: bool = False
+    board_cards_reason: str
     pot_consensus: TemporalConsensus
     seat_stack_consensus: list[SeatStackConsensus] = Field(default_factory=list)
     seat_action_consensus: list[SeatActionConsensus] = Field(default_factory=list)

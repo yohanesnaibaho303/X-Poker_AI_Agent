@@ -10,6 +10,7 @@ from xpoker_agent.capture.models import CaptureFrameRecord, LayoutProfile
 from xpoker_agent.capture.profile import load_target_profile
 from xpoker_agent.capture.recording import capture_authorized_frame
 from xpoker_agent.vision.actions import action_badge_region, parse_action_badge
+from xpoker_agent.vision.card_faces import recognize_card_face
 from xpoker_agent.vision.cards import classify_board_geometry, detect_card_slots
 from xpoker_agent.vision.models import (
     LiveCaptureDiagnostic,
@@ -77,9 +78,14 @@ def build_live_capture_diagnostic(
         )
         for observation in seat_observations
     ]
-    board_geometry = classify_board_geometry(
-        detect_card_slots(crop_layout_region(frame, layout, "board"))
-    )
+    board_crop = crop_layout_region(frame, layout, "board")
+    board_slots = detect_card_slots(board_crop)
+    board_geometry = classify_board_geometry(board_slots)
+    board_cards = []
+    if not board_geometry.unsupported and len(board_slots) in {3, 4, 5}:
+        board_cards = [
+            recognize_card_face(crop_frame(board_crop, slot.box)) for slot in board_slots
+        ]
     return LiveCaptureDiagnostic(
         captured_at=record.captured_at,
         frame_sequence=record.sequence,
@@ -124,6 +130,7 @@ def build_live_capture_diagnostic(
         board_geometry_supported=not board_geometry.unsupported,
         board_geometry_confidence=board_geometry.confidence,
         board_geometry_reasons=board_geometry.reasons,
+        board_cards=board_cards,
         regions=visible_regions,
         seat_observations=seat_observations,
         seat_panels=seat_panels,

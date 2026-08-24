@@ -161,6 +161,14 @@ export interface LiveCaptureDiagnostic {
   board_geometry_supported: boolean;
   board_geometry_confidence: number;
   board_geometry_reasons: string[];
+  board_cards: Array<{
+    card: string | null;
+    confidence: number;
+    rank_distance: number;
+    rank_margin: number;
+    accepted: false;
+    reason: string;
+  }>;
   regions: Record<string, [number, number, number, number]>;
   seat_observations: Array<{
     seat: number;
@@ -224,6 +232,17 @@ export interface LiveObservationStatus {
     alternatives: string[];
     reason: string | null;
   };
+  board_card_consensus: Array<{
+    accepted: boolean;
+    value: string | null;
+    confidence: number;
+    stable_frames: number;
+    alternatives: string[];
+    reason: string | null;
+  }>;
+  recognized_board_cards: string[];
+  board_cards_accepted: boolean;
+  board_cards_reason: string;
   pot_consensus: {
     accepted: boolean;
     value: string | null;

@@ -326,6 +326,29 @@
     "board_consensus": {
       "$ref": "#/$defs/TemporalConsensus"
     },
+    "board_card_consensus": {
+      "items": {
+        "$ref": "#/$defs/TemporalConsensus"
+      },
+      "title": "Board Card Consensus",
+      "type": "array"
+    },
+    "recognized_board_cards": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Recognized Board Cards",
+      "type": "array"
+    },
+    "board_cards_accepted": {
+      "default": false,
+      "title": "Board Cards Accepted",
+      "type": "boolean"
+    },
+    "board_cards_reason": {
+      "title": "Board Cards Reason",
+      "type": "string"
+    },
     "pot_consensus": {
       "$ref": "#/$defs/TemporalConsensus"
     },
@@ -388,6 +411,7 @@
     "current_hand_supported",
     "mode_consensus",
     "board_consensus",
+    "board_cards_reason",
     "pot_consensus",
     "hand_epoch"
   ],

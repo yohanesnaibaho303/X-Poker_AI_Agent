@@ -4,6 +4,7 @@ from datetime import UTC, datetime
 from xpoker_agent.capture.frames import CapturedFrame
 from xpoker_agent.vision.live_observation import LiveObservationService
 from xpoker_agent.vision.models import (
+    CardFaceObservation,
     LiveCaptureDiagnostic,
     PotObservation,
     SeatActionObservation,
@@ -145,6 +146,33 @@ def test_action_candidate_is_derived_once_after_clear_and_stable_badge() -> None
         assert candidate.street == "flop"
         assert candidate.action == "fold"
         assert candidate.canonical_event_accepted is False
+
+    asyncio.run(scenario())
+
+
+def test_board_cards_require_temporal_consensus_and_physical_uniqueness() -> None:
+    async def scenario() -> None:
+        async def capture(_: int, sequence: int):
+            diagnostic = _diagnostic(sequence)
+            diagnostic.board_cards = [
+                CardFaceObservation(
+                    card=card,
+                    confidence=0.85,
+                    rank_distance=0.02,
+                    rank_margin=0.08,
+                    reason="test candidate",
+                )
+                for card in ("Jh", "2d", "8h")
+            ]
+            return diagnostic, CapturedFrame(1, 1, b"\x00" * 4)
+
+        service = LiveObservationService(capture)
+        for _ in range(3):
+            await service.inspect_once(table_size=9)
+        status = service.status()
+
+        assert status.board_cards_accepted is True
+        assert status.recognized_board_cards == ["Jh", "2d", "8h"]
 
     asyncio.run(scenario())
 

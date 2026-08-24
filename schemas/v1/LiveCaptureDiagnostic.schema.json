@@ -1,5 +1,58 @@
 {
   "$defs": {
+    "CardFaceObservation": {
+      "additionalProperties": false,
+      "properties": {
+        "card": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Card"
+        },
+        "confidence": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "rank_distance": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Rank Distance",
+          "type": "number"
+        },
+        "rank_margin": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Rank Margin",
+          "type": "number"
+        },
+        "accepted": {
+          "const": false,
+          "default": false,
+          "title": "Accepted",
+          "type": "boolean"
+        },
+        "reason": {
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "confidence",
+        "rank_distance",
+        "rank_margin",
+        "reason"
+      ],
+      "title": "CardFaceObservation",
+      "type": "object"
+    },
     "PotObservation": {
       "additionalProperties": false,
       "properties": {
@@ -480,6 +533,13 @@
         "type": "string"
       },
       "title": "Board Geometry Reasons",
+      "type": "array"
+    },
+    "board_cards": {
+      "items": {
+        "$ref": "#/$defs/CardFaceObservation"
+      },
+      "title": "Board Cards",
       "type": "array"
     },
     "regions": {
