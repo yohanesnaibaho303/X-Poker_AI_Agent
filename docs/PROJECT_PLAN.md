@@ -755,6 +755,8 @@ transition, the observer snapshots the prior dealer and active-seat set, clears 
 then requires three fresh frames showing the button on the next dealt seat with an unchanged ring.
 The old marker remains pending; a skipped dealer or changed ring is rejected. An observer that began
 mid-hand must wait for this witnessed boundary before constructing a canonical initial state.
+The prior epoch uses its last accepted dealer/ring evidence, so a transient result overlay at the
+board reset cannot erase established context; current-frame outputs still clear while occluded.
 
 The live status combines these prerequisites into an explicit reducer-readiness result. Every
 unresolved boundary, mode, blind, dealer, ring, stack, card, amount, pot, or clockwise-order gate is

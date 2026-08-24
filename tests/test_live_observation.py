@@ -13,6 +13,7 @@ from xpoker_agent.vision.models import (
     PotDeltaCandidate,
     PotObservation,
     SeatActionObservation,
+    SeatOccupancyObservation,
     SeatPanelObservation,
     StackDeltaCandidate,
 )
@@ -367,6 +368,45 @@ def test_hero_cards_require_temporal_consensus_and_persist_within_hand() -> None
         assert status.hero_cards_accepted is True
         assert status.recognized_hero_cards == ["As", "2d"]
         assert status.hero_cards_reason == "accepted earlier in the current hand epoch"
+
+    asyncio.run(scenario())
+
+
+def test_hand_boundary_uses_last_stable_epoch_context_when_button_is_occluded() -> None:
+    async def scenario() -> None:
+        async def capture(_: int, sequence: int):
+            diagnostic = _diagnostic(sequence)
+            diagnostic.board_card_slots = 3 if sequence <= 3 else 0
+            dealer = 4 if sequence <= 3 else (0 if sequence >= 7 else None)
+            diagnostic.dealer = DealerButtonObservation(
+                seat=dealer,
+                confidence=0.95 if dealer is not None else 0.0,
+                reason="test candidate",
+            )
+            active = {0, 1, 4}
+            diagnostic.seat_observations = [
+                SeatOccupancyObservation(
+                    seat=seat,
+                    status="occupied" if seat in active else "empty",
+                    confidence=0.95,
+                    dark_panel_fraction=0.8 if seat in active else 0.1,
+                    plus_horizontal_pixels=0 if seat in active else 10,
+                    plus_vertical_pixels=0 if seat in active else 10,
+                )
+                for seat in range(9)
+            ]
+            return diagnostic, CapturedFrame(1, 1, b"\x00" * 4)
+
+        service = LiveObservationService(capture)
+        for _ in range(9):
+            await service.inspect_once(table_size=9)
+        status = service.status()
+
+        assert status.hand_epoch == 1
+        assert status.hand_boundary_validation.status == "validated"
+        assert status.hand_boundary_validation.previous_dealer_seat == 4
+        assert status.hand_boundary_validation.current_dealer_seat == 0
+        assert status.hand_boundary_validation.expected_dealer_seat == 0
 
     asyncio.run(scenario())
 

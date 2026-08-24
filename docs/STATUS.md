@@ -136,7 +136,7 @@
   epochs with zero failures and produced six mutually unique provisional matches: Call 2 and 4,
   plus Bet 4, 3, 6, and 2 native units. None are canonical events yet because legal order and pot
   accounting remain outstanding gates.
-- Current full suite: Ruff passed; 267 Pytest/Hypothesis tests, 11 TypeScript tests, and the
+- Current full suite: Ruff passed; 268 Pytest/Hypothesis tests, 11 TypeScript tests, and the
   production dashboard build passed. Table control remains disabled.
 - Added deterministic provisional clockwise-order validation. Each visual action now carries the
   stable dealer and active-seat context present when it was emitted. Preflop starts after the BB;
@@ -174,6 +174,9 @@
   the prior dealer and active ring, clears dealer consensus, and requires the button to advance to
   the next dealt seat after three new frames. An unchanged marker stays pending; a skipped dealer or
   changed active-seat set is rejected. The observer's first partial hand cannot establish a boundary.
+- Boundary evidence now preserves the last stable dealer and active ring inside each epoch. The
+  current-frame consensus still clears on occlusion, but a result animation hiding the button at the
+  exact board reset no longer erases the already established prior-hand context.
 - Added one inspectable reducer-readiness result for the current epoch. It lists unresolved boundary,
   mode, blind, dealer, active-ring, stack, hero/board card, amount, pot, and clockwise-order gates;
   exposes the accepted native BB only after blind consensus; and enumerates only fully reconciled

@@ -109,11 +109,13 @@ class LiveObservationService:
         self._hero_cards_reason = "hero_cards_unobserved"
         self._dealer_samples: deque[TemporalSample] = deque(maxlen=maximum_samples)
         self._dealer_consensus = self._empty_consensus("no_samples")
+        self._epoch_dealer_evidence: int | None = None
         self._status_samples: dict[int, deque[TemporalSample]] = {
             seat: deque(maxlen=maximum_samples) for seat in range(9)
         }
         self._seat_status_consensus: list[SeatStatusConsensus] = []
         self._active_seats: list[int] = []
+        self._epoch_active_evidence: list[int] = []
         self._provisional_positions = {}
         self._positions_reason = "seat_statuses_unresolved"
         self._stack_consensus = [
@@ -204,10 +206,12 @@ class LiveObservationService:
         self._hero_cards_reason = "hero_cards_unobserved"
         self._dealer_samples.clear()
         self._dealer_consensus = self._empty_consensus("no_samples")
+        self._epoch_dealer_evidence = None
         for samples in self._status_samples.values():
             samples.clear()
         self._seat_status_consensus = []
         self._active_seats = []
+        self._epoch_active_evidence = []
         self._provisional_positions = {}
         self._positions_reason = "seat_statuses_unresolved"
         self._stack_consensus = [
@@ -380,13 +384,12 @@ class LiveObservationService:
                     and self._last_accepted_board_count >= 3
                     and board_count == 0
                 ):
-                    self._previous_epoch_dealer = (
-                        int(self._dealer_consensus.value)
-                        if self._dealer_consensus.accepted
-                        and self._dealer_consensus.value is not None
-                        else None
+                    self._previous_epoch_dealer = self._epoch_dealer_evidence
+                    self._previous_epoch_active_seats = list(
+                        self._epoch_active_evidence
                     )
-                    self._previous_epoch_active_seats = list(self._active_seats)
+                    self._epoch_dealer_evidence = None
+                    self._epoch_active_evidence = []
                     self._hand_epoch += 1
                     self._dealer_samples.clear()
                     self._dealer_consensus = self._empty_consensus(
@@ -425,6 +428,8 @@ class LiveObservationService:
                     confidence=diagnostic.dealer.confidence,
                 ),
             )
+            if self._dealer_consensus.accepted and self._dealer_consensus.value is not None:
+                self._epoch_dealer_evidence = int(self._dealer_consensus.value)
         self._record_seat_statuses(diagnostic)
 
         if diagnostic.pot.value_native is None:
@@ -738,6 +743,7 @@ class LiveObservationService:
         self._active_seats = [
             item.seat for item in status_results if item.consensus.value == "seated"
         ]
+        self._epoch_active_evidence = list(self._active_seats)
         if not self._dealer_consensus.accepted or self._dealer_consensus.value is None:
             self._provisional_positions = {}
             self._positions_reason = "dealer_unresolved"
