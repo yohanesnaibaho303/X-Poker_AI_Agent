@@ -158,7 +158,7 @@
 - Added an X-Poker-specific hero-card region for both supported portrait layouts. A deterministic
   detector isolates the single merged surface, splits the angled left/right cards, uses a separate
   orientation-scoped rank-mask artifact, and classifies suits from the local palette.
-- The hero artifact contains thirteen derived masks across enrolled left/right orientations and only
+- The hero artifact contains fourteen derived masks across enrolled left/right orientations and only
   source-frame hashes, not table pixels. A live `Kc 8h` frame exposed a false nearest-template
   match at the initial 0.12 distance; the gate was tightened to 0.08 before temporal integration.
   Three distinct frames plus hero/board physical uniqueness are required, and an accepted hand is
@@ -173,6 +173,8 @@
   palette pass labeled the right black spade as a diamond from the overlapping left card. Hero suit
   classification now uses only the orientation-specific outer 26 pixels, with a regression proving
   that neighboring blue pixels cannot override the right-card spade.
+- After loading the suit fix, a live `Jh 8d` hand correctly classified the existing right-8 diamond
+  while withholding the unknown left-J. The left-J mask was enrolled with its exact frame hash.
 - Added privacy-scoped native blind parsing from X-Poker's rule label, including grouped and compact
   chip tokens. Small and big blinds must appear together with `0 < SB < BB`, then repeat for three
   distinct frames before the live status exposes a `SB/BB` normalization basis. Ambiguous OCR clears
