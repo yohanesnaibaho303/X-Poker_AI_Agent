@@ -33,6 +33,11 @@ class Objective(StrEnum):
     CHIP_EV = "chip_ev"
 
 
+class ChipDisplayMode(StrEnum):
+    BB = "BB"
+    NATIVE = "native"
+
+
 class Position(StrEnum):
     UTG = "UTG"
     UTG_1 = "UTG+1"
@@ -174,6 +179,55 @@ class RuntimeConfig(StrictModel):
             raise ValueError("capture_fps_min cannot exceed capture_fps_max")
         if self.mode is OperatingMode.ARMED_TEST_CONTROL:
             raise ValueError("Armed Test Control is unavailable in Milestone 0")
+        return self
+
+
+class ChipValue(StrictModel):
+    """A lossless user-entered chip value and its optional BB conversion."""
+
+    raw_input: str
+    display_mode: ChipDisplayMode
+    display_text: str
+    amount_bb: Decimal | None = Field(default=None, gt=0)
+    exact_native_chips: Decimal | None = Field(default=None, gt=0)
+
+    @model_validator(mode="after")
+    def require_native_or_bb_value(self) -> ChipValue:
+        if self.amount_bb is None and self.exact_native_chips is None:
+            raise ValueError("chip value requires a BB or native-chip amount")
+        if self.display_mode is ChipDisplayMode.BB and self.amount_bb is None:
+            raise ValueError("BB display mode requires amount_bb")
+        if self.display_mode is ChipDisplayMode.NATIVE and self.exact_native_chips is None:
+            raise ValueError("native display mode requires exact_native_chips")
+        return self
+
+
+class SessionSetupRequest(StrictModel):
+    table_size: Literal[6, 9]
+    chip_display_mode: ChipDisplayMode
+    stack_input: str = Field(min_length=1)
+    big_blind_native_chips: Decimal | None = Field(default=None, gt=0)
+
+
+class SessionSetup(StrictModel):
+    """User-selectable table size and stack denomination for one X-Poker session."""
+
+    table_size: Literal[6, 9]
+    game_config_id: str
+    stack: ChipValue
+    big_blind_native_chips: Decimal | None = Field(default=None, gt=0)
+    ready_for_strategy: bool
+    blocking_reason: str | None = None
+
+    @model_validator(mode="after")
+    def validate_strategy_readiness(self) -> SessionSetup:
+        expected_ready = self.stack.amount_bb is not None
+        if self.ready_for_strategy != expected_ready:
+            raise ValueError("ready_for_strategy must reflect whether amount_bb is available")
+        if expected_ready and self.blocking_reason is not None:
+            raise ValueError("a strategy-ready setup cannot have a blocking reason")
+        if not expected_ready and not self.blocking_reason:
+            raise ValueError("a non-ready setup requires a blocking reason")
         return self
 
 

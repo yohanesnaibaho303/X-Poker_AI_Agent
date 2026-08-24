@@ -1,0 +1,127 @@
+{
+  "$defs": {
+    "ChipDisplayMode": {
+      "enum": [
+        "BB",
+        "native"
+      ],
+      "title": "ChipDisplayMode",
+      "type": "string"
+    },
+    "ChipValue": {
+      "additionalProperties": false,
+      "description": "A lossless user-entered chip value and its optional BB conversion.",
+      "properties": {
+        "raw_input": {
+          "title": "Raw Input",
+          "type": "string"
+        },
+        "display_mode": {
+          "$ref": "#/$defs/ChipDisplayMode"
+        },
+        "display_text": {
+          "title": "Display Text",
+          "type": "string"
+        },
+        "amount_bb": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Amount Bb"
+        },
+        "exact_native_chips": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Exact Native Chips"
+        }
+      },
+      "required": [
+        "raw_input",
+        "display_mode",
+        "display_text"
+      ],
+      "title": "ChipValue",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "User-selectable table size and stack denomination for one X-Poker session.",
+  "properties": {
+    "table_size": {
+      "enum": [
+        6,
+        9
+      ],
+      "title": "Table Size",
+      "type": "integer"
+    },
+    "game_config_id": {
+      "title": "Game Config Id",
+      "type": "string"
+    },
+    "stack": {
+      "$ref": "#/$defs/ChipValue"
+    },
+    "big_blind_native_chips": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Big Blind Native Chips"
+    },
+    "ready_for_strategy": {
+      "title": "Ready For Strategy",
+      "type": "boolean"
+    },
+    "blocking_reason": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Blocking Reason"
+    }
+  },
+  "required": [
+    "table_size",
+    "game_config_id",
+    "stack",
+    "ready_for_strategy"
+  ],
+  "title": "SessionSetup",
+  "type": "object"
+}

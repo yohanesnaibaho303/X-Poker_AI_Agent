@@ -11,8 +11,10 @@ from fastapi import FastAPI
 from xpoker_agent import __version__
 from xpoker_agent.capture.profile import load_target_profile, match_authorized_target
 from xpoker_agent.capture.windows import discover_xpoker_windows
+from xpoker_agent.chips import create_session_setup
 from xpoker_agent.config import load_game_config, load_runtime_config
 from xpoker_agent.logging import configure_logging
+from xpoker_agent.models import SessionSetupRequest
 from xpoker_agent.research.assets import AssetManifest
 from xpoker_agent.research.catalog import ComponentCatalog
 from xpoker_agent.research.registry import SourceRegistry
@@ -58,6 +60,17 @@ def supported_game_configs() -> dict[str, object]:
         "supported_table_sizes": [6, 9],
         "configurations": [config.model_dump(mode="json") for config in configurations],
     }
+
+
+@app.post("/v1/session/setup/preview")
+def preview_session_setup(request: SessionSetupRequest) -> dict[str, object]:
+    setup = create_session_setup(
+        table_size=request.table_size,
+        chip_display_mode=request.chip_display_mode,
+        stack_input=request.stack_input,
+        big_blind_native_chips=request.big_blind_native_chips,
+    )
+    return setup.model_dump(mode="json")
 
 
 @app.get("/v1/simulation/hand")

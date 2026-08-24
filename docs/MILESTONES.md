@@ -118,6 +118,7 @@ Exit: synthetic profiles produce stable, explainable, regression-tested adjustme
 ## Milestone 8 — Live monitoring application
 
 - [ ] Build the React/TypeScript shell and component design system.
+- [ ] Add 6-max/9-max session selection and BB/native chip display controls.
 - [ ] Stream schema-versioned snapshots and events over WebSockets.
 - [ ] Display capture overlays, confidence, state, action history, and health.
 - [ ] Display hero/opponent ranges and GTO/exploit frequencies.

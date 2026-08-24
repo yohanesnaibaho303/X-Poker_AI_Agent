@@ -27,6 +27,8 @@
   state, clockwise reconstruction, hand-boundary validation, API inspection, and range spot keys.
   The current calibrated portrait layout is labeled 6-max; a representative 9-max layout remains
   required before 9-max perception can be promoted.
+- Added user-selectable 6-max/9-max session setup and BB/native-chip display modes. Exact native
+  values format as grouped numbers, K, or M by threshold and remain unnormalized until a blind exists.
 - Audited public solver candidates; available MIT material was heads-up or otherwise incompatible.
   The isolated 6-max and 9-max library manifests remain empty rather than seeded with false GTO data.
 - No strategy frequencies were invented or imported. Control remains disabled.

@@ -3,6 +3,7 @@ from xpoker_agent.api import (
     controller_status,
     game_config,
     health,
+    preview_session_setup,
     research_assets,
     research_components,
     research_sources,
@@ -10,6 +11,7 @@ from xpoker_agent.api import (
     supported_game_configs,
 )
 from xpoker_agent.capture.profile import EXAMPLE_PROFILE, load_target_profile
+from xpoker_agent.models import SessionSetupRequest
 
 
 def test_health_reports_disabled_controller() -> None:
@@ -35,6 +37,24 @@ def test_supported_game_configs_are_explicit_and_isolated() -> None:
 
     assert result["supported_table_sizes"] == [6, 9]
     assert [config["seats"] for config in result["configurations"]] == [6, 9]
+
+
+def test_session_preview_accepts_table_size_and_chip_notation() -> None:
+    result = preview_session_setup(
+        SessionSetupRequest(
+            table_size=6,
+            chip_display_mode="native",
+            stack_input="200000",
+            big_blind_native_chips="2000",
+        )
+    )
+
+    assert result["table_size"] == 6
+    assert result["stack"]["display_mode"] == "native"
+    assert result["stack"]["display_text"] == "200K"
+    assert result["stack"]["exact_native_chips"] == "200000"
+    assert result["stack"]["amount_bb"] == "100"
+    assert result["ready_for_strategy"] is True
 
 
 def test_simulation_endpoint_returns_full_trace() -> None:

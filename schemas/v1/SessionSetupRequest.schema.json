@@ -1,0 +1,54 @@
+{
+  "$defs": {
+    "ChipDisplayMode": {
+      "enum": [
+        "BB",
+        "native"
+      ],
+      "title": "ChipDisplayMode",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "table_size": {
+      "enum": [
+        6,
+        9
+      ],
+      "title": "Table Size",
+      "type": "integer"
+    },
+    "chip_display_mode": {
+      "$ref": "#/$defs/ChipDisplayMode"
+    },
+    "stack_input": {
+      "minLength": 1,
+      "title": "Stack Input",
+      "type": "string"
+    },
+    "big_blind_native_chips": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Big Blind Native Chips"
+    }
+  },
+  "required": [
+    "table_size",
+    "chip_display_mode",
+    "stack_input"
+  ],
+  "title": "SessionSetupRequest",
+  "type": "object"
+}

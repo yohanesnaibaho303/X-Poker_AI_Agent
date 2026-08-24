@@ -18,6 +18,12 @@ game:
 
 `2 BB` is treated as the default preflop open size. Effective stack depth will be detected dynamically for every hand.
 
+At session setup, the user selects either 6-max or 9-max and chooses BB or native-chip display.
+Native chips remain exact internally. Values below 100,000 display as grouped numbers such as
+`10,000`; values from 100,000 to below 1,000,000 display as K, such as `200K`; values from 1,000,000
+upward display as M, such as `1M`. Native chips convert to BB only after the blind is entered or
+reliably detected.
+
 ## 2. Product Vision
 
 The final agent should operate as an inspectable perception–reasoning–action system:
@@ -437,6 +443,8 @@ Exploit adjustment:
 ## 10. Monitoring Dashboard
 
 The desktop dashboard will show:
+
+- Session controls for selecting 6-max or 9-max and choosing BB or automatically compacted native-chip display.
 
 - Live captured table.
 - Recognition bounding boxes and confidence.

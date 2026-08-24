@@ -17,6 +17,8 @@ from xpoker_agent.models import (
     ObservationBatch,
     Provenance,
     RuntimeConfig,
+    SessionSetup,
+    SessionSetupRequest,
     StrategyMatch,
     WeightedRange,
 )
@@ -27,6 +29,8 @@ MODELS = [
     GameConfig,
     LayoutProfile,
     RuntimeConfig,
+    SessionSetupRequest,
+    SessionSetup,
     EvidenceRef,
     Provenance,
     Observation,

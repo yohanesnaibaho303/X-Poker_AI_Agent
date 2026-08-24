@@ -32,6 +32,11 @@ Use these position orders:
 
 Keep 6-max and 9-max calibration profiles and strategy artifacts explicitly separated.
 
+The final session setup must let the user select 6-max or 9-max and choose BB or native-chip display.
+Native chips remain exact internally and display below 100,000 as a grouped number (for example
+`10,000`), from 100,000 to below 1,000,000 as K (for example `200K`), and from 1,000,000 upward as M
+(for example `1M`). Never convert native chips to BB without an entered or reliably detected blind.
+
 ## Working Principles
 
 - Use `NLH`, not `NLHE`, in project-facing terminology.

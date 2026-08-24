@@ -4,6 +4,10 @@ Inspectable Windows AI agent for an explicitly authorized private X-Poker test t
 
 The supported configurations are X-Poker 6-max and 9-max cash NLH, zero rake, a default 2 BB preflop open, and a chip-EV objective. Layout profiles and strategy artifacts remain table-size-specific. Live table control is disabled and cannot be enabled until the documented accuracy and safety gates pass.
 
+Session setup supports user-selected 6-max or 9-max play and BB or native-chip display. Native values
+stay exact internally and render as grouped numbers below 100,000, K from 100,000, and M from
+1,000,000. Native values do not convert to BB until the blind is entered or reliably detected.
+
 ## Development quick start
 
 PowerShell:
