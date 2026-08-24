@@ -25,14 +25,14 @@ Exit: configuration and schemas load successfully, tests pass, and one simulated
 
 ## Milestone 1 — Autonomous reference research
 
-- [ ] Implement source and asset provenance registry.
-- [ ] Define acquisition policies for video, transcript, image, article, and repository sources.
+- [x] Implement source and asset provenance registry.
+- [x] Define acquisition policies for video, transcript, image, article, and repository sources.
 - [ ] Research public X-Poker interface material and accessible transcripts.
 - [ ] Sample permitted representative frames and deduplicate them.
 - [ ] Classify version, layout, theme, orientation, game, street, and visible components.
-- [ ] Build the first table-component catalog.
-- [ ] Study PokerGPT under its MIT license and document reusable architectural ideas.
-- [ ] Study `dickreuter/Poker` as GPL-3.0 reference and document clean-room boundaries.
+- [x] Build the first table-component catalog.
+- [x] Study PokerGPT under its MIT license and document reusable architectural ideas.
+- [x] Study `dickreuter/Poker` as GPL-3.0 reference and document clean-room boundaries.
 - [ ] Classify strategy claims by source/fact type and validation status.
 - [ ] Add catalog validation and provenance tests.
 

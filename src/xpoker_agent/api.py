@@ -10,6 +10,8 @@ from fastapi import FastAPI
 from xpoker_agent import __version__
 from xpoker_agent.config import load_game_config, load_runtime_config
 from xpoker_agent.logging import configure_logging
+from xpoker_agent.research.catalog import ComponentCatalog
+from xpoker_agent.research.registry import SourceRegistry
 from xpoker_agent.simulation import run_simulated_hand
 
 
@@ -51,6 +53,27 @@ def simulation_hand() -> dict[str, object]:
     return {
         "events": [event.model_dump(mode="json") for event in events],
         "states": [state.model_dump(mode="json") for state in states],
+    }
+
+
+@app.get("/v1/research/sources")
+def research_sources() -> dict[str, object]:
+    registry = SourceRegistry.load()
+    return {
+        "content_sha256": registry.content_sha256,
+        "count": len(registry.records),
+        "sources": [record.model_dump(mode="json") for record in registry.records],
+    }
+
+
+@app.get("/v1/research/components")
+def research_components() -> dict[str, object]:
+    catalog = ComponentCatalog.load()
+    return {
+        "content_sha256": catalog.content_sha256,
+        "count": len(catalog.records),
+        "unresolved_critical": len(catalog.unresolved_critical),
+        "components": [record.model_dump(mode="json") for record in catalog.records],
     }
 
 

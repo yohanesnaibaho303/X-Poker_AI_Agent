@@ -1,4 +1,11 @@
-from xpoker_agent.api import controller_status, game_config, health, simulation_hand
+from xpoker_agent.api import (
+    controller_status,
+    game_config,
+    health,
+    research_components,
+    research_sources,
+    simulation_hand,
+)
 
 
 def test_health_reports_disabled_controller() -> None:
@@ -26,3 +33,15 @@ def test_controller_endpoint_is_fail_closed() -> None:
     result = controller_status()
     assert result["enabled"] is False
     assert result["available"] is False
+
+
+def test_research_sources_are_inspectable() -> None:
+    result = research_sources()
+    assert result["count"] == 7
+    assert len(result["content_sha256"]) == 64
+
+
+def test_research_components_expose_verification_gaps() -> None:
+    result = research_components()
+    assert result["count"] == 12
+    assert result["unresolved_critical"] == 4
