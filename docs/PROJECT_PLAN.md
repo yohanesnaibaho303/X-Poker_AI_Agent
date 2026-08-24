@@ -769,6 +769,9 @@ card surface, splits deterministic left/right crops, applies a stricter 0.08 ran
 second-rank margin, classifies the local suit palette, and requires three distinct frames and
 physical uniqueness. Enrolled artifacts store only 18-by-26 masks and source hashes. Enrollment
 self-matches and visually checked live examples are calibration evidence, not held-out accuracy.
+Single-frame diagnostics may expose that fixed-size derived rank mask so a visually labeled
+authorized frame can be enrolled before it changes. This is calibration metadata only—not raw
+card/table pixels, a canonical observation, or held-out accuracy evidence.
 
 The same privacy-scoped rule crop supplies native small/big blind candidates. Both values must parse
 with `0 < SB < BB` and repeat for three distinct frames. Until that consensus passes, native stacks,

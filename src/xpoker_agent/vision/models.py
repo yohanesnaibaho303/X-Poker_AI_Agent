@@ -72,6 +72,9 @@ class CardRecognition(StrictModel):
 
 class CardFaceObservation(StrictModel):
     card: str | None = None
+    derived_rank_signature_hex: str | None = Field(
+        default=None, min_length=118, max_length=118
+    )
     confidence: float = Field(ge=0.0, le=1.0)
     rank_distance: float = Field(ge=0.0, le=1.0)
     rank_margin: float = Field(ge=0.0, le=1.0)

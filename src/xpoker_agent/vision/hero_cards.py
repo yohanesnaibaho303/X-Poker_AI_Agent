@@ -96,14 +96,14 @@ def detect_hero_cards(frame: CapturedFrame, layout: LayoutProfile) -> HeroCardsO
     observations: list[CardFaceObservation] = []
     for position, box in zip(("left", "right"), boxes, strict=True):
         card_crop = crop_frame(crop, box)
-        rank, distance, margin = match_hero_rank_signature(
-            rank_signature(card_crop), position
-        )
+        signature = rank_signature(card_crop)
+        rank, distance, margin = match_hero_rank_signature(signature, position)
         suit, suit_confidence = classify_suit(card_crop)
         if rank is None or suit is None:
             observations.append(
                 CardFaceObservation(
                     card=None,
+                    derived_rank_signature_hex=signature.hex(),
                     confidence=0.0,
                     rank_distance=distance,
                     rank_margin=margin,
@@ -114,6 +114,7 @@ def detect_hero_cards(frame: CapturedFrame, layout: LayoutProfile) -> HeroCardsO
             observations.append(
                 CardFaceObservation(
                     card=f"{rank}{suit}",
+                    derived_rank_signature_hex=signature.hex(),
                     confidence=min(suit_confidence, 1.0 - distance * 2.5),
                     rank_distance=distance,
                     rank_margin=margin,

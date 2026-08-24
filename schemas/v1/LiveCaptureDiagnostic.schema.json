@@ -15,6 +15,20 @@
           "default": null,
           "title": "Card"
         },
+        "derived_rank_signature_hex": {
+          "anyOf": [
+            {
+              "maxLength": 118,
+              "minLength": 118,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Derived Rank Signature Hex"
+        },
         "confidence": {
           "maximum": 1.0,
           "minimum": 0.0,

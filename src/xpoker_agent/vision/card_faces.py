@@ -105,11 +105,13 @@ def classify_suit(card: CapturedFrame) -> tuple[str | None, float]:
 
 
 def recognize_card_face(card: CapturedFrame) -> CardFaceObservation:
-    rank, distance, margin = match_rank_signature(rank_signature(card))
+    signature = rank_signature(card)
+    rank, distance, margin = match_rank_signature(signature)
     suit, suit_confidence = classify_suit(card)
     if rank is None or suit is None:
         return CardFaceObservation(
             card=None,
+            derived_rank_signature_hex=signature.hex(),
             confidence=0.0,
             rank_distance=distance,
             rank_margin=margin,
@@ -118,6 +120,7 @@ def recognize_card_face(card: CapturedFrame) -> CardFaceObservation:
     rank_confidence = min(0.99, 1.0 - distance * 2.5)
     return CardFaceObservation(
         card=f"{rank}{suit}",
+        derived_rank_signature_hex=signature.hex(),
         confidence=min(rank_confidence, suit_confidence),
         rank_distance=distance,
         rank_margin=margin,

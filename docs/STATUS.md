@@ -136,7 +136,7 @@
   epochs with zero failures and produced six mutually unique provisional matches: Call 2 and 4,
   plus Bet 4, 3, 6, and 2 native units. None are canonical events yet because legal order and pot
   accounting remain outstanding gates.
-- Current full suite: Ruff passed; 290 Pytest/Hypothesis tests, 11 TypeScript tests, and the
+- Current full suite: Ruff passed; 291 Pytest/Hypothesis tests, 11 TypeScript tests, and the
   production dashboard build passed. Table control remains disabled.
 - Added deterministic provisional clockwise-order validation. Each visual action now carries the
   stable dealer and active-seat context present when it was emitted. Preflop starts after the BB;
@@ -226,6 +226,9 @@
 - Added explicit 3-to-9-handed dealt-position mapping that skips empty/Break seats clockwise. A
   short-handed 9-max table retains its selected 9-max reference scope and reports the exact seat
   mismatch instead of silently switching to six-max data.
+- Added fixed-size derived rank-mask metadata to card diagnostics so an authorized visually labeled
+  live hand can be enrolled before the frame changes. It retains no raw pixels or player identity
+  and remains calibration-only evidence outside canonical state.
 
 ## Completed project checkpoints
 
