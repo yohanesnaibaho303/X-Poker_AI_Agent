@@ -69,3 +69,11 @@ Public solver research found MIT-licensed heads-up engines with useful determini
 HU blueprints, including `amaster97/poker_solver`, but not a validated nine-max, zero-rake, 2 BB
 artifact set matching the project. The versioned library manifest therefore remains explicitly empty.
 No HU, six-max, raked, tournament, 2.5 BB, or simplified chart has been mislabeled as authoritative.
+
+## Range-matrix projection
+
+The exact-combo model now projects deterministically to the conventional 13-by-13, 169-class grid.
+Every cell preserves its physically possible and included combo counts, blocker-adjusted inclusion
+frequency, mixed action frequencies, explicitly unassigned action mass, weighted equity, per-action
+EV, source, confidence, and version. Three regression tests verify layout, blocker behavior, weighted
+aggregation, inspection metadata, and byte-stable serialization.

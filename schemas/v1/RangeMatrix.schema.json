@@ -1,0 +1,153 @@
+{
+  "$defs": {
+    "RangeMatrixCell": {
+      "additionalProperties": false,
+      "properties": {
+        "hand_class": {
+          "title": "Hand Class",
+          "type": "string"
+        },
+        "row": {
+          "maximum": 12,
+          "minimum": 0,
+          "title": "Row",
+          "type": "integer"
+        },
+        "column": {
+          "maximum": 12,
+          "minimum": 0,
+          "title": "Column",
+          "type": "integer"
+        },
+        "possible_combos": {
+          "maximum": 12,
+          "minimum": 0,
+          "title": "Possible Combos",
+          "type": "integer"
+        },
+        "included_combos": {
+          "maximum": 12,
+          "minimum": 0,
+          "title": "Included Combos",
+          "type": "integer"
+        },
+        "combo_weight": {
+          "minimum": 0.0,
+          "title": "Combo Weight",
+          "type": "number"
+        },
+        "inclusion_frequency": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Inclusion Frequency",
+          "type": "number"
+        },
+        "action_mix": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "title": "Action Mix",
+          "type": "object"
+        },
+        "unassigned_action_frequency": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Unassigned Action Frequency",
+          "type": "number"
+        },
+        "equity": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Equity"
+        },
+        "ev_bb": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "title": "Ev Bb",
+          "type": "object"
+        }
+      },
+      "required": [
+        "hand_class",
+        "row",
+        "column",
+        "possible_combos",
+        "included_combos",
+        "combo_weight",
+        "inclusion_frequency",
+        "unassigned_action_frequency"
+      ],
+      "title": "RangeMatrixCell",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "player_ref": {
+      "title": "Player Ref",
+      "type": "string"
+    },
+    "spot_key": {
+      "title": "Spot Key",
+      "type": "string"
+    },
+    "ranks": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Ranks",
+      "type": "array"
+    },
+    "blocked_cards": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Blocked Cards",
+      "type": "array"
+    },
+    "cells": {
+      "items": {
+        "$ref": "#/$defs/RangeMatrixCell"
+      },
+      "title": "Cells",
+      "type": "array"
+    },
+    "source": {
+      "additionalProperties": true,
+      "title": "Source",
+      "type": "object"
+    },
+    "confidence": {
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Confidence",
+      "type": "number"
+    },
+    "version": {
+      "title": "Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "player_ref",
+    "spot_key",
+    "ranks",
+    "blocked_cards",
+    "cells",
+    "source",
+    "confidence",
+    "version"
+  ],
+  "title": "RangeMatrix",
+  "type": "object"
+}

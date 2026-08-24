@@ -21,10 +21,12 @@
 - Added versioned exact/nearest/interpolated stack-bucket matching with visible mismatch.
 - Added strict range artifacts and canonical position/action/sizing spot keys. Imports reject wrong
   seats, rake, open size, stack bucket, missing validation, duplicate spots, or missing provenance.
+- Added deterministic 13-by-13 range-matrix projection that retains blockers, exact combo mass,
+  mixed actions, missing strategy mass, equity, EV, provenance, confidence, and version.
 - Audited public solver candidates; available MIT material was heads-up or otherwise incompatible.
   The versioned 9-max library manifest is intentionally empty rather than seeded with false GTO data.
 - No strategy frequencies were invented or imported. Control remains disabled.
-- Current full suite: Ruff passed; 149 Pytest/Hypothesis tests passed.
+- Current full suite: Ruff passed; 152 Pytest/Hypothesis tests passed.
 
 ## Completed project checkpoints
 
@@ -36,7 +38,7 @@
 
 - Source or independently generate the initial 9-max no-rake 2 BB library without substituting
   heads-up, six-max, raked, tournament, or differently sized charts.
-- Expand range lookup/equity performance reports and connect pot-layer settlement calculations.
+- Expand equity performance reports and connect pot-layer settlement calculations.
 - Continue M3/M4 promotion evaluation in parallel when representative standard NLH replays exist.
 
 ## Blockers
