@@ -80,13 +80,13 @@ Exit: at least 98% of supported recorded hands reconstruct correctly, with unsup
 
 ## Milestone 5 — Range and poker-math foundation
 
-- [ ] Implement canonical 1,326-combination representation and 169-class projection.
-- [ ] Implement weights, action frequencies, normalization, blockers, and filtering.
+- [x] Implement canonical 1,326-combination representation and 169-class projection.
+- [x] Implement weights, action frequencies, normalization, blockers, and filtering.
 - [ ] Implement position/action/sizing-based range updates.
-- [ ] Implement five- and seven-card evaluation with exhaustive tests.
-- [ ] Implement exact and seeded Monte Carlo equity, including multiway.
-- [ ] Implement pot odds, EV, fold equity, SPR, MDF, and side-pot calculations.
-- [ ] Define stack-bucket matching/interpolation policy.
+- [x] Implement five- and seven-card evaluation with exhaustive tests.
+- [x] Implement exact and seeded Monte Carlo equity, including multiway.
+- [x] Implement pot odds, EV, fold equity, SPR, MDF, and side-pot calculations.
+- [x] Define stack-bucket matching/interpolation policy.
 - [ ] Seed a validated, versioned 9-max no-rake 2 BB range library.
 
 Exit: range lookup is deterministic, poker-math tests pass completely, and position-specific ranges render correctly.

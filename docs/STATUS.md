@@ -1,34 +1,26 @@
 # Build Status
 
 - Last updated: 2026-08-24 (Asia/Jakarta)
-- Current milestone: Milestone 4 — Complete hand reconstruction (M3 promotion still pending)
+- Current milestone: Milestone 5 — Range and poker-math foundation
 - Overall project: 3 of 11 milestones complete
-- Current state: Milestone 4 deterministic reconstruction checkpoint in progress; Milestone 3
-  held-out accuracy gates remain pending
+- Current state: Milestone 5 deterministic range/math checkpoint in progress; M3/M4 promotion gates
+  remain pending
 - Live control: Disabled
 
 ## Latest checkpoint
 
-- Added a SQLite append-only canonical event store with per-hand SHA-256 chains, sequence/event
-  uniqueness, canonical JSON round-trip, and database triggers that reject mutation and deletion.
-- Exact stored-event replay reproduces the deterministic hand's final state.
-- Enforced dealer-before-blinds, exact commitment totals, legal check/call/bet/raise/all-in shapes,
-  minimum full raises, and short all-in behavior.
-- Added explicit next-to-act tracking, out-of-turn rejection, betting-round closure, and guarded
-  street advancement.
-- Added full-state chip conservation and physical-card uniqueness across every observed seat and
-  board.
-- Added contribution-capped main/side-pot layers, eligibility validation, side-pot-specific awards,
-  and repeated split awards with exact conservation.
-- Added explicit raise locks after short all-ins so previously acted players may respond but cannot
-  illegally re-raise when action was not reopened.
-- Event batches are atomic; invalid replay stops at the last valid state with a reason and failed
-  payload hash. Canonical JSON hand histories are byte-deterministic.
-- Added heads-up preflop/postflop order coverage, cross-hand identity/configuration/dealt-seat checks,
-  clockwise dealer movement validation, and idempotent quarantine persistence.
-- M3 remains fail closed: no recognition output can enter this reducer until its confidence and
-  validation boundary passes. Raw live frames remain ignored and control remains disabled.
-- Current full suite: Ruff passed; 104 Pytest/Hypothesis tests passed.
+- Added the canonical 52-card, 1,326-combo, and 169-class NLH range universe with strict physical
+  combo keys and a stable SHA-256 fingerprint.
+- Added structured weights, action frequencies, blocker removal, filtering, class aggregation,
+  normalized combo probabilities, and Bayesian action conditioning.
+- Added dependency-free five/seven-card evaluation and verified all 2,598,960 five-card hands against
+  exact category totals.
+- Added exact weighted and seeded Monte Carlo equity for heads-up and multiway states, including ties
+  and explicit exact-state limits.
+- Added Decimal effective-stack, pot-odds, call-EV, SPR, MDF, bluff-frequency, and bet-EV metrics.
+- Added versioned exact/nearest/interpolated stack-bucket matching with visible mismatch.
+- No strategy frequencies were invented or imported. Control remains disabled.
+- Current full suite: Ruff passed; 142 Pytest/Hypothesis tests passed.
 
 ## Completed project checkpoints
 
@@ -38,10 +30,11 @@
 
 ## Next
 
-- Add explicit blind-role observations, cumulative short-raise/odd-chip house-rule details, and
-  readable hand-history export.
-- Connect validated M3 observation batches to quarantinable event inference with frame evidence.
-- Continue the M3 held-out recognition work in parallel; M4 live evaluation remains blocked on it.
+- Implement versioned position/action/sizing spot keys and deterministic range-update routing.
+- Define the validated range-artifact import format and provenance/configuration rejection rules.
+- Source or generate the initial 9-max no-rake 2 BB library without substituting six-max, raked, or
+  tournament charts.
+- Continue M3/M4 promotion evaluation in parallel when representative standard NLH replays exist.
 
 ## Blockers
 

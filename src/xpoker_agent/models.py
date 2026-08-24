@@ -443,6 +443,20 @@ class WeightedRange(StrictModel):
     confidence: float = Field(ge=0, le=1)
     version: str
 
+    @model_validator(mode="after")
+    def validate_combinations(self) -> WeightedRange:
+        from xpoker_agent.ranges.cards import split_combo, validate_card  # noqa: PLC0415
+
+        blockers = [validate_card(card) for card in self.blocked_cards]
+        if len(blockers) != len(set(blockers)):
+            raise ValueError("blocked cards must be unique")
+        blocker_set = set(blockers)
+        for combo in self.combos:
+            cards = split_combo(combo)
+            if blocker_set.intersection(cards):
+                raise ValueError(f"range combo {combo} conflicts with a blocked card")
+        return self
+
 
 class StrategyMatch(StrictModel):
     schema_version: Literal["1.0"] = SCHEMA_VERSION
