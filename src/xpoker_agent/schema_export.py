@@ -19,6 +19,7 @@ from xpoker_agent.models import (
     StrategyMatch,
     WeightedRange,
 )
+from xpoker_agent.ranges.library import RangeArtifact
 
 MODELS = [
     GameConfig,
@@ -30,6 +31,7 @@ MODELS = [
     HandEvent,
     HandState,
     WeightedRange,
+    RangeArtifact,
     StrategyMatch,
     DecisionEnvelope,
     ActionAttempt,

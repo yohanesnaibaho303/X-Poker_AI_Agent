@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0",
+  "library_id": "xpoker-9max-nlh-no-rake-2bb-v1",
+  "configuration": {
+    "variant": "NLH",
+    "format": "cash",
+    "seats": 9,
+    "rake_percent": 0,
+    "default_open_size_bb": 2.0,
+    "objective": "chip_ev",
+    "stack_buckets_bb": [20, 40, 50, 75, 100, 150, 200]
+  },
+  "status": "awaiting_validated_strategy_artifacts",
+  "artifacts": [],
+  "notes": [
+    "No incompatible six-max, heads-up, raked, tournament, or non-2-BB ranges are substituted.",
+    "Artifacts require validated solver output, an authorized export, or a validated licensed chart."
+  ]
+}

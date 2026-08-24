@@ -82,7 +82,7 @@ Exit: at least 98% of supported recorded hands reconstruct correctly, with unsup
 
 - [x] Implement canonical 1,326-combination representation and 169-class projection.
 - [x] Implement weights, action frequencies, normalization, blockers, and filtering.
-- [ ] Implement position/action/sizing-based range updates.
+- [x] Implement position/action/sizing-based range updates.
 - [x] Implement five- and seven-card evaluation with exhaustive tests.
 - [x] Implement exact and seeded Monte Carlo equity, including multiway.
 - [x] Implement pot odds, EV, fold equity, SPR, MDF, and side-pot calculations.

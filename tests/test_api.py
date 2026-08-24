@@ -52,7 +52,7 @@ def test_capture_status_is_xpoker_only_and_inactive(monkeypatch) -> None:
 
 def test_research_sources_are_inspectable() -> None:
     result = research_sources()
-    assert result["count"] == 12
+    assert result["count"] == 13
     assert len(result["content_sha256"]) == 64
 
 

@@ -19,8 +19,12 @@
   and explicit exact-state limits.
 - Added Decimal effective-stack, pot-odds, call-EV, SPR, MDF, bluff-frequency, and bet-EV metrics.
 - Added versioned exact/nearest/interpolated stack-bucket matching with visible mismatch.
+- Added strict range artifacts and canonical position/action/sizing spot keys. Imports reject wrong
+  seats, rake, open size, stack bucket, missing validation, duplicate spots, or missing provenance.
+- Audited public solver candidates; available MIT material was heads-up or otherwise incompatible.
+  The versioned 9-max library manifest is intentionally empty rather than seeded with false GTO data.
 - No strategy frequencies were invented or imported. Control remains disabled.
-- Current full suite: Ruff passed; 142 Pytest/Hypothesis tests passed.
+- Current full suite: Ruff passed; 149 Pytest/Hypothesis tests passed.
 
 ## Completed project checkpoints
 
@@ -30,10 +34,9 @@
 
 ## Next
 
-- Implement versioned position/action/sizing spot keys and deterministic range-update routing.
-- Define the validated range-artifact import format and provenance/configuration rejection rules.
-- Source or generate the initial 9-max no-rake 2 BB library without substituting six-max, raked, or
-  tournament charts.
+- Source or independently generate the initial 9-max no-rake 2 BB library without substituting
+  heads-up, six-max, raked, tournament, or differently sized charts.
+- Expand range lookup/equity performance reports and connect pot-layer settlement calculations.
 - Continue M3/M4 promotion evaluation in parallel when representative standard NLH replays exist.
 
 ## Blockers

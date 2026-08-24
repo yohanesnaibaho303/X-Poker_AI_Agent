@@ -12,6 +12,7 @@ from xpoker_agent.ranges.cards import (
     split_combo,
     validate_card,
 )
+from xpoker_agent.ranges.library import ObservedRangeAction
 
 
 def uniform_range(
@@ -89,6 +90,12 @@ def condition_on_action(weighted_range: WeightedRange, action: str) -> WeightedR
         if posterior_mass[combo] > 0
     }
     return weighted_range.model_copy(deep=True, update={"combos": combos})
+
+
+def condition_on_observed_action(
+    weighted_range: WeightedRange, action: ObservedRangeAction
+) -> WeightedRange:
+    return condition_on_action(weighted_range, action.key())
 
 
 def aggregate_classes(

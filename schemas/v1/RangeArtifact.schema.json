@@ -1,0 +1,268 @@
+{
+  "$defs": {
+    "ComboStrategy": {
+      "additionalProperties": false,
+      "properties": {
+        "weight": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Weight",
+          "type": "number"
+        },
+        "actions": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "title": "Actions",
+          "type": "object"
+        },
+        "equity": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Equity"
+        },
+        "ev_bb": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "title": "Ev Bb",
+          "type": "object"
+        }
+      },
+      "required": [
+        "weight"
+      ],
+      "title": "ComboStrategy",
+      "type": "object"
+    },
+    "ObservedRangeAction": {
+      "additionalProperties": false,
+      "properties": {
+        "actor_position": {
+          "$ref": "#/$defs/Position"
+        },
+        "type": {
+          "enum": [
+            "fold",
+            "check",
+            "call",
+            "bet",
+            "raise",
+            "all_in"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "size_bb": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Size Bb"
+        }
+      },
+      "required": [
+        "actor_position",
+        "type"
+      ],
+      "title": "ObservedRangeAction",
+      "type": "object"
+    },
+    "Position": {
+      "enum": [
+        "UTG",
+        "UTG+1",
+        "MP",
+        "LJ",
+        "HJ",
+        "CO",
+        "BTN",
+        "SB",
+        "BB"
+      ],
+      "title": "Position",
+      "type": "string"
+    },
+    "PreflopSpotKey": {
+      "additionalProperties": false,
+      "properties": {
+        "variant": {
+          "const": "NLH",
+          "default": "NLH",
+          "title": "Variant",
+          "type": "string"
+        },
+        "format": {
+          "const": "cash",
+          "default": "cash",
+          "title": "Format",
+          "type": "string"
+        },
+        "seats": {
+          "const": 9,
+          "default": 9,
+          "title": "Seats",
+          "type": "integer"
+        },
+        "rake_percent": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "default": "0",
+          "title": "Rake Percent"
+        },
+        "default_open_size_bb": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "default": "2",
+          "title": "Default Open Size Bb"
+        },
+        "stack_depth_bb": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "title": "Stack Depth Bb"
+        },
+        "player_position": {
+          "$ref": "#/$defs/Position"
+        },
+        "players_remaining": {
+          "maximum": 9,
+          "minimum": 2,
+          "title": "Players Remaining",
+          "type": "integer"
+        },
+        "action_sequence": {
+          "items": {
+            "$ref": "#/$defs/ObservedRangeAction"
+          },
+          "title": "Action Sequence",
+          "type": "array"
+        }
+      },
+      "required": [
+        "stack_depth_bb",
+        "player_position",
+        "players_remaining"
+      ],
+      "title": "PreflopSpotKey",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "artifact_id": {
+      "format": "uuid",
+      "title": "Artifact Id",
+      "type": "string"
+    },
+    "title": {
+      "title": "Title",
+      "type": "string"
+    },
+    "spot": {
+      "$ref": "#/$defs/PreflopSpotKey"
+    },
+    "combos": {
+      "additionalProperties": {
+        "$ref": "#/$defs/ComboStrategy"
+      },
+      "title": "Combos",
+      "type": "object"
+    },
+    "source_id": {
+      "format": "uuid",
+      "title": "Source Id",
+      "type": "string"
+    },
+    "source_url": {
+      "title": "Source Url",
+      "type": "string"
+    },
+    "source_license": {
+      "title": "Source License",
+      "type": "string"
+    },
+    "fact_class": {
+      "enum": [
+        "solver_derived",
+        "validated_manual_chart"
+      ],
+      "title": "Fact Class",
+      "type": "string"
+    },
+    "validation_status": {
+      "enum": [
+        "validated",
+        "unvalidated"
+      ],
+      "title": "Validation Status",
+      "type": "string"
+    },
+    "assumptions": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Assumptions",
+      "type": "array"
+    },
+    "version": {
+      "title": "Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "artifact_id",
+    "title",
+    "spot",
+    "combos",
+    "source_id",
+    "source_url",
+    "source_license",
+    "fact_class",
+    "validation_status",
+    "version"
+  ],
+  "title": "RangeArtifact",
+  "type": "object"
+}

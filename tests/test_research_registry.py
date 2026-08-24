@@ -4,10 +4,10 @@ from xpoker_agent.research.registry import SourceRegistry
 def test_initial_source_registry_is_valid_and_unique() -> None:
     registry = SourceRegistry.load()
 
-    assert len(registry.records) == 12
+    assert len(registry.records) == 13
     assert len(registry.content_sha256) == 64
-    assert len({record.source_id for record in registry.records}) == 12
-    assert len({record.url for record in registry.records}) == 12
+    assert len({record.source_id for record in registry.records}) == 13
+    assert len({record.url for record in registry.records}) == 13
 
 
 def test_required_license_boundaries_are_encoded() -> None:
@@ -26,4 +26,8 @@ def test_repository_sources_are_queryable() -> None:
     registry = SourceRegistry.load()
     repositories = registry.by_type("source_repository")
 
-    assert {record.title for record in repositories} == {"PokerGPT", "dickreuter/Poker"}
+    assert {record.title for record in repositories} == {
+        "PokerGPT",
+        "amaster97/poker_solver",
+        "dickreuter/Poker",
+    }

@@ -55,8 +55,17 @@ duplicate rejection, and best-five selection from seven cards.
 
 ## Remaining M5 work
 
-- Versioned position/action/sizing spot keys and range-update routing.
 - Validated, properly sourced 9-max no-rake 2 BB preflop range artifacts.
-- Range-library lookup determinism and mismatch reports.
 - Larger equity performance/calibration reports and side-pot equity settlement integration.
 
+## Strategy-source audit
+
+The strict range-artifact schema now encodes variant, format, seat count, rake, 2 BB open size,
+position, players remaining, stack depth, complete sized action sequence, exact combo strategies,
+validation status, license, provenance, assumptions, and version. Exact lookup is preferred; nearest
+stack lookup returns quantitative mismatch rather than silently substituting.
+
+Public solver research found MIT-licensed heads-up engines with useful deterministic architecture and
+HU blueprints, including `amaster97/poker_solver`, but not a validated nine-max, zero-rake, 2 BB
+artifact set matching the project. The versioned library manifest therefore remains explicitly empty.
+No HU, six-max, raked, tournament, 2.5 BB, or simplified chart has been mislabeled as authoritative.
