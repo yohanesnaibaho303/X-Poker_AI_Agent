@@ -172,6 +172,7 @@ function RangeGrid({ matrix, loading }: { matrix: RangeMatrix | null; loading: b
 function CapturePreview({ diagnostic, nonce }: { diagnostic: LiveCaptureDiagnostic; nonce: number }) {
   const occupiedSeats = diagnostic.seat_observations.filter((seat) => seat.status === "occupied").length;
   const ambiguousSeats = diagnostic.seat_observations.filter((seat) => seat.status === "ambiguous").length;
+  const stackCandidates = diagnostic.seat_panels.filter((seat) => seat.stack_native !== null).length;
   return (
     <section className="panel capture-panel">
       <div className="panel-heading compact">
@@ -204,6 +205,10 @@ function CapturePreview({ diagnostic, nonce }: { diagnostic: LiveCaptureDiagnost
       <div className="capture-facts">
         <span>Board <strong>{diagnostic.board_card_slots} cards · {diagnostic.board_rows} row</strong></span>
         <span>Geometry <strong>{diagnostic.board_geometry_supported ? "Supported" : "Quarantined"}</strong></span>
+      </div>
+      <div className="capture-facts">
+        <span>Stack candidates <strong>{stackCandidates}/{occupiedSeats}</strong></span>
+        <span>Acceptance <strong>Temporal gate pending</strong></span>
       </div>
       <p className={`mode-copy ${diagnostic.current_hand_supported ? "supported" : "quarantined"}`}>
         {diagnostic.mode_reason}

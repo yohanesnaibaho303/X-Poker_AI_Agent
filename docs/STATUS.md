@@ -74,7 +74,13 @@
   regression prevents rank-like shapes inside a card from becoming a false sixth card; the live
   active Bomb Pot frame now resolves as one row with five card surfaces while its mode remains
   quarantined because the loop began after forced contributions.
-- Current full suite: Ruff passed; 234 Pytest/Hypothesis tests, 11 TypeScript tests, and the
+- Added privacy-scoped seat-panel OCR. Empty seats bypass OCR; raw player names/text are never
+  retained; only a text hash and structured `Break`/stack candidates leave the adapter. Every
+  numeric stack remains unaccepted until temporal and accounting gates agree.
+- Validated the candidate path on the authorized active nine-max layout: the observer remained
+  target-stable with zero capture failures and extracted multiple stack candidates while refusing
+  unclear panels. This is calibration evidence, not an OCR-accuracy promotion.
+- Current full suite: Ruff passed; 238 Pytest/Hypothesis tests, 11 TypeScript tests, and the
   production dashboard build passed. Table control remains disabled.
 
 ## Completed project checkpoints
@@ -117,7 +123,7 @@
 - The currently authorized spectated table is usable for capture/OCR calibration. Its positive
   Bomb Pot countdown does not quarantine intervening standard NLH hands; active-hand promotion
   still requires a recorded temporal sequence proving the contribution and board transitions.
-- Nine-max perception promotion additionally needs representative nine-max visual evidence; this
-  does not block six-max calibration or shared-engine development.
+- Nine-max visual evidence is now available from the authorized running table. Promotion still
+  requires labeled/temporally validated complete-hand evidence across all seats and action states.
 
 This file is updated at meaningful checkpoints. The detailed checklist remains in `docs/MILESTONES.md`.

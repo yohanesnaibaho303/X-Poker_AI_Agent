@@ -10,8 +10,13 @@ from xpoker_agent.capture.models import CaptureFrameRecord, LayoutProfile
 from xpoker_agent.capture.profile import load_target_profile
 from xpoker_agent.capture.recording import capture_authorized_frame
 from xpoker_agent.vision.cards import classify_board_geometry, detect_card_slots
-from xpoker_agent.vision.models import LiveCaptureDiagnostic, WindowsOcrResult
-from xpoker_agent.vision.primitives import crop_layout_region
+from xpoker_agent.vision.models import (
+    LiveCaptureDiagnostic,
+    SeatOccupancyObservation,
+    WindowsOcrResult,
+)
+from xpoker_agent.vision.panels import parse_seat_panel
+from xpoker_agent.vision.primitives import crop_frame, crop_layout_region, normalized_box
 from xpoker_agent.vision.rules import classify_rule_label
 from xpoker_agent.vision.seats import classify_seat_occupancy
 from xpoker_agent.vision.windows_ocr import recognize_text
@@ -24,6 +29,8 @@ def build_live_capture_diagnostic(
     layout: LayoutProfile,
     rule_ocr: WindowsOcrResult,
     pot_ocr: WindowsOcrResult,
+    seat_observations: list[SeatOccupancyObservation] | None = None,
+    panel_ocr: dict[int, WindowsOcrResult] | None = None,
 ) -> LiveCaptureDiagnostic:
     classification = classify_rule_label(rule_ocr.text)
     current_hand_mode = (
@@ -51,7 +58,12 @@ def build_live_capture_diagnostic(
             for calibration in layout.seat_anchors
         }
     )
-    seat_observations = classify_seat_occupancy(frame, layout)
+    seat_observations = seat_observations or classify_seat_occupancy(frame, layout)
+    panel_ocr = panel_ocr or {}
+    seat_panels = []
+    for observation in seat_observations:
+        result = panel_ocr.get(observation.seat)
+        seat_panels.append(parse_seat_panel(observation, result.text if result else None))
     board_geometry = classify_board_geometry(
         detect_card_slots(crop_layout_region(frame, layout, "board"))
     )
@@ -65,7 +77,11 @@ def build_live_capture_diagnostic(
         frame_height=frame.height,
         target_fingerprint=record.target_fingerprint,
         capture_latency_ms=record.capture_latency_ms,
-        ocr_latency_ms=rule_ocr.processing_latency_ms + pot_ocr.processing_latency_ms,
+        ocr_latency_ms=(
+            rule_ocr.processing_latency_ms
+            + pot_ocr.processing_latency_ms
+            + sum(result.processing_latency_ms for result in panel_ocr.values())
+        ),
         visual_role_confidence=record.visual_role_confidence,
         current_hand_supported=(
             classification.supported_standard_nlh
@@ -90,6 +106,7 @@ def build_live_capture_diagnostic(
         board_geometry_reasons=board_geometry.reasons,
         regions=visible_regions,
         seat_observations=seat_observations,
+        seat_panels=seat_panels,
     )
 
 
@@ -99,12 +116,28 @@ async def diagnose_authorized_table(
     profile = load_target_profile()
     layout = load_layout_profile(table_size=table_size)
     frame, record = capture_authorized_frame(sequence, profile, layout)
+    seat_observations = classify_seat_occupancy(frame, layout)
     rule_crop = crop_layout_region(frame, layout, "rule_label")
     pot_crop = crop_layout_region(frame, layout, "pot")
-    rule_ocr, pot_ocr = await asyncio.gather(
+    panel_seats = [
+        observation.seat
+        for observation in seat_observations
+        if observation.status != "empty"
+    ]
+    panel_crops = [
+        crop_frame(
+            frame,
+            normalized_box(frame, layout.seat_anchors[seat].player_panel_region),
+        )
+        for seat in panel_seats
+    ]
+    results = await asyncio.gather(
         recognize_text(rule_crop),
         recognize_text(pot_crop),
+        *(recognize_text(crop) for crop in panel_crops),
     )
+    rule_ocr, pot_ocr, *panel_results = results
+    panel_ocr = dict(zip(panel_seats, panel_results, strict=True))
     return (
         build_live_capture_diagnostic(
             frame=frame,
@@ -112,6 +145,8 @@ async def diagnose_authorized_table(
             layout=layout,
             rule_ocr=rule_ocr,
             pot_ocr=pot_ocr,
+            seat_observations=seat_observations,
+            panel_ocr=panel_ocr,
         ),
         frame,
     )

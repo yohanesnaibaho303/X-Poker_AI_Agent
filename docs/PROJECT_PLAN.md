@@ -711,6 +711,12 @@ seat occupancy, single-board geometry, and non-ambiguous temporal consensus. Amb
 can never become accepted consensus. This diagnostic loop does not yet emit betting actions or
 completed hands.
 
+Seat-panel OCR is now connected as a privacy-scoped candidate channel. Empty seats skip OCR, raw
+panel text and player names are not retained, and only hashed evidence plus structured player-state
+and native-stack candidates cross the adapter boundary. A single numeric observation is never
+accepted; temporal stability, stack movement, pot accounting, and hand-state legality remain
+required before it can update canonical state.
+
 ### Milestone 9 — Authorized control
 
 - Add action-target mapping and calibration.

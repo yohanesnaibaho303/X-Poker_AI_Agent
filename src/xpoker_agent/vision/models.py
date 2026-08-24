@@ -121,6 +121,17 @@ class SeatOccupancyObservation(StrictModel):
     plus_vertical_pixels: int = Field(ge=0)
 
 
+class SeatPanelObservation(StrictModel):
+    seat: int = Field(ge=0, le=8)
+    status: Literal["empty", "seated", "on_break", "ambiguous"]
+    stack_native: Decimal | None = Field(default=None, ge=0)
+    stack_token: str | None = None
+    confidence: float = Field(ge=0.0, le=1.0)
+    accepted: Literal[False] = False
+    ocr_text_sha256: str | None = Field(default=None, min_length=64, max_length=64)
+    reason: str
+
+
 class LiveCaptureDiagnostic(StrictModel):
     schema_version: Literal["1.0"] = "1.0"
     captured_at: datetime
@@ -154,6 +165,7 @@ class LiveCaptureDiagnostic(StrictModel):
     board_geometry_reasons: list[str] = Field(default_factory=list)
     regions: dict[str, tuple[float, float, float, float]]
     seat_observations: list[SeatOccupancyObservation] = Field(default_factory=list)
+    seat_panels: list[SeatPanelObservation] = Field(default_factory=list)
 
 
 class LiveObservationStartRequest(StrictModel):

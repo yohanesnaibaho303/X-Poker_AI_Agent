@@ -160,6 +160,16 @@ export interface LiveCaptureDiagnostic {
     plus_horizontal_pixels: number;
     plus_vertical_pixels: number;
   }>;
+  seat_panels: Array<{
+    seat: number;
+    status: "empty" | "seated" | "on_break" | "ambiguous";
+    stack_native: string | null;
+    stack_token: string | null;
+    confidence: number;
+    accepted: false;
+    ocr_text_sha256: string | null;
+    reason: string;
+  }>;
 }
 
 export interface LiveObservationStatus {

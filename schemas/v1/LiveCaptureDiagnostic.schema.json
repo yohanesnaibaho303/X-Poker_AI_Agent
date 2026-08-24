@@ -51,6 +51,93 @@
       ],
       "title": "SeatOccupancyObservation",
       "type": "object"
+    },
+    "SeatPanelObservation": {
+      "additionalProperties": false,
+      "properties": {
+        "seat": {
+          "maximum": 8,
+          "minimum": 0,
+          "title": "Seat",
+          "type": "integer"
+        },
+        "status": {
+          "enum": [
+            "empty",
+            "seated",
+            "on_break",
+            "ambiguous"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "stack_native": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Stack Native"
+        },
+        "stack_token": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Stack Token"
+        },
+        "confidence": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "accepted": {
+          "const": false,
+          "default": false,
+          "title": "Accepted",
+          "type": "boolean"
+        },
+        "ocr_text_sha256": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "minLength": 64,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ocr Text Sha256"
+        },
+        "reason": {
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "seat",
+        "status",
+        "confidence",
+        "reason"
+      ],
+      "title": "SeatPanelObservation",
+      "type": "object"
     }
   },
   "additionalProperties": false,
@@ -271,6 +358,13 @@
         "$ref": "#/$defs/SeatOccupancyObservation"
       },
       "title": "Seat Observations",
+      "type": "array"
+    },
+    "seat_panels": {
+      "items": {
+        "$ref": "#/$defs/SeatPanelObservation"
+      },
+      "title": "Seat Panels",
       "type": "array"
     }
   },
