@@ -66,9 +66,9 @@ Exit: supported-layout recognition meets the per-component targets in `docs/QUAL
 
 ## Milestone 4 — Complete hand reconstruction
 
-- [ ] Implement separate table lifecycle, street, seat-participation, and betting-action models.
-- [ ] Implement categorized reconstruction events and an append-only event store.
-- [ ] Implement the NLH state reducer and street/action ordering.
+- [x] Implement separate table lifecycle, street, seat-participation, and betting-action models.
+- [x] Implement categorized reconstruction events and an append-only event store.
+- [x] Implement the NLH state reducer and street/action ordering.
 - [ ] Validate unique cards, blinds, calls, raises, all-ins, and side pots.
 - [ ] Reconcile stack, bet, pot, and award accounting.
 - [ ] Handle heads-up and multiway play within the nine-seat layout.

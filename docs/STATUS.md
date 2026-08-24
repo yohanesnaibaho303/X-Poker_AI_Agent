@@ -1,32 +1,26 @@
 # Build Status
 
 - Last updated: 2026-08-24 (Asia/Jakarta)
-- Current milestone: Milestone 3 — Visual recognition MVP
+- Current milestone: Milestone 4 — Complete hand reconstruction (M3 promotion still pending)
 - Overall project: 3 of 11 milestones complete
-- Current state: Milestone 2 complete; Milestone 3 vision-foundation checkpoint in progress
+- Current state: Milestone 4 deterministic reconstruction checkpoint in progress; Milestone 3
+  held-out accuracy gates remain pending
 - Live control: Disabled
 
 ## Latest checkpoint
 
-- Added dependency-free, declared-region BGRA crops and deterministic image primitives.
-- Added card-surface geometry with board-row grouping and rejection of multiple board rows or more
-  than five visible board slots.
-- Added strict chip-amount parsing for integer, grouped, decimal, and compact `K`/`M` formats;
-  ambiguous or malformed values fail closed.
-- Added impossible duplicate-card rejection and content-hash-deduplicated temporal consensus.
-- Added the sub-1-MB Windows Media OCR binding set as a provisional, local-only candidate. The first
-  private five-frame replay ran at 16.1 ms median per rule-label crop and retained the distinctive
-  Bomb Pot schedule despite damaged small glyphs.
-- Numeric probing was fast but not stable across crop/scale variants (`81,500`, `815500`, and
-  `813500`); Windows OCR is not promoted for amounts, and the strict parser prevents accepting those
-  label-bearing exploratory outputs.
-- Registered both user-supplied X-Poker YouTube Shorts with metadata-only provenance; playback was
-  unavailable, so no unreviewed visual claims or assets were recorded.
-- Audited the five-frame private replay: rule-label classification now rejects its Bomb Pot
-  configuration at 0.93 confidence; unknown labels cannot establish standard NLH support.
-- Synthetic 200×200 multi-board geometry sample: 36.041 ms median and 37.765 ms p95 over 20 runs.
-- Raw live frames remain ignored. Control remains disabled.
-- Current full suite: Ruff passed; 83 Pytest/Hypothesis tests passed.
+- Added a SQLite append-only canonical event store with per-hand SHA-256 chains, sequence/event
+  uniqueness, canonical JSON round-trip, and database triggers that reject mutation and deletion.
+- Exact stored-event replay reproduces the deterministic hand's final state.
+- Enforced dealer-before-blinds, exact commitment totals, legal check/call/bet/raise/all-in shapes,
+  minimum full raises, and short all-in behavior.
+- Added explicit next-to-act tracking, out-of-turn rejection, betting-round closure, and guarded
+  street advancement.
+- Added full-state chip conservation and physical-card uniqueness across every observed seat and
+  board.
+- M3 remains fail closed: no recognition output can enter this reducer until its confidence and
+  validation boundary passes. Raw live frames remain ignored and control remains disabled.
+- Current full suite: Ruff passed; 93 Pytest/Hypothesis tests passed.
 
 ## Completed project checkpoints
 
@@ -36,15 +30,16 @@
 
 ## Next
 
-- Define and extract privacy-safe X-Poker crops for cards, amounts, seats, controls, and rule labels.
-- Benchmark lightweight template recognition against Windows OCR on numeric and card crops.
-- Expand Bomb Pot/rule-label rejection tests beyond the first private calibration replay.
-- Continue seat, hero, dealer, occupancy, action, and sizing-control detectors.
+- Implement deterministic side-pot construction, eligibility, split awards, and accounting.
+- Handle cumulative short-raise reopening and heads-up blind/action-order exceptions.
+- Add hand-boundary/dealer movement validation, ambiguity quarantine, and canonical hand-history
+  export.
+- Continue the M3 held-out recognition work in parallel; M4 live evaluation remains blocked on it.
 
 ## Blockers
 
 - No blocker for continued offline/synthetic development.
-- Accuracy-gate evaluation needs representative standard NLH table states later; the user does not
-  need nine devices and can provide a populated club table as spectator when available.
+- M3/M4 promotion needs representative complete standard NLH hands later; the user does not need
+  nine devices and can provide a populated club table as spectator when available.
 
 This file is updated at meaningful checkpoints. The detailed checklist remains in `docs/MILESTONES.md`.

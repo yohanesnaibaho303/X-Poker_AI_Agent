@@ -1,0 +1,41 @@
+# Milestone 4 Reconstruction Checkpoint
+
+## Scope
+
+This is the first Milestone 4 implementation checkpoint. It is developed behind disabled control
+while Milestone 3 recognition accuracy remains unpromoted. Inputs are canonical validated events
+from deterministic fixtures, not raw live OCR output.
+
+## Implemented invariants
+
+- SQLite event storage is append-only through database `UPDATE` and `DELETE` rejection triggers.
+- Events are unique by event ID and hand sequence and form a per-hand SHA-256 chain over canonical
+  JSON payloads.
+- Stored events round-trip to strict `HandEvent` models and replay to byte-equivalent final state.
+- Dealer assignment must precede blinds and must reference an occupied seat.
+- Every chip commitment includes both added chips and resulting street commitment; the two must
+  reconcile exactly.
+- Checks while facing a wager, calls that do not match, bets into an existing wager, raises without
+  an existing wager, sub-minimum non-all-in raises, and stack-exhausting non-all-in actions fail.
+- Short all-in raises are represented without lowering the full-raise increment.
+- The reducer tracks the next actionable seat, rejects out-of-turn actions, and prevents street
+  advancement before the betting round closes.
+- Known physical cards are unique across every observed seat and board.
+- Player stacks plus reconstructed pot must equal the initial table-chip total after every event.
+
+## Verification
+
+- Full project suite: 93 Pytest/Hypothesis tests.
+- Deterministic simulated hand: 14 canonical events, 15 states, exact replay equivalence.
+- Event-store tests cover round-trip, hash-chain verification, non-contiguous sequence rejection,
+  and database mutation rejection.
+- Property testing covers blind posting and chip conservation over generated amounts.
+
+## Not yet complete
+
+- Side-pot eligibility, construction, split awards, and odd-chip rules.
+- Cumulative short-raise reopening rules and all heads-up blind/order exceptions.
+- Hand-boundary detection and dealer/blind movement across distinct hands.
+- Observation-to-event inference, ambiguity quarantine, evidence bundles, and canonical text export.
+- Recorded complete-hand evaluation and the 98% exact reconstruction gate.
+

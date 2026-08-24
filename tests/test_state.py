@@ -66,6 +66,15 @@ def test_hand_cannot_complete_with_unawarded_pot(initial_state) -> None:
         state,
         make_event(
             2,
+            EventCategory.DEALING,
+            "dealer_assigned",
+            dealer_seat=6,
+        ),
+    )
+    state = reducer.apply(
+        state,
+        make_event(
+            3,
             EventCategory.FORCED_WAGER,
             "blind_posted",
             actor_seat=8,
@@ -75,7 +84,7 @@ def test_hand_cannot_complete_with_unawarded_pot(initial_state) -> None:
     )
 
     with pytest.raises(StateTransitionError, match="fully awarded"):
-        reducer.apply(state, make_event(3, EventCategory.LIFECYCLE, "hand_completed"))
+        reducer.apply(state, make_event(4, EventCategory.LIFECYCLE, "hand_completed"))
 
 
 @given(st.integers(min_value=1, max_value=10_000))
@@ -84,12 +93,22 @@ def test_posted_blind_conserves_chips(units: int) -> None:
     amount = Decimal(units) / Decimal("100")
     initial_state.seats[8].stack_bb = amount
     initial_state.seats[8].starting_stack_bb = amount
+    initial_state.initial_total_chips_bb = amount + Decimal("200")
     reducer = HandStateReducer()
     state = reducer.apply(initial_state, make_event(1, EventCategory.LIFECYCLE, "hand_started"))
     state = reducer.apply(
         state,
         make_event(
             2,
+            EventCategory.DEALING,
+            "dealer_assigned",
+            dealer_seat=6,
+        ),
+    )
+    state = reducer.apply(
+        state,
+        make_event(
+            3,
             EventCategory.FORCED_WAGER,
             "blind_posted",
             actor_seat=8,

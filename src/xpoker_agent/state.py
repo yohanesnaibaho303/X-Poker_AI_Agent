@@ -55,6 +55,7 @@ def create_initial_state(
         hero_seat=hero_seat,
         hero_position=positions.get(hero_seat),
         seats=seats,
+        initial_total_chips_bb=sum(occupied_stacks_bb.values(), start=Decimal("0")),
     )
 
 
@@ -94,22 +95,30 @@ class HandStateReducer:
 
     def _on_hand_started(self, state: HandState, event: HandEvent) -> None:
         del event
-        if state.table_status not in {TableStatus.WAITING_FOR_HAND, TableStatus.HAND_COMPLETE}:
-            raise StateTransitionError("hand can start only while waiting or after completion")
+        if state.table_status is not TableStatus.WAITING_FOR_HAND:
+            raise StateTransitionError("a hand can start only from its fresh waiting state")
         state.table_status = TableStatus.IN_HAND
         state.street = Street.PREFLOP
         state.board = []
         state.hero_cards = []
         state.pot_main_bb = Decimal("0")
+        state.current_bet_bb = Decimal("0")
+        state.minimum_raise_increment_bb = Decimal("0")
+        state.last_aggressor_seat = None
+        state.next_to_act_seat = None
+        state.acted_seats = []
         for seat in state.seats:
             if seat.participation is ParticipationStatus.SEATED:
                 seat.participation = ParticipationStatus.ACTIVE
 
     def _on_dealer_assigned(self, state: HandState, event: HandEvent) -> None:
         self._require_in_hand(state)
+        dealer = self._seat(state, event.dealer_seat)
+        if dealer.participation is ParticipationStatus.EMPTY:
+            raise StateTransitionError("dealer must be assigned to an occupied seat")
         state.dealer_seat = event.dealer_seat
 
-    def _debit(self, state: HandState, event: HandEvent) -> None:
+    def _debit(self, state: HandState, event: HandEvent) -> tuple[SeatState, Decimal]:
         self._require_in_hand(state)
         if event.street is not state.street:
             raise StateTransitionError("chip commitment street does not match current state")
@@ -119,6 +128,11 @@ class HandStateReducer:
         if event.amount is None:
             raise StateTransitionError("chip commitment requires an amount")
         added = event.amount.added_bb
+        committed = seat.committed_by_street_bb.get(state.street, Decimal("0"))
+        if event.amount.to_bb is None:
+            raise StateTransitionError("chip commitment requires the resulting total amount")
+        if event.amount.to_bb != committed + added:
+            raise StateTransitionError("added amount does not match resulting street commitment")
         if added > seat.stack_bb:
             raise StateTransitionError("chip commitment exceeds remaining stack")
         seat.stack_bb -= added
@@ -126,11 +140,21 @@ class HandStateReducer:
             seat.committed_by_street_bb.get(state.street, Decimal("0")) + added
         )
         state.pot_main_bb += added
+        return seat, committed + added
 
     def _on_blind_posted(self, state: HandState, event: HandEvent) -> None:
         if state.street is not Street.PREFLOP:
             raise StateTransitionError("blinds can be posted only preflop")
-        self._debit(state, event)
+        if state.dealer_seat is None:
+            raise StateTransitionError("dealer must be assigned before blinds")
+        seat, resulting_total = self._debit(state, event)
+        state.current_bet_bb = max(state.current_bet_bb, resulting_total)
+        state.minimum_raise_increment_bb = max(
+            state.minimum_raise_increment_bb, resulting_total
+        )
+        if seat.stack_bb == 0:
+            seat.participation = ParticipationStatus.ALL_IN
+        state.next_to_act_seat = self._next_actionable_after(state, event.actor_seat)
 
     def _on_hole_cards_observed(self, state: HandState, event: HandEvent) -> None:
         self._require_in_hand(state)
@@ -143,6 +167,8 @@ class HandStateReducer:
 
     def _on_board_cards_observed(self, state: HandState, event: HandEvent) -> None:
         self._require_in_hand(state)
+        if state.next_to_act_seat is not None:
+            raise StateTransitionError("board cannot advance before the betting round closes")
         transition = {
             (Street.PREFLOP, 3): Street.FLOP,
             (Street.FLOP, 1): Street.TURN,
@@ -152,11 +178,17 @@ class HandStateReducer:
             raise StateTransitionError("illegal board-card count or street transition")
         if event.street is not transition:
             raise StateTransitionError("board event street does not match resulting street")
-        known = set(state.hero_cards + state.board)
+        known = set(state.board)
+        known.update(card for seat in state.seats for card in seat.cards)
         if known.intersection(event.cards):
             raise StateTransitionError("board cards duplicate known physical cards")
         state.board.extend(event.cards)
         state.street = transition
+        state.current_bet_bb = Decimal("0")
+        state.minimum_raise_increment_bb = Decimal("0")
+        state.last_aggressor_seat = None
+        state.acted_seats = []
+        state.next_to_act_seat = self._next_actionable_after(state, state.dealer_seat)
 
     def _betting_actor(self, state: HandState, event: HandEvent) -> SeatState:
         self._require_in_hand(state)
@@ -165,29 +197,116 @@ class HandStateReducer:
         seat = self._seat(state, event.actor_seat)
         if seat.participation is not ParticipationStatus.ACTIVE:
             raise StateTransitionError("betting action requires an active player")
+        if state.next_to_act_seat is None:
+            raise StateTransitionError("betting action is illegal after the round has closed")
+        if event.actor_seat != state.next_to_act_seat:
+            raise StateTransitionError(
+                f"out-of-turn action: expected seat {state.next_to_act_seat}, "
+                f"got seat {event.actor_seat}"
+            )
         return seat
+
+    @staticmethod
+    def _next_actionable_after(state: HandState, seat_number: int | None) -> int | None:
+        if seat_number is None:
+            return None
+        for offset in range(1, 10):
+            candidate = (seat_number + offset) % 9
+            if state.seats[candidate].participation is ParticipationStatus.ACTIVE:
+                return candidate
+        return None
+
+    def _advance_action(self, state: HandState, actor_seat: int, *, reset: bool = False) -> None:
+        state.acted_seats = [actor_seat] if reset else [*state.acted_seats, actor_seat]
+        state.acted_seats = list(dict.fromkeys(state.acted_seats))
+        actionable = [
+            seat
+            for seat in state.seats
+            if seat.participation is ParticipationStatus.ACTIVE
+        ]
+        round_closed = len(actionable) <= 1 or all(
+            seat.seat in state.acted_seats
+            and seat.committed_by_street_bb.get(state.street, Decimal("0"))
+            == state.current_bet_bb
+            for seat in actionable
+        )
+        state.next_to_act_seat = (
+            None if round_closed else self._next_actionable_after(state, actor_seat)
+        )
 
     def _on_fold(self, state: HandState, event: HandEvent) -> None:
         self._betting_actor(state, event).participation = ParticipationStatus.FOLDED
+        self._advance_action(state, event.actor_seat)
 
     def _on_check(self, state: HandState, event: HandEvent) -> None:
-        self._betting_actor(state, event)
+        seat = self._betting_actor(state, event)
+        committed = seat.committed_by_street_bb.get(state.street, Decimal("0"))
+        if committed != state.current_bet_bb:
+            raise StateTransitionError("cannot check while facing a wager")
+        self._advance_action(state, event.actor_seat)
 
     def _on_call(self, state: HandState, event: HandEvent) -> None:
-        self._debit(state, event)
+        seat = self._betting_actor(state, event)
+        committed = seat.committed_by_street_bb.get(state.street, Decimal("0"))
+        required = state.current_bet_bb - committed
+        if required <= 0:
+            raise StateTransitionError("call requires an outstanding wager")
+        if required >= seat.stack_bb:
+            raise StateTransitionError("stack-exhausting call must use the all_in action")
+        _, resulting_total = self._debit(state, event)
+        if resulting_total != state.current_bet_bb:
+            raise StateTransitionError("call must match the current wager")
+        self._advance_action(state, event.actor_seat)
 
     def _on_bet(self, state: HandState, event: HandEvent) -> None:
-        self._debit(state, event)
+        seat = self._betting_actor(state, event)
+        if state.current_bet_bb != 0:
+            raise StateTransitionError("bet is illegal when a wager already exists; use raise")
+        if event.amount is not None and event.amount.added_bb == seat.stack_bb:
+            raise StateTransitionError("stack-exhausting bet must use the all_in action")
+        _, resulting_total = self._debit(state, event)
+        state.current_bet_bb = resulting_total
+        state.minimum_raise_increment_bb = resulting_total
+        state.last_aggressor_seat = event.actor_seat
+        self._advance_action(state, event.actor_seat, reset=True)
 
     def _on_raise(self, state: HandState, event: HandEvent) -> None:
-        self._debit(state, event)
+        seat = self._betting_actor(state, event)
+        if state.current_bet_bb == 0:
+            raise StateTransitionError("raise requires an existing wager; use bet")
+        if event.amount is None or event.amount.to_bb is None:
+            raise StateTransitionError("raise requires a resulting total amount")
+        if event.amount.added_bb == seat.stack_bb:
+            raise StateTransitionError("stack-exhausting raise must use the all_in action")
+        increment = event.amount.to_bb - state.current_bet_bb
+        if increment < state.minimum_raise_increment_bb:
+            raise StateTransitionError("raise is smaller than the minimum full-raise increment")
+        _, resulting_total = self._debit(state, event)
+        if resulting_total <= state.current_bet_bb:
+            raise StateTransitionError("raise must exceed the current wager")
+        state.current_bet_bb = resulting_total
+        state.minimum_raise_increment_bb = increment
+        state.last_aggressor_seat = event.actor_seat
+        self._advance_action(state, event.actor_seat, reset=True)
 
     def _on_all_in(self, state: HandState, event: HandEvent) -> None:
         seat = self._betting_actor(state, event)
-        self._debit(state, event)
+        previous_bet = state.current_bet_bb
+        _, resulting_total = self._debit(state, event)
         if seat.stack_bb != 0:
             raise StateTransitionError("all-in action must commit the player's entire stack")
         seat.participation = ParticipationStatus.ALL_IN
+        if resulting_total > previous_bet:
+            increment = resulting_total - previous_bet
+            state.current_bet_bb = resulting_total
+            if previous_bet == 0 or increment >= state.minimum_raise_increment_bb:
+                state.minimum_raise_increment_bb = (
+                    resulting_total if previous_bet == 0 else increment
+                )
+                state.last_aggressor_seat = event.actor_seat
+                self._advance_action(state, event.actor_seat, reset=True)
+                return
+        self._advance_action(state, event.actor_seat)
 
     def _on_showdown_started(self, state: HandState, event: HandEvent) -> None:
         del event
@@ -204,6 +323,8 @@ class HandStateReducer:
         if award > state.pot_main_bb:
             raise StateTransitionError("pot award exceeds reconstructed pot")
         winner = self._seat(state, event.winner_seat)
+        if winner.participation is ParticipationStatus.EMPTY:
+            raise StateTransitionError("pot cannot be awarded to an empty seat")
         winner.stack_bb += award
         state.pot_main_bb -= award
 

@@ -260,6 +260,80 @@
       "default": "0",
       "title": "Pot Main Bb"
     },
+    "current_bet_bb": {
+      "anyOf": [
+        {
+          "minimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "default": "0",
+      "title": "Current Bet Bb"
+    },
+    "minimum_raise_increment_bb": {
+      "anyOf": [
+        {
+          "minimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "default": "0",
+      "title": "Minimum Raise Increment Bb"
+    },
+    "last_aggressor_seat": {
+      "anyOf": [
+        {
+          "maximum": 8,
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Last Aggressor Seat"
+    },
+    "next_to_act_seat": {
+      "anyOf": [
+        {
+          "maximum": 8,
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Next To Act Seat"
+    },
+    "acted_seats": {
+      "items": {
+        "type": "integer"
+      },
+      "title": "Acted Seats",
+      "type": "array"
+    },
+    "initial_total_chips_bb": {
+      "anyOf": [
+        {
+          "minimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "default": "0",
+      "title": "Initial Total Chips Bb"
+    },
     "available_actions": {
       "items": {
         "type": "string"

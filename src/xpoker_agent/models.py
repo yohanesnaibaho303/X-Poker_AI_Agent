@@ -331,6 +331,12 @@ class HandState(StrictModel):
     board: list[str] = Field(default_factory=list)
     seats: list[SeatState]
     pot_main_bb: Decimal = Field(default=Decimal("0"), ge=0)
+    current_bet_bb: Decimal = Field(default=Decimal("0"), ge=0)
+    minimum_raise_increment_bb: Decimal = Field(default=Decimal("0"), ge=0)
+    last_aggressor_seat: int | None = Field(default=None, ge=0, le=8)
+    next_to_act_seat: int | None = Field(default=None, ge=0, le=8)
+    acted_seats: list[int] = Field(default_factory=list)
+    initial_total_chips_bb: Decimal = Field(default=Decimal("0"), ge=0)
     available_actions: list[str] = Field(default_factory=list)
     event_ids: list[UUID] = Field(default_factory=list)
     validation: ValidationState = Field(default_factory=ValidationState)
@@ -352,6 +358,18 @@ class HandState(StrictModel):
         if self.street in expected_board and len(self.board) != expected_board[self.street]:
             expected = expected_board[self.street]
             raise ValueError(f"street {self.street} requires {expected} board cards")
+        if self.initial_total_chips_bb:
+            reconstructed_total = self.pot_main_bb + sum(
+                (seat.stack_bb for seat in self.seats), start=Decimal("0")
+            )
+            if reconstructed_total != self.initial_total_chips_bb:
+                raise ValueError(
+                    "chip conservation failed: stacks plus pot do not equal the initial total"
+                )
+        if len(self.acted_seats) != len(set(self.acted_seats)) or any(
+            seat < 0 or seat > 8 for seat in self.acted_seats
+        ):
+            raise ValueError("acted_seats must contain unique seat numbers from zero through eight")
         return self
 
 
