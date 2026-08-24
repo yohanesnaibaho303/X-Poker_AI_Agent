@@ -11,6 +11,7 @@ def test_first_xpoker_layout_profile_loads() -> None:
     assert layout.layout_id == "xpoker-windows-10-portrait-v1"
     assert (layout.canonical_width, layout.canonical_height) == (445, 800)
     assert layout.color_format == "BGRA8"
+    assert "rule_label" in layout.regions
     assert layout.anchors[0].detector == "horizontal_menu_lines"
 
 

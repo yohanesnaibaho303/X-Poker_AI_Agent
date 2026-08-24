@@ -52,7 +52,10 @@ The API binds only to `127.0.0.1:8765`. Interactive documentation is available l
 - Pytest and Hypothesis: unit and property-based testing.
 - Ruff: linting and import/style checks.
 
-No computer-vision, OCR, ML, solver, or browser-shell dependency is installed yet. Those selections require milestone-specific benchmarks.
+Milestone 3 adds small Windows-only Python projections for the operating system's local
+`Windows.Media.Ocr` engine. No Pillow, OpenCV, Tesseract, ONNX Runtime, ML model, solver, or
+browser-shell dependency is installed. The Windows OCR selection remains provisional until the
+X-Poker-specific held-out benchmark passes.
 
 ## Supported functionality
 
