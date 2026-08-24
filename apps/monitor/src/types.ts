@@ -119,3 +119,23 @@ export interface SessionPreview {
   ready_for_strategy: boolean;
   blocking_reason: string | null;
 }
+
+export interface LiveCaptureDiagnostic {
+  schema_version: "1.0";
+  captured_at: string;
+  layout_id: string;
+  frame_width: number;
+  frame_height: number;
+  target_fingerprint: string;
+  capture_latency_ms: number;
+  ocr_latency_ms: number;
+  visual_role_confidence: number;
+  standard_nlh_supported: boolean;
+  special_rule: "bomb_pot" | null;
+  rule_confidence: number;
+  quarantine_reason: string;
+  matched_signals: string[];
+  rule_text: string;
+  pot_text: string;
+  regions: Record<string, [number, number, number, number]>;
+}

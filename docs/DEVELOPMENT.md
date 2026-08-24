@@ -84,6 +84,8 @@ GTO solutions.
 - Synthetic 6-max/9-max monitoring replay with bounded WebSocket delivery, gap recovery, health,
   action history, replay scrubbing, deterministic pot odds/SPR, decision-gate inspection, range
   matrix inspection, latency/drop telemetry, synthetic soak coverage, and explicit control lockout.
+- One-shot authorized X-Poker capture diagnostics with in-memory/no-store frame delivery,
+  declared-region overlays, privacy-scoped rule/pot OCR, and special-rule quarantine.
 
 ## Current limitations
 
@@ -91,8 +93,9 @@ GTO solutions.
 - Visual recognition and reconstruction promotion still require held-out complete X-Poker replays.
 - Reference priors are approximate and low-confidence; no configuration-matched GTO data exists yet.
 - The exploit model is complete for synthetic profiles but is not connected to live reconstructed observations.
-- The monitoring dashboard currently consumes synthetic replays. Capture overlays, opponent-range
-  views, resolved strategy/math panels, and authorized complete-session soak evidence remain pending.
+- The monitoring dashboard currently reconstructs synthetic replays. Capture diagnostics are live,
+  but opponent-range views, resolved strategy/equity/EV panels, standard-NLH reconstruction input,
+  and authorized complete-session soak evidence remain pending.
 - No table input/control implementation exists. Control is disabled in configuration, schemas, and API responses.
 - The project license has not been selected; external-source boundaries are documented in ADR 0002.
 

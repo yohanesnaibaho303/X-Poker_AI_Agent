@@ -121,7 +121,7 @@ Exit: synthetic profiles produce stable, explainable, regression-tested adjustme
 - [x] Build the React/TypeScript shell and component design system.
 - [x] Add 6-max/9-max session selection and BB/native chip display controls.
 - [x] Stream schema-versioned snapshots and events over WebSockets.
-- [ ] Display capture overlays, confidence, state, action history, and health.
+- [x] Display capture overlays, confidence, state, action history, and health.
 - [ ] Display hero/opponent ranges and GTO/exploit frequencies.
 - [ ] Display equity, EV, pot odds, abstraction mismatch, assumptions, and sources.
 - [x] Add replay navigation and decision/audit inspection.
@@ -131,8 +131,10 @@ Checkpoint: synthetic 6-max and 9-max replays stream complete legal traces into 
 State, action history, confidence, health/latency, deterministic pot odds and SPR, the hero
 reference-prior matrix, explicit unavailable-GTO status, source assumptions, decision gates, and
 control lockout are visible. Scrubbing, snapshot recovery, bounded delivery, and a 20-session
-synthetic soak regression are implemented. The unchecked items require live capture/vision evidence,
-opponent ranges, and resolved strategy/equity/EV data.
+synthetic soak regression are implemented. The live diagnostic adds in-memory authorized capture,
+declared-region overlays, table-role confidence, and scoped OCR. The unchecked items require
+component-level recognition, opponent ranges, and resolved strategy/equity/EV data. Special X-Poker
+rules are quarantined instead of entering reconstruction.
 
 Exit: complete authorized sessions can be monitored without state corruption and with acceptable resource use.
 

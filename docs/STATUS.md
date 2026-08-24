@@ -55,7 +55,11 @@
   snapshot latency, and inspectable legality/strategy/control decision gates. Equity and EV remain
   explicitly unavailable without a validated opponent range.
 - Added a 20-session, 300-snapshot bounded-stream soak regression with exact drop telemetry.
-- Current full suite: Ruff passed; 217 Pytest/Hypothesis tests and 11 TypeScript tests passed.
+- Added authorized one-shot X-Poker capture diagnostics with an in-memory/no-store frame, five
+  declared-region overlays, 0.95 table-role confidence, and privacy-scoped rule/pot OCR.
+- The current spectated six-player table is configured for Bomb Pot. Live OCR repeatedly detects
+  its schedule and quarantines reconstruction at 0.93 confidence; no state or strategy is invented.
+- Current full suite: Ruff passed; 218 Pytest/Hypothesis tests and 11 TypeScript tests passed.
 
 ## Completed project checkpoints
 
@@ -76,6 +80,8 @@
 ## Next
 
 - Connect recorded/live capture, perception evidence, and reconstructed observations to the monitor.
+- Obtain a standard 6-max or 9-max cash NLH spectated table without a Bomb Pot schedule for the
+  supported hand-reconstruction and complete-session gate.
 - Add opponent-range, poker-math, exact/abstracted strategy, exploit-frequency, provenance, and
   decision-trace views as those upstream results become available.
 - Continue Milestone 6 solution import/resolution while keeping reference priors ineligible for exact-GTO results.
@@ -90,6 +96,8 @@
 - No blocker for continued offline/synthetic development.
 - M3/M4 promotion needs representative complete standard NLH hands later; the user does not need
   nine devices and can provide a populated club table as spectator when available.
+- The currently authorized spectated table is usable for capture/OCR calibration but is quarantined
+  from reconstruction because it has a scheduled Bomb Pot rule.
 - Nine-max perception promotion additionally needs representative nine-max visual evidence; this
   does not block six-max calibration or shared-engine development.
 

@@ -1,0 +1,135 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "captured_at": {
+      "format": "date-time",
+      "title": "Captured At",
+      "type": "string"
+    },
+    "layout_id": {
+      "title": "Layout Id",
+      "type": "string"
+    },
+    "frame_width": {
+      "exclusiveMinimum": 0,
+      "title": "Frame Width",
+      "type": "integer"
+    },
+    "frame_height": {
+      "exclusiveMinimum": 0,
+      "title": "Frame Height",
+      "type": "integer"
+    },
+    "target_fingerprint": {
+      "maxLength": 64,
+      "minLength": 64,
+      "title": "Target Fingerprint",
+      "type": "string"
+    },
+    "capture_latency_ms": {
+      "minimum": 0.0,
+      "title": "Capture Latency Ms",
+      "type": "number"
+    },
+    "ocr_latency_ms": {
+      "minimum": 0.0,
+      "title": "Ocr Latency Ms",
+      "type": "number"
+    },
+    "visual_role_confidence": {
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Visual Role Confidence",
+      "type": "number"
+    },
+    "standard_nlh_supported": {
+      "title": "Standard Nlh Supported",
+      "type": "boolean"
+    },
+    "special_rule": {
+      "anyOf": [
+        {
+          "const": "bomb_pot",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Special Rule"
+    },
+    "rule_confidence": {
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Rule Confidence",
+      "type": "number"
+    },
+    "quarantine_reason": {
+      "title": "Quarantine Reason",
+      "type": "string"
+    },
+    "matched_signals": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Matched Signals",
+      "type": "array"
+    },
+    "rule_text": {
+      "title": "Rule Text",
+      "type": "string"
+    },
+    "pot_text": {
+      "title": "Pot Text",
+      "type": "string"
+    },
+    "regions": {
+      "additionalProperties": {
+        "maxItems": 4,
+        "minItems": 4,
+        "prefixItems": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "number"
+          },
+          {
+            "type": "number"
+          },
+          {
+            "type": "number"
+          }
+        ],
+        "type": "array"
+      },
+      "title": "Regions",
+      "type": "object"
+    }
+  },
+  "required": [
+    "captured_at",
+    "layout_id",
+    "frame_width",
+    "frame_height",
+    "target_fingerprint",
+    "capture_latency_ms",
+    "ocr_latency_ms",
+    "visual_role_confidence",
+    "standard_nlh_supported",
+    "rule_confidence",
+    "quarantine_reason",
+    "rule_text",
+    "pot_text",
+    "regions"
+  ],
+  "title": "LiveCaptureDiagnostic",
+  "type": "object"
+}

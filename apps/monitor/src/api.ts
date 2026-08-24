@@ -1,5 +1,6 @@
 import type {
   ChipMode,
+  LiveCaptureDiagnostic,
   MonitorSnapshot,
   RangeMatrix,
   SessionPreview,
@@ -57,6 +58,10 @@ export function startReplay(tableSize: TableSize, intervalMs = 250): Promise<unk
 
 export function stopReplay(): Promise<unknown> {
   return requestJson("/v1/monitor/replay/stop", { method: "POST" });
+}
+
+export function runCaptureDiagnostic(): Promise<LiveCaptureDiagnostic> {
+  return requestJson("/v1/capture/diagnostic", { method: "POST" });
 }
 
 export function seekReplay(tableSize: TableSize, index: number): Promise<unknown> {

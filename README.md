@@ -36,7 +36,7 @@ To run the deterministic simulated hand:
 Milestones 0, 1, 2, 5, and 7 are complete. The repository includes capture/calibration,
 reconstruction and vision foundations, deterministic range and poker-math engines, isolated
 6-max/9-max reference priors, opponent modeling, and a Milestone 8 synthetic-replay monitoring
-checkpoint. The priors are deliberately not labeled GTO. Perception/reconstruction promotion,
+checkpoint with authorized in-memory capture diagnostics. The priors are deliberately not labeled GTO. Perception/reconstruction promotion,
 configuration-matched GTO data, live-session monitoring acceptance, and control remain gated work.
 
 See [the project plan](docs/PROJECT_PLAN.md), [live status](docs/STATUS.md), and [milestones](docs/MILESTONES.md).

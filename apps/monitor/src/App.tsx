@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState, type CSSProperties, type ReactNode } from
 import {
   fetchReferenceRange,
   previewSession,
+  runCaptureDiagnostic,
   seekReplay,
   startReplay,
   stopReplay,
@@ -11,6 +12,7 @@ import type {
   ChipMode,
   HandEvent,
   HandState,
+  LiveCaptureDiagnostic,
   RangeMatrix,
   SessionPreview,
   TableSize,
@@ -162,6 +164,36 @@ function RangeGrid({ matrix, loading }: { matrix: RangeMatrix | null; loading: b
   );
 }
 
+function CapturePreview({ diagnostic, nonce }: { diagnostic: LiveCaptureDiagnostic; nonce: number }) {
+  return (
+    <section className="panel capture-panel">
+      <div className="panel-heading compact">
+        <div><p className="eyebrow">Authorized evidence</p><h3>Live X-Poker capture</h3></div>
+        <StatusPill tone={diagnostic.standard_nlh_supported ? "ok" : "danger"}>
+          {diagnostic.standard_nlh_supported ? "Supported" : "Quarantined"}
+        </StatusPill>
+      </div>
+      <div className="capture-frame">
+        <img src={`/v1/capture/latest.bmp?v=${nonce}`} alt="Latest authorized X-Poker table capture" />
+        {Object.entries(diagnostic.regions).map(([name, [x, y, width, height]]) => (
+          <span
+            className={`capture-overlay region-${name}`}
+            key={name}
+            style={{ left: `${x * 100}%`, top: `${y * 100}%`, width: `${width * 100}%`, height: `${height * 100}%` }}
+            title={name}
+          />
+        ))}
+      </div>
+      <div className="capture-facts">
+        <span>Role confidence <strong>{formatPercent(diagnostic.visual_role_confidence)}</strong></span>
+        <span>OCR <strong>{diagnostic.ocr_latency_ms.toFixed(1)} ms</strong></span>
+      </div>
+      <p className="quarantine-copy">{diagnostic.quarantine_reason}</p>
+      <small>{diagnostic.rule_text || "No rule label recognized"}</small>
+    </section>
+  );
+}
+
 export default function App() {
   const [tableSize, setTableSize] = useState<TableSize>(6);
   const [chipMode, setChipMode] = useState<ChipMode>("BB");
@@ -172,6 +204,9 @@ export default function App() {
   const [sessionError, setSessionError] = useState<string | null>(null);
   const [matrix, setMatrix] = useState<RangeMatrix | null>(null);
   const [matrixLoading, setMatrixLoading] = useState(false);
+  const [captureDiagnostic, setCaptureDiagnostic] = useState<LiveCaptureDiagnostic | null>(null);
+  const [captureError, setCaptureError] = useState<string | null>(null);
+  const [captureNonce, setCaptureNonce] = useState(0);
   const { snapshot, connection, error, refresh } = useMonitor(tableSize);
 
   const bigBlindNative = useMemo(() => {
@@ -211,6 +246,17 @@ export default function App() {
 
   const seek = async (index: number) => {
     await seekReplay(tableSize, Math.max(0, Math.min(14, index)));
+  };
+
+  const inspectCapture = async () => {
+    try {
+      const result = await runCaptureDiagnostic();
+      setCaptureDiagnostic(result);
+      setCaptureNonce(Date.now());
+      setCaptureError(null);
+    } catch (reason) {
+      setCaptureError(reason instanceof Error ? reason.message : "Capture diagnostic failed");
+    }
   };
 
   const state = snapshot?.state;
@@ -271,10 +317,14 @@ export default function App() {
             {sessionError && <p className="error-copy">{sessionError}</p>}
           </section>
 
+          <button className="capture-button" onClick={() => void inspectCapture()}>Inspect live X-Poker table</button>
+          {captureError && <p className="error-copy sidebar-error">{captureError}</p>}
+          {captureDiagnostic && <CapturePreview diagnostic={captureDiagnostic} nonce={captureNonce} />}
+
           <section className="panel health-panel">
             <p className="eyebrow">System health</p>
             <div className="health-row"><span>Source</span><strong>{snapshot?.source_mode.replaceAll("_", " ") ?? "loading"}</strong></div>
-            <div className="health-row"><span>Capture</span><strong>{snapshot?.health.capture_active ? "Active" : "Inactive"}</strong></div>
+            <div className="health-row"><span>Capture</span><strong>{captureDiagnostic ? "Diagnostic ready" : "Inactive"}</strong></div>
             <div className="health-row"><span>Strategy</span><strong>{snapshot?.health.strategy_status ?? "unavailable"}</strong></div>
             <div className="health-row"><span>Dropped UI updates</span><strong>{snapshot?.metrics.dropped_deliveries ?? 0}</strong></div>
             <div className="health-row"><span>Snapshot latency</span><strong>{snapshot ? `${snapshot.metrics.processing_latency_ms.toFixed(2)} ms` : "—"}</strong></div>

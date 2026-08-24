@@ -57,10 +57,14 @@ input:focus, select:focus { border-color: rgba(78, 230, 165, .6); box-shadow: 0 
 .primary-button, .secondary-button { border-radius: 9px; padding: 9px 13px; font-size: 11px; font-weight: 700; border: 1px solid transparent; }
 .primary-button { background: var(--green); color: #052218; }
 .secondary-button { color: #d6e2de; background: rgba(255,255,255,.04); border-color: var(--line); }
+.capture-button { width: 100%; color: var(--cyan); background: rgba(118,219,232,.055); border: 1px solid rgba(118,219,232,.22); border-radius: 10px; padding: 10px; font-size: 10px; font-weight: 700; }
 .setup-panel > .primary-button { width: 100%; margin-top: 16px; }
 .validation-card { margin-top: 12px; display: grid; gap: 4px; padding: 11px; border-radius: 10px; background: rgba(78, 230, 165, .06); border: 1px solid rgba(78, 230, 165, .15); }
 .validation-card strong { font-size: 11px; }.validation-card span { color: var(--green); font: 14px "Cascadia Mono", Consolas, monospace; }.validation-card small { color: var(--muted); font-size: 10px; }
 .error-copy { color: var(--red); font-size: 10px; margin-top: 10px; overflow-wrap: anywhere; }
+.sidebar-error { margin: -6px 3px 0; }
+
+.capture-panel { padding: 14px; }.capture-panel h3 { margin-bottom: 0; }.capture-frame { position: relative; width: 100%; margin-top: 12px; overflow: hidden; border-radius: 9px; border: 1px solid rgba(118,219,232,.18); background: #06100d; }.capture-frame img { display: block; width: 100%; height: auto; }.capture-overlay { position: absolute; border: 1px solid rgba(118,219,232,.42); background: rgba(118,219,232,.025); pointer-events: none; }.capture-overlay.region-rule_label { border-color: rgba(242,116,116,.85); background: rgba(242,116,116,.08); }.capture-overlay.region-pot { border-color: rgba(241,189,95,.7); }.capture-facts { display: flex; justify-content: space-between; gap: 8px; margin-top: 9px; color: var(--muted); font-size: 8px; }.capture-facts strong { color: #d6e4df; }.quarantine-copy { color: var(--red); font-size: 9px; line-height: 1.4; margin: 9px 0 5px; }.capture-panel > small { display: block; color: #71867e; font-size: 8px; line-height: 1.35; overflow-wrap: anywhere; }
 
 .health-row { display: flex; justify-content: space-between; gap: 12px; padding: 9px 0; border-bottom: 1px solid rgba(255,255,255,.05); font-size: 11px; }
 .health-row span { color: var(--muted); }.health-row strong { text-align: right; }
@@ -93,4 +97,23 @@ input:focus, select:focus { border-color: rgba(78, 230, 165, .6); box-shadow: 0 
 @media (max-width: 1320px) {
   .dashboard-grid { grid-template-columns: 225px minmax(630px, 1fr) 270px; }
   .poker-table { width: 82%; }
+}
+
+@media (max-width: 1100px) {
+  body { min-width: 0; }
+  .dashboard-grid { grid-template-columns: 205px minmax(0, 1fr); }
+  .intel-grid { grid-template-columns: 1fr; }
+  .rightbar { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; align-items: start; }
+  .history-panel { height: 430px; }.history-list { height: 340px; }
+  .poker-table { width: 86%; }
+}
+
+@media (max-width: 780px) {
+  .topbar { padding-inline: 14px; }.sequence { display: none; }
+  .dashboard-grid { grid-template-columns: 1fr; }
+  .sidebar, .main-column, .rightbar { grid-column: 1; }
+  .rightbar { display: flex; }
+  .table-stage { height: 430px; }.poker-table { height: 290px; margin-top: 55px; }
+  .intel-grid { grid-template-columns: 1fr; }
+  .replay-bar { grid-template-columns: 1fr; gap: 10px; }
 }

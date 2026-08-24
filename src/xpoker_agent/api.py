@@ -10,9 +10,11 @@ from typing import Literal, cast
 from uuid import UUID
 
 from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
+from fastapi.responses import Response
 from fastapi.staticfiles import StaticFiles
 
 from xpoker_agent import __version__
+from xpoker_agent.capture.frames import CapturedFrame
 from xpoker_agent.capture.profile import load_target_profile, match_authorized_target
 from xpoker_agent.capture.windows import discover_xpoker_windows
 from xpoker_agent.chips import create_session_setup
@@ -31,9 +33,12 @@ from xpoker_agent.research.assets import AssetManifest
 from xpoker_agent.research.catalog import ComponentCatalog
 from xpoker_agent.research.registry import SourceRegistry
 from xpoker_agent.simulation import run_simulated_hand
+from xpoker_agent.vision.live import diagnose_authorized_table
 
 monitor_hub = MonitorHub()
 replay_controller = ReplayController(monitor_hub)
+latest_live_frame: CapturedFrame | None = None
+live_capture_lock = asyncio.Lock()
 
 
 def require_table_size(value: int) -> Literal[6, 9]:
@@ -158,6 +163,29 @@ def capture_status() -> dict[str, object]:
         "eligible_count": sum(match.eligible for match in matches),
         "capture_active": False,
     }
+
+
+@app.post("/v1/capture/diagnostic")
+async def capture_diagnostic() -> dict[str, object]:
+    global latest_live_frame
+    async with live_capture_lock:
+        try:
+            diagnostic, frame = await diagnose_authorized_table()
+        except (OSError, RuntimeError, ValueError) as error:
+            raise HTTPException(status_code=409, detail=str(error)) from error
+        latest_live_frame = frame
+    return diagnostic.model_dump(mode="json")
+
+
+@app.get("/v1/capture/latest.bmp", response_class=Response)
+def latest_capture_frame() -> Response:
+    if latest_live_frame is None:
+        raise HTTPException(status_code=404, detail="no authorized capture diagnostic exists")
+    return Response(
+        content=latest_live_frame.to_bmp(),
+        media_type="image/bmp",
+        headers={"Cache-Control": "no-store, max-age=0"},
+    )
 
 
 @app.get("/v1/ranges/reference")

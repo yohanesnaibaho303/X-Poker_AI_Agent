@@ -675,9 +675,11 @@ boundary run complete deterministic 6-max and 9-max synthetic hand replays. Sche
 snapshots, bounded event delivery, gap recovery, session/chip controls, reconstructed state, action
 history, replay scrubbing, health/latency, deterministic pot odds and SPR, reference-prior ranges,
 decision gates, assumptions, and fail-closed strategy/control status are inspectable. A 20-session,
-300-snapshot synthetic soak regression protects stream/state integrity. The milestone remains in
-progress until live capture/vision output, opponent ranges, resolved strategy/equity/EV views, and
-complete authorized-session evidence pass their gates.
+300-snapshot synthetic soak regression protects stream/state integrity. The authorized capture path
+now shows an in-memory, no-store table frame with declared-region overlays, table-role confidence,
+privacy-scoped rule/pot OCR, and explicit unsupported-rule quarantine. The milestone remains in
+progress until component recognition and standard-NLH reconstruction output, opponent ranges,
+resolved strategy/equity/EV views, and complete authorized-session evidence pass their gates.
 
 ### Milestone 9 — Authorized control
 

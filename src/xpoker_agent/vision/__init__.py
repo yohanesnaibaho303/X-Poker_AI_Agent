@@ -5,6 +5,7 @@ from xpoker_agent.vision.cards import (
     detect_card_slots,
     validate_unique_cards,
 )
+from xpoker_agent.vision.live import diagnose_authorized_table
 from xpoker_agent.vision.numbers import parse_chip_amount
 from xpoker_agent.vision.rules import classify_rule_label
 from xpoker_agent.vision.temporal import consensus
@@ -15,6 +16,7 @@ __all__ = [
     "classify_rule_label",
     "consensus",
     "detect_card_slots",
+    "diagnose_authorized_table",
     "parse_chip_amount",
     "recognize_text",
     "validate_unique_cards",

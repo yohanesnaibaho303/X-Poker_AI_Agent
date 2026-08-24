@@ -1,15 +1,23 @@
+from datetime import UTC, datetime
 from decimal import Decimal
 
 import pytest
 
 from xpoker_agent.capture.frames import CapturedFrame
-from xpoker_agent.capture.models import NormalizedRect
+from xpoker_agent.capture.layout import load_layout_profile
+from xpoker_agent.capture.models import CaptureFrameRecord, NormalizedRect
 from xpoker_agent.vision.cards import (
     classify_board_geometry,
     detect_card_slots,
     validate_unique_cards,
 )
-from xpoker_agent.vision.models import CardRecognition, PixelBox, TemporalSample
+from xpoker_agent.vision.live import build_live_capture_diagnostic
+from xpoker_agent.vision.models import (
+    CardRecognition,
+    PixelBox,
+    TemporalSample,
+    WindowsOcrResult,
+)
 from xpoker_agent.vision.numbers import parse_chip_amount
 from xpoker_agent.vision.primitives import (
     BinaryMask,
@@ -233,3 +241,48 @@ def test_unknown_rule_label_never_establishes_supported_nlh() -> None:
 
     assert result.supported_standard_nlh is False
     assert result.special_rule is None
+
+
+def test_live_capture_diagnostic_quarantines_scoped_bomb_pot_evidence() -> None:
+    frame = CapturedFrame(10, 20, b"\x00" * 10 * 20 * 4)
+    record = CaptureFrameRecord(
+        sequence=0,
+        captured_at=datetime.now(UTC),
+        monotonic_ns=1,
+        authorization_profile_id="authorized-test",
+        target_fingerprint="a" * 64,
+        layout_id="xpoker-windows-10-portrait-v1",
+        source_width=10,
+        source_height=20,
+        source_dpi=96,
+        width=10,
+        height=20,
+        dpi=96,
+        content_sha256="b" * 64,
+        capture_latency_ms=4.5,
+        visual_role_confidence=0.95,
+    )
+    diagnostic = build_live_capture_diagnostic(
+        frame=frame,
+        record=record,
+        layout=load_layout_profile(),
+        rule_ocr=WindowsOcrResult(
+            text="Bomb Pot: After 2 hands (1,000-3,000) Blinds: 500/1,000",
+            lines=["Bomb Pot: After 2 hands", "Blinds: 500/1,000"],
+            processing_latency_ms=3,
+            language_tag="en-US",
+        ),
+        pot_ocr=WindowsOcrResult(
+            text="POT 4,500",
+            lines=["POT 4,500"],
+            processing_latency_ms=2,
+            language_tag="en-US",
+        ),
+    )
+
+    assert diagnostic.standard_nlh_supported is False
+    assert diagnostic.special_rule == "bomb_pot"
+    assert diagnostic.rule_confidence == 0.99
+    assert diagnostic.pot_text == "POT 4,500"
+    assert diagnostic.ocr_latency_ms == 5
+    assert set(diagnostic.regions) == {"board", "pot", "rule_label", "seat_ring", "actions"}

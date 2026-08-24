@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from datetime import datetime
 from decimal import Decimal
 from typing import Literal
 
@@ -105,3 +106,23 @@ class RuleLabelClassification(StrictModel):
     confidence: float = Field(ge=0.0, le=1.0)
     matched_signals: list[str] = Field(default_factory=list)
     reason: str
+
+
+class LiveCaptureDiagnostic(StrictModel):
+    schema_version: Literal["1.0"] = "1.0"
+    captured_at: datetime
+    layout_id: str
+    frame_width: int = Field(gt=0)
+    frame_height: int = Field(gt=0)
+    target_fingerprint: str = Field(min_length=64, max_length=64)
+    capture_latency_ms: float = Field(ge=0.0)
+    ocr_latency_ms: float = Field(ge=0.0)
+    visual_role_confidence: float = Field(ge=0.0, le=1.0)
+    standard_nlh_supported: bool
+    special_rule: Literal["bomb_pot"] | None = None
+    rule_confidence: float = Field(ge=0.0, le=1.0)
+    quarantine_reason: str
+    matched_signals: list[str] = Field(default_factory=list)
+    rule_text: str
+    pot_text: str
+    regions: dict[str, tuple[float, float, float, float]]
