@@ -138,9 +138,20 @@ class RuleLabelClassification(StrictModel):
     hands_until_bomb: int | None = Field(default=None, ge=0)
     bomb_pot_interval_hands: int | None = Field(default=None, ge=1)
     bomb_pot_forced_contribution_native: Decimal | None = Field(default=None, gt=0)
+    small_blind_native: Decimal | None = Field(default=None, gt=0)
+    big_blind_native: Decimal | None = Field(default=None, gt=0)
     confidence: float = Field(ge=0.0, le=1.0)
     matched_signals: list[str] = Field(default_factory=list)
     reason: str
+
+    @model_validator(mode="after")
+    def validate_blinds(self) -> RuleLabelClassification:
+        values = (self.small_blind_native, self.big_blind_native)
+        if (values[0] is None) != (values[1] is None):
+            raise ValueError("small and big blinds must be observed together")
+        if values[0] is not None and values[1] is not None and values[0] >= values[1]:
+            raise ValueError("small blind must be less than big blind")
+        return self
 
 
 class SeatOccupancyObservation(StrictModel):
@@ -296,6 +307,8 @@ class LiveCaptureDiagnostic(StrictModel):
     hands_until_bomb: int | None = Field(default=None, ge=0)
     bomb_pot_interval_hands: int | None = Field(default=None, ge=1)
     bomb_pot_forced_contribution_native: Decimal | None = Field(default=None, gt=0)
+    small_blind_native: Decimal | None = Field(default=None, gt=0)
+    big_blind_native: Decimal | None = Field(default=None, gt=0)
     rule_confidence: float = Field(ge=0.0, le=1.0)
     mode_reason: str
     matched_signals: list[str] = Field(default_factory=list)
@@ -340,6 +353,7 @@ class LiveObservationStatus(StrictModel):
     current_hand_mode: Literal["standard_nlh", "single_board_bomb_pot", "ambiguous"]
     current_hand_supported: bool
     mode_consensus: TemporalConsensus
+    blind_consensus: TemporalConsensus
     board_consensus: TemporalConsensus
     board_card_consensus: list[TemporalConsensus] = Field(default_factory=list)
     recognized_board_cards: list[str] = Field(default_factory=list)

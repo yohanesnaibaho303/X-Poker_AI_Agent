@@ -231,6 +231,14 @@ export interface LiveObservationStatus {
     alternatives: string[];
     reason: string | null;
   };
+  blind_consensus: {
+    accepted: boolean;
+    value: string | null;
+    confidence: number;
+    stable_frames: number;
+    alternatives: string[];
+    reason: string | null;
+  };
   board_consensus: {
     accepted: boolean;
     value: string | null;

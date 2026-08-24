@@ -261,6 +261,9 @@ def test_scheduled_bomb_pot_normalizes_ocr_letter_i_as_countdown_one() -> None:
     assert result.supported_standard_nlh is True
     assert result.bomb_pot_state == "scheduled"
     assert result.hands_until_bomb == 1
+    assert result.small_blind_native == 1
+    assert result.big_blind_native == 2
+    assert "native_blinds" in result.matched_signals
 
 
 def test_scheduled_bomb_pot_normalizes_spaced_ocr_digits() -> None:

@@ -121,6 +121,8 @@ def build_live_capture_diagnostic(
         bomb_pot_forced_contribution_native=(
             classification.bomb_pot_forced_contribution_native
         ),
+        small_blind_native=classification.small_blind_native,
+        big_blind_native=classification.big_blind_native,
         rule_confidence=classification.confidence,
         mode_reason=classification.reason,
         matched_signals=classification.matched_signals,

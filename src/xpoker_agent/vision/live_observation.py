@@ -54,6 +54,7 @@ class LiveObservationService:
             raise ValueError("failure threshold must be positive")
         self._capture = capture
         self._samples: deque[TemporalSample] = deque(maxlen=maximum_samples)
+        self._blind_samples: deque[TemporalSample] = deque(maxlen=maximum_samples)
         self._pot_samples: deque[TemporalSample] = deque(maxlen=maximum_samples)
         self._board_samples: deque[TemporalSample] = deque(maxlen=maximum_samples)
         self._card_samples: dict[int, deque[TemporalSample]] = {
@@ -92,6 +93,7 @@ class LiveObservationService:
             stable_frames=0,
             reason="no_samples",
         )
+        self._blind_consensus = self._empty_consensus("no_samples")
         self._pot_consensus = self._empty_consensus("no_samples")
         self._board_consensus = self._empty_consensus("no_samples")
         self._board_card_consensus: list[TemporalConsensus] = []
@@ -161,6 +163,7 @@ class LiveObservationService:
         self._target_stable = True
         self._last_error = None
         self._samples.clear()
+        self._blind_samples.clear()
         self._pot_samples.clear()
         self._board_samples.clear()
         for samples in self._card_samples.values():
@@ -177,6 +180,7 @@ class LiveObservationService:
             stable_frames=0,
             reason="no_samples",
         )
+        self._blind_consensus = self._empty_consensus("no_samples")
         self._pot_consensus = self._empty_consensus("no_samples")
         self._board_consensus = self._empty_consensus("no_samples")
         self._board_card_consensus = []
@@ -309,6 +313,25 @@ class LiveObservationService:
         return consensus(list(samples))
 
     def _record_numeric_observations(self, diagnostic: LiveCaptureDiagnostic) -> None:
+        if (
+            diagnostic.small_blind_native is None
+            or diagnostic.big_blind_native is None
+        ):
+            self._blind_samples.clear()
+            self._blind_consensus = self._empty_consensus("current_blinds_ambiguous")
+        else:
+            self._blind_consensus = self._append_consecutive(
+                self._blind_samples,
+                TemporalSample(
+                    frame_sequence=diagnostic.frame_sequence,
+                    content_sha256=diagnostic.content_sha256,
+                    value=(
+                        f"{diagnostic.small_blind_native}/"
+                        f"{diagnostic.big_blind_native}"
+                    ),
+                    confidence=diagnostic.rule_confidence,
+                ),
+            )
         previous_board_value = self._board_samples[-1].value if self._board_samples else None
         if not diagnostic.board_geometry_supported or diagnostic.board_card_slots not in {
             0,
@@ -745,6 +768,7 @@ class LiveObservationService:
                 else False
             ),
             mode_consensus=self._mode_consensus,
+            blind_consensus=self._blind_consensus,
             board_consensus=self._board_consensus,
             board_card_consensus=self._board_card_consensus,
             recognized_board_cards=self._recognized_board_cards,

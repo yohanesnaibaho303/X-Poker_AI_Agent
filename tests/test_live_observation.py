@@ -44,6 +44,8 @@ def _diagnostic(
         single_board_bomb_pot_supported=False,
         bomb_pot_state="scheduled",
         hands_until_bomb=5,
+        small_blind_native=1,
+        big_blind_native=2,
         rule_confidence=0.99,
         mode_reason="test fixture",
         rule_text="Bomb Pot: After 5 hands",
@@ -96,6 +98,8 @@ def test_live_observation_builds_consensus_and_stops_cleanly() -> None:
         assert status.frames_succeeded >= 3
         assert status.mode_consensus.accepted is True
         assert status.mode_consensus.value == "standard_nlh"
+        assert status.blind_consensus.accepted is True
+        assert status.blind_consensus.value == "1/2"
         assert status.pot_consensus.accepted is True
         assert status.pot_consensus.value == "10"
         assert status.seat_stack_consensus[0].consensus.accepted is True

@@ -599,6 +599,38 @@
       "default": null,
       "title": "Bomb Pot Forced Contribution Native"
     },
+    "small_blind_native": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Small Blind Native"
+    },
+    "big_blind_native": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Big Blind Native"
+    },
     "rule_confidence": {
       "maximum": 1.0,
       "minimum": 0.0,

@@ -16,6 +16,18 @@ def _ocr_count(value: str) -> int:
 def classify_rule_label(text: str) -> RuleLabelClassification:
     normalized = " ".join(text.casefold().split())
     signals: list[str] = []
+    blind_values: dict[str, object] = {}
+    blind_match = re.search(
+        r"blinds?\s*:\s*(?P<small>\d[\d,.]*(?:\.\d+)?[km]?)\s*/\s*"
+        r"(?P<big>\d[\d,.]*(?:\.\d+)?[km]?)",
+        normalized,
+    )
+    if blind_match:
+        small = parse_chip_amount(blind_match.group("small"), confidence=0.99).value
+        big = parse_chip_amount(blind_match.group("big"), confidence=0.99).value
+        if 0 < small < big:
+            blind_values = {"small_blind_native": small, "big_blind_native": big}
+            signals.append("native_blinds")
     if "bomb pot" in normalized:
         signals.append("literal_bomb_pot")
     active = re.search(
@@ -25,6 +37,7 @@ def classify_rule_label(text: str) -> RuleLabelClassification:
     if active:
         contribution = parse_chip_amount(active.group("amount"), confidence=0.99)
         return RuleLabelClassification(
+            **blind_values,
             supported_standard_nlh=False,
             supported_single_board_bomb_pot=True,
             special_rule="bomb_pot",
@@ -48,6 +61,7 @@ def classify_rule_label(text: str) -> RuleLabelClassification:
         hands_until_bomb = _ocr_count(schedule.group("count"))
         if hands_until_bomb > 0:
             return RuleLabelClassification(
+                **blind_values,
                 supported_standard_nlh=True,
                 special_rule="bomb_pot",
                 bomb_pot_state="scheduled",
@@ -60,6 +74,7 @@ def classify_rule_label(text: str) -> RuleLabelClassification:
                 ),
             )
         return RuleLabelClassification(
+            **blind_values,
             supported_standard_nlh=False,
             supported_single_board_bomb_pot=True,
             special_rule="bomb_pot",
@@ -76,6 +91,7 @@ def classify_rule_label(text: str) -> RuleLabelClassification:
     if recurring:
         interval = _ocr_count(recurring.group("count"))
         return RuleLabelClassification(
+            **blind_values,
             supported_standard_nlh=True,
             special_rule="bomb_pot",
             bomb_pot_state="scheduled",
@@ -87,8 +103,9 @@ def classify_rule_label(text: str) -> RuleLabelClassification:
                 f"{interval} hands"
             ),
         )
-    if signals:
+    if "literal_bomb_pot" in signals:
         return RuleLabelClassification(
+            **blind_values,
             supported_standard_nlh=False,
             special_rule="bomb_pot",
             bomb_pot_state="ambiguous",
@@ -97,6 +114,7 @@ def classify_rule_label(text: str) -> RuleLabelClassification:
             reason="Bomb Pot feature detected but current-hand state is ambiguous",
         )
     return RuleLabelClassification(
+        **blind_values,
         supported_standard_nlh=False,
         confidence=0.0,
         reason="standard NLH configuration not established by rule-label evidence",

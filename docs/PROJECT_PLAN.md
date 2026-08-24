@@ -744,6 +744,10 @@ second-rank margin, classifies the local suit palette, and requires three distin
 physical uniqueness. Enrolled artifacts store only 18-by-26 masks and source hashes. Enrollment
 self-matches and visually checked live examples are calibration evidence, not held-out accuracy.
 
+The same privacy-scoped rule crop supplies native small/big blind candidates. Both values must parse
+with `0 < SB < BB` and repeat for three distinct frames. Until that consensus passes, native stacks,
+commitments, and pots remain unnormalized and cannot enter BB-based range, equity, or EV logic.
+
 Dealer-button detection now uses the calibrated X-Poker white-marker component geometry and maps a
 single candidate to the nearest versioned seat anchor. Three distinct frames are required before a
 dealer seat is exposed. The detector fails closed when the marker is absent or non-unique; position
