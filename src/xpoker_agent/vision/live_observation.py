@@ -307,7 +307,7 @@ class LiveObservationService:
                     frame_sequence=diagnostic.frame_sequence,
                     content_sha256=diagnostic.content_sha256,
                     value=diagnostic.current_hand_mode,
-                    confidence=diagnostic.rule_confidence,
+                    confidence=diagnostic.blind_confidence,
                 ),
             )
         self._record_numeric_observations(diagnostic)

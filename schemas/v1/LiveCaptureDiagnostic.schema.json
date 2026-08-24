@@ -631,6 +631,13 @@
       "default": null,
       "title": "Big Blind Native"
     },
+    "blind_confidence": {
+      "default": 0.0,
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Blind Confidence",
+      "type": "number"
+    },
     "rule_confidence": {
       "maximum": 1.0,
       "minimum": 0.0,

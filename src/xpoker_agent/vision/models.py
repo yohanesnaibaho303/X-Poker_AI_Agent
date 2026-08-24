@@ -140,6 +140,7 @@ class RuleLabelClassification(StrictModel):
     bomb_pot_forced_contribution_native: Decimal | None = Field(default=None, gt=0)
     small_blind_native: Decimal | None = Field(default=None, gt=0)
     big_blind_native: Decimal | None = Field(default=None, gt=0)
+    blind_confidence: float = Field(default=0.0, ge=0.0, le=1.0)
     confidence: float = Field(ge=0.0, le=1.0)
     matched_signals: list[str] = Field(default_factory=list)
     reason: str
@@ -151,6 +152,10 @@ class RuleLabelClassification(StrictModel):
             raise ValueError("small and big blinds must be observed together")
         if values[0] is not None and values[1] is not None and values[0] >= values[1]:
             raise ValueError("small blind must be less than big blind")
+        if values[0] is None and self.blind_confidence != 0:
+            raise ValueError("blind confidence requires observed blind values")
+        if values[0] is not None and self.blind_confidence == 0:
+            raise ValueError("observed blinds require positive confidence")
         return self
 
 
@@ -322,6 +327,7 @@ class LiveCaptureDiagnostic(StrictModel):
     bomb_pot_forced_contribution_native: Decimal | None = Field(default=None, gt=0)
     small_blind_native: Decimal | None = Field(default=None, gt=0)
     big_blind_native: Decimal | None = Field(default=None, gt=0)
+    blind_confidence: float = Field(default=0.0, ge=0.0, le=1.0)
     rule_confidence: float = Field(ge=0.0, le=1.0)
     mode_reason: str
     matched_signals: list[str] = Field(default_factory=list)

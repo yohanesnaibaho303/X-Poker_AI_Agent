@@ -46,6 +46,7 @@ def _diagnostic(
         hands_until_bomb=5,
         small_blind_native=1,
         big_blind_native=2,
+        blind_confidence=0.99,
         rule_confidence=0.99,
         mode_reason="test fixture",
         rule_text="Bomb Pot: After 5 hands",

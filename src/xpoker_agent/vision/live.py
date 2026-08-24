@@ -123,6 +123,7 @@ def build_live_capture_diagnostic(
         ),
         small_blind_native=classification.small_blind_native,
         big_blind_native=classification.big_blind_native,
+        blind_confidence=classification.blind_confidence,
         rule_confidence=classification.confidence,
         mode_reason=classification.reason,
         matched_signals=classification.matched_signals,

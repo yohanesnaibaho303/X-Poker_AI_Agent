@@ -747,6 +747,8 @@ self-matches and visually checked live examples are calibration evidence, not he
 The same privacy-scoped rule crop supplies native small/big blind candidates. Both values must parse
 with `0 < SB < BB` and repeat for three distinct frames. Until that consensus passes, native stacks,
 commitments, and pots remain unnormalized and cannot enter BB-based range, equity, or EV logic.
+Blind-token confidence is tracked independently from Bomb-Pot/mode confidence so unrelated OCR
+damage cannot suppress a clear blind value or make an ambiguous hand mode appear supported.
 
 A live hand epoch is not a canonical hand boundary by itself. On a stable postflop-to-zero board
 transition, the observer snapshots the prior dealer and active-seat set, clears dealer consensus,

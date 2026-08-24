@@ -263,6 +263,7 @@ def test_scheduled_bomb_pot_normalizes_ocr_letter_i_as_countdown_one() -> None:
     assert result.hands_until_bomb == 1
     assert result.small_blind_native == 1
     assert result.big_blind_native == 2
+    assert result.blind_confidence == 0.99
     assert "native_blinds" in result.matched_signals
 
 

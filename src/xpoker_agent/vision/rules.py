@@ -26,7 +26,11 @@ def classify_rule_label(text: str) -> RuleLabelClassification:
         small = parse_chip_amount(blind_match.group("small"), confidence=0.99).value
         big = parse_chip_amount(blind_match.group("big"), confidence=0.99).value
         if 0 < small < big:
-            blind_values = {"small_blind_native": small, "big_blind_native": big}
+            blind_values = {
+                "small_blind_native": small,
+                "big_blind_native": big,
+                "blind_confidence": 0.99,
+            }
             signals.append("native_blinds")
     if "bomb pot" in normalized:
         signals.append("literal_bomb_pot")
