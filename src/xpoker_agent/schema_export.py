@@ -29,6 +29,12 @@ from xpoker_agent.models import (
     StrategyMatch,
     WeightedRange,
 )
+from xpoker_agent.monitoring.models import (
+    MonitorEnvelope,
+    MonitorHistory,
+    MonitorSnapshot,
+    ReplayStartRequest,
+)
 from xpoker_agent.ranges.library import RangeArtifact
 from xpoker_agent.ranges.matrix import RangeMatrix
 from xpoker_agent.strategy.resolver import StrategyResolution
@@ -55,6 +61,10 @@ MODELS = [
     NodelockResult,
     OpponentRangeSnapshot,
     BestResponseAnalysis,
+    MonitorSnapshot,
+    MonitorEnvelope,
+    MonitorHistory,
+    ReplayStartRequest,
     DecisionEnvelope,
     ActionAttempt,
 ]

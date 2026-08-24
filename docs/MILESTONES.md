@@ -116,16 +116,22 @@ Exit: replayed spots return deterministic, source-backed results and never prese
 
 Exit: synthetic profiles produce stable, explainable, regression-tested adjustments.
 
-## Milestone 8 — Live monitoring application
+## Milestone 8 — Live monitoring application (in progress)
 
-- [ ] Build the React/TypeScript shell and component design system.
-- [ ] Add 6-max/9-max session selection and BB/native chip display controls.
-- [ ] Stream schema-versioned snapshots and events over WebSockets.
+- [x] Build the React/TypeScript shell and component design system.
+- [x] Add 6-max/9-max session selection and BB/native chip display controls.
+- [x] Stream schema-versioned snapshots and events over WebSockets.
 - [ ] Display capture overlays, confidence, state, action history, and health.
 - [ ] Display hero/opponent ranges and GTO/exploit frequencies.
 - [ ] Display equity, EV, pot odds, abstraction mismatch, assumptions, and sources.
 - [ ] Add replay navigation and decision/audit inspection.
 - [ ] Add gap recovery, backpressure, and long-session telemetry.
+
+Checkpoint: synthetic 6-max and 9-max replays stream complete legal traces into the dashboard.
+State, action history, confidence, health, the hero reference-prior matrix, explicit unavailable-GTO
+status, source assumptions, and control lockout are visible. Snapshot recovery and bounded delivery
+are implemented. The unchecked items require live capture/vision evidence, resolved strategy/math
+data, richer replay inspection, and long-session evaluation.
 
 Exit: complete authorized sessions can be monitored without state corruption and with acceptable resource use.
 

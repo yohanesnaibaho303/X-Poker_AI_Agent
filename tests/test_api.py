@@ -12,6 +12,7 @@ from xpoker_agent.api import (
 )
 from xpoker_agent.capture.profile import EXAMPLE_PROFILE, load_target_profile
 from xpoker_agent.models import SessionSetupRequest
+from xpoker_agent.simulation import run_simulated_hand
 
 
 def test_health_reports_disabled_controller() -> None:
@@ -62,6 +63,14 @@ def test_simulation_endpoint_returns_full_trace() -> None:
     assert len(result["events"]) == 14
     assert len(result["states"]) == 15
     assert result["states"][-1]["table_status"] == "hand_complete"
+
+
+def test_six_max_simulation_uses_six_canonical_seat_slots() -> None:
+    states, events = run_simulated_hand(6)
+
+    assert len(states[0].seats) == 6
+    assert states[-1].table_status == "hand_complete"
+    assert len(events) == 14
 
 
 def test_controller_endpoint_is_fail_closed() -> None:

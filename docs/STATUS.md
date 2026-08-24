@@ -1,10 +1,10 @@
 # Build Status
 
 - Last updated: 2026-08-24 (Asia/Jakarta)
-- Current milestone: Milestone 6 — GTO strategy integration
+- Current milestone: Milestone 8 — live monitoring application
 - Overall project: 5 of 11 milestones complete
-- Current state: Milestone 7 complete; Milestone 6 source-data integration and M3/M4 promotion gates
-  remain pending
+- Current state: Milestone 8 synthetic-replay dashboard checkpoint complete; live-session exit gate,
+  Milestone 6 source-data integration, and M3/M4 promotion gates remain pending
 - Live control: Disabled
 
 ## Latest checkpoint
@@ -44,7 +44,14 @@
   values format as grouped numbers, K, or M by threshold and remain unnormalized until a blind exists.
 - Audited public solver candidates; current configuration-matched GTO artifacts remain unavailable.
   Approximate reference priors are never promoted to GTO. Control remains disabled.
-- Current full suite: Ruff passed; 205 Pytest/Hypothesis tests passed.
+- Added the local React/TypeScript monitoring dashboard with 6-max/9-max selection, BB/native-chip
+  controls, reconstructed table state, legal action history, health, replay transport, and a
+  position-specific 169-class reference-prior matrix.
+- Added schema-versioned FastAPI/WebSocket monitoring snapshots and events, bounded subscriber
+  queues, retained history, gap detection/recovery, and deterministic 6-max/9-max replay sources.
+- Verified complete 14-transition six-max and nine-max browser replays with no console errors;
+  strategy and capture absence remain explicit and table control stays unavailable.
+- Current full suite: Ruff passed; 214 Pytest/Hypothesis tests and 11 TypeScript tests passed.
 
 ## Completed project checkpoints
 
@@ -56,10 +63,18 @@
 - Milestone 7 — uncertainty-bearing opponent profiles, bounded exploit adjustments, nodelock-like
   range experiments, and synthetic regression evaluation.
 
+## In-progress checkpoint
+
+- Milestone 8 — local dashboard, session/chip controls, schema-versioned replay stream, bounded
+  delivery, health/state/action inspection, and reference-prior visualization are implemented.
+
 ## Next
 
-- Implement Milestone 6 solution import/resolution while keeping reference priors ineligible for
-  exact-GTO results.
+- Connect recorded/live capture, perception evidence, and reconstructed observations to the monitor.
+- Add opponent-range, poker-math, exact/abstracted strategy, exploit-frequency, provenance, and
+  decision-trace views as those upstream results become available.
+- Add replay scrubbing plus latency and long-session soak evaluation.
+- Continue Milestone 6 solution import/resolution while keeping reference priors ineligible for exact-GTO results.
 - Source or independently generate configuration-matched 6-max and 9-max no-rake 2 BB solutions.
 - Add exact/nearest strategy-node lookup, quantitative mismatch, and replay comparisons.
 - Connect the completed exploit layer to real reconstructed observations and resolved strategy EVs

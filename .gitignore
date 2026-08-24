@@ -9,6 +9,7 @@ htmlcov/
 dist/
 build/
 *.egg-info/
+node_modules/
 .env
 configs/runtime/local.json
 configs/capture/authorized_target.local.json

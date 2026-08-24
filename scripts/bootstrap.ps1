@@ -26,4 +26,13 @@ if (-not (Test-Path -LiteralPath $venvPython)) {
 
 & $venvPython -m pip install --disable-pip-version-check -r (Join-Path $projectRoot "requirements.lock")
 & $venvPython -m pip install --disable-pip-version-check --no-deps -e $projectRoot
+
+$npm = Get-Command npm -ErrorAction SilentlyContinue
+if (-not $npm) {
+    throw "Node.js and npm are required for the monitoring dashboard."
+}
+& $npm.Source --prefix (Join-Path $projectRoot "apps\monitor") ci
+if ($LASTEXITCODE -ne 0) {
+    throw "Dashboard dependency installation failed with exit code $LASTEXITCODE."
+}
 Write-Output "Development environment is ready: $venvPython"

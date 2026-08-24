@@ -1,0 +1,110 @@
+"""Replay-backed monitoring snapshots for deterministic UI integration."""
+
+from __future__ import annotations
+
+import asyncio
+from contextlib import suppress
+from datetime import UTC, datetime
+
+from xpoker_agent.monitoring.hub import MonitorHub
+from xpoker_agent.monitoring.models import (
+    MonitorHealth,
+    MonitorMetrics,
+    MonitorSnapshot,
+    ReplayProgress,
+)
+from xpoker_agent.simulation import run_simulated_hand
+
+
+def build_replay_snapshot(
+    table_size: int,
+    index: int = 0,
+    *,
+    active: bool = False,
+    interval_ms: int = 250,
+) -> MonitorSnapshot:
+    states, events = run_simulated_hand(table_size)
+    if index < 0 or index > len(events):
+        raise ValueError("replay index is outside the simulated hand")
+    state = states[index]
+    history = events[:index]
+    warnings = [
+        "Synthetic replay only; no authorized live table is connected.",
+        "Configuration-matched GTO strategy is unavailable.",
+        "Table control is disabled.",
+    ]
+    return MonitorSnapshot(
+        generated_at=datetime.now(UTC),
+        table_size=table_size,
+        source_mode="synthetic_replay",
+        state=state,
+        action_history=history,
+        health=MonitorHealth(status="degraded", warnings=warnings),
+        metrics=MonitorMetrics(
+            state_revision=state.revision,
+            event_count=len(history),
+            processing_latency_ms=0,
+        ),
+        replay=ReplayProgress(
+            active=active,
+            index=index,
+            total=len(events),
+            interval_ms=interval_ms,
+        ),
+        strategy={
+            "status": "unavailable",
+            "role": "reference_prior",
+            "confidence": 0.55,
+            "assumptions": ["Reference prior may be displayed separately but is not exact GTO."],
+        },
+        exploit={
+            "status": "synthetic_only",
+            "confidence": 0.0,
+            "assumptions": ["No live opponent sample is connected."],
+        },
+    )
+
+
+class ReplayController:
+    def __init__(self, hub: MonitorHub) -> None:
+        self.hub = hub
+        self._task: asyncio.Task[None] | None = None
+
+    @property
+    def active(self) -> bool:
+        return self._task is not None and not self._task.done()
+
+    async def start(self, *, table_size: int, interval_ms: int) -> None:
+        await self.stop()
+        self._task = asyncio.create_task(self._run(table_size, interval_ms))
+
+    async def stop(self) -> None:
+        if self._task is None:
+            return
+        if not self._task.done():
+            self._task.cancel()
+            with suppress(asyncio.CancelledError):
+                await self._task
+        self._task = None
+
+    async def _run(self, table_size: int, interval_ms: int) -> None:
+        _, events = run_simulated_hand(table_size)
+        await self.hub.publish_snapshot(
+            build_replay_snapshot(table_size, 0, active=True, interval_ms=interval_ms)
+        )
+        for index, event in enumerate(events, start=1):
+            await asyncio.sleep(interval_ms / 1000)
+            snapshot = build_replay_snapshot(
+                table_size,
+                index,
+                active=index < len(events),
+                interval_ms=interval_ms,
+            )
+            await self.hub.publish(
+                "event",
+                {
+                    "event": event.model_dump(mode="json"),
+                    "snapshot": snapshot.model_dump(mode="json"),
+                },
+                snapshot=snapshot,
+            )

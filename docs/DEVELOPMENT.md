@@ -4,9 +4,10 @@
 
 - Windows PowerShell
 - Python 3.12 (the Codex workspace bundle is detected automatically)
+- Node.js 22 and npm 10
 - Internet access for the first dependency installation
 
-Node.js is present for the later React dashboard but is not required by Milestone 0.
+The React dashboard is built into local static assets and is served by the same loopback-only API.
 
 ## Setup
 
@@ -46,12 +47,14 @@ This creates `.venv`, verifies Python 3.12, and installs the exact direct depend
 .\.venv\Scripts\python.exe -m xpoker_agent.capture.recording --frames 5
 ```
 
-The API binds only to `127.0.0.1:8765`. Interactive documentation is available locally at `/docs` while it is running.
+The application binds only to `127.0.0.1:8765`. The dashboard is available at `/monitor/` and interactive API documentation at `/docs` while it is running.
 
 ## Dependencies
 
 - Pydantic: strict typed contracts and JSON Schema generation.
 - FastAPI and Uvicorn: lightweight local API boundary.
+- WebSockets: local schema-versioned monitoring updates.
+- React, TypeScript, and Vite: local monitoring dashboard and production bundle.
 - Pytest and Hypothesis: unit and property-based testing.
 - Ruff: linting and import/style checks.
 
@@ -78,13 +81,17 @@ GTO solutions.
 - Canonical 1,326-combo ranges, 169-class projection, blockers, action conditioning, and matrices.
 - Exact/seeded equity, exhaustive hand evaluation, and deterministic chip-EV metrics.
 - Hash-verified, isolated 6-max and 9-max reference-prior RFI libraries.
+- Synthetic 6-max/9-max monitoring replay with bounded WebSocket delivery, gap recovery, health,
+  action history, range matrix inspection, and explicit control lockout.
 
 ## Current limitations
 
 - The first capture layout has broad primary regions; component-specific recognition regions and accuracy calibration belong to Milestone 3.
 - Visual recognition and reconstruction promotion still require held-out complete X-Poker replays.
 - Reference priors are approximate and low-confidence; no configuration-matched GTO data exists yet.
-- No exploit model or monitoring dashboard exists yet.
+- The exploit model is complete for synthetic profiles but is not connected to live reconstructed observations.
+- The monitoring dashboard currently consumes synthetic replays. Capture overlays, opponent-range
+  views, resolved strategy/math panels, and authorized complete-session soak evidence remain pending.
 - No table input/control implementation exists. Control is disabled in configuration, schemas, and API responses.
 - The project license has not been selected; external-source boundaries are documented in ADR 0002.
 

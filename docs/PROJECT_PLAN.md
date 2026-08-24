@@ -670,6 +670,14 @@ xpoker-agent/
 
 **Exit criterion:** The authorized table can be monitored continuously for complete sessions without state corruption.
 
+**Current checkpoint (2026-08-24):** The local React/TypeScript dashboard and FastAPI/WebSocket
+boundary run complete deterministic 6-max and 9-max synthetic hand replays. Schema-versioned
+snapshots, bounded event delivery, gap recovery, session/chip controls, reconstructed state, action
+history, health, reference-prior ranges, assumptions, and fail-closed strategy/control status are
+inspectable. The milestone remains in progress until live capture/vision output, opponent and
+resolved-strategy/math views, richer replay inspection, latency/soak telemetry, and complete
+authorized-session evidence pass their gates.
+
 ### Milestone 9 — Authorized control
 
 - Add action-target mapping and calibration.

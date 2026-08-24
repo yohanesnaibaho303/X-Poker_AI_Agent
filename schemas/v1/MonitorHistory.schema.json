@@ -1,0 +1,80 @@
+{
+  "$defs": {
+    "MonitorEnvelope": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "1.0",
+          "default": "1.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "sequence": {
+          "minimum": 1,
+          "title": "Sequence",
+          "type": "integer"
+        },
+        "kind": {
+          "enum": [
+            "snapshot",
+            "state",
+            "event",
+            "health"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "emitted_at": {
+          "format": "date-time",
+          "title": "Emitted At",
+          "type": "string"
+        },
+        "payload": {
+          "additionalProperties": true,
+          "title": "Payload",
+          "type": "object"
+        }
+      },
+      "required": [
+        "sequence",
+        "kind",
+        "emitted_at",
+        "payload"
+      ],
+      "title": "MonitorEnvelope",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "after_sequence": {
+      "minimum": 0,
+      "title": "After Sequence",
+      "type": "integer"
+    },
+    "latest_sequence": {
+      "minimum": 0,
+      "title": "Latest Sequence",
+      "type": "integer"
+    },
+    "gap_required": {
+      "title": "Gap Required",
+      "type": "boolean"
+    },
+    "envelopes": {
+      "items": {
+        "$ref": "#/$defs/MonitorEnvelope"
+      },
+      "title": "Envelopes",
+      "type": "array"
+    }
+  },
+  "required": [
+    "after_sequence",
+    "latest_sequence",
+    "gap_required",
+    "envelopes"
+  ],
+  "title": "MonitorHistory",
+  "type": "object"
+}

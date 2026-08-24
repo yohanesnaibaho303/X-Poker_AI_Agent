@@ -19,6 +19,10 @@ try {
     if ($LASTEXITCODE -ne 0) {
         throw "Pytest failed with exit code $LASTEXITCODE."
     }
+    & npm --prefix (Join-Path $projectRoot "apps\monitor") run check
+    if ($LASTEXITCODE -ne 0) {
+        throw "Dashboard checks failed with exit code $LASTEXITCODE."
+    }
 } finally {
     Pop-Location
 }

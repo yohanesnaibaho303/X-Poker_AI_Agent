@@ -2,11 +2,15 @@
 
 from __future__ import annotations
 
+import asyncio
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
-from typing import Literal
+from pathlib import Path
+from typing import Literal, cast
+from uuid import UUID
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
+from fastapi.staticfiles import StaticFiles
 
 from xpoker_agent import __version__
 from xpoker_agent.capture.profile import load_target_profile, match_authorized_target
@@ -14,11 +18,28 @@ from xpoker_agent.capture.windows import discover_xpoker_windows
 from xpoker_agent.chips import create_session_setup
 from xpoker_agent.config import load_game_config, load_runtime_config
 from xpoker_agent.logging import configure_logging
-from xpoker_agent.models import SessionSetupRequest
+from xpoker_agent.models import Position, SessionSetupRequest, positions_for_table_size
+from xpoker_agent.monitoring import MonitorHub, ReplayController, build_replay_snapshot
+from xpoker_agent.monitoring.models import ReplayStartRequest
+from xpoker_agent.ranges.library import (
+    ObservedRangeAction,
+    PreflopSpotKey,
+    load_seeded_reference_library,
+)
+from xpoker_agent.ranges.matrix import project_range_matrix
 from xpoker_agent.research.assets import AssetManifest
 from xpoker_agent.research.catalog import ComponentCatalog
 from xpoker_agent.research.registry import SourceRegistry
 from xpoker_agent.simulation import run_simulated_hand
+
+monitor_hub = MonitorHub()
+replay_controller = ReplayController(monitor_hub)
+
+
+def require_table_size(value: int) -> Literal[6, 9]:
+    if value not in (6, 9):
+        raise HTTPException(status_code=422, detail="table_size must be 6 or 9")
+    return cast(Literal[6, 9], value)
 
 
 @asynccontextmanager
@@ -27,6 +48,7 @@ async def lifespan(_: FastAPI) -> AsyncIterator[None]:
     load_game_config()
     load_runtime_config()
     yield
+    await replay_controller.stop()
 
 
 app = FastAPI(
@@ -49,8 +71,8 @@ def health() -> dict[str, object]:
 
 
 @app.get("/v1/config/game")
-def game_config(table_size: Literal[6, 9] = 9) -> dict[str, object]:
-    return load_game_config(table_size=table_size).model_dump(mode="json")
+def game_config(table_size: int = 9) -> dict[str, object]:
+    return load_game_config(table_size=require_table_size(table_size)).model_dump(mode="json")
 
 
 @app.get("/v1/config/games")
@@ -136,3 +158,104 @@ def capture_status() -> dict[str, object]:
         "eligible_count": sum(match.eligible for match in matches),
         "capture_active": False,
     }
+
+
+@app.get("/v1/ranges/reference")
+def reference_range(table_size: int, position: Position) -> dict[str, object]:
+    table_size = require_table_size(table_size)
+    positions = positions_for_table_size(table_size)
+    if position is Position.BB or position not in positions:
+        raise HTTPException(status_code=404, detail="no unopened reference prior for this position")
+    position_index = positions.index(position)
+    prior_positions = [item for item in positions[:position_index] if item is not Position.BB]
+    spot = PreflopSpotKey(
+        seats=table_size,
+        stack_depth_bb=100,
+        player_position=position,
+        players_remaining=table_size - position_index,
+        action_sequence=[
+            ObservedRangeAction(actor_position=item, type="fold") for item in prior_positions
+        ],
+    )
+    artifact = load_seeded_reference_library(table_size).lookup(spot).artifact
+    weighted = artifact.to_weighted_range(
+        player_ref="monitor-reference",
+        hand_id=UUID("80000000-0000-0000-0000-000000000001"),
+    )
+    return project_range_matrix(weighted).model_dump(mode="json")
+
+
+@app.get("/v1/monitor/snapshot")
+def monitor_snapshot(table_size: int = 9) -> dict[str, object]:
+    table_size = require_table_size(table_size)
+    snapshot = monitor_hub.snapshot
+    if snapshot is None or snapshot.table_size != table_size:
+        snapshot = build_replay_snapshot(table_size)
+    return snapshot.model_dump(mode="json")
+
+
+@app.get("/v1/monitor/events")
+def monitor_events(after_sequence: int = 0) -> dict[str, object]:
+    try:
+        history = monitor_hub.history_after(after_sequence)
+    except ValueError as error:
+        raise HTTPException(status_code=422, detail=str(error)) from error
+    return history.model_dump(mode="json")
+
+
+@app.post("/v1/monitor/replay/start")
+async def start_monitor_replay(request: ReplayStartRequest) -> dict[str, object]:
+    await replay_controller.start(
+        table_size=request.table_size,
+        interval_ms=request.interval_ms,
+    )
+    return {
+        "started": True,
+        "table_size": request.table_size,
+        "interval_ms": request.interval_ms,
+        "controller_enabled": False,
+    }
+
+
+@app.post("/v1/monitor/replay/stop")
+async def stop_monitor_replay() -> dict[str, object]:
+    await replay_controller.stop()
+    return {"stopped": True, "controller_enabled": False}
+
+
+@app.websocket("/v1/monitor/stream")
+async def monitor_stream(websocket: WebSocket) -> None:
+    await websocket.accept()
+    queue = await monitor_hub.subscribe()
+    try:
+        snapshot = monitor_hub.snapshot or build_replay_snapshot(9)
+        await websocket.send_json(
+            {
+                "schema_version": "1.0",
+                "sequence": monitor_hub.latest_sequence,
+                "kind": "snapshot",
+                "payload": snapshot.model_dump(mode="json"),
+            }
+        )
+        while True:
+            try:
+                envelope = await asyncio.wait_for(queue.get(), timeout=5.0)
+                await websocket.send_json(envelope.model_dump(mode="json"))
+            except TimeoutError:
+                await websocket.send_json(
+                    {
+                        "schema_version": "1.0",
+                        "sequence": monitor_hub.latest_sequence,
+                        "kind": "heartbeat",
+                        "payload": {"controller_enabled": False},
+                    }
+                )
+    except WebSocketDisconnect:
+        pass
+    finally:
+        await monitor_hub.unsubscribe(queue)
+
+
+MONITOR_DIST = Path(__file__).resolve().parents[2] / "apps" / "monitor" / "dist"
+if MONITOR_DIST.exists():
+    app.mount("/monitor", StaticFiles(directory=MONITOR_DIST, html=True), name="monitor")

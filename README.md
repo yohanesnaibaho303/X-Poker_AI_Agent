@@ -17,7 +17,7 @@ PowerShell:
 .\scripts\dev.ps1
 ```
 
-`bootstrap.ps1` creates a local Python 3.12 environment and installs the locked project dependencies. `dev.ps1` runs formatting/lint checks and tests before starting the local API at `http://127.0.0.1:8765`.
+`bootstrap.ps1` creates a local Python 3.12 environment and installs the locked Python and dashboard dependencies. `dev.ps1` runs all checks, builds the dashboard, and starts the local application at `http://127.0.0.1:8765/monitor/`.
 
 To validate without starting the server:
 
@@ -33,9 +33,10 @@ To run the deterministic simulated hand:
 
 ## Current scope
 
-Milestones 0, 1, 2, and 5 are complete. The repository includes capture/calibration, reconstruction
-and vision foundations, deterministic range and poker-math engines, and isolated 6-max/9-max
-reference priors. The priors are deliberately not labeled GTO. Perception/reconstruction promotion,
-GTO integration, the dashboard, and live control remain later gated work.
+Milestones 0, 1, 2, 5, and 7 are complete. The repository includes capture/calibration,
+reconstruction and vision foundations, deterministic range and poker-math engines, isolated
+6-max/9-max reference priors, opponent modeling, and a Milestone 8 synthetic-replay monitoring
+checkpoint. The priors are deliberately not labeled GTO. Perception/reconstruction promotion,
+configuration-matched GTO data, live-session monitoring acceptance, and control remain gated work.
 
 See [the project plan](docs/PROJECT_PLAN.md), [live status](docs/STATUS.md), and [milestones](docs/MILESTONES.md).

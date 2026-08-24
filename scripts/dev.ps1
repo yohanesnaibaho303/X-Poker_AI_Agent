@@ -12,6 +12,11 @@ if (-not (Test-Path -LiteralPath $python)) {
 }
 if (-not $SkipChecks) {
     & (Join-Path $PSScriptRoot "check.ps1")
+} else {
+    & npm --prefix (Join-Path $projectRoot "apps\monitor") run build
+    if ($LASTEXITCODE -ne 0) {
+        throw "Dashboard build failed with exit code $LASTEXITCODE."
+    }
 }
 
 Push-Location $projectRoot
