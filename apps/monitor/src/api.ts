@@ -1,6 +1,7 @@
 import type {
   ChipMode,
   LiveCaptureDiagnostic,
+  LiveHeroCalculation,
   LiveObservationStatus,
   MonitorSnapshot,
   RangeMatrix,
@@ -71,6 +72,10 @@ export function fetchLatestCaptureDiagnostic(): Promise<LiveCaptureDiagnostic> {
 
 export function fetchLiveObservationStatus(): Promise<LiveObservationStatus> {
   return requestJson("/v1/capture/live/status");
+}
+
+export function fetchLiveHeroStatus(): Promise<LiveHeroCalculation> {
+  return requestJson("/v1/hero/live");
 }
 
 export function startLiveObservation(

@@ -1,6 +1,27 @@
 export type TableSize = 6 | 9;
 export type ChipMode = "BB" | "native";
 
+export interface LiveHeroCalculation {
+  hero_seat: number | null;
+  hero_seat_confidence: number;
+  hero_position: string | null;
+  cards: string[];
+  hand_class: string | null;
+  big_blind_native: string | null;
+  hero_stack_native: string | null;
+  hero_stack_bb: string | null;
+  pot_native: string | null;
+  pot_bb: string | null;
+  call_amount_native: string | null;
+  call_amount_bb: string | null;
+  effective_stack_bb: string | null;
+  required_equity: string | null;
+  spr: string | null;
+  ready: boolean;
+  issues: string[];
+  assumptions: string[];
+}
+
 export interface SeatState {
   seat: number;
   position: string | null;
@@ -285,6 +306,10 @@ export interface LiveObservationStatus {
   recognized_hero_cards: string[];
   hero_cards_accepted: boolean;
   hero_cards_reason: string;
+  detected_hero_seat: number | null;
+  hero_seat_confidence: number;
+  hero_seat_reason: string;
+  detected_hero_position: string | null;
   dealer_consensus: {
     accepted: boolean;
     value: string | null;

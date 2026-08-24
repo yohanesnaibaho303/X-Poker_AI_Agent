@@ -21,6 +21,7 @@ from xpoker_agent.config import load_game_config, load_runtime_config
 from xpoker_agent.logging import configure_logging
 from xpoker_agent.models import Position, SessionSetupRequest, positions_for_table_size
 from xpoker_agent.monitoring import MonitorHub, ReplayController, build_replay_snapshot
+from xpoker_agent.monitoring.live_hero import build_live_hero_calculation
 from xpoker_agent.monitoring.models import ReplaySeekRequest, ReplayStartRequest
 from xpoker_agent.ranges.library import (
     ObservedRangeAction,
@@ -201,6 +202,11 @@ async def stop_live_observation() -> dict[str, object]:
 @app.get("/v1/capture/live/status")
 def live_observation_status() -> dict[str, object]:
     return live_observation.status().model_dump(mode="json")
+
+
+@app.get("/v1/hero/live")
+def live_hero_status() -> dict[str, object]:
+    return build_live_hero_calculation(live_observation.status()).model_dump(mode="json")
 
 
 @app.get("/v1/capture/latest/diagnostic")

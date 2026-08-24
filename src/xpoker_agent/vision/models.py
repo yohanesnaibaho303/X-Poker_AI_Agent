@@ -449,6 +449,10 @@ class LiveObservationStatus(StrictModel):
     recognized_hero_cards: list[str] = Field(default_factory=list)
     hero_cards_accepted: bool = False
     hero_cards_reason: str
+    detected_hero_seat: int | None = Field(default=None, ge=0, le=8)
+    hero_seat_confidence: float = Field(default=0.0, ge=0.0, le=1.0)
+    hero_seat_reason: str
+    detected_hero_position: Position | None = None
     dealer_consensus: TemporalConsensus
     seat_status_consensus: list[SeatStatusConsensus] = Field(default_factory=list)
     active_seats: list[int] = Field(default_factory=list)

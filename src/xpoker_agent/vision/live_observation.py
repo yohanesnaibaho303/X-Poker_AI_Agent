@@ -1117,6 +1117,12 @@ class LiveObservationService:
         latest_age_ms = None
         if latest_at is not None:
             latest_age_ms = max(0.0, (datetime.now(UTC) - latest_at).total_seconds() * 1000)
+        hero_seat, hero_seat_confidence, hero_seat_reason = self._detect_hero_seat()
+        hero_position = (
+            self._provisional_positions.get(hero_seat)
+            if hero_seat is not None
+            else None
+        )
         readiness = self._reconstruction_readiness()
         canonical_hand: LiveCanonicalHandPrefix | None = None
         canonical_error: str | None = None
@@ -1177,6 +1183,10 @@ class LiveObservationService:
             recognized_hero_cards=self._recognized_hero_cards,
             hero_cards_accepted=self._hero_cards_accepted,
             hero_cards_reason=self._hero_cards_reason,
+            detected_hero_seat=hero_seat,
+            hero_seat_confidence=hero_seat_confidence,
+            hero_seat_reason=hero_seat_reason,
+            detected_hero_position=hero_position,
             dealer_consensus=self._dealer_consensus,
             seat_status_consensus=self._seat_status_consensus,
             active_seats=self._active_seats,
@@ -1313,7 +1323,10 @@ class LiveObservationService:
             self._hand_starting_stacks_native
         ):
             issues.append("starting_stacks_not_captured")
-        if 0 in self._active_seats and not self._hero_cards_accepted:
+        hero_seat, _, _ = self._detect_hero_seat()
+        if hero_seat is None:
+            issues.append("hero_seat_not_detected")
+        if hero_seat in self._active_seats and not self._hero_cards_accepted:
             issues.append("hero_cards_not_stable")
         if (
             self._board_consensus.accepted
@@ -1379,6 +1392,9 @@ class LiveObservationService:
             raise ValueError("retained native blinds are unavailable")
         if self._pot_consensus.value is None:
             raise ValueError("stable current pot is unavailable")
+        hero_seat, _, _ = self._detect_hero_seat()
+        if hero_seat is None:
+            raise ValueError("hero seat is unavailable")
         _, big_token = self._session_blind_consensus.value.split("/", maxsplit=1)
         active = set(boundary.current_active_seats)
         current_stacks = {
@@ -1392,7 +1408,7 @@ class LiveObservationService:
             target_fingerprint=self._session_target_fingerprint,
             hand_epoch=self._hand_epoch,
             table_size=self._table_size,
-            hero_seat=0,
+            hero_seat=hero_seat,
             dealer_seat=boundary.current_dealer_seat,
             starting_stacks_native=dict(self._hand_starting_stacks_native),
             current_stacks_native=current_stacks,
@@ -1408,6 +1424,34 @@ class LiveObservationService:
             ],
             amount_reconciliations=self._reconcile_action_amounts(),
         )
+
+    def _detect_hero_seat(self) -> tuple[int | None, float, str]:
+        """Map local-only hero evidence to the calibrated bottom X-Poker seat."""
+        seat_zero = next(
+            (item for item in self._seat_status_consensus if item.seat == 0), None
+        )
+        if (
+            seat_zero is not None
+            and seat_zero.consensus.accepted
+            and seat_zero.consensus.value in {"empty", "on_break"}
+        ):
+            return None, 0.0, "local hero anchor is not actively seated"
+        evidence: list[tuple[str, float]] = []
+        if self._hero_cards_accepted and self._hero_card_consensus:
+            evidence.append(
+                (
+                    "accepted local hole-card surface",
+                    min(item.confidence for item in self._hero_card_consensus),
+                )
+            )
+        if self._hero_control_consensus.accepted:
+            evidence.append(
+                ("accepted local action-control surface", self._hero_control_consensus.confidence)
+            )
+        if not evidence:
+            return None, 0.0, "no stable local hole-card or action-control evidence"
+        confidence = max(score for _, score in evidence)
+        return 0, confidence, "; ".join(reason for reason, _ in evidence)
 
     def _reconcile_blind_posts(self) -> list[BlindPostReconciliation]:
         boundary = self._hand_boundary_validation

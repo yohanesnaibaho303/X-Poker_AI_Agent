@@ -136,7 +136,7 @@
   epochs with zero failures and produced six mutually unique provisional matches: Call 2 and 4,
   plus Bet 4, 3, 6, and 2 native units. None are canonical events yet because legal order and pot
   accounting remain outstanding gates.
-- Current full suite: Ruff passed; 287 Pytest/Hypothesis tests, 11 TypeScript tests, and the
+- Current full suite: Ruff passed; 289 Pytest/Hypothesis tests, 11 TypeScript tests, and the
   production dashboard build passed. Table control remains disabled.
 - Added deterministic provisional clockwise-order validation. Each visual action now carries the
   stable dealer and active-seat context present when it was emitted. Preflop starts after the BB;
@@ -218,6 +218,11 @@
   snapshots pre-blind starting stacks; accepted blinds, hero cards, legal action candidates, and
   board transitions are reduced into a deterministic hand prefix only when exact stable current
   stacks and pot match the reducer. Rejections remain inspectable and control stays disabled.
+- Reprioritized the MVP around automatic hero intelligence. Stable local hole-card or action-control
+  evidence now identifies the calibrated X-Poker hero seat without a user-entered seat; exact
+  full-ring position evidence automatically selects the reference range. A separate deterministic
+  live-hero boundary exposes hand class, BB-normalized hero/pot/call values, effective stack, SPR,
+  required equity, confidence, and explicit missing-input issues in the dashboard.
 
 ## Completed project checkpoints
 

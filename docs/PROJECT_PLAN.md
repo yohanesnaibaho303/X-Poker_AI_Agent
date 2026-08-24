@@ -702,6 +702,10 @@ xpoker-agent/
 - Add health monitoring and latency measurement.
 - Show recommendations with confidence and assumptions.
 - Record full decision traces.
+- Prioritize an automatic live-hero path: detect the local hole cards and hero seat, resolve the
+  position, normalize accepted stack/pot/call evidence to BB, and display deterministic pot odds,
+  effective stack, SPR, and the matching provenance-bearing range. Full replay and complete
+  opponent-history presentation are not on the MVP critical path.
 
 **Exit criterion:** The authorized table can be monitored continuously for complete sessions without state corruption.
 

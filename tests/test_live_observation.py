@@ -145,9 +145,12 @@ def test_pre_action_controls_stabilize_without_becoming_legal_actions() -> None:
         for _ in range(3):
             await service.inspect_once(table_size=9)
 
-        result = service.status().hero_control_consensus
+        status = service.status()
+        result = status.hero_control_consensus
         assert result.accepted is True
         assert result.value == "pre_action::fold_or_check,call_any:"
+        assert status.detected_hero_seat == 0
+        assert status.hero_seat_reason == "accepted local action-control surface"
         assert "decision" not in (result.value or "")
 
     asyncio.run(scenario())
@@ -540,6 +543,9 @@ def test_hero_cards_require_temporal_consensus_and_persist_within_hand() -> None
         assert status.hero_cards_accepted is True
         assert status.recognized_hero_cards == ["As", "2d"]
         assert status.hero_cards_reason == "accepted earlier in the current hand epoch"
+        assert status.detected_hero_seat == 0
+        assert status.hero_seat_confidence == 1.0
+        assert status.hero_seat_reason == "accepted local hole-card surface"
 
     asyncio.run(scenario())
 

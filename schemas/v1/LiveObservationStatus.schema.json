@@ -2004,6 +2004,42 @@
       "title": "Hero Cards Reason",
       "type": "string"
     },
+    "detected_hero_seat": {
+      "anyOf": [
+        {
+          "maximum": 8,
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Detected Hero Seat"
+    },
+    "hero_seat_confidence": {
+      "default": 0.0,
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Hero Seat Confidence",
+      "type": "number"
+    },
+    "hero_seat_reason": {
+      "title": "Hero Seat Reason",
+      "type": "string"
+    },
+    "detected_hero_position": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Position"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
     "dealer_consensus": {
       "$ref": "#/$defs/TemporalConsensus"
     },
@@ -2194,6 +2230,7 @@
     "board_consensus",
     "board_cards_reason",
     "hero_cards_reason",
+    "hero_seat_reason",
     "dealer_consensus",
     "positions_reason",
     "pot_consensus",

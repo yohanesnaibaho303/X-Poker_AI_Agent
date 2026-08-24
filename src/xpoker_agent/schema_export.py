@@ -29,6 +29,7 @@ from xpoker_agent.models import (
     StrategyMatch,
     WeightedRange,
 )
+from xpoker_agent.monitoring.live_hero import LiveHeroCalculation
 from xpoker_agent.monitoring.models import (
     MonitorEnvelope,
     MonitorHistory,
@@ -72,6 +73,7 @@ MODELS = [
     MonitorHistory,
     ReplaySeekRequest,
     ReplayStartRequest,
+    LiveHeroCalculation,
     LiveCaptureDiagnostic,
     LiveObservationStartRequest,
     LiveObservationStatus,

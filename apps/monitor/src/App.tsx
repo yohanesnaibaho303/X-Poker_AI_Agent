@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState, type CSSProperties, type ReactNode } from "react";
 import {
   fetchLatestCaptureDiagnostic,
+  fetchLiveHeroStatus,
   fetchLiveObservationStatus,
   fetchReferenceRange,
   previewSession,
@@ -17,6 +18,7 @@ import type {
   HandEvent,
   HandState,
   LiveCaptureDiagnostic,
+  LiveHeroCalculation,
   LiveObservationStatus,
   RangeMatrix,
   SessionPreview,
@@ -237,6 +239,7 @@ export default function App() {
   const [matrixLoading, setMatrixLoading] = useState(false);
   const [captureDiagnostic, setCaptureDiagnostic] = useState<LiveCaptureDiagnostic | null>(null);
   const [liveObservation, setLiveObservation] = useState<LiveObservationStatus | null>(null);
+  const [liveHero, setLiveHero] = useState<LiveHeroCalculation | null>(null);
   const [captureError, setCaptureError] = useState<string | null>(null);
   const [captureNonce, setCaptureNonce] = useState(0);
   const { snapshot, connection, error, refresh } = useMonitor(tableSize);
@@ -246,14 +249,22 @@ export default function App() {
     return Number.isFinite(parsed) && parsed > 0 ? parsed : null;
   }, [bigBlindText]);
 
+  const rangePosition = liveObservation?.running
+    ? liveObservation.detected_hero_position
+    : position;
+
   useEffect(() => {
     if (!POSITIONS[tableSize].includes(position)) setPosition("BTN");
+    if (!rangePosition || !POSITIONS[tableSize].includes(rangePosition)) {
+      setMatrix(null);
+      return;
+    }
     setMatrixLoading(true);
-    fetchReferenceRange(tableSize, position)
+    fetchReferenceRange(tableSize, rangePosition)
       .then(setMatrix)
       .catch(() => setMatrix(null))
       .finally(() => setMatrixLoading(false));
-  }, [position, tableSize]);
+  }, [position, rangePosition, tableSize]);
 
   useEffect(() => {
     let mounted = true;
@@ -262,6 +273,9 @@ export default function App() {
         const status = await fetchLiveObservationStatus();
         if (!mounted) return;
         setLiveObservation(status);
+        const hero = await fetchLiveHeroStatus();
+        if (!mounted) return;
+        setLiveHero(hero);
         if (status.latest_sequence > 0) {
           const diagnostic = await fetchLatestCaptureDiagnostic();
           if (!mounted) return;
@@ -282,6 +296,17 @@ export default function App() {
       window.clearInterval(timer);
     };
   }, []);
+
+  useEffect(() => {
+    if (!liveObservation?.running) return;
+    if (liveObservation.table_size !== tableSize) {
+      setTableSize(liveObservation.table_size);
+    }
+    const detected = liveObservation.detected_hero_position;
+    if (detected && POSITIONS[liveObservation.table_size].includes(detected)) {
+      setPosition(detected);
+    }
+  }, [liveObservation, tableSize]);
 
   const validateSession = async () => {
     try {
@@ -414,6 +439,8 @@ export default function App() {
             <div className="health-row"><span>Board consensus</span><strong>{liveObservation?.board_consensus.accepted ? `${liveObservation.board_consensus.value} cards` : liveObservation?.board_consensus.reason ?? "waiting"}</strong></div>
             <div className="health-row"><span>Recognized board</span><strong>{liveObservation?.board_cards_accepted ? liveObservation.recognized_board_cards.join(" ") : liveObservation?.board_cards_reason ?? "waiting"}</strong></div>
             <div className="health-row"><span>Hero cards</span><strong>{liveObservation?.hero_cards_accepted ? liveObservation.recognized_hero_cards.join(" ") : liveObservation?.hero_cards_reason ?? "waiting"}</strong></div>
+            <div className="health-row"><span>Hero seat</span><strong>{liveObservation?.detected_hero_seat != null ? `Seat ${liveObservation.detected_hero_seat + 1} · ${formatPercent(liveObservation.hero_seat_confidence)}` : liveObservation?.hero_seat_reason ?? "waiting"}</strong></div>
+            <div className="health-row"><span>Hero position</span><strong>{liveObservation?.detected_hero_position ?? liveObservation?.positions_reason ?? "waiting"}</strong></div>
             <div className="health-row"><span>Dealer seat</span><strong>{liveObservation?.dealer_consensus.accepted ? liveObservation.dealer_consensus.value : liveObservation?.dealer_consensus.reason ?? "waiting"}</strong></div>
             <div className="health-row"><span>Active seats</span><strong>{liveObservation?.active_seats.length ?? 0}/{tableSize}</strong></div>
             <div className="health-row"><span>Position gate</span><strong>{liveObservation?.positions_reason ?? "waiting"}</strong></div>
@@ -471,28 +498,28 @@ export default function App() {
             <RangeGrid matrix={matrix} loading={matrixLoading} />
             <section className="panel strategy-panel">
               <div className="panel-heading compact">
-                <div><p className="eyebrow">Decision intelligence</p><h3>Strategy & exploit</h3></div>
-                <StatusPill tone="warn">Unavailable</StatusPill>
+                <div><p className="eyebrow">Live hero intelligence</p><h3>Hand, range & calculation</h3></div>
+                <StatusPill tone={liveHero?.ready ? "ok" : "warn"}>{liveHero?.ready ? "Live" : "Waiting"}</StatusPill>
               </div>
               <div className="strategy-block">
-                <span>GTO match</span><strong>{String(snapshot?.strategy.status ?? "unavailable")}</strong>
-                <small>No configuration-matched solver artifact is installed.</small>
+                <span>Detected hand</span><strong>{liveHero?.cards.length === 2 ? `${liveHero.cards.join(" ")} · ${liveHero.hand_class}` : "—"}</strong>
+                <small>{liveHero?.hero_seat != null ? `Seat ${liveHero.hero_seat + 1} · ${liveHero.hero_position ?? "position pending"}` : "Waiting for local hero evidence."}</small>
               </div>
               <div className="strategy-block">
-                <span>Reference prior</span><strong>{formatPercent(snapshot?.strategy.confidence)}</strong>
-                <small>Visible for inspection, never substituted as exact GTO.</small>
+                <span>Range source</span><strong>{matrix ? "Reference prior" : "Unavailable"}</strong>
+                <small>{liveHero?.hero_position ? `${liveHero.hero_position} selected automatically. Not exact GTO.` : "Waiting for a fully resolved position."}</small>
               </div>
               <div className="strategy-block">
-                <span>Exploit model</span><strong>{String(snapshot?.exploit.status ?? "synthetic_only")}</strong>
-                <small>Waiting for reconstructed opponent observations.</small>
+                <span>Live blockers</span><strong>{liveHero?.issues.length ?? 0}</strong>
+                <small>{liveHero?.issues.join(", ") || "Accepted live inputs are internally consistent."}</small>
               </div>
               <div className="math-grid">
-                <div><span>Effective</span><strong>{snapshot?.poker_math.effective_stack_bb ? `${snapshot.poker_math.effective_stack_bb}BB` : "—"}</strong></div>
-                <div><span>SPR</span><strong>{snapshot?.poker_math.spr ? Number(snapshot.poker_math.spr).toFixed(2) : "—"}</strong></div>
-                <div><span>Call</span><strong>{snapshot ? `${snapshot.poker_math.call_amount_bb}BB` : "—"}</strong></div>
-                <div><span>Required equity</span><strong>{snapshot?.poker_math.pot_odds_required_equity ? formatPercent(Number(snapshot.poker_math.pot_odds_required_equity)) : "—"}</strong></div>
-                <div><span>Equity</span><strong>{formatPercent(snapshot?.poker_math.equity)}</strong></div>
-                <div><span>Call EV</span><strong>{snapshot?.poker_math.call_ev_bb ?? "—"}</strong></div>
+                <div><span>Hero stack</span><strong>{liveHero?.hero_stack_bb ? `${Number(liveHero.hero_stack_bb).toFixed(2)}BB` : "—"}</strong></div>
+                <div><span>Effective</span><strong>{liveHero?.effective_stack_bb ? `${Number(liveHero.effective_stack_bb).toFixed(2)}BB` : "—"}</strong></div>
+                <div><span>Pot</span><strong>{liveHero?.pot_bb ? `${Number(liveHero.pot_bb).toFixed(2)}BB` : "—"}</strong></div>
+                <div><span>SPR</span><strong>{liveHero?.spr ? Number(liveHero.spr).toFixed(2) : "—"}</strong></div>
+                <div><span>Call</span><strong>{liveHero?.call_amount_bb != null ? `${Number(liveHero.call_amount_bb).toFixed(2)}BB` : "—"}</strong></div>
+                <div><span>Required equity</span><strong>{liveHero?.required_equity ? formatPercent(Number(liveHero.required_equity)) : "—"}</strong></div>
               </div>
               <label htmlFor="position">Range position</label>
               <select id="position" value={position} onChange={(event) => setPosition(event.target.value)}>
