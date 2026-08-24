@@ -766,7 +766,8 @@ set passes it.
 Hero-card recognition uses a separate declared layout region and orientation-specific artifact
 because X-Poker overlaps and angles the two bottom cards. The detector requires exactly one merged
 card surface, splits deterministic left/right crops, applies a stricter 0.08 rank distance plus
-second-rank margin, classifies the local suit palette, and requires three distinct frames and
+second-rank margin, classifies the local suit palette within an orientation-scoped half-card crop
+that excludes the overlapping neighbor, and requires three distinct frames and
 physical uniqueness. Enrolled artifacts store only 18-by-26 masks and source hashes. Enrollment
 self-matches and visually checked live examples are calibration evidence, not held-out accuracy.
 Single-frame diagnostics may expose that fixed-size derived rank mask so a visually labeled

@@ -59,6 +59,26 @@ def match_hero_rank_signature(
     return rank, distance, margin
 
 
+def classify_hero_suit(
+    card_crop: CapturedFrame, position: str
+) -> tuple[str | None, float]:
+    """Exclude the adjacent overlapped card before applying palette evidence."""
+    if position not in {"left", "right"}:
+        raise ValueError("hero-card position must be left or right")
+    focus_width = min(26, card_crop.width)
+    left = 0 if position == "left" else card_crop.width - focus_width
+    focused = crop_frame(
+        card_crop,
+        PixelBox(
+            left=left,
+            top=0,
+            right=left + focus_width,
+            bottom=card_crop.height,
+        ),
+    )
+    return classify_suit(focused)
+
+
 def detect_hero_cards(frame: CapturedFrame, layout: LayoutProfile) -> HeroCardsObservation:
     crop = crop_layout_region(frame, layout, "hero_cards")
     surfaces = [
@@ -98,7 +118,7 @@ def detect_hero_cards(frame: CapturedFrame, layout: LayoutProfile) -> HeroCardsO
         card_crop = crop_frame(crop, box)
         signature = rank_signature(card_crop)
         rank, distance, margin = match_hero_rank_signature(signature, position)
-        suit, suit_confidence = classify_suit(card_crop)
+        suit, suit_confidence = classify_hero_suit(card_crop, position)
         if rank is None or suit is None:
             observations.append(
                 CardFaceObservation(

@@ -136,7 +136,7 @@
   epochs with zero failures and produced six mutually unique provisional matches: Call 2 and 4,
   plus Bet 4, 3, 6, and 2 native units. None are canonical events yet because legal order and pot
   accounting remain outstanding gates.
-- Current full suite: Ruff passed; 291 Pytest/Hypothesis tests, 11 TypeScript tests, and the
+- Current full suite: Ruff passed; 292 Pytest/Hypothesis tests, 11 TypeScript tests, and the
   production dashboard build passed. Table control remains disabled.
 - Added deterministic provisional clockwise-order validation. Each visual action now carries the
   stable dealer and active-seat context present when it was emitted. Preflop starts after the BB;
@@ -169,6 +169,10 @@
 - Subsequent live hands labeled `7c 5c` and `7d 6s`. The previously enrolled right-5 recognized on
   the next appearance; two lighting variants for left-7 and the new right-6 mask were added with
   their exact frame hashes.
+- A visually labeled `5d 2s` hand exposed adjacent-card color contamination: the old whole-crop
+  palette pass labeled the right black spade as a diamond from the overlapping left card. Hero suit
+  classification now uses only the orientation-specific outer 26 pixels, with a regression proving
+  that neighboring blue pixels cannot override the right-card spade.
 - Added privacy-scoped native blind parsing from X-Poker's rule label, including grouped and compact
   chip tokens. Small and big blinds must appear together with `0 < SB < BB`, then repeat for three
   distinct frames before the live status exposes a `SB/BB` normalization basis. Ambiguous OCR clears
