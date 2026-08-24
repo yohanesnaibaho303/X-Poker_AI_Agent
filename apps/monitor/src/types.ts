@@ -250,6 +250,17 @@ export interface LiveObservationStatus {
   recognized_board_cards: string[];
   board_cards_accepted: boolean;
   board_cards_reason: string;
+  hero_card_consensus: Array<{
+    accepted: boolean;
+    value: string | null;
+    confidence: number;
+    stable_frames: number;
+    alternatives: string[];
+    reason: string | null;
+  }>;
+  recognized_hero_cards: string[];
+  hero_cards_accepted: boolean;
+  hero_cards_reason: string;
   dealer_consensus: {
     accepted: boolean;
     value: string | null;

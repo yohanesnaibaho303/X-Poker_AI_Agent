@@ -361,4 +361,11 @@ def test_live_capture_diagnostic_supports_countdown_hand_and_exposes_schedule() 
     assert diagnostic.board_card_slots == 0
     assert diagnostic.board_geometry_supported is True
     assert diagnostic.ocr_latency_ms == 5
-    assert set(diagnostic.regions) == {"board", "pot", "rule_label", "seat_ring", "actions"}
+    assert set(diagnostic.regions) == {
+        "board",
+        "hero_cards",
+        "pot",
+        "rule_label",
+        "seat_ring",
+        "actions",
+    }

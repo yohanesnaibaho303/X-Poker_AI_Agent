@@ -59,6 +59,9 @@ class LiveObservationService:
         self._card_samples: dict[int, deque[TemporalSample]] = {
             index: deque(maxlen=maximum_samples) for index in range(5)
         }
+        self._hero_card_samples: dict[int, deque[TemporalSample]] = {
+            index: deque(maxlen=maximum_samples) for index in range(2)
+        }
         self._stack_samples: dict[int, deque[TemporalSample]] = {
             seat: deque(maxlen=maximum_samples) for seat in range(9)
         }
@@ -95,6 +98,10 @@ class LiveObservationService:
         self._recognized_board_cards: list[str] = []
         self._board_cards_accepted = False
         self._board_cards_reason = "no_postflop_board"
+        self._hero_card_consensus: list[TemporalConsensus] = []
+        self._recognized_hero_cards: list[str] = []
+        self._hero_cards_accepted = False
+        self._hero_cards_reason = "hero_cards_unobserved"
         self._dealer_samples: deque[TemporalSample] = deque(maxlen=maximum_samples)
         self._dealer_consensus = self._empty_consensus("no_samples")
         self._status_samples: dict[int, deque[TemporalSample]] = {
@@ -158,6 +165,8 @@ class LiveObservationService:
         self._board_samples.clear()
         for samples in self._card_samples.values():
             samples.clear()
+        for samples in self._hero_card_samples.values():
+            samples.clear()
         for samples in self._stack_samples.values():
             samples.clear()
         for samples in self._action_samples.values():
@@ -174,6 +183,10 @@ class LiveObservationService:
         self._recognized_board_cards = []
         self._board_cards_accepted = False
         self._board_cards_reason = "no_postflop_board"
+        self._hero_card_consensus = []
+        self._recognized_hero_cards = []
+        self._hero_cards_accepted = False
+        self._hero_cards_reason = "hero_cards_unobserved"
         self._dealer_samples.clear()
         self._dealer_consensus = self._empty_consensus("no_samples")
         for samples in self._status_samples.values():
@@ -328,9 +341,16 @@ class LiveObservationService:
                     self._hand_epoch += 1
                     self._action_armed_seats.clear()
                     self._action_occurrence_counts.clear()
+                    for samples in self._hero_card_samples.values():
+                        samples.clear()
+                    self._hero_card_consensus = []
+                    self._recognized_hero_cards = []
+                    self._hero_cards_accepted = False
+                    self._hero_cards_reason = "new_hand_epoch"
                 self._last_accepted_board_count = board_count
 
         self._record_board_cards(diagnostic)
+        self._record_hero_cards(diagnostic)
         if diagnostic.dealer.seat is None:
             self._dealer_samples.clear()
             self._dealer_consensus = self._empty_consensus("current_dealer_ambiguous")
@@ -563,6 +583,55 @@ class LiveObservationService:
         else:
             self._board_cards_reason = "insufficient stable card frames"
 
+    def _record_hero_cards(self, diagnostic: LiveCaptureDiagnostic) -> None:
+        observation = diagnostic.hero_cards
+        valid_single_frame = (
+            observation.geometry_supported
+            and len(observation.cards) == 2
+            and all(card.card is not None for card in observation.cards)
+        )
+        if not valid_single_frame:
+            if self._hero_cards_accepted:
+                self._hero_cards_reason = "accepted earlier in the current hand epoch"
+                return
+            for samples in self._hero_card_samples.values():
+                samples.clear()
+            self._hero_card_consensus = []
+            self._recognized_hero_cards = []
+            self._hero_cards_accepted = False
+            self._hero_cards_reason = observation.reason
+            return
+        results: list[TemporalConsensus] = []
+        for index, card in enumerate(observation.cards):
+            assert card.card is not None
+            results.append(
+                self._append_consecutive(
+                    self._hero_card_samples[index],
+                    TemporalSample(
+                        frame_sequence=diagnostic.frame_sequence,
+                        content_sha256=diagnostic.content_sha256,
+                        value=card.card,
+                        confidence=card.confidence,
+                    ),
+                )
+            )
+        self._hero_card_consensus = results
+        if not all(result.accepted and result.value for result in results):
+            self._recognized_hero_cards = []
+            self._hero_cards_accepted = False
+            self._hero_cards_reason = "hero card slots require three consecutive frames"
+            return
+        cards = [result.value for result in results if result.value is not None]
+        known_board = set(self._recognized_board_cards if self._board_cards_accepted else [])
+        if len(cards) != 2 or len(set(cards)) != 2 or known_board.intersection(cards):
+            self._recognized_hero_cards = []
+            self._hero_cards_accepted = False
+            self._hero_cards_reason = "hero cards violate physical-card uniqueness"
+            return
+        self._recognized_hero_cards = cards
+        self._hero_cards_accepted = True
+        self._hero_cards_reason = "three-frame hero-card consensus and uniqueness passed"
+
     def _record_seat_statuses(self, diagnostic: LiveCaptureDiagnostic) -> None:
         panels = {panel.seat: panel for panel in diagnostic.seat_panels}
         status_results: list[SeatStatusConsensus] = []
@@ -681,6 +750,10 @@ class LiveObservationService:
             recognized_board_cards=self._recognized_board_cards,
             board_cards_accepted=self._board_cards_accepted,
             board_cards_reason=self._board_cards_reason,
+            hero_card_consensus=self._hero_card_consensus,
+            recognized_hero_cards=self._recognized_hero_cards,
+            hero_cards_accepted=self._hero_cards_accepted,
+            hero_cards_reason=self._hero_cards_reason,
             dealer_consensus=self._dealer_consensus,
             seat_status_consensus=self._seat_status_consensus,
             active_seats=self._active_seats,

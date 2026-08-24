@@ -2,7 +2,7 @@ import json
 
 from xpoker_agent.capture.frames import CapturedFrame
 from xpoker_agent.config import PROJECT_ROOT
-from xpoker_agent.vision.card_faces import _classify_suit, match_rank_signature
+from xpoker_agent.vision.card_faces import classify_suit, match_rank_signature
 
 
 def test_rank_template_artifact_covers_all_ranks_and_self_matches() -> None:
@@ -27,6 +27,6 @@ def _solid_with_patch(color: tuple[int, int, int, int]) -> CapturedFrame:
 
 
 def test_suit_color_classifier_uses_xpoker_palette() -> None:
-    assert _classify_suit(_solid_with_patch((30, 30, 200, 255)))[0] == "h"
-    assert _classify_suit(_solid_with_patch((200, 50, 30, 255)))[0] == "d"
-    assert _classify_suit(_solid_with_patch((30, 160, 30, 255)))[0] == "c"
+    assert classify_suit(_solid_with_patch((30, 30, 200, 255)))[0] == "h"
+    assert classify_suit(_solid_with_patch((200, 50, 30, 255)))[0] == "d"
+    assert classify_suit(_solid_with_patch((30, 160, 30, 255)))[0] == "c"

@@ -82,7 +82,7 @@ def match_rank_signature(signature: bytes) -> tuple[str | None, float, float]:
     return winner, distance, margin
 
 
-def _classify_suit(card: CapturedFrame) -> tuple[str | None, float]:
+def classify_suit(card: CapturedFrame) -> tuple[str | None, float]:
     normalized = normalize_frame(card, 45, 66)
     counts = {"h": 0, "d": 0, "c": 0}
     dark = 0
@@ -106,7 +106,7 @@ def _classify_suit(card: CapturedFrame) -> tuple[str | None, float]:
 
 def recognize_card_face(card: CapturedFrame) -> CardFaceObservation:
     rank, distance, margin = match_rank_signature(rank_signature(card))
-    suit, suit_confidence = _classify_suit(card)
+    suit, suit_confidence = classify_suit(card)
     if rank is None or suit is None:
         return CardFaceObservation(
             card=None,

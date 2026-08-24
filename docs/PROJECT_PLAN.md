@@ -737,6 +737,13 @@ three-frame slot consensus, and physical-card uniqueness all fail closed indepen
 calibration path cannot satisfy the card-accuracy exit gate until a larger held-out labeled replay
 set passes it.
 
+Hero-card recognition uses a separate declared layout region and orientation-specific artifact
+because X-Poker overlaps and angles the two bottom cards. The detector requires exactly one merged
+card surface, splits deterministic left/right crops, applies a stricter 0.08 rank distance plus
+second-rank margin, classifies the local suit palette, and requires three distinct frames and
+physical uniqueness. Enrolled artifacts store only 18-by-26 masks and source hashes. Enrollment
+self-matches and visually checked live examples are calibration evidence, not held-out accuracy.
+
 Dealer-button detection now uses the calibrated X-Poker white-marker component geometry and maps a
 single candidate to the nearest versioned seat anchor. Three distinct frames are required before a
 dealer seat is exposed. The detector fails closed when the marker is absent or non-unique; position

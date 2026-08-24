@@ -105,6 +105,39 @@
       "title": "DealerButtonObservation",
       "type": "object"
     },
+    "HeroCardsObservation": {
+      "additionalProperties": false,
+      "properties": {
+        "geometry_supported": {
+          "title": "Geometry Supported",
+          "type": "boolean"
+        },
+        "cards": {
+          "items": {
+            "$ref": "#/$defs/CardFaceObservation"
+          },
+          "title": "Cards",
+          "type": "array"
+        },
+        "confidence": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "reason": {
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "geometry_supported",
+        "confidence",
+        "reason"
+      ],
+      "title": "HeroCardsObservation",
+      "type": "object"
+    },
     "PixelBox": {
       "additionalProperties": false,
       "description": "Top-down, half-open pixel coordinates.",
@@ -628,6 +661,9 @@
       "title": "Board Cards",
       "type": "array"
     },
+    "hero_cards": {
+      "$ref": "#/$defs/HeroCardsObservation"
+    },
     "dealer": {
       "$ref": "#/$defs/DealerButtonObservation"
     },
@@ -704,6 +740,7 @@
     "board_card_slots",
     "board_geometry_supported",
     "board_geometry_confidence",
+    "hero_cards",
     "dealer",
     "regions"
   ],

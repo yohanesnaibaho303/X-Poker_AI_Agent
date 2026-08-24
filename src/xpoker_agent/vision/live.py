@@ -13,6 +13,7 @@ from xpoker_agent.vision.actions import action_badge_region, parse_action_badge
 from xpoker_agent.vision.card_faces import recognize_card_face
 from xpoker_agent.vision.cards import classify_board_geometry, detect_card_slots
 from xpoker_agent.vision.dealer import detect_dealer_button
+from xpoker_agent.vision.hero_cards import detect_hero_cards
 from xpoker_agent.vision.models import (
     LiveCaptureDiagnostic,
     SeatOccupancyObservation,
@@ -50,7 +51,7 @@ def build_live_capture_diagnostic(
     visible_regions = {
         name: (region.x, region.y, region.width, region.height)
         for name, region in layout.regions.items()
-        if name in {"board", "pot", "rule_label", "seat_ring", "actions"}
+        if name in {"board", "hero_cards", "pot", "rule_label", "seat_ring", "actions"}
     }
     visible_regions.update(
         {
@@ -132,6 +133,7 @@ def build_live_capture_diagnostic(
         board_geometry_confidence=board_geometry.confidence,
         board_geometry_reasons=board_geometry.reasons,
         board_cards=board_cards,
+        hero_cards=detect_hero_cards(frame, layout),
         dealer=detect_dealer_button(frame, layout),
         regions=visible_regions,
         seat_observations=seat_observations,

@@ -410,6 +410,7 @@ export default function App() {
             <div className="health-row"><span>Pot consensus</span><strong>{liveObservation?.pot_consensus.accepted ? `${liveObservation.pot_consensus.value} · ${liveObservation.pot_consensus.stable_frames}` : liveObservation?.pot_consensus.reason ?? "waiting"}</strong></div>
             <div className="health-row"><span>Board consensus</span><strong>{liveObservation?.board_consensus.accepted ? `${liveObservation.board_consensus.value} cards` : liveObservation?.board_consensus.reason ?? "waiting"}</strong></div>
             <div className="health-row"><span>Recognized board</span><strong>{liveObservation?.board_cards_accepted ? liveObservation.recognized_board_cards.join(" ") : liveObservation?.board_cards_reason ?? "waiting"}</strong></div>
+            <div className="health-row"><span>Hero cards</span><strong>{liveObservation?.hero_cards_accepted ? liveObservation.recognized_hero_cards.join(" ") : liveObservation?.hero_cards_reason ?? "waiting"}</strong></div>
             <div className="health-row"><span>Dealer seat</span><strong>{liveObservation?.dealer_consensus.accepted ? liveObservation.dealer_consensus.value : liveObservation?.dealer_consensus.reason ?? "waiting"}</strong></div>
             <div className="health-row"><span>Active seats</span><strong>{liveObservation?.active_seats.length ?? 0}/{tableSize}</strong></div>
             <div className="health-row"><span>Position gate</span><strong>{liveObservation?.positions_reason ?? "waiting"}</strong></div>

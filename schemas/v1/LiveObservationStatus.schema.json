@@ -885,6 +885,29 @@
       "title": "Board Cards Reason",
       "type": "string"
     },
+    "hero_card_consensus": {
+      "items": {
+        "$ref": "#/$defs/TemporalConsensus"
+      },
+      "title": "Hero Card Consensus",
+      "type": "array"
+    },
+    "recognized_hero_cards": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Recognized Hero Cards",
+      "type": "array"
+    },
+    "hero_cards_accepted": {
+      "default": false,
+      "title": "Hero Cards Accepted",
+      "type": "boolean"
+    },
+    "hero_cards_reason": {
+      "title": "Hero Cards Reason",
+      "type": "string"
+    },
     "dealer_consensus": {
       "$ref": "#/$defs/TemporalConsensus"
     },
@@ -1011,6 +1034,7 @@
     "mode_consensus",
     "board_consensus",
     "board_cards_reason",
+    "hero_cards_reason",
     "dealer_consensus",
     "positions_reason",
     "pot_consensus",

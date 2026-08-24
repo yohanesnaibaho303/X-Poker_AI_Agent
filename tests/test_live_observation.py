@@ -8,6 +8,7 @@ from xpoker_agent.vision.models import (
     CardFaceObservation,
     DealerButtonObservation,
     DerivedActionCandidate,
+    HeroCardsObservation,
     LiveCaptureDiagnostic,
     PotDeltaCandidate,
     PotObservation,
@@ -58,6 +59,11 @@ def _diagnostic(
         board_geometry_supported=True,
         board_geometry_confidence=0.99,
         regions={},
+        hero_cards=HeroCardsObservation(
+            geometry_supported=False,
+            confidence=0.0,
+            reason="test fixture",
+        ),
         dealer=DealerButtonObservation(
             seat=4,
             confidence=0.95,
@@ -320,6 +326,40 @@ def test_board_cards_require_temporal_consensus_and_physical_uniqueness() -> Non
 
         assert status.board_cards_accepted is True
         assert status.recognized_board_cards == ["Jh", "2d", "8h"]
+
+    asyncio.run(scenario())
+
+
+def test_hero_cards_require_temporal_consensus_and_persist_within_hand() -> None:
+    async def scenario() -> None:
+        async def capture(_: int, sequence: int):
+            diagnostic = _diagnostic(sequence)
+            if sequence <= 3:
+                diagnostic.hero_cards = HeroCardsObservation(
+                    geometry_supported=True,
+                    cards=[
+                        CardFaceObservation(
+                            card=card,
+                            confidence=0.9,
+                            rank_distance=0.01,
+                            rank_margin=0.08,
+                            reason="test candidate",
+                        )
+                        for card in ("As", "2d")
+                    ],
+                    confidence=0.9,
+                    reason="test candidate",
+                )
+            return diagnostic, CapturedFrame(1, 1, b"\x00" * 4)
+
+        service = LiveObservationService(capture)
+        for _ in range(4):
+            await service.inspect_once(table_size=9)
+        status = service.status()
+
+        assert status.hero_cards_accepted is True
+        assert status.recognized_hero_cards == ["As", "2d"]
+        assert status.hero_cards_reason == "accepted earlier in the current hand epoch"
 
     asyncio.run(scenario())
 

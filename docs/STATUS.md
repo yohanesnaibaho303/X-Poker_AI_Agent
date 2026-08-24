@@ -136,7 +136,7 @@
   epochs with zero failures and produced six mutually unique provisional matches: Call 2 and 4,
   plus Bet 4, 3, 6, and 2 native units. None are canonical events yet because legal order and pot
   accounting remain outstanding gates.
-- Current full suite: Ruff passed; 261 Pytest/Hypothesis tests, 11 TypeScript tests, and the
+- Current full suite: Ruff passed; 264 Pytest/Hypothesis tests, 11 TypeScript tests, and the
   production dashboard build passed. Table control remains disabled.
 - Added deterministic provisional clockwise-order validation. Each visual action now carries the
   stable dealer and active-seat context present when it was emitted. Preflop starts after the BB;
@@ -155,6 +155,14 @@
   one same-hand, same-street stable pot increase within eight frames, and that pot delta maps back to
   only that action. Different nearby increases are mismatches; missing evidence stays pending;
   ambiguity clears the pot baseline so gaps are never bridged.
+- Added an X-Poker-specific hero-card region for both supported portrait layouts. A deterministic
+  detector isolates the single merged surface, splits the angled left/right cards, uses a separate
+  orientation-scoped rank-mask artifact, and classifies suits from the local palette.
+- The hero artifact contains eight derived masks across enrolled left/right orientations and only
+  source-frame hashes, not table pixels. A live `Kc 8h` frame exposed a false nearest-template
+  match at the initial 0.12 distance; the gate was tightened to 0.08 before temporal integration.
+  Three distinct frames plus hero/board physical uniqueness are required, and an accepted hand is
+  retained only within its provisional hand epoch if the cards disappear after a fold.
 
 ## Completed project checkpoints
 
