@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0",
+  "config_id": "game-9max-nlh-v1",
+  "variant": "NLH",
+  "format": "cash",
+  "seats": 9,
+  "rake": {
+    "kind": "none",
+    "percent": "0",
+    "cap_bb": "0"
+  },
+  "default_open_size_bb": "2.0",
+  "objective": "chip_ev",
+  "positions": ["UTG", "UTG+1", "MP", "LJ", "HJ", "CO", "BTN", "SB", "BB"],
+  "enabled_special_rules": []
+}

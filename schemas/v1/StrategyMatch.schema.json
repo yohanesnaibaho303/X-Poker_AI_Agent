@@ -1,0 +1,81 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "match_id": {
+      "format": "uuid",
+      "title": "Match Id",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "exact",
+        "abstracted",
+        "unavailable"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "requested_spot": {
+      "additionalProperties": true,
+      "title": "Requested Spot",
+      "type": "object"
+    },
+    "matched_spot": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Matched Spot"
+    },
+    "distance": {
+      "additionalProperties": true,
+      "title": "Distance",
+      "type": "object"
+    },
+    "source_artifact_id": {
+      "anyOf": [
+        {
+          "format": "uuid",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Source Artifact Id"
+    },
+    "confidence": {
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Confidence",
+      "type": "number"
+    },
+    "assumptions": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Assumptions",
+      "type": "array"
+    }
+  },
+  "required": [
+    "status",
+    "requested_spot",
+    "confidence"
+  ],
+  "title": "StrategyMatch",
+  "type": "object"
+}

@@ -1,0 +1,79 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "evidence_id": {
+      "format": "uuid",
+      "title": "Evidence Id",
+      "type": "string"
+    },
+    "frame_id": {
+      "format": "uuid",
+      "title": "Frame Id",
+      "type": "string"
+    },
+    "frame_sequence": {
+      "minimum": 0,
+      "title": "Frame Sequence",
+      "type": "integer"
+    },
+    "captured_at": {
+      "format": "date-time",
+      "title": "Captured At",
+      "type": "string"
+    },
+    "artifact_path": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Artifact Path"
+    },
+    "content_sha256": {
+      "maxLength": 64,
+      "minLength": 64,
+      "title": "Content Sha256",
+      "type": "string"
+    },
+    "region_xywh": {
+      "anyOf": [
+        {
+          "maxItems": 4,
+          "minItems": 4,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Region Xywh"
+    }
+  },
+  "required": [
+    "frame_id",
+    "frame_sequence",
+    "captured_at",
+    "content_sha256"
+  ],
+  "title": "EvidenceRef",
+  "type": "object"
+}

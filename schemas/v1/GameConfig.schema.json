@@ -1,0 +1,143 @@
+{
+  "$defs": {
+    "GameFormat": {
+      "enum": [
+        "cash"
+      ],
+      "title": "GameFormat",
+      "type": "string"
+    },
+    "GameVariant": {
+      "enum": [
+        "NLH"
+      ],
+      "title": "GameVariant",
+      "type": "string"
+    },
+    "Objective": {
+      "enum": [
+        "chip_ev"
+      ],
+      "title": "Objective",
+      "type": "string"
+    },
+    "Position": {
+      "enum": [
+        "UTG",
+        "UTG+1",
+        "MP",
+        "LJ",
+        "HJ",
+        "CO",
+        "BTN",
+        "SB",
+        "BB"
+      ],
+      "title": "Position",
+      "type": "string"
+    },
+    "RakeConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "none",
+          "default": "none",
+          "title": "Kind",
+          "type": "string"
+        },
+        "percent": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "default": "0",
+          "title": "Percent"
+        },
+        "cap_bb": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "default": "0",
+          "title": "Cap Bb"
+        }
+      },
+      "title": "RakeConfig",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "config_id": {
+      "title": "Config Id",
+      "type": "string"
+    },
+    "variant": {
+      "$ref": "#/$defs/GameVariant",
+      "default": "NLH"
+    },
+    "format": {
+      "$ref": "#/$defs/GameFormat",
+      "default": "cash"
+    },
+    "seats": {
+      "const": 9,
+      "default": 9,
+      "title": "Seats",
+      "type": "integer"
+    },
+    "rake": {
+      "$ref": "#/$defs/RakeConfig"
+    },
+    "default_open_size_bb": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "default": "2.0",
+      "title": "Default Open Size Bb"
+    },
+    "objective": {
+      "$ref": "#/$defs/Objective",
+      "default": "chip_ev"
+    },
+    "positions": {
+      "items": {
+        "$ref": "#/$defs/Position"
+      },
+      "title": "Positions",
+      "type": "array"
+    },
+    "enabled_special_rules": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Enabled Special Rules",
+      "type": "array"
+    }
+  },
+  "required": [
+    "config_id",
+    "positions"
+  ],
+  "title": "GameConfig",
+  "type": "object"
+}

@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "xpoker-agent"
+version = "0.1.0"
+description = "Inspectable agent for an authorized private X-Poker test table"
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "fastapi==0.116.1",
+  "pydantic==2.11.7",
+  "uvicorn==0.35.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "hypothesis==6.138.2",
+  "pytest==8.4.1",
+  "ruff==0.12.9",
+]
+
+[project.scripts]
+xpoker-agent = "xpoker_agent.main:run"
+xpoker-simulate = "xpoker_agent.simulation:main"
+xpoker-export-schemas = "xpoker_agent.schema_export:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+addopts = "-q"
+testpaths = ["tests"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]

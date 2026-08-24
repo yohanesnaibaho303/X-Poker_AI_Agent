@@ -1,0 +1,181 @@
+{
+  "$defs": {
+    "PreflightCheck": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "passed": {
+          "title": "Passed",
+          "type": "boolean"
+        },
+        "detail": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Detail"
+        }
+      },
+      "required": [
+        "name",
+        "passed"
+      ],
+      "title": "PreflightCheck",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "attempt_id": {
+      "format": "uuid",
+      "title": "Attempt Id",
+      "type": "string"
+    },
+    "decision_id": {
+      "format": "uuid",
+      "title": "Decision Id",
+      "type": "string"
+    },
+    "idempotency_token": {
+      "format": "uuid",
+      "title": "Idempotency Token",
+      "type": "string"
+    },
+    "authorization_profile_id": {
+      "title": "Authorization Profile Id",
+      "type": "string"
+    },
+    "preflight_checks": {
+      "items": {
+        "$ref": "#/$defs/PreflightCheck"
+      },
+      "title": "Preflight Checks",
+      "type": "array"
+    },
+    "target_window_fingerprint": {
+      "title": "Target Window Fingerprint",
+      "type": "string"
+    },
+    "intended_control_region": {
+      "anyOf": [
+        {
+          "maxItems": 4,
+          "minItems": 4,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Intended Control Region"
+    },
+    "input_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Input At"
+    },
+    "verification_deadline": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Verification Deadline"
+    },
+    "observed_transition_event_id": {
+      "anyOf": [
+        {
+          "format": "uuid",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Observed Transition Event Id"
+    },
+    "outcome": {
+      "enum": [
+        "blocked",
+        "executed_verified",
+        "executed_unverified",
+        "cancelled"
+      ],
+      "title": "Outcome",
+      "type": "string"
+    },
+    "evidence": {
+      "items": {
+        "format": "uuid",
+        "type": "string"
+      },
+      "title": "Evidence",
+      "type": "array"
+    },
+    "disarm_reason": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Disarm Reason"
+    }
+  },
+  "required": [
+    "decision_id",
+    "idempotency_token",
+    "authorization_profile_id",
+    "preflight_checks",
+    "target_window_fingerprint",
+    "outcome"
+  ],
+  "title": "ActionAttempt",
+  "type": "object"
+}

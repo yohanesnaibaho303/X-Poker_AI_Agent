@@ -1,0 +1,183 @@
+{
+  "$defs": {
+    "DecisionConfidence": {
+      "additionalProperties": false,
+      "properties": {
+        "overall": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Overall",
+          "type": "number"
+        },
+        "control_eligible": {
+          "const": false,
+          "default": false,
+          "title": "Control Eligible",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "overall"
+      ],
+      "title": "DecisionConfidence",
+      "type": "object"
+    },
+    "SelectedAction": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "enum": [
+            "fold",
+            "check",
+            "call",
+            "bet",
+            "raise",
+            "all_in"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "size_bb": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Size Bb"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "title": "SelectedAction",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "decision_id": {
+      "format": "uuid",
+      "title": "Decision Id",
+      "type": "string"
+    },
+    "idempotency_token": {
+      "format": "uuid",
+      "title": "Idempotency Token",
+      "type": "string"
+    },
+    "state_id": {
+      "format": "uuid",
+      "title": "State Id",
+      "type": "string"
+    },
+    "state_revision": {
+      "minimum": 0,
+      "title": "State Revision",
+      "type": "integer"
+    },
+    "state_valid_until_frame": {
+      "minimum": 0,
+      "title": "State Valid Until Frame",
+      "type": "integer"
+    },
+    "mode": {
+      "enum": [
+        "observe",
+        "analyze",
+        "recommend"
+      ],
+      "title": "Mode",
+      "type": "string"
+    },
+    "hero_combo": {
+      "title": "Hero Combo",
+      "type": "string"
+    },
+    "baseline_actions": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "title": "Baseline Actions",
+      "type": "object"
+    },
+    "adjusted_actions": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "title": "Adjusted Actions",
+      "type": "object"
+    },
+    "selected_action": {
+      "$ref": "#/$defs/SelectedAction"
+    },
+    "random_seed": {
+      "title": "Random Seed",
+      "type": "integer"
+    },
+    "random_draw": {
+      "exclusiveMaximum": 1,
+      "minimum": 0,
+      "title": "Random Draw",
+      "type": "number"
+    },
+    "strategy_match_id": {
+      "format": "uuid",
+      "title": "Strategy Match Id",
+      "type": "string"
+    },
+    "calculation_ids": {
+      "items": {
+        "format": "uuid",
+        "type": "string"
+      },
+      "title": "Calculation Ids",
+      "type": "array"
+    },
+    "confidence": {
+      "$ref": "#/$defs/DecisionConfidence"
+    },
+    "assumptions": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Assumptions",
+      "type": "array"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    }
+  },
+  "required": [
+    "state_id",
+    "state_revision",
+    "state_valid_until_frame",
+    "mode",
+    "hero_combo",
+    "baseline_actions",
+    "adjusted_actions",
+    "selected_action",
+    "random_seed",
+    "random_draw",
+    "strategy_match_id",
+    "confidence",
+    "created_at"
+  ],
+  "title": "DecisionEnvelope",
+  "type": "object"
+}

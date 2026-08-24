@@ -1,0 +1,114 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "source_id": {
+      "format": "uuid",
+      "title": "Source Id",
+      "type": "string"
+    },
+    "url": {
+      "title": "Url",
+      "type": "string"
+    },
+    "source_type": {
+      "title": "Source Type",
+      "type": "string"
+    },
+    "title": {
+      "title": "Title",
+      "type": "string"
+    },
+    "publisher": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Publisher"
+    },
+    "published_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Published At"
+    },
+    "accessed_at": {
+      "format": "date-time",
+      "title": "Accessed At",
+      "type": "string"
+    },
+    "license": {
+      "title": "License",
+      "type": "string"
+    },
+    "license_url": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "License Url"
+    },
+    "intended_use": {
+      "title": "Intended Use",
+      "type": "string"
+    },
+    "fact_class": {
+      "enum": [
+        "rule",
+        "mathematical_fact",
+        "solver_derived",
+        "heuristic",
+        "player_opinion",
+        "interface_observation"
+      ],
+      "title": "Fact Class",
+      "type": "string"
+    },
+    "confidence": {
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Confidence",
+      "type": "number"
+    },
+    "notes": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Notes"
+    }
+  },
+  "required": [
+    "url",
+    "source_type",
+    "title",
+    "accessed_at",
+    "license",
+    "intended_use",
+    "fact_class",
+    "confidence"
+  ],
+  "title": "Provenance",
+  "type": "object"
+}

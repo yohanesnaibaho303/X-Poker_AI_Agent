@@ -8,18 +8,18 @@
 
 Goal: establish a lightweight, deterministic foundation that can represent a simulated hand end to end.
 
-- [ ] Record architecture and licensing decisions.
-- [ ] Create Python 3.12 project metadata and locked development dependencies.
-- [ ] Create the initial module/package boundaries.
-- [ ] Encode the authoritative 9-max cash NLH, zero-rake, 2 BB, chip-EV configuration.
-- [ ] Implement typed, versioned models for provenance, observations, events, hand state, ranges, strategy matches, decisions, and controller audits.
-- [ ] Generate or publish JSON Schemas for persisted and API-facing records.
-- [ ] Implement configuration loading and validation with local ignored overrides.
-- [ ] Add structured JSON logging with correlation, hand, frame, and decision IDs.
-- [ ] Implement a deterministic simulated-hand fixture and reducer demonstration.
-- [ ] Add unit and property tests for configuration and schemas.
-- [ ] Add one command to lint, test, and start the development service.
-- [ ] Document setup, commands, dependencies, and current limitations.
+- [x] Record architecture and licensing decisions.
+- [x] Create Python 3.12 project metadata and locked development dependencies.
+- [x] Create the initial module/package boundaries.
+- [x] Encode the authoritative 9-max cash NLH, zero-rake, 2 BB, chip-EV configuration.
+- [x] Implement typed, versioned models for provenance, observations, events, hand state, ranges, strategy matches, decisions, and controller audits.
+- [x] Generate or publish JSON Schemas for persisted and API-facing records.
+- [x] Implement configuration loading and validation with local ignored overrides.
+- [x] Add structured JSON logging with correlation, hand, frame, and decision IDs.
+- [x] Implement a deterministic simulated-hand fixture and reducer demonstration.
+- [x] Add unit and property tests for configuration and schemas.
+- [x] Add one command to lint, test, and start the development service.
+- [x] Document setup, commands, dependencies, and current limitations.
 
 Exit: configuration and schemas load successfully, tests pass, and one simulated NLH hand is represented from table-ready through completion.
 

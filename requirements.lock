@@ -1,0 +1,23 @@
+# Generated from the verified Python 3.12 development environment.
+annotated-types==0.8.0
+anyio==4.14.2
+attrs==26.1.0
+click==8.4.2
+colorama==0.4.6
+fastapi==0.116.1
+h11==0.16.0
+hypothesis==6.138.2
+idna==3.19
+iniconfig==2.3.0
+packaging==26.3
+pluggy==1.6.0
+pydantic==2.11.7
+pydantic_core==2.33.2
+Pygments==2.21.0
+pytest==8.4.1
+ruff==0.12.9
+sortedcontainers==2.4.0
+starlette==0.47.3
+typing-inspection==0.4.4
+typing_extensions==4.16.0
+uvicorn==0.35.0

@@ -1,0 +1,134 @@
+{
+  "$defs": {
+    "Alternative": {
+      "additionalProperties": false,
+      "properties": {
+        "value": {
+          "title": "Value",
+          "type": "string"
+        },
+        "score": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Score",
+          "type": "number"
+        }
+      },
+      "required": [
+        "value",
+        "score"
+      ],
+      "title": "Alternative",
+      "type": "object"
+    },
+    "Confidence": {
+      "additionalProperties": false,
+      "properties": {
+        "score": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Score",
+          "type": "number"
+        },
+        "calibration_id": {
+          "title": "Calibration Id",
+          "type": "string"
+        },
+        "alternatives": {
+          "items": {
+            "$ref": "#/$defs/Alternative"
+          },
+          "title": "Alternatives",
+          "type": "array"
+        },
+        "stable_frames": {
+          "default": 1,
+          "minimum": 1,
+          "title": "Stable Frames",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "score",
+        "calibration_id"
+      ],
+      "title": "Confidence",
+      "type": "object"
+    },
+    "Producer": {
+      "additionalProperties": false,
+      "properties": {
+        "component": {
+          "title": "Component",
+          "type": "string"
+        },
+        "version": {
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "component",
+        "version"
+      ],
+      "title": "Producer",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "observation_id": {
+      "format": "uuid",
+      "title": "Observation Id",
+      "type": "string"
+    },
+    "kind": {
+      "title": "Kind",
+      "type": "string"
+    },
+    "subject": {
+      "additionalProperties": true,
+      "title": "Subject",
+      "type": "object"
+    },
+    "value": {
+      "additionalProperties": true,
+      "title": "Value",
+      "type": "object"
+    },
+    "confidence": {
+      "$ref": "#/$defs/Confidence"
+    },
+    "evidence": {
+      "items": {
+        "format": "uuid",
+        "type": "string"
+      },
+      "title": "Evidence",
+      "type": "array"
+    },
+    "layout_version": {
+      "title": "Layout Version",
+      "type": "string"
+    },
+    "producer": {
+      "$ref": "#/$defs/Producer"
+    }
+  },
+  "required": [
+    "kind",
+    "subject",
+    "value",
+    "confidence",
+    "layout_version",
+    "producer"
+  ],
+  "title": "Observation",
+  "type": "object"
+}
