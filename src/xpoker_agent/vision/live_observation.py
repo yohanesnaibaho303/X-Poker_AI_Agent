@@ -107,6 +107,10 @@ class LiveObservationService:
             reason="no_samples",
         )
         self._blind_consensus = self._empty_consensus("no_samples")
+        self._session_blind_consensus = self._empty_consensus("no_samples")
+        self._epoch_mode_consensus = self._empty_consensus("no_samples")
+        self._session_blind_conflict = False
+        self._epoch_mode_conflict = False
         self._pot_consensus = self._empty_consensus("no_samples")
         self._board_consensus = self._empty_consensus("no_samples")
         self._board_card_consensus: list[TemporalConsensus] = []
@@ -217,6 +221,10 @@ class LiveObservationService:
             reason="no_samples",
         )
         self._blind_consensus = self._empty_consensus("no_samples")
+        self._session_blind_consensus = self._empty_consensus("no_samples")
+        self._epoch_mode_consensus = self._empty_consensus("no_samples")
+        self._session_blind_conflict = False
+        self._epoch_mode_conflict = False
         self._pot_consensus = self._empty_consensus("no_samples")
         self._board_consensus = self._empty_consensus("no_samples")
         self._board_card_consensus = []
@@ -346,6 +354,35 @@ class LiveObservationService:
                 ),
             )
         self._record_numeric_observations(diagnostic)
+        self._retain_stable_table_context()
+
+    def _retain_stable_table_context(self) -> None:
+        if self._mode_consensus.accepted and self._mode_consensus.value is not None:
+            if self._epoch_mode_conflict:
+                pass
+            elif (
+                not self._epoch_mode_consensus.accepted
+                or self._epoch_mode_consensus.value == self._mode_consensus.value
+            ):
+                self._epoch_mode_consensus = self._mode_consensus
+            else:
+                self._epoch_mode_conflict = True
+                self._epoch_mode_consensus = self._empty_consensus(
+                    "mode_conflict_within_hand_epoch"
+                )
+        if self._blind_consensus.accepted and self._blind_consensus.value is not None:
+            if self._session_blind_conflict:
+                pass
+            elif (
+                not self._session_blind_consensus.accepted
+                or self._session_blind_consensus.value == self._blind_consensus.value
+            ):
+                self._session_blind_consensus = self._blind_consensus
+            else:
+                self._session_blind_conflict = True
+                self._session_blind_consensus = self._empty_consensus(
+                    "native_blinds_changed_during_session"
+                )
 
     @staticmethod
     def _empty_consensus(reason: str) -> TemporalConsensus:
@@ -422,6 +459,10 @@ class LiveObservationService:
                     self._epoch_active_evidence = []
                     self._hand_epoch += 1
                     self._hand_epoch_start_sequence = diagnostic.frame_sequence
+                    self._epoch_mode_consensus = self._empty_consensus(
+                        "new_hand_mode_unresolved"
+                    )
+                    self._epoch_mode_conflict = False
                     self._last_board_signature = None
                     self._last_board_dealer = None
                     self._last_board_active_seats = []
@@ -1010,6 +1051,10 @@ class LiveObservationService:
                 self._previous_epoch_dealer = previous_dealer
                 self._previous_epoch_active_seats = previous_active
                 self._hand_epoch = next_epoch
+                self._epoch_mode_consensus = self._empty_consensus(
+                    "new_hand_mode_unresolved"
+                )
+                self._epoch_mode_conflict = False
                 self._hand_epoch_start_sequence = (
                     first_card_samples[0].frame_sequence
                     if first_card_samples
@@ -1088,7 +1133,9 @@ class LiveObservationService:
                 else False
             ),
             mode_consensus=self._mode_consensus,
+            epoch_mode_consensus=self._epoch_mode_consensus,
             blind_consensus=self._blind_consensus,
+            session_blind_consensus=self._session_blind_consensus,
             board_consensus=self._board_consensus,
             board_card_consensus=self._board_card_consensus,
             recognized_board_cards=self._recognized_board_cards,
@@ -1195,15 +1242,18 @@ class LiveObservationService:
         issues: list[str] = []
         if self._hand_boundary_validation.status != "validated":
             issues.append("hand_boundary_not_validated")
-        if not self._mode_consensus.accepted:
+        if not self._epoch_mode_consensus.accepted:
             issues.append("hand_mode_not_stable")
-        elif self._mode_consensus.value == "single_board_bomb_pot":
+        elif self._epoch_mode_consensus.value == "single_board_bomb_pot":
             issues.append("bomb_pot_contributions_not_reconstructed")
         big_blind: Decimal | None = None
-        if not self._blind_consensus.accepted or self._blind_consensus.value is None:
+        if (
+            not self._session_blind_consensus.accepted
+            or self._session_blind_consensus.value is None
+        ):
             issues.append("native_blinds_not_stable")
         else:
-            _, big_token = self._blind_consensus.value.split("/", maxsplit=1)
+            _, big_token = self._session_blind_consensus.value.split("/", maxsplit=1)
             big_blind = Decimal(big_token)
         blind_posts = self._reconcile_blind_posts()
         for kind in ("small_blind", "big_blind"):
@@ -1282,11 +1332,13 @@ class LiveObservationService:
         if (
             boundary.status != "validated"
             or boundary.current_dealer_seat is None
-            or not self._blind_consensus.accepted
-            or self._blind_consensus.value is None
+            or not self._session_blind_consensus.accepted
+            or self._session_blind_consensus.value is None
         ):
             return []
-        small_token, big_token = self._blind_consensus.value.split("/", maxsplit=1)
+        small_token, big_token = self._session_blind_consensus.value.split(
+            "/", maxsplit=1
+        )
         return reconcile_blind_posts(
             hand_epoch=self._hand_epoch,
             epoch_start_sequence=self._hand_epoch_start_sequence,

@@ -196,6 +196,12 @@ at least three distinct frames may supply candidate legal actions; pre-action to
 Raw control-region OCR is not retained: diagnostics store the parsed state and a normalized-text
 SHA-256 fingerprint for replay correlation.
 
+Current-frame rule-label OCR is distinct from retained reconstruction context. Once three stable
+frames establish the hand mode, that evidence remains attached to the current provisional hand
+through temporary overlays. Stable native blinds remain attached to the capture session. A
+contradictory stable mode before a validated boundary or changed blinds during one session is a
+sticky fail-closed conflict, not an automatic replacement.
+
 ### 5.4 Lifecycle and dealing events
 
 The application still records non-action events required to reconstruct and validate a complete hand:

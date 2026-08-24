@@ -136,7 +136,7 @@
   epochs with zero failures and produced six mutually unique provisional matches: Call 2 and 4,
   plus Bet 4, 3, 6, and 2 native units. None are canonical events yet because legal order and pot
   accounting remain outstanding gates.
-- Current full suite: Ruff passed; 282 Pytest/Hypothesis tests, 11 TypeScript tests, and the
+- Current full suite: Ruff passed; 284 Pytest/Hypothesis tests, 11 TypeScript tests, and the
   production dashboard build passed. Table control remains disabled.
 - Added deterministic provisional clockwise-order validation. Each visual action now carries the
   stable dealer and active-seat context present when it was emitted. Preflop starts after the BB;
@@ -210,6 +210,10 @@
 - Per user direction, no further product work will be spent on replay. The existing replay view
   remains available but optional; small deterministic recorded-hand tests remain internal safety
   infrastructure for recognition and reducer changes.
+- Separated current rule-label visibility from retained reconstruction context. Three-frame mode
+  evidence now persists for its provisional hand, and three-frame native blinds persist for the
+  capture session through temporary overlays. Contradictory stable mode or blind values create a
+  sticky fail-closed conflict; the dashboard exposes both current and retained consensus channels.
 
 ## Completed project checkpoints
 

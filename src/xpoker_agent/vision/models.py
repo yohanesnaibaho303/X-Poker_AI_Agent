@@ -426,7 +426,9 @@ class LiveObservationStatus(StrictModel):
     current_hand_mode: Literal["standard_nlh", "single_board_bomb_pot", "ambiguous"]
     current_hand_supported: bool
     mode_consensus: TemporalConsensus
+    epoch_mode_consensus: TemporalConsensus
     blind_consensus: TemporalConsensus
+    session_blind_consensus: TemporalConsensus
     board_consensus: TemporalConsensus
     board_card_consensus: list[TemporalConsensus] = Field(default_factory=list)
     recognized_board_cards: list[str] = Field(default_factory=list)

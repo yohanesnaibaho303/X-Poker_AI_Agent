@@ -659,3 +659,48 @@ def test_mode_and_blind_confidence_channels_are_independent() -> None:
         assert status.blind_consensus.value == "1/2"
 
     asyncio.run(scenario())
+
+
+def test_stable_hand_mode_and_blinds_survive_transient_label_occlusion() -> None:
+    async def scenario() -> None:
+        async def capture(_: int, sequence: int):
+            diagnostic = _diagnostic(
+                sequence,
+                mode="standard_nlh" if sequence <= 3 else "ambiguous",
+            )
+            if sequence > 3:
+                diagnostic.small_blind_native = None
+                diagnostic.big_blind_native = None
+                diagnostic.blind_confidence = 0.0
+            return diagnostic, CapturedFrame(1, 1, b"\x00" * 4)
+
+        service = LiveObservationService(capture)
+        for _ in range(6):
+            await service.inspect_once(table_size=9)
+
+        status = service.status()
+        assert status.mode_consensus.accepted is False
+        assert status.blind_consensus.accepted is False
+        assert status.epoch_mode_consensus.accepted is True
+        assert status.epoch_mode_consensus.value == "standard_nlh"
+        assert status.session_blind_consensus.accepted is True
+        assert status.session_blind_consensus.value == "1/2"
+
+    asyncio.run(scenario())
+
+
+def test_conflicting_mode_is_sticky_until_a_validated_boundary() -> None:
+    async def scenario() -> None:
+        async def capture(_: int, sequence: int):
+            mode = "single_board_bomb_pot" if 4 <= sequence <= 6 else "standard_nlh"
+            return _diagnostic(sequence, mode=mode), CapturedFrame(1, 1, b"\x00" * 4)
+
+        service = LiveObservationService(capture)
+        for _ in range(9):
+            await service.inspect_once(table_size=9)
+
+        result = service.status().epoch_mode_consensus
+        assert result.accepted is False
+        assert result.reason == "mode_conflict_within_hand_epoch"
+
+    asyncio.run(scenario())

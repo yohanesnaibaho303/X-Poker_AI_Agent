@@ -1194,7 +1194,13 @@
     "mode_consensus": {
       "$ref": "#/$defs/TemporalConsensus"
     },
+    "epoch_mode_consensus": {
+      "$ref": "#/$defs/TemporalConsensus"
+    },
     "blind_consensus": {
+      "$ref": "#/$defs/TemporalConsensus"
+    },
+    "session_blind_consensus": {
       "$ref": "#/$defs/TemporalConsensus"
     },
     "board_consensus": {
@@ -1393,7 +1399,9 @@
     "current_hand_mode",
     "current_hand_supported",
     "mode_consensus",
+    "epoch_mode_consensus",
     "blind_consensus",
+    "session_blind_consensus",
     "board_consensus",
     "board_cards_reason",
     "hero_cards_reason",
