@@ -320,6 +320,17 @@ class LiveHandBoundaryValidation(StrictModel):
     reason: str
 
 
+class BlindPostReconciliation(StrictModel):
+    hand_epoch: int = Field(ge=0)
+    seat: int = Field(ge=0, le=8)
+    blind_kind: Literal["small_blind", "big_blind"]
+    amount_native: Decimal = Field(gt=0)
+    stack_delta_event_id: str | None = Field(default=None, min_length=64, max_length=64)
+    status: Literal["matched", "pending", "ambiguous"]
+    canonical_event_accepted: Literal[False] = False
+    reason: str
+
+
 class LiveReconstructionReadiness(StrictModel):
     hand_epoch: int = Field(ge=0)
     ready: bool
@@ -423,6 +434,9 @@ class LiveObservationStatus(StrictModel):
     hero_control_consensus: TemporalConsensus
     hand_epoch: int = Field(ge=0)
     hand_boundary_validation: LiveHandBoundaryValidation
+    blind_post_reconciliations: list[BlindPostReconciliation] = Field(
+        default_factory=list
+    )
     reconstruction_readiness: LiveReconstructionReadiness
     derived_action_candidates: list[DerivedActionCandidate] = Field(default_factory=list)
     stack_delta_candidates: list[StackDeltaCandidate] = Field(default_factory=list)

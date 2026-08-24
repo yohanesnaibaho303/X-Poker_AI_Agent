@@ -343,6 +343,16 @@ export interface LiveObservationStatus {
     canonical_event_accepted: false;
     reason: string;
   };
+  blind_post_reconciliations: Array<{
+    hand_epoch: number;
+    seat: number;
+    blind_kind: "small_blind" | "big_blind";
+    amount_native: string;
+    stack_delta_event_id: string | null;
+    status: "matched" | "pending" | "ambiguous";
+    canonical_event_accepted: false;
+    reason: string;
+  }>;
   reconstruction_readiness: {
     hand_epoch: number;
     ready: boolean;

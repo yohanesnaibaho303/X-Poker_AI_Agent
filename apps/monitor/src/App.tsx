@@ -420,6 +420,7 @@ export default function App() {
             <div className="health-row"><span>Hero controls</span><strong>{liveObservation?.hero_control_consensus.accepted ? `${liveObservation.hero_control_consensus.value} · ${liveObservation.hero_control_consensus.stable_frames}` : liveObservation?.hero_control_consensus.reason ?? "waiting"}</strong></div>
             <div className="health-row"><span>Derived candidates</span><strong>{liveObservation?.derived_action_candidates.length ?? 0} · epoch {liveObservation?.hand_epoch ?? 0}</strong></div>
             <div className="health-row"><span>Hand boundary</span><strong>{liveObservation?.hand_boundary_validation.status ?? "waiting"}</strong></div>
+            <div className="health-row"><span>Blind posts</span><strong>{liveObservation?.blind_post_reconciliations.filter((item) => item.status === "matched").length ?? 0}/2</strong></div>
             <div className="health-row"><span>Reducer gate</span><strong>{liveObservation?.reconstruction_readiness.ready ? "Ready" : `${liveObservation?.reconstruction_readiness.issues.length ?? 0} blockers`}</strong></div>
             <div className="health-row"><span>Stack deltas</span><strong>{liveObservation?.stack_delta_candidates.length ?? 0}</strong></div>
             <div className="health-row"><span>Pot deltas</span><strong>{liveObservation?.pot_delta_candidates.length ?? 0}</strong></div>

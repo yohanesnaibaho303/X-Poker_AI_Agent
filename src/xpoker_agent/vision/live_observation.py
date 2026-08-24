@@ -13,11 +13,13 @@ from typing import Literal
 
 from xpoker_agent.capture.frames import CapturedFrame
 from xpoker_agent.vision.action_order import validate_action_order
+from xpoker_agent.vision.blind_posts import reconcile_blind_posts
 from xpoker_agent.vision.hand_boundary import validate_live_hand_boundary
 from xpoker_agent.vision.live import diagnose_authorized_table
 from xpoker_agent.vision.models import (
     ActionAmountReconciliation,
     ActionPotReconciliation,
+    BlindPostReconciliation,
     DerivedActionCandidate,
     LiveCaptureDiagnostic,
     LiveHandBoundaryValidation,
@@ -138,6 +140,7 @@ class LiveObservationService:
         ]
         self._hero_control_consensus = self._empty_consensus("no_samples")
         self._hand_epoch = 0
+        self._hand_epoch_start_sequence = 0
         self._previous_epoch_dealer: int | None = None
         self._previous_epoch_active_seats: list[int] = []
         self._hand_boundary_validation = LiveHandBoundaryValidation(
@@ -237,6 +240,7 @@ class LiveObservationService:
         ]
         self._hero_control_consensus = self._empty_consensus("no_samples")
         self._hand_epoch = 0
+        self._hand_epoch_start_sequence = 0
         self._previous_epoch_dealer = None
         self._previous_epoch_active_seats = []
         self._hand_boundary_validation = LiveHandBoundaryValidation(
@@ -399,6 +403,7 @@ class LiveObservationService:
                     self._epoch_dealer_evidence = None
                     self._epoch_active_evidence = []
                     self._hand_epoch += 1
+                    self._hand_epoch_start_sequence = diagnostic.frame_sequence
                     self._dealer_samples.clear()
                     self._dealer_consensus = self._empty_consensus(
                         "new_hand_dealer_unresolved"
@@ -952,6 +957,7 @@ class LiveObservationService:
             hero_control_consensus=self._hero_control_consensus,
             hand_epoch=self._hand_epoch,
             hand_boundary_validation=self._hand_boundary_validation,
+            blind_post_reconciliations=self._reconcile_blind_posts(),
             reconstruction_readiness=self._reconstruction_readiness(),
             derived_action_candidates=list(self._derived_actions),
             stack_delta_candidates=list(self._stack_deltas),
@@ -1046,6 +1052,13 @@ class LiveObservationService:
         else:
             _, big_token = self._blind_consensus.value.split("/", maxsplit=1)
             big_blind = Decimal(big_token)
+        blind_posts = self._reconcile_blind_posts()
+        for kind in ("small_blind", "big_blind"):
+            result = next(
+                (item for item in blind_posts if item.blind_kind == kind), None
+            )
+            if result is None or result.status != "matched":
+                issues.append(f"{kind}_post_not_reconciled")
         if not self._dealer_consensus.accepted:
             issues.append("dealer_not_stable")
         if len(self._active_seats) < 2:
@@ -1109,6 +1122,27 @@ class LiveObservationService:
                 if not issues
                 else "one or more fail-closed reconstruction gates remain"
             ),
+        )
+
+    def _reconcile_blind_posts(self) -> list[BlindPostReconciliation]:
+        boundary = self._hand_boundary_validation
+        if (
+            boundary.status != "validated"
+            or boundary.current_dealer_seat is None
+            or not self._blind_consensus.accepted
+            or self._blind_consensus.value is None
+        ):
+            return []
+        small_token, big_token = self._blind_consensus.value.split("/", maxsplit=1)
+        return reconcile_blind_posts(
+            hand_epoch=self._hand_epoch,
+            epoch_start_sequence=self._hand_epoch_start_sequence,
+            table_size=self._table_size,
+            dealer_seat=boundary.current_dealer_seat,
+            active_seats=boundary.current_active_seats,
+            small_blind_native=Decimal(small_token),
+            big_blind_native=Decimal(big_token),
+            stack_deltas=list(self._stack_deltas),
         )
 
     def _reconcile_action_pot(self) -> list[ActionPotReconciliation]:

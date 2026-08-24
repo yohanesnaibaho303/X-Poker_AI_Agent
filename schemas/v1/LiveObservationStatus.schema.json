@@ -287,6 +287,85 @@
       "title": "ActionPotReconciliation",
       "type": "object"
     },
+    "BlindPostReconciliation": {
+      "additionalProperties": false,
+      "properties": {
+        "hand_epoch": {
+          "minimum": 0,
+          "title": "Hand Epoch",
+          "type": "integer"
+        },
+        "seat": {
+          "maximum": 8,
+          "minimum": 0,
+          "title": "Seat",
+          "type": "integer"
+        },
+        "blind_kind": {
+          "enum": [
+            "small_blind",
+            "big_blind"
+          ],
+          "title": "Blind Kind",
+          "type": "string"
+        },
+        "amount_native": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "title": "Amount Native"
+        },
+        "stack_delta_event_id": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "minLength": 64,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Stack Delta Event Id"
+        },
+        "status": {
+          "enum": [
+            "matched",
+            "pending",
+            "ambiguous"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "canonical_event_accepted": {
+          "const": false,
+          "default": false,
+          "title": "Canonical Event Accepted",
+          "type": "boolean"
+        },
+        "reason": {
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "hand_epoch",
+        "seat",
+        "blind_kind",
+        "amount_native",
+        "status",
+        "reason"
+      ],
+      "title": "BlindPostReconciliation",
+      "type": "object"
+    },
     "DerivedActionCandidate": {
       "additionalProperties": false,
       "properties": {
@@ -1142,6 +1221,13 @@
     },
     "hand_boundary_validation": {
       "$ref": "#/$defs/LiveHandBoundaryValidation"
+    },
+    "blind_post_reconciliations": {
+      "items": {
+        "$ref": "#/$defs/BlindPostReconciliation"
+      },
+      "title": "Blind Post Reconciliations",
+      "type": "array"
     },
     "reconstruction_readiness": {
       "$ref": "#/$defs/LiveReconstructionReadiness"

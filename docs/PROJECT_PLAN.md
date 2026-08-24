@@ -227,6 +227,9 @@ The state engine will validate:
 - Dealer and blind movement between hands.
 - Standard versus single-board Bomb Pot hand mode, including complete observed forced
   contributions before a Bomb Pot flop and no preflop Bomb Pot actions.
+- Exact small- and big-blind posts at the first two active seats clockwise from a validated dealer.
+  A post requires an equal stack decrease within eight frames of the witnessed boundary; an
+  aggregated blind-plus-action decrease is not split or inferred.
 
 Representative structured state:
 
