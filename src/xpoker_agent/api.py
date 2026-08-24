@@ -10,6 +10,7 @@ from fastapi import FastAPI
 from xpoker_agent import __version__
 from xpoker_agent.config import load_game_config, load_runtime_config
 from xpoker_agent.logging import configure_logging
+from xpoker_agent.research.assets import AssetManifest
 from xpoker_agent.research.catalog import ComponentCatalog
 from xpoker_agent.research.registry import SourceRegistry
 from xpoker_agent.simulation import run_simulated_hand
@@ -74,6 +75,17 @@ def research_components() -> dict[str, object]:
         "count": len(catalog.records),
         "unresolved_critical": len(catalog.unresolved_critical),
         "components": [record.model_dump(mode="json") for record in catalog.records],
+    }
+
+
+@app.get("/v1/research/assets")
+def research_assets() -> dict[str, object]:
+    manifest = AssetManifest.load()
+    return {
+        "content_sha256": manifest.content_sha256,
+        "count": len(manifest.records),
+        "pending_review": len(manifest.pending_review),
+        "assets": [record.model_dump(mode="json") for record in manifest.records],
     }
 
 

@@ -10,13 +10,17 @@
 - `dickreuter/Poker` repository: GPL-3.0 clean-room architectural reference only.
 - Two public X-Poker interface articles: low-to-medium-confidence terminology evidence only.
 - DriveHUD X-Poker setup video: YouTube video ID `IWckPxZyZ10`, discovered through the DriveHUD knowledge-base embed.
+- PokerStars Learn NLH rules reference for deterministic rules cross-checking.
+- GTO Wizard range-interface and equity-education references, explicitly separated from numerical solution artifacts.
 
 ### Evidence status
 
 - Public articles describe X-Poker action buttons, sliders, hand history, and chip balance.
-- Official listing screenshots support initial table, seat, and card component hypotheses, but exact geometry and version remain uncalibrated.
+- Apple Lookup metadata identified version 1.12.0 and six iPhone plus six iPad screenshot URLs. Temporary iPhone copies were visually reviewed and not committed; OS-temp cleanup was blocked by execution policy.
+- Official screenshots directly show the oval table, seats/stacks, hero and board cards, center pot labels, per-seat chip/amount indicators, transient Check/Fold labels, and Fold/Check/Bet/Call controls.
 - Direct YouTube transcript/frame retrieval was throttled during this pass. The video is metadata-only and no component claim is derived from unseen frames.
-- The initial component catalog has 12 critical targets. Current bet, pot display, dealer/blind markers, and active-player timer remain explicitly unverified.
+- The initial component catalog has representative public evidence for all 12 critical targets. Higher-resolution iPad screenshots show a dealer marker, blind-posting amounts, Action Time settings, and yellow multi-table countdown bars. Raise/all-in controls, side-pot rendering, and exact active-seat highlighting remain partial subcomponent gaps for authorized-instance calibration.
+- The asset manifest retains metadata only in this pass; no copyrighted screenshots, frames, or transcripts were committed.
 
 ### Next research pass
 

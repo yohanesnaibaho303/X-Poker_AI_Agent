@@ -8,4 +8,4 @@ Initial records:
 
 - `0001-modular-monolith-and-lightweight-inference.md`
 - `0002-source-and-license-boundaries.md`
-
+- `0003-xpoker-only-runtime-scope.md`

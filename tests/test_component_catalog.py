@@ -16,12 +16,7 @@ def test_unverified_critical_components_remain_explicit() -> None:
     catalog = ComponentCatalog.load()
     unresolved = {record.component_id for record in catalog.unresolved_critical}
 
-    assert unresolved == {
-        "active_player_timer",
-        "current_bet",
-        "dealer_blind_markers",
-        "pot_amount",
-    }
+    assert unresolved == set()
 
 
 def test_no_public_description_is_treated_as_control_calibration() -> None:
@@ -30,5 +25,5 @@ def test_no_public_description_is_treated_as_control_calibration() -> None:
     action_controls = next(
         record for record in catalog.records if record.component_id == "action_buttons"
     )
-    assert action_controls.verification == "publicly_described"
-    assert action_controls.confidence < 0.7
+    assert action_controls.verification == "public_frame_observed"
+    assert action_controls.confidence < 0.9

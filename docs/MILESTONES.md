@@ -27,14 +27,14 @@ Exit: configuration and schemas load successfully, tests pass, and one simulated
 
 - [x] Implement source and asset provenance registry.
 - [x] Define acquisition policies for video, transcript, image, article, and repository sources.
-- [ ] Research public X-Poker interface material and accessible transcripts.
-- [ ] Sample permitted representative frames and deduplicate them.
-- [ ] Classify version, layout, theme, orientation, game, street, and visible components.
+- [x] Research public X-Poker interface material and accessible transcripts.
+- [x] Sample permitted representative frames and deduplicate them.
+- [x] Classify version, layout, theme, orientation, game, street, and visible components.
 - [x] Build the first table-component catalog.
 - [x] Study PokerGPT under its MIT license and document reusable architectural ideas.
 - [x] Study `dickreuter/Poker` as GPL-3.0 reference and document clean-room boundaries.
-- [ ] Classify strategy claims by source/fact type and validation status.
-- [ ] Add catalog validation and provenance tests.
+- [x] Classify strategy claims by source/fact type and validation status.
+- [x] Add catalog validation and provenance tests.
 
 Exit: a reviewable, licensed/provenanced catalog contains representative examples for every critical table component.
 

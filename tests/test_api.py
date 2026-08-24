@@ -2,6 +2,7 @@ from xpoker_agent.api import (
     controller_status,
     game_config,
     health,
+    research_assets,
     research_components,
     research_sources,
     simulation_hand,
@@ -37,11 +38,17 @@ def test_controller_endpoint_is_fail_closed() -> None:
 
 def test_research_sources_are_inspectable() -> None:
     result = research_sources()
-    assert result["count"] == 7
+    assert result["count"] == 10
     assert len(result["content_sha256"]) == 64
 
 
 def test_research_components_expose_verification_gaps() -> None:
     result = research_components()
     assert result["count"] == 12
-    assert result["unresolved_critical"] == 4
+    assert result["unresolved_critical"] == 0
+
+
+def test_research_assets_expose_license_review_queue() -> None:
+    result = research_assets()
+    assert result["count"] == 4
+    assert result["pending_review"] == 1
