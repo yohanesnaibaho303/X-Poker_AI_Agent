@@ -29,9 +29,7 @@ def build_pot_layers(seats: list[SeatState]) -> list[PotLayer]:
     previous = Decimal("0")
     for cap in sorted(caps):
         contributors = sorted(
-            seat_number
-            for seat_number, commitment in commitments.items()
-            if commitment > previous
+            seat_number for seat_number, commitment in commitments.items() if commitment > previous
         )
         amount = sum(
             (min(commitments[seat_number], cap) - previous for seat_number in contributors),

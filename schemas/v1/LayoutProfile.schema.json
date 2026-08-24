@@ -1,0 +1,157 @@
+{
+  "$defs": {
+    "LayoutAnchor": {
+      "additionalProperties": false,
+      "properties": {
+        "anchor_id": {
+          "title": "Anchor Id",
+          "type": "string"
+        },
+        "detector": {
+          "const": "horizontal_menu_lines",
+          "title": "Detector",
+          "type": "string"
+        },
+        "region": {
+          "$ref": "#/$defs/NormalizedRect"
+        },
+        "minimum_confidence": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Minimum Confidence",
+          "type": "number"
+        }
+      },
+      "required": [
+        "anchor_id",
+        "detector",
+        "region",
+        "minimum_confidence"
+      ],
+      "title": "LayoutAnchor",
+      "type": "object"
+    },
+    "NormalizedRect": {
+      "additionalProperties": false,
+      "properties": {
+        "x": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "X",
+          "type": "number"
+        },
+        "y": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Y",
+          "type": "number"
+        },
+        "width": {
+          "exclusiveMinimum": 0.0,
+          "maximum": 1.0,
+          "title": "Width",
+          "type": "number"
+        },
+        "height": {
+          "exclusiveMinimum": 0.0,
+          "maximum": 1.0,
+          "title": "Height",
+          "type": "number"
+        }
+      },
+      "required": [
+        "x",
+        "y",
+        "width",
+        "height"
+      ],
+      "title": "NormalizedRect",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "layout_id": {
+      "title": "Layout Id",
+      "type": "string"
+    },
+    "runtime_target": {
+      "const": "X-Poker",
+      "default": "X-Poker",
+      "title": "Runtime Target",
+      "type": "string"
+    },
+    "table_size": {
+      "enum": [
+        6,
+        9
+      ],
+      "title": "Table Size",
+      "type": "integer"
+    },
+    "app_version_label": {
+      "title": "App Version Label",
+      "type": "string"
+    },
+    "orientation": {
+      "const": "portrait",
+      "default": "portrait",
+      "title": "Orientation",
+      "type": "string"
+    },
+    "canonical_width": {
+      "exclusiveMinimum": 0,
+      "title": "Canonical Width",
+      "type": "integer"
+    },
+    "canonical_height": {
+      "exclusiveMinimum": 0,
+      "title": "Canonical Height",
+      "type": "integer"
+    },
+    "calibration_dpi": {
+      "maximum": 960,
+      "minimum": 48,
+      "title": "Calibration Dpi",
+      "type": "integer"
+    },
+    "color_format": {
+      "const": "BGRA8",
+      "default": "BGRA8",
+      "title": "Color Format",
+      "type": "string"
+    },
+    "regions": {
+      "additionalProperties": {
+        "$ref": "#/$defs/NormalizedRect"
+      },
+      "title": "Regions",
+      "type": "object"
+    },
+    "anchors": {
+      "items": {
+        "$ref": "#/$defs/LayoutAnchor"
+      },
+      "title": "Anchors",
+      "type": "array"
+    }
+  },
+  "required": [
+    "layout_id",
+    "table_size",
+    "app_version_label",
+    "canonical_width",
+    "canonical_height",
+    "calibration_dpi",
+    "regions",
+    "anchors"
+  ],
+  "title": "LayoutProfile",
+  "type": "object"
+}

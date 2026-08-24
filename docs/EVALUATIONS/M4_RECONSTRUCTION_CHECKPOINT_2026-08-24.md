@@ -37,6 +37,10 @@ from deterministic fixtures, not raw live OCR output.
   completed previous hand, and clockwise dealer movement to the next dealt seat.
 - Failed replay quarantine records persist idempotently under a content-derived filename.
 
+The subsequent dual-table-size amendment generalized canonical seats, clockwise action rotation,
+and boundary validation to explicit six-seat and nine-seat configurations. The original nine-seat
+results above remain historical checkpoint evidence.
+
 ## Verification
 
 - Full project suite: 104 Pytest/Hypothesis tests.

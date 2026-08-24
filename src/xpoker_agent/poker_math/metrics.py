@@ -72,10 +72,7 @@ def heads_up_bet_ev_bb(
     _probability("called equity", called_equity)
     _nonnegative("pot", pot_before_bet_bb)
     _nonnegative("bet", bet_bb)
-    called_ev = called_equity * (pot_before_bet_bb + bet_bb) - (
-        Decimal("1") - called_equity
-    ) * bet_bb
-    return fold_probability * pot_before_bet_bb + (
-        Decimal("1") - fold_probability
-    ) * called_ev
-
+    called_ev = (
+        called_equity * (pot_before_bet_bb + bet_bb) - (Decimal("1") - called_equity) * bet_bb
+    )
+    return fold_probability * pot_before_bet_bb + (Decimal("1") - fold_probability) * called_ev

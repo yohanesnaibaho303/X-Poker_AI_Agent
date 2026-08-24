@@ -10,7 +10,7 @@ The first supported configuration is:
 game:
   variant: NLH
   format: cash
-  seats: 9
+  supported_seats: [6, 9]
   rake: 0
   default_open_size_bb: 2.0
   objective: chip_ev
@@ -95,7 +95,7 @@ The vision system must recognize:
 - Available action buttons.
 - Bet input, slider, and preset sizing controls.
 - Sit-out, disconnected, empty-seat, and folded states.
-- Multiway and heads-up states within a nine-seat table.
+- Multiway and heads-up states within supported six-seat and nine-seat tables.
 
 The implementation will use a hybrid approach:
 
@@ -113,10 +113,12 @@ Every recognized value will carry a confidence score and evidence reference.
 
 ### 4.1 Positions
 
-The initial nine-max position model is:
+The supported position models are:
 
 ```text
-UTG → UTG+1 → MP → LJ → HJ → CO → BTN → SB → BB
+6-max: UTG → HJ → CO → BTN → SB → BB
+
+9-max: UTG → UTG+1 → MP → LJ → HJ → CO → BTN → SB → BB
 ```
 
 The engine will derive actual position from the dealer button and occupied seats. It must correctly handle tables with temporarily empty or sitting-out seats.
@@ -260,7 +262,7 @@ Example:
 
 ### 6.2 Preflop range library
 
-The initial library will cover nine-max, no-rake, 2 BB opening trees:
+Separate initial libraries will cover six-max and nine-max, no-rake, 2 BB opening trees:
 
 - Open-raise ranges for every position.
 - Big-blind and small-blind defence ranges.
@@ -356,7 +358,7 @@ The resolver will match the observed hand using:
 ```text
 NLH
 → cash
-→ 9-max
+→ detected 6-max or 9-max configuration
 → no rake
 → positions and players remaining
 → effective stack
@@ -558,7 +560,7 @@ xpoker-agent/
 │   └── solutions/               # Licensed/generated solver data
 ├── models/                      # Versioned recognition artifacts
 ├── configs/
-│   ├── game/                    # 9-max NLH configuration
+│   ├── game/                    # 6-max and 9-max NLH configurations
 │   ├── layouts/                 # X-Poker layouts and themes
 │   └── runtime/                 # Capture and controller settings
 ├── tests/
@@ -575,7 +577,7 @@ xpoker-agent/
 ### Milestone 0 — Requirements and reproducibility
 
 - Create the repository and development environment.
-- Encode the initial 9-max NLH, 2 BB, no-rake configuration.
+- Encode the initial 6-max and 9-max NLH, 2 BB, no-rake configurations.
 - Define table-state, event, range, decision, and provenance schemas.
 - Add deterministic tests and structured logs.
 - Produce one command to start the development system.
@@ -626,7 +628,7 @@ xpoker-agent/
 - Implement the 169-class range matrix.
 - Add blocker-aware filtering and action updates.
 - Implement equity, EV, pot odds, and multiway calculations.
-- Seed the initial nine-max, no-rake, 2 BB range library.
+- Seed separate six-max and nine-max, no-rake, 2 BB range libraries.
 
 **Exit criterion:** Range and mathematical tests pass, and the dashboard can show position-specific preflop ranges.
 
@@ -695,7 +697,7 @@ xpoker-agent/
 The first useful version will:
 
 1. Detect the authorized X-Poker window.
-2. Support one nine-max NLH table layout.
+2. Support explicitly classified six-max and nine-max NLH table layouts.
 3. Recognize hero cards, board, seats, positions, stacks, bets, pot, and available actions.
 4. Reconstruct complete hands.
 5. Display recognition confidence and replay evidence.

@@ -146,15 +146,9 @@ def test_card_recognition_rejects_invalid_codes() -> None:
 
 def test_temporal_consensus_accepts_three_stable_high_confidence_frames() -> None:
     samples = [
-        TemporalSample(
-            frame_sequence=1, content_sha256=_HASHES[0], value="As", confidence=0.98
-        ),
-        TemporalSample(
-            frame_sequence=2, content_sha256=_HASHES[1], value="As", confidence=0.99
-        ),
-        TemporalSample(
-            frame_sequence=3, content_sha256=_HASHES[2], value="As", confidence=0.97
-        ),
+        TemporalSample(frame_sequence=1, content_sha256=_HASHES[0], value="As", confidence=0.98),
+        TemporalSample(frame_sequence=2, content_sha256=_HASHES[1], value="As", confidence=0.99),
+        TemporalSample(frame_sequence=3, content_sha256=_HASHES[2], value="As", confidence=0.97),
     ]
 
     result = consensus(samples)
@@ -166,15 +160,9 @@ def test_temporal_consensus_accepts_three_stable_high_confidence_frames() -> Non
 
 def test_temporal_consensus_rejects_recent_disagreement() -> None:
     samples = [
-        TemporalSample(
-            frame_sequence=1, content_sha256=_HASHES[0], value="As", confidence=0.99
-        ),
-        TemporalSample(
-            frame_sequence=2, content_sha256=_HASHES[1], value="As", confidence=0.99
-        ),
-        TemporalSample(
-            frame_sequence=3, content_sha256=_HASHES[2], value="Ah", confidence=0.99
-        ),
+        TemporalSample(frame_sequence=1, content_sha256=_HASHES[0], value="As", confidence=0.99),
+        TemporalSample(frame_sequence=2, content_sha256=_HASHES[1], value="As", confidence=0.99),
+        TemporalSample(frame_sequence=3, content_sha256=_HASHES[2], value="Ah", confidence=0.99),
     ]
 
     result = consensus(samples, minimum_confidence=0.6)

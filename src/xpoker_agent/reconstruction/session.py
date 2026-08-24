@@ -42,6 +42,8 @@ def validate_hand_boundary(
         issues.append("hand_identity_not_rotated")
     if previous_final.config_version != current_started.config_version:
         issues.append("configuration_changed")
+    if previous_final.table_size != current_started.table_size:
+        issues.append("table_size_changed")
     previous_dealt = _dealt_seats(previous_final)
     current_dealt = _dealt_seats(current_started)
     if previous_dealt != current_dealt:
@@ -49,9 +51,10 @@ def validate_hand_boundary(
     expected: int | None = None
     if previous_final.dealer_seat is None:
         issues.append("previous_dealer_unknown")
-    elif current_dealt:
-        for offset in range(1, 10):
-            candidate = (previous_final.dealer_seat + offset) % 9
+    elif current_dealt and previous_final.table_size == current_started.table_size:
+        table_size = len(current_started.seats)
+        for offset in range(1, table_size + 1):
+            candidate = (previous_final.dealer_seat + offset) % table_size
             if candidate in current_dealt:
                 expected = candidate
                 break

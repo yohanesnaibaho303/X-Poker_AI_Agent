@@ -69,10 +69,10 @@ def test_spot_key_encodes_authoritative_configuration_action_and_size() -> None:
     assert _spot(raise_size="2.5").canonical_key() != key
 
 
-def test_artifact_rejects_wrong_seat_count_rake_open_or_stack_bucket() -> None:
+def test_artifact_rejects_unsupported_seat_count_rake_open_or_stack_bucket() -> None:
     with pytest.raises(ValidationError):
         PreflopSpotKey(
-            seats=6,
+            seats=7,
             stack_depth_bb=Decimal("100"),
             player_position=Position.UTG,
             players_remaining=6,
@@ -161,3 +161,31 @@ def test_seed_manifest_refuses_incompatible_strategy_substitution() -> None:
     }
     assert manifest["status"] == "awaiting_validated_strategy_artifacts"
     assert manifest["artifacts"] == []
+
+    six_max = json.loads(
+        (PROJECT_ROOT / "configs" / "ranges" / "library_manifest_6max.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    assert six_max["configuration"]["seats"] == 6
+    assert six_max["status"] == "awaiting_validated_strategy_artifacts"
+    assert six_max["artifacts"] == []
+
+
+def test_six_max_spot_is_supported_but_isolated_from_nine_max() -> None:
+    six_max = PreflopSpotKey(
+        seats=6,
+        stack_depth_bb=Decimal("100"),
+        player_position=Position.UTG,
+        players_remaining=6,
+    )
+
+    assert six_max.canonical_key() == "NLH|cash|6max|rake0|open2bb|UTG|remaining6|stack100bb"
+    assert six_max.canonical_key() != _spot().canonical_key()
+    with pytest.raises(ValidationError, match="invalid for the configured table size"):
+        PreflopSpotKey(
+            seats=6,
+            stack_depth_bb=Decimal("100"),
+            player_position=Position.LJ,
+            players_remaining=6,
+        )

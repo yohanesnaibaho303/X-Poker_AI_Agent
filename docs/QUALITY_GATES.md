@@ -25,7 +25,7 @@ Accuracy reports include confidence calibration, false-positive/false-negative b
 All must be true before Armed Test Control is available:
 
 - The target is an explicitly authorized private test table and matches its allowlisted identity profile.
-- The running game matches supported NLH cash, nine-seat configuration, zero rake, and supported special-rule state.
+- The running game matches a supported NLH cash six-seat or nine-seat configuration, zero rake, and supported special-rule state.
 - Card, OCR, street, reconstruction, targeting, and duplicate-prevention gates pass on frozen evaluation sets.
 - Poker mathematics and range determinism gates pass.
 - Critical state fields exceed their calibrated thresholds and are stable for the configured number of frames.
@@ -92,4 +92,3 @@ For each component promotion, record:
 - latency and memory results;
 - known limitations and unsupported slices;
 - reviewer/approval and rollback procedure.
-

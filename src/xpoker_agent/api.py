@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
+from typing import Literal
 
 from fastapi import FastAPI
 
@@ -46,8 +47,17 @@ def health() -> dict[str, object]:
 
 
 @app.get("/v1/config/game")
-def game_config() -> dict[str, object]:
-    return load_game_config().model_dump(mode="json")
+def game_config(table_size: Literal[6, 9] = 9) -> dict[str, object]:
+    return load_game_config(table_size=table_size).model_dump(mode="json")
+
+
+@app.get("/v1/config/games")
+def supported_game_configs() -> dict[str, object]:
+    configurations = [load_game_config(table_size=size) for size in (6, 9)]
+    return {
+        "supported_table_sizes": [6, 9],
+        "configurations": [config.model_dump(mode="json") for config in configurations],
+    }
 
 
 @app.get("/v1/simulation/hand")

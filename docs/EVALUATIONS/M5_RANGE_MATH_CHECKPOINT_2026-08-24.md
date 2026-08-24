@@ -3,7 +3,8 @@
 ## Scope
 
 This checkpoint covers the dependency-free exact-combo range core, hand evaluator, equity engines,
-chip-EV metrics, and stack abstraction. It does not claim that a 9-max GTO range library has been
+chip-EV metrics, and stack abstraction. Following the table-size scope amendment, the same engine
+supports isolated 6-max and 9-max spot keys. It does not claim that either GTO range library has been
 sourced or validated.
 
 ## Range-universe verification
@@ -55,7 +56,7 @@ duplicate rejection, and best-five selection from seven cards.
 
 ## Remaining M5 work
 
-- Validated, properly sourced 9-max no-rake 2 BB preflop range artifacts.
+- Validated, properly sourced 6-max and 9-max no-rake 2 BB preflop range artifacts.
 - Larger equity performance/calibration reports and side-pot equity settlement integration.
 
 ## Strategy-source audit

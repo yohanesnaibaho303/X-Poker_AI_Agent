@@ -5,9 +5,16 @@ from conftest import make_event, make_initial_state
 from hypothesis import given
 from hypothesis import strategies as st
 
-from xpoker_agent.models import EventAmount, EventCategory, ParticipationStatus, Street, TableStatus
+from xpoker_agent.models import (
+    EventAmount,
+    EventCategory,
+    ParticipationStatus,
+    Position,
+    Street,
+    TableStatus,
+)
 from xpoker_agent.simulation import run_simulated_hand
-from xpoker_agent.state import HandStateReducer, StateTransitionError
+from xpoker_agent.state import HandStateReducer, StateTransitionError, create_initial_state
 
 
 def test_simulated_hand_reconstructs_end_to_end() -> None:
@@ -147,4 +154,52 @@ def test_known_card_cannot_reappear_on_board(initial_state) -> None:
                 street=Street.FLOP,
                 cards=["As", "Jh", "2c"],
             ),
+        )
+
+
+def test_six_max_state_uses_six_slots_and_wraps_action_clockwise() -> None:
+    state = create_initial_state(
+        hand_id=make_event(1, EventCategory.LIFECYCLE, "hand_started").hand_id,
+        config_version="game-6max-nlh-v1",
+        hero_seat=3,
+        occupied_stacks_bb={
+            3: Decimal("100"),
+            4: Decimal("100"),
+            5: Decimal("100"),
+        },
+        positions={3: Position.BTN, 4: Position.SB, 5: Position.BB},
+        table_size=6,
+    )
+    reducer = HandStateReducer()
+    state = reducer.apply(state, make_event(1, EventCategory.LIFECYCLE, "hand_started"))
+    state = reducer.apply(
+        state,
+        make_event(2, EventCategory.DEALING, "dealer_assigned", dealer_seat=3),
+    )
+    state = reducer.apply(
+        state,
+        make_event(
+            3,
+            EventCategory.FORCED_WAGER,
+            "blind_posted",
+            actor_seat=5,
+            street=Street.PREFLOP,
+            amount=EventAmount(to_bb=Decimal("1"), added_bb=Decimal("1")),
+        ),
+    )
+
+    assert state.table_size == 6
+    assert len(state.seats) == 6
+    assert state.next_to_act_seat == 3
+
+
+def test_six_max_state_rejects_nine_max_only_position() -> None:
+    with pytest.raises(ValueError, match="invalid for the configured table size"):
+        create_initial_state(
+            hand_id=make_event(1, EventCategory.LIFECYCLE, "hand_started").hand_id,
+            config_version="game-6max-nlh-v1",
+            hero_seat=0,
+            occupied_stacks_bb={0: Decimal("100")},
+            positions={0: Position.LJ},
+            table_size=6,
         )

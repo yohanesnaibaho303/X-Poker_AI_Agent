@@ -222,8 +222,7 @@ def test_short_all_in_raise_is_legal_but_does_not_lower_minimum_increment() -> N
     assert result.current_bet_bb == Decimal("1.5")
     assert result.minimum_raise_increment_bb == Decimal("1")
     reconstructed_total = (
-        sum((seat.stack_bb for seat in result.seats), start=Decimal("0"))
-        + result.pot_main_bb
+        sum((seat.stack_bb for seat in result.seats), start=Decimal("0")) + result.pot_main_bb
     )
     assert reconstructed_total == Decimal("201.5")
 
@@ -291,9 +290,7 @@ def _multiway_all_in_state():
         occupied_stacks_bb={6: Decimal("10"), 7: Decimal("30"), 8: Decimal("100")},
         positions={6: Position.BTN, 7: Position.SB, 8: Position.BB},
     )
-    state = HandStateReducer().apply(
-        state, make_event(1, EventCategory.LIFECYCLE, "hand_started")
-    )
+    state = HandStateReducer().apply(state, make_event(1, EventCategory.LIFECYCLE, "hand_started"))
     for seat_number, commitment in ((6, Decimal("10")), (7, Decimal("30")), (8, Decimal("30"))):
         seat = state.seats[seat_number]
         seat.stack_bb -= commitment
@@ -359,9 +356,7 @@ def test_side_and_split_main_pot_awards_conserve_all_chips() -> None:
     assert state.table_status is TableStatus.HAND_COMPLETE
     assert state.pot_main_bb == 0
     assert [layer.remaining_bb for layer in state.pot_layers] == [0, 0]
-    assert sum((seat.stack_bb for seat in state.seats), start=Decimal("0")) == Decimal(
-        "140"
-    )
+    assert sum((seat.stack_bb for seat in state.seats), start=Decimal("0")) == Decimal("140")
 
 
 def test_invalid_replay_is_quarantined_at_last_valid_state() -> None:

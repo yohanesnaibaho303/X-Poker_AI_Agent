@@ -125,8 +125,5 @@ def connected_components(mask: BinaryMask, *, minimum_area: int = 1) -> list[Pix
                     visited[neighbour] = 1
                     queue.append(neighbour)
         if area >= minimum_area:
-            components.append(
-                PixelBox(left=min_x, top=min_y, right=max_x + 1, bottom=max_y + 1)
-            )
+            components.append(PixelBox(left=min_x, top=min_y, right=max_x + 1, bottom=max_y + 1))
     return sorted(components, key=lambda box: (box.top, box.left))
-

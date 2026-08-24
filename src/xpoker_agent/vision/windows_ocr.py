@@ -58,4 +58,3 @@ async def recognize_text(frame: CapturedFrame) -> WindowsOcrResult:
         processing_latency_ms=latency_ms,
         language_tag=engine.recognizer_language.language_tag,
     )
-

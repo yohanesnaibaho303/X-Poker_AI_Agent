@@ -7,6 +7,7 @@ from xpoker_agent.api import (
     research_components,
     research_sources,
     simulation_hand,
+    supported_game_configs,
 )
 from xpoker_agent.capture.profile import EXAMPLE_PROFILE, load_target_profile
 
@@ -23,6 +24,17 @@ def test_game_config_endpoint_uses_authoritative_values() -> None:
     assert result["variant"] == "NLH"
     assert result["seats"] == 9
     assert result["default_open_size_bb"] == "2.0"
+
+    six_max = game_config(6)
+    assert six_max["seats"] == 6
+    assert six_max["positions"] == ["UTG", "HJ", "CO", "BTN", "SB", "BB"]
+
+
+def test_supported_game_configs_are_explicit_and_isolated() -> None:
+    result = supported_game_configs()
+
+    assert result["supported_table_sizes"] == [6, 9]
+    assert [config["seats"] for config in result["configurations"]] == [6, 9]
 
 
 def test_simulation_endpoint_returns_full_trace() -> None:

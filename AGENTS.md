@@ -15,7 +15,7 @@ Treat the following configuration as authoritative unless the user explicitly ch
 ```yaml
 variant: NLH
 format: cash
-seats: 9
+supported_seats: [6, 9]
 rake: 0
 default_open_size_bb: 2.0
 objective: chip_ev
@@ -23,11 +23,14 @@ objective: chip_ev
 
 `2 BB` means the default preflop open size. Detect effective stack depth dynamically.
 
-Use these nine-max positions:
+Use these position orders:
 
 ```text
-UTG, UTG+1, MP, LJ, HJ, CO, BTN, SB, BB
+6-max: UTG, HJ, CO, BTN, SB, BB
+9-max: UTG, UTG+1, MP, LJ, HJ, CO, BTN, SB, BB
 ```
+
+Keep 6-max and 9-max calibration profiles and strategy artifacts explicitly separated.
 
 ## Working Principles
 

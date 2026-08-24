@@ -83,8 +83,7 @@ def exact_equity(
     hero, board_cards = _validate_known(hero_combo, board)
     initially_blocked = set((*hero, *board_cards))
     candidate_sets = [
-        _legal_candidates(weighted_range, initially_blocked)
-        for weighted_range in opponent_ranges
+        _legal_candidates(weighted_range, initially_blocked) for weighted_range in opponent_ranges
     ]
     missing_board = 5 - len(board_cards)
     weighted_trials = 0.0
@@ -104,18 +103,14 @@ def exact_equity(
         for _, weight in opponent_selection:
             selection_weight *= weight
         remaining = [
-            card
-            for card in DECK
-            if card not in initially_blocked and card not in selected_cards
+            card for card in DECK if card not in initially_blocked and card not in selected_cards
         ]
         for runout in combinations(remaining, missing_board):
             states += 1
             if states > maximum_states:
                 raise ValueError("exact equity state count exceeds configured maximum")
             weight = selection_weight
-            share, outright, tied = _score_showdown(
-                hero, opponent_cards, (*board_cards, *runout)
-            )
+            share, outright, tied = _score_showdown(hero, opponent_cards, (*board_cards, *runout))
             weighted_trials += weight
             equity_mass += weight * share
             win_mass += weight * int(outright)
@@ -133,9 +128,7 @@ def exact_equity(
     )
 
 
-def _weighted_choice(
-    candidates: tuple[tuple[str, float], ...], rng: random.Random
-) -> str:
+def _weighted_choice(candidates: tuple[tuple[str, float], ...], rng: random.Random) -> str:
     total = sum(weight for _, weight in candidates)
     target = rng.random() * total
     cumulative = 0.0

@@ -10,7 +10,13 @@ from uuid import UUID
 
 from pydantic import Field, field_validator, model_validator
 
-from xpoker_agent.models import ComboStrategy, Position, StrictModel, WeightedRange
+from xpoker_agent.models import (
+    ComboStrategy,
+    Position,
+    StrictModel,
+    WeightedRange,
+    positions_for_table_size,
+)
 from xpoker_agent.ranges.cards import split_combo
 from xpoker_agent.ranges.stack import STACK_BUCKETS_BB, StackDepthMatch, nearest_stack_bucket
 
@@ -39,7 +45,7 @@ class ObservedRangeAction(StrictModel):
 class PreflopSpotKey(StrictModel):
     variant: Literal["NLH"] = "NLH"
     format: Literal["cash"] = "cash"
-    seats: Literal[9] = 9
+    seats: Literal[6, 9] = 9
     rake_percent: Decimal = Decimal("0")
     default_open_size_bb: Decimal = Decimal("2")
     stack_depth_bb: Decimal
@@ -55,6 +61,15 @@ class PreflopSpotKey(StrictModel):
             raise ValueError("initial range artifacts require the 2 BB default open size")
         if self.stack_depth_bb <= 0:
             raise ValueError("stack depth must be positive")
+        if self.player_position not in positions_for_table_size(self.seats):
+            raise ValueError("player position is invalid for the configured table size")
+        if self.players_remaining > self.seats:
+            raise ValueError("players remaining cannot exceed the configured table size")
+        if any(
+            action.actor_position not in positions_for_table_size(self.seats)
+            for action in self.action_sequence
+        ):
+            raise ValueError("action sequence contains a position invalid for the table size")
         return self
 
     def canonical_key(self, *, include_stack: bool = True) -> str:

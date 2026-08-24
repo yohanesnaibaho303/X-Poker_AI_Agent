@@ -11,7 +11,7 @@ Goal: establish a lightweight, deterministic foundation that can represent a sim
 - [x] Record architecture and licensing decisions.
 - [x] Create Python 3.12 project metadata and locked development dependencies.
 - [x] Create the initial module/package boundaries.
-- [x] Encode the authoritative 9-max cash NLH, zero-rake, 2 BB, chip-EV configuration.
+- [x] Encode authoritative 6-max and 9-max cash NLH, zero-rake, 2 BB, chip-EV configurations.
 - [x] Implement typed, versioned models for provenance, observations, events, hand state, ranges, strategy matches, decisions, and controller audits.
 - [x] Generate or publish JSON Schemas for persisted and API-facing records.
 - [x] Implement configuration loading and validation with local ignored overrides.
@@ -71,7 +71,7 @@ Exit: supported-layout recognition meets the per-component targets in `docs/QUAL
 - [x] Implement the NLH state reducer and street/action ordering.
 - [x] Validate unique cards, blinds, calls, raises, all-ins, and side pots.
 - [x] Reconcile stack, bet, pot, and award accounting.
-- [x] Handle heads-up and multiway play within the nine-seat layout.
+- [x] Handle heads-up and multiway play within six-seat and nine-seat state models.
 - [x] Detect hand boundaries and dealer/blind movement.
 - [x] Quarantine ambiguous or impossible hands with evidence.
 - [x] Export canonical hand histories and build replay inspection.
@@ -87,7 +87,7 @@ Exit: at least 98% of supported recorded hands reconstruct correctly, with unsup
 - [x] Implement exact and seeded Monte Carlo equity, including multiway.
 - [x] Implement pot odds, EV, fold equity, SPR, MDF, and side-pot calculations.
 - [x] Define stack-bucket matching/interpolation policy.
-- [ ] Seed a validated, versioned 9-max no-rake 2 BB range library.
+- [ ] Seed validated, versioned 6-max and 9-max no-rake 2 BB range libraries.
 
 Exit: range lookup is deterministic, poker-math tests pass completely, and position-specific ranges render correctly.
 

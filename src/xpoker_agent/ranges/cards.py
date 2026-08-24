@@ -102,4 +102,3 @@ def matrix_coordinates(hand_class: str) -> tuple[int, int]:
     high_index = RANKS_DESCENDING.index(hand_class[0])
     low_index = RANKS_DESCENDING.index(hand_class[1])
     return (high_index, low_index) if hand_class[2] == "s" else (low_index, high_index)
-

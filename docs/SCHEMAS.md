@@ -6,7 +6,7 @@
 - IDs use UUIDs; timestamps use UTC RFC 3339; frame ordering uses monotonic sequence numbers.
 - Monetary values are stored as exact decimal strings plus normalized BB values where appropriate, never binary floats for accounting.
 - Cards use rank plus lowercase suit: `As`, `Td`, `7h`, `2c`.
-- Positions are `UTG`, `UTG+1`, `MP`, `LJ`, `HJ`, `CO`, `BTN`, `SB`, `BB`.
+- Six-max positions are `UTG`, `HJ`, `CO`, `BTN`, `SB`, `BB`; nine-max adds `UTG+1`, `MP`, and `LJ` in the authoritative order.
 - Confidence is in `[0, 1]` and includes a method or calibration version.
 - Every derived record identifies input IDs, configuration versions, and producer version.
 - Examples are illustrative; implementation should use typed models and generated JSON Schema.
@@ -63,6 +63,8 @@
 ## 3. Configuration
 
 ### GameConfig
+
+The `seats` discriminator is either `6` or `9`; the positions array must match that table size exactly.
 
 ```json
 {
@@ -152,6 +154,7 @@ Participation status is one of `empty`, `seated`, `active`, `folded`, `all_in`, 
   "hand_id": "uuid",
   "revision": 8,
   "config_version": "game-9max-nlh-v1",
+  "table_size": 9,
   "table_status": "in_hand",
   "street": "flop",
   "dealer_seat": 3,

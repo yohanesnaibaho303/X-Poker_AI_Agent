@@ -9,6 +9,8 @@ from xpoker_agent.models import GameConfig, RuntimeConfig
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_GAME_CONFIG = PROJECT_ROOT / "configs" / "game" / "initial_9max_nlh.json"
+SIX_MAX_GAME_CONFIG = PROJECT_ROOT / "configs" / "game" / "initial_6max_nlh.json"
+GAME_CONFIGS = {6: SIX_MAX_GAME_CONFIG, 9: DEFAULT_GAME_CONFIG}
 DEFAULT_RUNTIME_CONFIG = PROJECT_ROOT / "configs" / "runtime" / "default.json"
 
 
@@ -20,7 +22,12 @@ def _read_json(path: Path) -> dict[str, object]:
     return result
 
 
-def load_game_config(path: Path = DEFAULT_GAME_CONFIG) -> GameConfig:
+def load_game_config(path: Path | None = None, *, table_size: int = 9) -> GameConfig:
+    if path is None:
+        try:
+            path = GAME_CONFIGS[table_size]
+        except KeyError as error:
+            raise ValueError("table_size must be 6 or 9") from error
     return GameConfig.model_validate(_read_json(path))
 
 

@@ -45,6 +45,25 @@ class Position(StrEnum):
     BB = "BB"
 
 
+SIX_MAX_POSITIONS = [
+    Position.UTG,
+    Position.HJ,
+    Position.CO,
+    Position.BTN,
+    Position.SB,
+    Position.BB,
+]
+NINE_MAX_POSITIONS = list(Position)
+
+
+def positions_for_table_size(seats: int) -> list[Position]:
+    if seats == 6:
+        return list(SIX_MAX_POSITIONS)
+    if seats == 9:
+        return list(NINE_MAX_POSITIONS)
+    raise ValueError(f"unsupported table size: {seats}")
+
+
 class OperatingMode(StrEnum):
     OBSERVE = "observe"
     ANALYZE = "analyze"
@@ -118,7 +137,7 @@ class GameConfig(StrictModel):
     config_id: str
     variant: GameVariant = GameVariant.NLH
     format: GameFormat = GameFormat.CASH
-    seats: Literal[9] = 9
+    seats: Literal[6, 9] = 9
     rake: RakeConfig = Field(default_factory=RakeConfig)
     default_open_size_bb: Decimal = Decimal("2.0")
     objective: Objective = Objective.CHIP_EV
@@ -127,7 +146,9 @@ class GameConfig(StrictModel):
 
     @model_validator(mode="after")
     def validate_initial_game(self) -> GameConfig:
-        expected = list(Position)
+        expected = positions_for_table_size(self.seats)
+        if f"{self.seats}max" not in self.config_id:
+            raise ValueError("config_id must identify its table size")
         if self.positions != expected:
             raise ValueError(f"positions must be in authoritative order: {expected}")
         if self.default_open_size_bb != Decimal("2.0"):
@@ -348,6 +369,7 @@ class HandState(StrictModel):
     revision: int = Field(default=0, ge=0)
     last_event_sequence: int = Field(default=0, ge=0)
     config_version: str
+    table_size: Literal[6, 9]
     table_status: TableStatus = TableStatus.WAITING_FOR_HAND
     street: Street = Street.NONE
     dealer_seat: int | None = Field(default=None, ge=0, le=8)
@@ -371,8 +393,31 @@ class HandState(StrictModel):
 
     @model_validator(mode="after")
     def validate_state(self) -> HandState:
-        if len(self.seats) != 9 or {seat.seat for seat in self.seats} != set(range(9)):
-            raise ValueError("hand state must contain exactly seats 0 through 8")
+        table_size = len(self.seats)
+        if self.table_size != table_size:
+            raise ValueError("table_size must equal the number of canonical seat slots")
+        if table_size not in {6, 9} or {seat.seat for seat in self.seats} != set(range(table_size)):
+            raise ValueError("hand state must contain contiguous seats for a 6-max or 9-max table")
+        seat_numbers = set(range(table_size))
+        referenced_seats = {
+            seat
+            for seat in [
+                self.dealer_seat,
+                self.hero_seat,
+                self.last_aggressor_seat,
+                self.next_to_act_seat,
+                *self.acted_seats,
+                *self.raise_locked_seats,
+            ]
+            if seat is not None
+        }
+        if not referenced_seats.issubset(seat_numbers):
+            raise ValueError("hand state references a seat outside the configured table size")
+        assigned_positions = [seat.position for seat in self.seats if seat.position is not None]
+        if len(assigned_positions) != len(set(assigned_positions)):
+            raise ValueError("seat positions must be unique")
+        if not set(assigned_positions).issubset(set(positions_for_table_size(table_size))):
+            raise ValueError("seat position is invalid for the configured table size")
         known_cards = self.board + [card for seat in self.seats for card in seat.cards]
         if len(known_cards) != len(set(known_cards)):
             raise ValueError("physical cards must be unique across the state")
@@ -400,16 +445,10 @@ class HandState(StrictModel):
             self.pot_main_bb
         ):
             raise ValueError("pot-layer remainders must equal the reconstructed pot")
-        if len(self.acted_seats) != len(set(self.acted_seats)) or any(
-            seat < 0 or seat > 8 for seat in self.acted_seats
-        ):
-            raise ValueError("acted_seats must contain unique seat numbers from zero through eight")
-        if len(self.raise_locked_seats) != len(set(self.raise_locked_seats)) or any(
-            seat < 0 or seat > 8 for seat in self.raise_locked_seats
-        ):
-            raise ValueError(
-                "raise_locked_seats must contain unique seat numbers from zero through eight"
-            )
+        if len(self.acted_seats) != len(set(self.acted_seats)):
+            raise ValueError("acted_seats must contain unique seat numbers")
+        if len(self.raise_locked_seats) != len(set(self.raise_locked_seats)):
+            raise ValueError("raise_locked_seats must contain unique seat numbers")
         return self
 
 

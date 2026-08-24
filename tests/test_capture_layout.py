@@ -8,6 +8,7 @@ def test_first_xpoker_layout_profile_loads() -> None:
     layout = load_layout_profile()
 
     assert layout.runtime_target == "X-Poker"
+    assert layout.table_size == 6
     assert layout.layout_id == "xpoker-windows-10-portrait-v1"
     assert (layout.canonical_width, layout.canonical_height) == (445, 800)
     assert layout.color_format == "BGRA8"

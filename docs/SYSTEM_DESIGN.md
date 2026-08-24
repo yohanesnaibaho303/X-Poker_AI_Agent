@@ -2,7 +2,7 @@
 
 ## 1. Scope
 
-This design describes the first supported system: a Windows application observing a single explicitly authorized private X-Poker test table configured as 9-max cash NLH, zero rake, default 2 BB open, and chip-EV. Effective stacks are calculated dynamically.
+This design describes a Windows application observing a single explicitly authorized private X-Poker test table configured as either 6-max or 9-max cash NLH, zero rake, default 2 BB open, and chip-EV. Effective stacks are calculated dynamically. Perception calibration and strategy artifacts are keyed by table size and never silently shared across sizes.
 
 ## 2. Operating modes
 

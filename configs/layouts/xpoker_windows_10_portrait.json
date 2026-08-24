@@ -2,6 +2,7 @@
   "schema_version": "1.0",
   "layout_id": "xpoker-windows-10-portrait-v1",
   "runtime_target": "X-Poker",
+  "table_size": 6,
   "app_version_label": "10.0",
   "orientation": "portrait",
   "canonical_width": 445,

@@ -37,9 +37,7 @@ def uniform_range(
 
 
 def normalized_combo_probabilities(weighted_range: WeightedRange) -> dict[str, float]:
-    total = sum(
-        weighted_range.combos[combo].weight for combo in sorted(weighted_range.combos)
-    )
+    total = sum(weighted_range.combos[combo].weight for combo in sorted(weighted_range.combos))
     if total <= 0:
         raise ValueError("cannot normalize a range with zero total weight")
     return {

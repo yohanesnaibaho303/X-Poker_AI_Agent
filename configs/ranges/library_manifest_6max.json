@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0",
+  "library_id": "xpoker-6max-nlh-no-rake-2bb-v1",
+  "configuration": {
+    "variant": "NLH",
+    "format": "cash",
+    "seats": 6,
+    "rake_percent": 0,
+    "default_open_size_bb": 2.0,
+    "objective": "chip_ev",
+    "stack_buckets_bb": [20, 40, 50, 75, 100, 150, 200]
+  },
+  "status": "awaiting_validated_strategy_artifacts",
+  "artifacts": [],
+  "notes": [
+    "Six-max artifacts are isolated from nine-max artifacts.",
+    "No raked, tournament, differently sized, or unvalidated strategy is substituted."
+  ]
+}

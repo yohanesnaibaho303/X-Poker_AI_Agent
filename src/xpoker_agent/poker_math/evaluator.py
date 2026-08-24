@@ -90,4 +90,3 @@ def evaluate_best(cards: tuple[str, ...] | list[str]) -> HandRank:
     if len(validated) != len(set(validated)):
         raise ValueError("physical cards must be unique")
     return max(evaluate_five(list(selection)) for selection in combinations(validated, 5))
-

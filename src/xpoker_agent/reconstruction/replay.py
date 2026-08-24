@@ -87,8 +87,7 @@ def persist_quarantine(result: ReplayResult, directory: Path) -> Path:
     )
     path = directory / filename
     payload = (
-        json.dumps(result.model_dump(mode="json"), sort_keys=True, separators=(",", ":"))
-        + "\n"
+        json.dumps(result.model_dump(mode="json"), sort_keys=True, separators=(",", ":")) + "\n"
     ).encode()
     if path.exists():
         if path.read_bytes() != payload:

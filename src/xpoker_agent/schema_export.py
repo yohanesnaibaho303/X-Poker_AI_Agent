@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from xpoker_agent.capture.models import LayoutProfile
 from xpoker_agent.models import (
     ActionAttempt,
     DecisionEnvelope,
@@ -24,6 +25,7 @@ from xpoker_agent.ranges.matrix import RangeMatrix
 
 MODELS = [
     GameConfig,
+    LayoutProfile,
     RuntimeConfig,
     EvidenceRef,
     Provenance,

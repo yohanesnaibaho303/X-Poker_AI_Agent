@@ -1,6 +1,6 @@
 # Initial Open-Source Repository Findings
 
-These notes are clean-room architectural observations. They do not copy implementation code and do not validate any repository's strategy logic for this project's authoritative 9-max cash NLH, zero-rake, 2 BB configuration.
+These notes are clean-room architectural observations. They do not copy implementation code and do not validate any repository's strategy logic for this project's authoritative 6-max or 9-max cash NLH, zero-rake, 2 BB configurations.
 
 ## PokerGPT
 

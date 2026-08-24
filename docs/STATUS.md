@@ -23,10 +23,14 @@
   seats, rake, open size, stack bucket, missing validation, duplicate spots, or missing provenance.
 - Added deterministic 13-by-13 range-matrix projection that retains blockers, exact combo mass,
   mixed actions, missing strategy mass, equity, EV, provenance, confidence, and version.
+- Added explicit X-Poker 6-max and 9-max configuration support across game schemas, canonical hand
+  state, clockwise reconstruction, hand-boundary validation, API inspection, and range spot keys.
+  The current calibrated portrait layout is labeled 6-max; a representative 9-max layout remains
+  required before 9-max perception can be promoted.
 - Audited public solver candidates; available MIT material was heads-up or otherwise incompatible.
-  The versioned 9-max library manifest is intentionally empty rather than seeded with false GTO data.
+  The isolated 6-max and 9-max library manifests remain empty rather than seeded with false GTO data.
 - No strategy frequencies were invented or imported. Control remains disabled.
-- Current full suite: Ruff passed; 152 Pytest/Hypothesis tests passed.
+- Current full suite: Ruff passed; 157 Pytest/Hypothesis tests passed.
 
 ## Completed project checkpoints
 
@@ -36,8 +40,8 @@
 
 ## Next
 
-- Source or independently generate the initial 9-max no-rake 2 BB library without substituting
-  heads-up, six-max, raked, tournament, or differently sized charts.
+- Source or independently generate isolated 6-max and 9-max no-rake 2 BB libraries without
+  substituting heads-up, raked, tournament, or differently sized charts.
 - Expand equity performance reports and connect pot-layer settlement calculations.
 - Continue M3/M4 promotion evaluation in parallel when representative standard NLH replays exist.
 
@@ -46,5 +50,7 @@
 - No blocker for continued offline/synthetic development.
 - M3/M4 promotion needs representative complete standard NLH hands later; the user does not need
   nine devices and can provide a populated club table as spectator when available.
+- Nine-max perception promotion additionally needs representative nine-max visual evidence; this
+  does not block six-max calibration or shared-engine development.
 
 This file is updated at meaningful checkpoints. The detailed checklist remains in `docs/MILESTONES.md`.

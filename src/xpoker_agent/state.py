@@ -13,6 +13,7 @@ from xpoker_agent.models import (
     SeatState,
     Street,
     TableStatus,
+    positions_for_table_size,
 )
 from xpoker_agent.reconstruction.pots import build_pot_layers
 
@@ -31,11 +32,26 @@ def create_initial_state(
     hero_seat: int,
     occupied_stacks_bb: dict[int, Decimal],
     positions: dict[int, Position],
+    table_size: int = 9,
 ) -> HandState:
+    if table_size not in {6, 9}:
+        raise ValueError("table_size must be 6 or 9")
+    valid_seats = set(range(table_size))
+    if not set(occupied_stacks_bb).issubset(valid_seats) or not set(positions).issubset(
+        valid_seats
+    ):
+        raise ValueError("occupied stacks and positions must fit the configured table size")
+    allowed_positions = set(positions_for_table_size(table_size))
+    if not set(positions.values()).issubset(allowed_positions):
+        raise ValueError("position is invalid for the configured table size")
+    if len(positions.values()) != len(set(positions.values())):
+        raise ValueError("positions must be unique")
+    if not set(positions).issubset(occupied_stacks_bb):
+        raise ValueError("positions can be assigned only to occupied seats")
     if hero_seat not in occupied_stacks_bb:
         raise ValueError("hero_seat must be occupied")
     seats = []
-    for seat_number in range(9):
+    for seat_number in range(table_size):
         occupied = seat_number in occupied_stacks_bb
         stack = occupied_stacks_bb.get(seat_number, Decimal("0"))
         seats.append(
@@ -53,6 +69,7 @@ def create_initial_state(
         state_id=_state_id(hand_id, 0),
         hand_id=hand_id,
         config_version=config_version,
+        table_size=table_size,
         hero_seat=hero_seat,
         hero_position=positions.get(hero_seat),
         seats=seats,
@@ -92,6 +109,8 @@ class HandStateReducer:
     def _seat(state: HandState, seat_number: int | None) -> SeatState:
         if seat_number is None:
             raise StateTransitionError("event requires a seat")
+        if seat_number >= len(state.seats):
+            raise StateTransitionError("event references a seat outside the configured table size")
         return state.seats[seat_number]
 
     def _on_hand_started(self, state: HandState, event: HandEvent) -> None:
@@ -154,9 +173,7 @@ class HandStateReducer:
             raise StateTransitionError("dealer must be assigned before blinds")
         seat, resulting_total = self._debit(state, event)
         state.current_bet_bb = max(state.current_bet_bb, resulting_total)
-        state.minimum_raise_increment_bb = max(
-            state.minimum_raise_increment_bb, resulting_total
-        )
+        state.minimum_raise_increment_bb = max(state.minimum_raise_increment_bb, resulting_total)
         if seat.stack_bb == 0:
             seat.participation = ParticipationStatus.ALL_IN
         state.next_to_act_seat = self._next_actionable_after(state, event.actor_seat)
@@ -216,8 +233,9 @@ class HandStateReducer:
     def _next_actionable_after(state: HandState, seat_number: int | None) -> int | None:
         if seat_number is None:
             return None
-        for offset in range(1, 10):
-            candidate = (seat_number + offset) % 9
+        table_size = len(state.seats)
+        for offset in range(1, table_size + 1):
+            candidate = (seat_number + offset) % table_size
             if state.seats[candidate].participation is ParticipationStatus.ACTIVE:
                 return candidate
         return None
@@ -226,14 +244,11 @@ class HandStateReducer:
         state.acted_seats = [actor_seat] if reset else [*state.acted_seats, actor_seat]
         state.acted_seats = list(dict.fromkeys(state.acted_seats))
         actionable = [
-            seat
-            for seat in state.seats
-            if seat.participation is ParticipationStatus.ACTIVE
+            seat for seat in state.seats if seat.participation is ParticipationStatus.ACTIVE
         ]
         round_closed = len(actionable) <= 1 or all(
             seat.seat in state.acted_seats
-            and seat.committed_by_street_bb.get(state.street, Decimal("0"))
-            == state.current_bet_bb
+            and seat.committed_by_street_bb.get(state.street, Decimal("0")) == state.current_bet_bb
             for seat in actionable
         )
         state.next_to_act_seat = (

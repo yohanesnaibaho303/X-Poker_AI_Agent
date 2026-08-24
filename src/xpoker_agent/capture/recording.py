@@ -169,9 +169,7 @@ def record_capture_replay(count: int, output_dir: Path) -> CaptureReplayManifest
 
 
 def verify_capture_replay(manifest_path: Path) -> list[str]:
-    manifest = CaptureReplayManifest.model_validate_json(
-        manifest_path.read_text(encoding="utf-8")
-    )
+    manifest = CaptureReplayManifest.model_validate_json(manifest_path.read_text(encoding="utf-8"))
     issues: list[str] = []
     for record in manifest.frames:
         if record.artifact_path is None:

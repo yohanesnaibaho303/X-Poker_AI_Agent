@@ -5,7 +5,13 @@ import pytest
 from pydantic import ValidationError
 
 from xpoker_agent.config import load_game_config, load_runtime_config
-from xpoker_agent.models import GameConfig, OperatingMode, Position, RuntimeConfig
+from xpoker_agent.models import (
+    GameConfig,
+    OperatingMode,
+    Position,
+    RuntimeConfig,
+    positions_for_table_size,
+)
 
 
 def test_authoritative_game_configuration_loads() -> None:
@@ -27,11 +33,21 @@ def test_runtime_is_observe_only_and_controller_disabled() -> None:
     assert runtime.controller_enabled is False
 
 
-def test_six_max_configuration_is_rejected() -> None:
-    payload = load_game_config().model_dump(mode="json")
-    payload["seats"] = 6
+def test_six_max_configuration_loads_with_its_own_position_order() -> None:
+    config = load_game_config(table_size=6)
 
-    with pytest.raises(ValidationError):
+    assert config.config_id == "game-6max-nlh-v1"
+    assert config.seats == 6
+    assert config.positions == positions_for_table_size(6)
+
+
+def test_configuration_rejects_unsupported_table_size_or_cross_size_positions() -> None:
+    with pytest.raises(ValueError, match="6 or 9"):
+        load_game_config(table_size=7)
+
+    payload = load_game_config(table_size=6).model_dump(mode="json")
+    payload["positions"] = [position.value for position in Position]
+    with pytest.raises(ValidationError, match="authoritative order"):
         GameConfig.model_validate(payload)
 
 

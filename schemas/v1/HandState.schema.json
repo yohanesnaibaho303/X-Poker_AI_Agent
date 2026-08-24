@@ -257,6 +257,14 @@
       "title": "Config Version",
       "type": "string"
     },
+    "table_size": {
+      "enum": [
+        6,
+        9
+      ],
+      "title": "Table Size",
+      "type": "integer"
+    },
     "table_status": {
       "$ref": "#/$defs/TableStatus",
       "default": "waiting_for_hand"
@@ -440,6 +448,7 @@
   "required": [
     "hand_id",
     "config_version",
+    "table_size",
     "hero_seat",
     "seats"
   ],

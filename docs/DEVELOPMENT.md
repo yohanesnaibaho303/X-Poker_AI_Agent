@@ -59,7 +59,7 @@ X-Poker-specific held-out benchmark passes.
 
 ## Supported functionality
 
-- Authoritative 9-max cash NLH configuration validation.
+- Authoritative 6-max and 9-max cash NLH configuration validation.
 - Separate table lifecycle, street, seat participation, betting action, and internal event models.
 - Exact-decimal stack and pot accounting for the simulated path.
 - Deterministic event reduction and replay identifiers.
