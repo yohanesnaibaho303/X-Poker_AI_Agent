@@ -29,3 +29,16 @@
 3. Record representative-frame manifests only after use/license review; do not commit copyrighted video frames by default.
 4. Verify the four unresolved critical components and classify layout, theme, orientation, version, game type, and street.
 5. Calibrate exact regions later against the explicitly authorized running instance.
+
+## 2026-08-24 — Milestone 5 range-source audit
+
+- Audited public multi-player preflop solver and chart candidates for 6-max and 9-max coverage.
+- Pinned `bmorrow10/preflopR` at commit `aed511d0451aea33a14f7e9204595fc2211f233f`.
+- Verified its MIT license and recorded the upstream raw file SHA-256.
+- Imported only its 6-player and 9-player unopened raise/fold charts as reference priors.
+- Expanded each 169-class chart deterministically to all 1,326 physical combinations.
+- Mapped upstream nine-player `UTG+2` to project `MP` and upstream `MP` to project `LJ`.
+- Kept every artifact at confidence 0.55 with explicit warnings: upstream calls the charts
+  approximate/not solver-derived and does not specify stack, rake, or open sizing.
+- These artifacts complete the range-rendering foundation but do not satisfy Milestone 6's GTO
+  solution requirement.

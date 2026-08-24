@@ -56,7 +56,9 @@ def _artifact(stack: str = "100", *, validation_status: str = "validated") -> Ra
         source_url="https://example.invalid/synthetic-range-fixture",
         source_license="Test fixture only; not strategy data",
         fact_class="solver_derived",
+        strategy_role="gto_solution",
         validation_status=validation_status,
+        confidence=1.0,
         assumptions=["synthetic values test the artifact format only"],
         version="test-v1",
     )
@@ -145,7 +147,7 @@ def test_library_rejects_duplicate_canonical_spots() -> None:
         RangeLibrary([_artifact(), _artifact().model_copy(update={"artifact_id": UUID(int=99)})])
 
 
-def test_seed_manifest_refuses_incompatible_strategy_substitution() -> None:
+def test_seed_manifests_publish_reference_priors_without_calling_them_gto() -> None:
     manifest = json.loads(
         (PROJECT_ROOT / "configs" / "ranges" / "library_manifest.json").read_text(encoding="utf-8")
     )
@@ -159,8 +161,9 @@ def test_seed_manifest_refuses_incompatible_strategy_substitution() -> None:
         "objective": "chip_ev",
         "stack_buckets_bb": [20, 40, 50, 75, 100, 150, 200],
     }
-    assert manifest["status"] == "awaiting_validated_strategy_artifacts"
-    assert manifest["artifacts"] == []
+    assert manifest["status"] == "reference_priors_seeded"
+    assert len(manifest["artifacts"]) == 8
+    assert {entry["strategy_role"] for entry in manifest["artifacts"]} == {"reference_prior"}
 
     six_max = json.loads(
         (PROJECT_ROOT / "configs" / "ranges" / "library_manifest_6max.json").read_text(
@@ -168,8 +171,8 @@ def test_seed_manifest_refuses_incompatible_strategy_substitution() -> None:
         )
     )
     assert six_max["configuration"]["seats"] == 6
-    assert six_max["status"] == "awaiting_validated_strategy_artifacts"
-    assert six_max["artifacts"] == []
+    assert six_max["status"] == "reference_priors_seeded"
+    assert len(six_max["artifacts"]) == 5
 
 
 def test_six_max_spot_is_supported_but_isolated_from_nine_max() -> None:

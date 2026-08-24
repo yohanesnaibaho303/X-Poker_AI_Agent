@@ -33,6 +33,9 @@ To run the deterministic simulated hand:
 
 ## Current scope
 
-Milestone 0 provides versioned configuration and schemas, structured logging, a deterministic NLH state reducer, a replayable simulated hand, a local health/API boundary, and automated tests. Capture, visual recognition, strategy data, the dashboard, and live control belong to later milestones.
+Milestones 0, 1, 2, and 5 are complete. The repository includes capture/calibration, reconstruction
+and vision foundations, deterministic range and poker-math engines, and isolated 6-max/9-max
+reference priors. The priors are deliberately not labeled GTO. Perception/reconstruction promotion,
+GTO integration, the dashboard, and live control remain later gated work.
 
 See [the project plan](docs/PROJECT_PLAN.md), [live status](docs/STATUS.md), and [milestones](docs/MILESTONES.md).

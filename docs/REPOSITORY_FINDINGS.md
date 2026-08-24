@@ -53,3 +53,20 @@ These notes are clean-room architectural observations. They do not copy implemen
 4. Store raw evidence references and component/model versions with every observation.
 5. Keep strategy numerical sources independent from perception repositories.
 6. Keep the controller absent until later milestones; recommendations never imply permission to act.
+
+## preflopR
+
+- Registry source: `00000000-0000-0000-0000-000000000114`
+- Repository: `https://github.com/bmorrow10/preflopR`
+- Pinned commit: `aed511d0451aea33a14f7e9204595fc2211f233f`
+- License: MIT
+- Coverage used: 6-player and 9-player unopened raise/fold reference charts
+
+### Boundaries for this project
+
+- Upstream explicitly describes the charts as approximate guidelines and not solver-derived.
+- Upstream does not establish stack depth, rake, or open sizing; project target metadata is an
+  indexing assumption and not a claim about the upstream chart.
+- Imported artifacts have `strategy_role=reference_prior` and confidence 0.55.
+- These priors may initialize range displays and opponent priors but must never be labeled exact GTO.
+- Milestone 6 still requires generated, licensed, or authorized configuration-matched solutions.

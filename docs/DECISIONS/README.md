@@ -9,3 +9,6 @@ Initial records:
 - `0001-modular-monolith-and-lightweight-inference.md`
 - `0002-source-and-license-boundaries.md`
 - `0003-xpoker-only-runtime-scope.md`
+- `0004-windows-ocr-first-candidate.md`
+- `0005-canonical-range-and-math-core.md`
+- `0006-reference-priors-are-not-gto.md`

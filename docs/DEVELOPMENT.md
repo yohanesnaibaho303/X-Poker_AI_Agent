@@ -36,6 +36,9 @@ This creates `.venv`, verifies Python 3.12, and installs the exact direct depend
 # Run the deterministic replay fixture
 .\.venv\Scripts\python.exe -m xpoker_agent.simulation
 
+# Reproduce pinned, hash-verified reference-prior range artifacts
+.\.venv\Scripts\python.exe scripts\import_preflopr_reference.py
+
 # List X-Poker candidates and fail-closed authorization results
 .\.venv\Scripts\python.exe -m xpoker_agent.capture.cli
 
@@ -57,6 +60,10 @@ Milestone 3 adds small Windows-only Python projections for the operating system'
 browser-shell dependency is installed. The Windows OCR selection remains provisional until the
 X-Poker-specific held-out benchmark passes.
 
+The range importer uses only the Python standard library. It downloads a pinned MIT source file,
+verifies its SHA-256, and fails closed on drift. Its generated artifacts are reference priors, not
+GTO solutions.
+
 ## Supported functionality
 
 - Authoritative 6-max and 9-max cash NLH configuration validation.
@@ -68,12 +75,16 @@ X-Poker-specific held-out benchmark passes.
 - X-Poker-only Win32 discovery and machine-local target authorization.
 - Occlusion-tolerant client-area capture, canonical BGRA8 normalization, and replay manifests.
 - First supported X-Poker 10.0 portrait capture layout at 445×800 and 96 canonical DPI.
+- Canonical 1,326-combo ranges, 169-class projection, blockers, action conditioning, and matrices.
+- Exact/seeded equity, exhaustive hand evaluation, and deterministic chip-EV metrics.
+- Hash-verified, isolated 6-max and 9-max reference-prior RFI libraries.
 
 ## Current limitations
 
 - The first capture layout has broad primary regions; component-specific recognition regions and accuracy calibration belong to Milestone 3.
-- No complete visual recognition, OCR, range library, equity engine, GTO data, exploit model, or dashboard exists yet.
-- The reducer foundation validates event ordering, cards, chip debits, street changes, and awards for the simulated path; full NLH action-order, minimum-raise, all-in, multiway, and side-pot rules belong to Milestone 4.
+- Visual recognition and reconstruction promotion still require held-out complete X-Poker replays.
+- Reference priors are approximate and low-confidence; no configuration-matched GTO data exists yet.
+- No exploit model or monitoring dashboard exists yet.
 - No table input/control implementation exists. Control is disabled in configuration, schemas, and API responses.
 - The project license has not been selected; external-source boundaries are documented in ADR 0002.
 

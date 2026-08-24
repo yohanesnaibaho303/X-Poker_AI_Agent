@@ -1,10 +1,9 @@
 # Build Status
 
 - Last updated: 2026-08-24 (Asia/Jakarta)
-- Current milestone: Milestone 5 — Range and poker-math foundation
-- Overall project: 3 of 11 milestones complete
-- Current state: Milestone 5 deterministic range/math checkpoint in progress; M3/M4 promotion gates
-  remain pending
+- Current milestone: Milestone 6 — GTO strategy integration
+- Overall project: 4 of 11 milestones complete
+- Current state: Milestone 5 complete; M3/M4 promotion gates remain pending recorded evidence
 - Live control: Disabled
 
 ## Latest checkpoint
@@ -27,24 +26,31 @@
   state, clockwise reconstruction, hand-boundary validation, API inspection, and range spot keys.
   The current calibrated portrait layout is labeled 6-max; a representative 9-max layout remains
   required before 9-max perception can be promoted.
+- Seeded isolated 6-max and 9-max position-specific RFI reference-prior libraries from a pinned
+  MIT source. All 13 artifacts contain all 1,326 exact combos, hash-verified provenance, explicit
+  prior folds, confidence 0.55, and warnings that the charts are approximate/not solver-derived.
+- Added a hard `reference_prior` versus `gto_solution` artifact-role boundary so the bootstrap
+  ranges cannot be presented as exact GTO.
 - Added user-selectable 6-max/9-max session setup and BB/native-chip display modes. Exact native
   values format as grouped numbers, K, or M by threshold and remain unnormalized until a blind exists.
-- Audited public solver candidates; available MIT material was heads-up or otherwise incompatible.
-  The isolated 6-max and 9-max library manifests remain empty rather than seeded with false GTO data.
-- No strategy frequencies were invented or imported. Control remains disabled.
-- Current full suite: Ruff passed; 157 Pytest/Hypothesis tests passed.
+- Audited public solver candidates; current configuration-matched GTO artifacts remain unavailable.
+  Approximate reference priors are never promoted to GTO. Control remains disabled.
+- Current full suite: Ruff passed; 187 Pytest/Hypothesis tests passed.
 
 ## Completed project checkpoints
 
 - Milestone 0 — reproducible schemas, configuration, logging, and deterministic simulated hand.
 - Milestone 1 — autonomous public-source and component catalog with provenance/licensing boundaries.
 - Milestone 2 — authorized X-Poker window discovery, calibration, normalized capture, and replay diagnostics.
+- Milestone 5 — exact-combo ranges, deterministic poker math, matrix projection, stack abstraction,
+  and isolated provenance-bearing 6-max/9-max reference priors.
 
 ## Next
 
-- Source or independently generate isolated 6-max and 9-max no-rake 2 BB libraries without
-  substituting heads-up, raked, tournament, or differently sized charts.
-- Expand equity performance reports and connect pot-layer settlement calculations.
+- Implement Milestone 6 solution import/resolution while keeping reference priors ineligible for
+  exact-GTO results.
+- Source or independently generate configuration-matched 6-max and 9-max no-rake 2 BB solutions.
+- Add exact/nearest strategy-node lookup, quantitative mismatch, and replay comparisons.
 - Continue M3/M4 promotion evaluation in parallel when representative standard NLH replays exist.
 
 ## Blockers

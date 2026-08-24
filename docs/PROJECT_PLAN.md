@@ -270,6 +270,9 @@ Example:
 
 Separate initial libraries will cover six-max and nine-max, no-rake, 2 BB opening trees:
 
+Milestone 5 may bootstrap clearly labeled, low-confidence reference priors for rendering and opponent
+initialization. Such priors are not GTO solutions and cannot satisfy Milestone 6 strategy matching.
+
 - Open-raise ranges for every position.
 - Big-blind and small-blind defence ranges.
 - Cold-call ranges.

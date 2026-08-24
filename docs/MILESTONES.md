@@ -87,7 +87,8 @@ Exit: at least 98% of supported recorded hands reconstruct correctly, with unsup
 - [x] Implement exact and seeded Monte Carlo equity, including multiway.
 - [x] Implement pot odds, EV, fold equity, SPR, MDF, and side-pot calculations.
 - [x] Define stack-bucket matching/interpolation policy.
-- [ ] Seed validated, versioned 6-max and 9-max no-rake 2 BB range libraries.
+- [x] Seed validated, versioned 6-max and 9-max no-rake 2 BB reference-prior libraries, with
+  configuration mismatches explicit and GTO integration reserved for Milestone 6.
 
 Exit: range lookup is deterministic, poker-math tests pass completely, and position-specific ranges render correctly.
 

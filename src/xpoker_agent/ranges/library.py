@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 from decimal import Decimal
 from pathlib import Path
@@ -19,6 +20,8 @@ from xpoker_agent.models import (
 )
 from xpoker_agent.ranges.cards import split_combo
 from xpoker_agent.ranges.stack import STACK_BUCKETS_BB, StackDepthMatch, nearest_stack_bucket
+
+PROJECT_ROOT = Path(__file__).resolve().parents[3]
 
 
 class ObservedRangeAction(StrictModel):
@@ -98,7 +101,11 @@ class RangeArtifact(StrictModel):
     source_url: str
     source_license: str
     fact_class: Literal["solver_derived", "validated_manual_chart"]
+    strategy_role: Literal["reference_prior", "gto_solution"]
     validation_status: Literal["validated", "unvalidated"]
+    confidence: float = Field(ge=0, le=1)
+    source_commit: str | None = None
+    source_content_sha256: str | None = Field(default=None, min_length=64, max_length=64)
     assumptions: list[str] = Field(default_factory=list)
     version: str
 
@@ -136,10 +143,13 @@ class RangeArtifact(StrictModel):
                 "url": self.source_url,
                 "license": self.source_license,
                 "fact_class": self.fact_class,
+                "strategy_role": self.strategy_role,
+                "source_commit": self.source_commit,
+                "source_content_sha256": self.source_content_sha256,
                 "configuration": self.spot.model_dump(mode="json"),
             },
             assumptions=list(self.assumptions),
-            confidence=1.0,
+            confidence=self.confidence,
             version=self.version,
         )
 
@@ -147,6 +157,27 @@ class RangeArtifact(StrictModel):
 class RangeLookup(StrictModel):
     artifact: RangeArtifact
     stack_match: StackDepthMatch
+
+
+class RangeManifestEntry(StrictModel):
+    artifact_id: UUID
+    path: str
+    content_sha256: str = Field(min_length=64, max_length=64)
+    position: Position
+    strategy_role: Literal["reference_prior", "gto_solution"]
+    confidence: float = Field(ge=0, le=1)
+
+
+class RangeLibraryManifest(StrictModel):
+    schema_version: Literal["1.0"] = "1.0"
+    library_id: str
+    configuration: dict[str, object]
+    status: Literal["reference_priors_seeded", "gto_solutions_seeded"]
+    source_id: UUID
+    source_commit: str
+    source_content_sha256: str = Field(min_length=64, max_length=64)
+    artifacts: list[RangeManifestEntry]
+    notes: list[str]
 
 
 class RangeLibrary:
@@ -204,3 +235,39 @@ def write_artifact(artifact: RangeArtifact, path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     payload = json.dumps(artifact.model_dump(mode="json"), indent=2, sort_keys=True) + "\n"
     path.write_text(payload, encoding="utf-8")
+
+
+def load_seeded_reference_library(table_size: Literal[6, 9]) -> RangeLibrary:
+    """Load and hash-verify the isolated low-confidence reference prior library."""
+    manifest_name = "library_manifest_6max.json" if table_size == 6 else "library_manifest.json"
+    manifest_path = PROJECT_ROOT / "configs" / "ranges" / manifest_name
+    manifest = RangeLibraryManifest.model_validate_json(manifest_path.read_text(encoding="utf-8"))
+    if manifest.configuration.get("seats") != table_size:
+        raise ValueError("range manifest table size does not match the requested library")
+    if manifest.status != "reference_priors_seeded":
+        raise ValueError("reference range manifest is not seeded")
+    artifacts: list[RangeArtifact] = []
+    for entry in manifest.artifacts:
+        path = (PROJECT_ROOT / entry.path).resolve()
+        if not path.is_relative_to(PROJECT_ROOT):
+            raise ValueError("range artifact path escapes the project root")
+        content = path.read_bytes()
+        if hashlib.sha256(content).hexdigest() != entry.content_sha256:
+            raise ValueError(f"range artifact hash mismatch: {entry.path}")
+        artifact = RangeArtifact.model_validate_json(content)
+        if artifact.artifact_id != entry.artifact_id:
+            raise ValueError(f"range artifact ID mismatch: {entry.path}")
+        if artifact.spot.seats != table_size or artifact.strategy_role != "reference_prior":
+            raise ValueError(f"range artifact has incompatible scope: {entry.path}")
+        if artifact.spot.player_position != entry.position:
+            raise ValueError(f"range artifact position mismatch: {entry.path}")
+        if artifact.confidence != entry.confidence:
+            raise ValueError(f"range artifact confidence mismatch: {entry.path}")
+        artifacts.append(artifact)
+    expected_positions = set(positions_for_table_size(table_size)) - {Position.BB}
+    actual_positions = {artifact.spot.player_position for artifact in artifacts}
+    if actual_positions != expected_positions:
+        raise ValueError(
+            "reference library must contain every non-BB unopened position exactly once"
+        )
+    return RangeLibrary(artifacts)

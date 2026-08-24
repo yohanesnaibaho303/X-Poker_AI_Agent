@@ -234,6 +234,14 @@
       "title": "Fact Class",
       "type": "string"
     },
+    "strategy_role": {
+      "enum": [
+        "reference_prior",
+        "gto_solution"
+      ],
+      "title": "Strategy Role",
+      "type": "string"
+    },
     "validation_status": {
       "enum": [
         "validated",
@@ -241,6 +249,38 @@
       ],
       "title": "Validation Status",
       "type": "string"
+    },
+    "confidence": {
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Confidence",
+      "type": "number"
+    },
+    "source_commit": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Source Commit"
+    },
+    "source_content_sha256": {
+      "anyOf": [
+        {
+          "maxLength": 64,
+          "minLength": 64,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Source Content Sha256"
     },
     "assumptions": {
       "items": {
@@ -263,7 +303,9 @@
     "source_url",
     "source_license",
     "fact_class",
+    "strategy_role",
     "validation_status",
+    "confidence",
     "version"
   ],
   "title": "RangeArtifact",
