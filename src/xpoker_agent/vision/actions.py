@@ -7,6 +7,7 @@ import re
 
 from xpoker_agent.capture.models import NormalizedRect, SeatAnchorCalibration
 from xpoker_agent.vision.models import SeatActionObservation, SeatOccupancyObservation
+from xpoker_agent.vision.numbers import parse_chip_amount
 
 _ACTION_LABELS = {
     "fold": "fold",
@@ -45,6 +46,17 @@ def parse_action_badge(
     normalized = re.sub(r"[^a-z]", "", raw.casefold())
     action = _ACTION_LABELS.get(normalized)
     if action is None:
+        amount_match = re.fullmatch(r"\s*(\d[\d,.]*(?:\.\d+)?[kKmM]?)\s*", raw)
+        if amount_match:
+            amount = parse_chip_amount(amount_match.group(1), confidence=0.95)
+            return SeatActionObservation(
+                seat=occupancy.seat,
+                action=None,
+                badge_amount_native=amount.value,
+                confidence=amount.confidence,
+                ocr_text_sha256=digest,
+                reason="numeric-only badge candidate; semantic role pending",
+            )
         return SeatActionObservation(
             seat=occupancy.seat,
             action=None,

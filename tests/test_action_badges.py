@@ -23,3 +23,11 @@ def test_action_badge_never_retains_raw_text() -> None:
     result = parse_action_badge(_occupied(), "Check")
     assert result.ocr_text_sha256 is not None
     assert not hasattr(result, "raw_text")
+
+
+def test_numeric_only_badge_is_an_amount_candidate_not_an_action() -> None:
+    result = parse_action_badge(_occupied(), "2")
+
+    assert result.action is None
+    assert result.badge_amount_native == 2
+    assert result.ocr_text_sha256 is not None

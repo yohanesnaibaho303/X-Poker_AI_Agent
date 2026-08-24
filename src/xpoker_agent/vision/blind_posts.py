@@ -4,7 +4,11 @@ from __future__ import annotations
 
 from decimal import Decimal
 
-from xpoker_agent.vision.models import BlindPostReconciliation, StackDeltaCandidate
+from xpoker_agent.vision.models import (
+    BlindPostReconciliation,
+    SeatBadgeAmountCandidate,
+    StackDeltaCandidate,
+)
 
 
 def _next_active_after(seat: int, active: set[int], table_size: int) -> int | None:
@@ -25,7 +29,8 @@ def reconcile_blind_posts(
     small_blind_native: Decimal,
     big_blind_native: Decimal,
     stack_deltas: list[StackDeltaCandidate],
-    maximum_frame_offset: int = 8,
+    badge_amounts: list[SeatBadgeAmountCandidate] | None = None,
+    maximum_frame_offset: int = 12,
 ) -> list[BlindPostReconciliation]:
     """Match exact SB/BB decreases near a validated boundary; never infer a split."""
     active = set(active_seats)
@@ -41,6 +46,7 @@ def reconcile_blind_posts(
         return []
 
     results: list[BlindPostReconciliation] = []
+    badge_amounts = badge_amounts or []
     for kind, seat, amount in (
         ("small_blind", small_blind_seat, small_blind_native),
         ("big_blind", big_blind_seat, big_blind_native),
@@ -55,16 +61,37 @@ def reconcile_blind_posts(
             and epoch_start_sequence <= delta.frame_sequence
             and delta.frame_sequence <= epoch_start_sequence + maximum_frame_offset
         ]
-        if len(matches) == 1:
+        badge_matches = [
+            candidate
+            for candidate in badge_amounts
+            if candidate.hand_epoch == hand_epoch
+            and candidate.seat == seat
+            and candidate.amount_native == amount
+            and epoch_start_sequence <= candidate.frame_sequence
+            and candidate.frame_sequence <= epoch_start_sequence + maximum_frame_offset
+        ]
+        if len(matches) <= 1 and len(badge_matches) <= 1 and (matches or badge_matches):
             results.append(
                 BlindPostReconciliation(
                     hand_epoch=hand_epoch,
                     seat=seat,
                     blind_kind=kind,
                     amount_native=amount,
-                    stack_delta_event_id=matches[0].event_id,
+                    stack_delta_event_id=matches[0].event_id if matches else None,
+                    badge_amount_event_id=(
+                        badge_matches[0].event_id if badge_matches else None
+                    ),
                     status="matched",
-                    reason="exact early-epoch stack decrease at expected blind seat",
+                    reason=(
+                        "corroborating exact stack decrease and numeric badge at "
+                        "expected blind seat"
+                        if matches and badge_matches
+                        else (
+                            "exact early-epoch stack decrease at expected blind seat"
+                            if matches
+                            else "exact temporal numeric badge at expected blind seat"
+                        )
+                    ),
                 )
             )
         else:
@@ -74,11 +101,15 @@ def reconcile_blind_posts(
                     seat=seat,
                     blind_kind=kind,
                     amount_native=amount,
-                    status="ambiguous" if len(matches) > 1 else "pending",
+                    status=(
+                        "ambiguous"
+                        if len(matches) > 1 or len(badge_matches) > 1
+                        else "pending"
+                    ),
                     reason=(
-                        "multiple exact early-epoch stack decreases at expected blind seat"
-                        if len(matches) > 1
-                        else "exact early-epoch blind stack decrease not observed"
+                        "multiple exact early-epoch evidence candidates at expected blind seat"
+                        if len(matches) > 1 or len(badge_matches) > 1
+                        else "exact early-epoch blind evidence not observed"
                     ),
                 )
             )

@@ -349,6 +349,7 @@ export interface LiveObservationStatus {
     blind_kind: "small_blind" | "big_blind";
     amount_native: string;
     stack_delta_event_id: string | null;
+    badge_amount_event_id: string | null;
     status: "matched" | "pending" | "ambiguous";
     canonical_event_accepted: false;
     reason: string;
@@ -373,6 +374,16 @@ export interface LiveObservationStatus {
     occurrence: number;
     dealer_seat: number | null;
     active_seats: number[];
+    canonical_event_accepted: false;
+    reason: string;
+  }>;
+  seat_badge_amount_candidates: Array<{
+    event_id: string;
+    hand_epoch: number;
+    frame_sequence: number;
+    seat: number;
+    amount_native: string;
+    confidence: number;
     canonical_event_accepted: false;
     reason: string;
   }>;

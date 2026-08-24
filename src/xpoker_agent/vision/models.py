@@ -196,6 +196,7 @@ class SeatStackConsensus(StrictModel):
 class SeatActionObservation(StrictModel):
     seat: int = Field(ge=0, le=8)
     action: Literal["fold", "check", "call", "bet", "raise", "all_in"] | None
+    badge_amount_native: Decimal | None = Field(default=None, ge=0)
     confidence: float = Field(ge=0.0, le=1.0)
     accepted: Literal[False] = False
     ocr_text_sha256: str | None = Field(default=None, min_length=64, max_length=64)
@@ -240,6 +241,17 @@ class DerivedActionCandidate(StrictModel):
     active_seats: list[int] = Field(default_factory=list)
     canonical_event_accepted: Literal[False] = False
     reason: str = "temporal badge candidate; amount/order validation pending"
+
+
+class SeatBadgeAmountCandidate(StrictModel):
+    event_id: str = Field(min_length=64, max_length=64)
+    hand_epoch: int = Field(ge=0)
+    frame_sequence: int = Field(ge=0)
+    seat: int = Field(ge=0, le=8)
+    amount_native: Decimal = Field(ge=0)
+    confidence: float = Field(ge=0.0, le=1.0)
+    canonical_event_accepted: Literal[False] = False
+    reason: str = "temporal numeric-badge candidate; semantic role pending"
 
 
 class StackDeltaCandidate(StrictModel):
@@ -326,6 +338,7 @@ class BlindPostReconciliation(StrictModel):
     blind_kind: Literal["small_blind", "big_blind"]
     amount_native: Decimal = Field(gt=0)
     stack_delta_event_id: str | None = Field(default=None, min_length=64, max_length=64)
+    badge_amount_event_id: str | None = Field(default=None, min_length=64, max_length=64)
     status: Literal["matched", "pending", "ambiguous"]
     canonical_event_accepted: Literal[False] = False
     reason: str
@@ -439,6 +452,9 @@ class LiveObservationStatus(StrictModel):
     )
     reconstruction_readiness: LiveReconstructionReadiness
     derived_action_candidates: list[DerivedActionCandidate] = Field(default_factory=list)
+    seat_badge_amount_candidates: list[SeatBadgeAmountCandidate] = Field(
+        default_factory=list
+    )
     stack_delta_candidates: list[StackDeltaCandidate] = Field(default_factory=list)
     pot_delta_candidates: list[PotDeltaCandidate] = Field(default_factory=list)
     action_amount_reconciliations: list[ActionAmountReconciliation] = Field(

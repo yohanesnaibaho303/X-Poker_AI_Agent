@@ -27,6 +27,7 @@ from xpoker_agent.vision.models import (
     LiveReconstructionReadiness,
     PotDeltaCandidate,
     SeatActionConsensus,
+    SeatBadgeAmountCandidate,
     SeatStackConsensus,
     SeatStatusConsensus,
     StackDeltaCandidate,
@@ -73,6 +74,9 @@ class LiveObservationService:
             seat: deque(maxlen=maximum_samples) for seat in range(9)
         }
         self._action_samples: dict[int, deque[TemporalSample]] = {
+            seat: deque(maxlen=maximum_samples) for seat in range(9)
+        }
+        self._badge_amount_samples: dict[int, deque[TemporalSample]] = {
             seat: deque(maxlen=maximum_samples) for seat in range(9)
         }
         self._hero_control_samples: deque[TemporalSample] = deque(
@@ -153,6 +157,10 @@ class LiveObservationService:
         self._action_armed_seats: set[int] = set()
         self._action_occurrence_counts: dict[tuple[int, str, int, str], int] = {}
         self._derived_actions: deque[DerivedActionCandidate] = deque(maxlen=50)
+        self._badge_amount_armed_seats: set[int] = set(range(9))
+        self._badge_amount_candidates: deque[SeatBadgeAmountCandidate] = deque(
+            maxlen=50
+        )
         self._last_accepted_stacks: dict[int, Decimal] = {}
         self._stack_deltas: deque[StackDeltaCandidate] = deque(maxlen=50)
         self._last_accepted_pot: Decimal | None = None
@@ -195,6 +203,8 @@ class LiveObservationService:
         for samples in self._stack_samples.values():
             samples.clear()
         for samples in self._action_samples.values():
+            samples.clear()
+        for samples in self._badge_amount_samples.values():
             samples.clear()
         self._hero_control_samples.clear()
         self._mode_consensus = TemporalConsensus(
@@ -253,6 +263,8 @@ class LiveObservationService:
         self._action_armed_seats.clear()
         self._action_occurrence_counts.clear()
         self._derived_actions.clear()
+        self._badge_amount_armed_seats = set(range(table_size))
+        self._badge_amount_candidates.clear()
         self._last_accepted_stacks.clear()
         self._stack_deltas.clear()
         self._last_accepted_pot = None
@@ -417,6 +429,9 @@ class LiveObservationService:
                         current_active_seats=[],
                     )
                     self._action_armed_seats.clear()
+                    for samples in self._badge_amount_samples.values():
+                        samples.clear()
+                    self._badge_amount_armed_seats = set(range(diagnostic.table_size))
                     self._action_occurrence_counts.clear()
                     for samples in self._hero_card_samples.values():
                         samples.clear()
@@ -646,6 +661,42 @@ class LiveObservationService:
                 )
             action_consensus.append(SeatActionConsensus(seat=seat, consensus=result))
         self._action_consensus = action_consensus
+        for seat in range(diagnostic.table_size):
+            observation = by_action_seat.get(seat)
+            samples = self._badge_amount_samples[seat]
+            if observation is None or observation.badge_amount_native is None:
+                samples.clear()
+                self._badge_amount_armed_seats.add(seat)
+                continue
+            result = self._append_consecutive(
+                samples,
+                TemporalSample(
+                    frame_sequence=diagnostic.frame_sequence,
+                    content_sha256=diagnostic.content_sha256,
+                    value=str(observation.badge_amount_native),
+                    confidence=observation.confidence,
+                ),
+            )
+            if (
+                result.accepted
+                and result.value is not None
+                and seat in self._badge_amount_armed_seats
+            ):
+                encoded = (
+                    f"{diagnostic.target_fingerprint}:{self._hand_epoch}:badge-amount:"
+                    f"{seat}:{result.value}:{diagnostic.frame_sequence}"
+                ).encode()
+                self._badge_amount_candidates.append(
+                    SeatBadgeAmountCandidate(
+                        event_id=hashlib.sha256(encoded).hexdigest(),
+                        hand_epoch=self._hand_epoch,
+                        frame_sequence=diagnostic.frame_sequence,
+                        seat=seat,
+                        amount_native=Decimal(result.value),
+                        confidence=result.confidence,
+                    )
+                )
+                self._badge_amount_armed_seats.discard(seat)
         controls = diagnostic.hero_action_controls
         if controls.mode in {"absent", "ambiguous"}:
             self._hero_control_samples.clear()
@@ -960,6 +1011,7 @@ class LiveObservationService:
             blind_post_reconciliations=self._reconcile_blind_posts(),
             reconstruction_readiness=self._reconstruction_readiness(),
             derived_action_candidates=list(self._derived_actions),
+            seat_badge_amount_candidates=list(self._badge_amount_candidates),
             stack_delta_candidates=list(self._stack_deltas),
             pot_delta_candidates=list(self._pot_deltas),
             action_amount_reconciliations=self._reconcile_action_amounts(),
@@ -1143,6 +1195,7 @@ class LiveObservationService:
             small_blind_native=Decimal(small_token),
             big_blind_native=Decimal(big_token),
             stack_deltas=list(self._stack_deltas),
+            badge_amounts=list(self._badge_amount_candidates),
         )
 
     def _reconcile_action_pot(self) -> list[ActionPotReconciliation]:

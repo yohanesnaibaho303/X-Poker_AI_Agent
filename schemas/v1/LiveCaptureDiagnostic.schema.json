@@ -349,6 +349,22 @@
           ],
           "title": "Action"
         },
+        "badge_amount_native": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Badge Amount Native"
+        },
         "confidence": {
           "maximum": 1.0,
           "minimum": 0.0,

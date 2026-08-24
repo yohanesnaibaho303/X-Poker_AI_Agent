@@ -335,6 +335,20 @@
           "default": null,
           "title": "Stack Delta Event Id"
         },
+        "badge_amount_event_id": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "minLength": 64,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Badge Amount Event Id"
+        },
         "status": {
           "enum": [
             "matched",
@@ -769,6 +783,72 @@
         "consensus"
       ],
       "title": "SeatActionConsensus",
+      "type": "object"
+    },
+    "SeatBadgeAmountCandidate": {
+      "additionalProperties": false,
+      "properties": {
+        "event_id": {
+          "maxLength": 64,
+          "minLength": 64,
+          "title": "Event Id",
+          "type": "string"
+        },
+        "hand_epoch": {
+          "minimum": 0,
+          "title": "Hand Epoch",
+          "type": "integer"
+        },
+        "frame_sequence": {
+          "minimum": 0,
+          "title": "Frame Sequence",
+          "type": "integer"
+        },
+        "seat": {
+          "maximum": 8,
+          "minimum": 0,
+          "title": "Seat",
+          "type": "integer"
+        },
+        "amount_native": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "title": "Amount Native"
+        },
+        "confidence": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "canonical_event_accepted": {
+          "const": false,
+          "default": false,
+          "title": "Canonical Event Accepted",
+          "type": "boolean"
+        },
+        "reason": {
+          "default": "temporal numeric-badge candidate; semantic role pending",
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "event_id",
+        "hand_epoch",
+        "frame_sequence",
+        "seat",
+        "amount_native",
+        "confidence"
+      ],
+      "title": "SeatBadgeAmountCandidate",
       "type": "object"
     },
     "SeatStackConsensus": {
@@ -1237,6 +1317,13 @@
         "$ref": "#/$defs/DerivedActionCandidate"
       },
       "title": "Derived Action Candidates",
+      "type": "array"
+    },
+    "seat_badge_amount_candidates": {
+      "items": {
+        "$ref": "#/$defs/SeatBadgeAmountCandidate"
+      },
+      "title": "Seat Badge Amount Candidates",
       "type": "array"
     },
     "stack_delta_candidates": {

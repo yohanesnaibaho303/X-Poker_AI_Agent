@@ -28,6 +28,7 @@ def _diagnostic(
     hero_controls: HeroActionControlsObservation | None = None,
     rule_confidence: float = 0.99,
     blind_confidence: float = 0.99,
+    seat_actions: list[SeatActionObservation] | None = None,
 ) -> LiveCaptureDiagnostic:
     return LiveCaptureDiagnostic(
         captured_at=datetime.now(UTC),
@@ -93,6 +94,7 @@ def _diagnostic(
                 reason="test candidate",
             )
         ],
+        seat_actions=seat_actions or [],
     )
 
 
@@ -147,6 +149,33 @@ def test_pre_action_controls_stabilize_without_becoming_legal_actions() -> None:
         assert result.accepted is True
         assert result.value == "pre_action::fold_or_check,call_any:"
         assert "decision" not in (result.value or "")
+
+    asyncio.run(scenario())
+
+
+def test_numeric_badge_becomes_one_temporal_candidate() -> None:
+    async def scenario() -> None:
+        badge = SeatActionObservation(
+            seat=2,
+            action=None,
+            badge_amount_native=1,
+            confidence=0.95,
+            reason="test fixture",
+        )
+
+        async def capture(_: int, sequence: int):
+            return _diagnostic(sequence, seat_actions=[badge]), CapturedFrame(
+                1, 1, b"\x00" * 4
+            )
+
+        service = LiveObservationService(capture)
+        for _ in range(5):
+            await service.inspect_once(table_size=9)
+
+        candidates = service.status().seat_badge_amount_candidates
+        assert len(candidates) == 1
+        assert candidates[0].seat == 2
+        assert candidates[0].amount_native == 1
 
     asyncio.run(scenario())
 
