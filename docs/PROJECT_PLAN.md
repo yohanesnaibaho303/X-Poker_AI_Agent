@@ -143,27 +143,47 @@ Observed depths between buckets will use a documented nearest-solution or interp
 
 ## 5. Hand-State Reconstruction
 
-The application will convert visual changes into a validated event stream:
+The state model separates four concepts that must not be collapsed into one flat list:
+
+### 5.1 Table and hand lifecycle
 
 ```text
-TABLE_READY
+table_status: unavailable | ready | waiting_for_hand | in_hand | hand_complete
+street:       none | preflop | flop | turn | river | showdown
+```
+
+### 5.2 Player participation status
+
+```text
+empty | seated | active | folded | all_in | sitting_out | on_break | disconnected
+```
+
+These are persistent statuses observed or derived for each seat. `sitting_out`, `on_break`, and `disconnected` are table/session statuses and are not poker betting actions.
+
+### 5.3 Betting actions
+
+```text
+fold | check | call | bet | raise | all_in
+```
+
+These are the canonical decisions made by a player during a betting round. The system records the actor, street, amount where applicable, and supporting evidence. `all_in` also changes the player's participation status to `all_in` while the hand continues.
+
+### 5.4 Lifecycle and dealing events
+
+The application still records non-action events required to reconstruct and validate a complete hand:
+
+```text
 HAND_STARTED
-DEALER_IDENTIFIED
+DEALER_ASSIGNED
 BLIND_POSTED
-HOLE_CARDS_DEALT
-PLAYER_FOLDED
-PLAYER_CHECKED
-PLAYER_CALLED
-PLAYER_BET
-PLAYER_RAISED
-PLAYER_ALL_IN
-FLOP_DEALT
-TURN_DEALT
-RIVER_DEALT
-SHOWDOWN
+HOLE_CARDS_OBSERVED
+BOARD_CARDS_OBSERVED
+SHOWDOWN_STARTED
 POT_AWARDED
 HAND_COMPLETED
 ```
+
+These are internal reconstruction events, not player actions or player statuses. Board-card events carry the resulting street rather than using separate `FLOP_DEALT`, `TURN_DEALT`, and `RIVER_DEALT` action-like labels.
 
 The state engine will validate:
 

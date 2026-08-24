@@ -116,7 +116,8 @@ Groups observations from a frame sequence and carries target identity, capture m
   "event_id": "uuid",
   "hand_id": "uuid",
   "sequence": 12,
-  "type": "PLAYER_RAISED",
+  "category": "betting_action",
+  "type": "raise",
   "actor_seat": 6,
   "street": "preflop",
   "amount": {"to_bb": "6.0", "added_bb": "4.0"},
@@ -126,11 +127,21 @@ Groups observations from a frame sequence and carries target identity, capture m
 }
 ```
 
-Event types follow the canonical list in `docs/PROJECT_PLAN.md`. Events are append-only. Corrections create a new reconstruction version rather than altering an audited history.
+Event categories are:
+
+- `betting_action`: `fold`, `check`, `call`, `bet`, `raise`, or `all_in`;
+- `lifecycle`: `hand_started`, `showdown_started`, or `hand_completed`;
+- `forced_wager`: `blind_posted` initially, with antes/straddles reserved for explicitly supported configurations;
+- `dealing`: `dealer_assigned`, `hole_cards_observed`, or `board_cards_observed`;
+- `settlement`: `pot_awarded`.
+
+Events are append-only. Corrections create a new reconstruction version rather than altering an audited history. Table readiness and player participation are state fields, not synthetic player actions.
 
 ### SeatState
 
-Contains seat index, occupancy, player/profile reference, derived position, starting stack, current stack, committed amounts by street, status, cards if legitimately revealed, and field-level evidence/confidence.
+Contains seat index, occupancy, player/profile reference, derived position, starting stack, current stack, committed amounts by street, participation status, cards if legitimately revealed, and field-level evidence/confidence.
+
+Participation status is one of `empty`, `seated`, `active`, `folded`, `all_in`, `sitting_out`, `on_break`, or `disconnected`. This is distinct from the most recent betting action.
 
 ### HandState
 
@@ -141,6 +152,7 @@ Contains seat index, occupancy, player/profile reference, derived position, star
   "hand_id": "uuid",
   "revision": 8,
   "config_version": "game-9max-nlh-v1",
+  "table_status": "in_hand",
   "street": "flop",
   "dealer_seat": 3,
   "hero_seat": 3,
@@ -257,4 +269,3 @@ No executed attempt may be deleted or overwritten.
 - Renames, semantic changes, new required fields, and enum removals require a new major version and migration.
 - Stored artifacts retain the schema version used to produce them.
 - Replay tests cover supported historical schema versions or document an explicit migration boundary.
-

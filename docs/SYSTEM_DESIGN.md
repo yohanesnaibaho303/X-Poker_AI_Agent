@@ -48,14 +48,16 @@ Observations include value, confidence, detector/model version, region, frame ev
 
 ## 5. Hand-state reconstruction
 
-The state service consumes time-ordered observation batches and emits canonical events:
+The state service keeps four separate dimensions:
 
-```text
-TABLE_READY → HAND_STARTED → blinds/deal/actions → streets → SHOWDOWN
-            → POT_AWARDED → HAND_COMPLETED
-```
+- table/hand lifecycle: unavailable, ready, waiting for hand, in hand, or hand complete;
+- street: none, preflop, flop, turn, river, or showdown;
+- per-seat participation: empty, seated, active, folded, all-in, sitting out, on break, or disconnected;
+- betting actions: fold, check, call, bet, raise, or all-in.
 
-The reducer validates action order, street progression, card uniqueness, amount monotonicity, minimum raises, stack movement, pot accounting, side pots, all-ins, and occupied-seat changes. It uses multi-frame confirmation for unstable visual values.
+Time-ordered observations produce betting-action events plus internal lifecycle/dealing events such as hand start, dealer assignment, blind posting, hole/board cards observed, showdown start, pot award, and hand completion. Lifecycle events are not exposed as if they were player actions. A board-card event carries the resulting street.
+
+The reducer validates action order, street progression, card uniqueness, amount monotonicity, minimum raises, stack movement, pot accounting, side pots, all-ins, and occupied-seat or participation-status changes. It uses multi-frame confirmation for unstable visual values.
 
 An impossible or materially incomplete transition produces an anomaly and pauses state advancement. The previous valid state remains intact; guessed events are forbidden.
 
@@ -131,4 +133,3 @@ After input, it verifies the expected state transition within a deadline. Failur
 ## 12. Configuration and reproducibility
 
 All runtime, game, layout, model, range, solver, and gate configurations are versioned. A replay records enough versions and seeded inputs to reproduce state and strategy decisions. Environment-specific authorization details are local and excluded from source control.
-

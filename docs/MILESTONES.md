@@ -66,7 +66,8 @@ Exit: supported-layout recognition meets the per-component targets in `docs/QUAL
 
 ## Milestone 4 — Complete hand reconstruction
 
-- [ ] Implement canonical event types and append-only event store.
+- [ ] Implement separate table lifecycle, street, seat-participation, and betting-action models.
+- [ ] Implement categorized reconstruction events and an append-only event store.
 - [ ] Implement the NLH state reducer and street/action ordering.
 - [ ] Validate unique cards, blinds, calls, raises, all-ins, and side pots.
 - [ ] Reconcile stack, bet, pot, and award accounting.
@@ -150,4 +151,3 @@ Exit: all controller gates pass and supported authorized test hands complete wit
 - [ ] Produce a reproducible hackathon demonstration on a fresh authorized machine.
 
 Exit: a new authorized test machine can reproduce the documented demonstration.
-
