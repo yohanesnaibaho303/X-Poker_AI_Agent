@@ -6,6 +6,13 @@ import json
 from pathlib import Path
 
 from xpoker_agent.capture.models import LayoutProfile
+from xpoker_agent.exploit.models import (
+    BestResponseAnalysis,
+    ExploitAdjustment,
+    NodelockResult,
+    OpponentProfile,
+    OpponentRangeSnapshot,
+)
 from xpoker_agent.models import (
     ActionAttempt,
     DecisionEnvelope,
@@ -43,6 +50,11 @@ MODELS = [
     RangeMatrix,
     StrategyMatch,
     StrategyResolution,
+    OpponentProfile,
+    ExploitAdjustment,
+    NodelockResult,
+    OpponentRangeSnapshot,
+    BestResponseAnalysis,
     DecisionEnvelope,
     ActionAttempt,
 ]

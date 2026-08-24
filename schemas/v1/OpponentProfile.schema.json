@@ -1,0 +1,232 @@
+{
+  "$defs": {
+    "OpponentStatName": {
+      "enum": [
+        "vpip",
+        "pfr",
+        "three_bet",
+        "fold_to_three_bet",
+        "cbet",
+        "fold_to_cbet",
+        "check_raise"
+      ],
+      "title": "OpponentStatName",
+      "type": "string"
+    },
+    "Position": {
+      "enum": [
+        "UTG",
+        "UTG+1",
+        "MP",
+        "LJ",
+        "HJ",
+        "CO",
+        "BTN",
+        "SB",
+        "BB"
+      ],
+      "title": "Position",
+      "type": "string"
+    },
+    "PosteriorStat": {
+      "additionalProperties": false,
+      "properties": {
+        "key": {
+          "$ref": "#/$defs/StatKey"
+        },
+        "prior_id": {
+          "title": "Prior Id",
+          "type": "string"
+        },
+        "prior_alpha": {
+          "exclusiveMinimum": 0,
+          "title": "Prior Alpha",
+          "type": "number"
+        },
+        "prior_beta": {
+          "exclusiveMinimum": 0,
+          "title": "Prior Beta",
+          "type": "number"
+        },
+        "prior_confidence": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Prior Confidence",
+          "type": "number"
+        },
+        "occurrences": {
+          "minimum": 0,
+          "title": "Occurrences",
+          "type": "integer"
+        },
+        "opportunities": {
+          "minimum": 0,
+          "title": "Opportunities",
+          "type": "integer"
+        },
+        "posterior_alpha": {
+          "exclusiveMinimum": 0,
+          "title": "Posterior Alpha",
+          "type": "number"
+        },
+        "posterior_beta": {
+          "exclusiveMinimum": 0,
+          "title": "Posterior Beta",
+          "type": "number"
+        },
+        "mean": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Mean",
+          "type": "number"
+        },
+        "standard_deviation": {
+          "minimum": 0,
+          "title": "Standard Deviation",
+          "type": "number"
+        },
+        "interval_low": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Interval Low",
+          "type": "number"
+        },
+        "interval_high": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Interval High",
+          "type": "number"
+        },
+        "interval_method": {
+          "const": "beta_normal_approx_95",
+          "default": "beta_normal_approx_95",
+          "title": "Interval Method",
+          "type": "string"
+        },
+        "evidence_ids": {
+          "items": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "title": "Evidence Ids",
+          "type": "array"
+        }
+      },
+      "required": [
+        "key",
+        "prior_id",
+        "prior_alpha",
+        "prior_beta",
+        "prior_confidence",
+        "occurrences",
+        "opportunities",
+        "posterior_alpha",
+        "posterior_beta",
+        "mean",
+        "standard_deviation",
+        "interval_low",
+        "interval_high"
+      ],
+      "title": "PosteriorStat",
+      "type": "object"
+    },
+    "StatKey": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "$ref": "#/$defs/OpponentStatName"
+        },
+        "position": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Position"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "street": {
+          "$ref": "#/$defs/Street",
+          "default": "preflop"
+        },
+        "size_bucket": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Size Bucket"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "StatKey",
+      "type": "object"
+    },
+    "Street": {
+      "enum": [
+        "none",
+        "preflop",
+        "flop",
+        "turn",
+        "river",
+        "showdown"
+      ],
+      "title": "Street",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "profile_id": {
+      "title": "Profile Id",
+      "type": "string"
+    },
+    "player_ref": {
+      "title": "Player Ref",
+      "type": "string"
+    },
+    "table_size": {
+      "enum": [
+        6,
+        9
+      ],
+      "title": "Table Size",
+      "type": "integer"
+    },
+    "stats": {
+      "items": {
+        "$ref": "#/$defs/PosteriorStat"
+      },
+      "title": "Stats",
+      "type": "array"
+    },
+    "hands_observed": {
+      "items": {
+        "format": "uuid",
+        "type": "string"
+      },
+      "title": "Hands Observed",
+      "type": "array"
+    },
+    "version": {
+      "title": "Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "profile_id",
+    "player_ref",
+    "table_size",
+    "version"
+  ],
+  "title": "OpponentProfile",
+  "type": "object"
+}

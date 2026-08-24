@@ -175,6 +175,15 @@ Participation status is one of `empty`, `seated`, `active`, `folded`, `all_in`, 
 
 Critical confidence is calculated from cards, amounts, table identity, actor, action, and controls; it is not a simple average that can hide one unsafe field.
 
+### OpponentProfile and exploit results
+
+`OpponentProfile` stores population-prior identity, sufficient counts, posterior parameters,
+uncertainty, and evidence for every position/street/size statistic slice. `ExploitAdjustment` keeps
+baseline and adjusted hero action frequencies plus the rule, sample size, confidence scale, cap,
+and assumptions. `OpponentRangeSnapshot` keeps baseline, inferred, and exploit-adjusted ranges
+separate. `NodelockResult` and `BestResponseAnalysis` explicitly describe their bounded experiment
+and supplied-EV limitations.
+
 ## 6. Range layer
 
 ### WeightedRange

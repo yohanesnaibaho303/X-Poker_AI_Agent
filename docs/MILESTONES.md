@@ -106,13 +106,13 @@ Exit: replayed spots return deterministic, source-backed results and never prese
 
 ## Milestone 7 — Exploitative modeling
 
-- [ ] Define player and population statistic models.
-- [ ] Track sufficient counts and uncertainty by position, street, and size.
-- [ ] Maintain baseline, inferred, and exploit-adjusted ranges separately.
-- [ ] Implement confidence-scaled, capped deviations.
-- [ ] Add nodelock-like experiments and best-response analysis.
-- [ ] Explain adjustment evidence, sample size, and uncertainty.
-- [ ] Test synthetic profiles and small-sample shrinkage.
+- [x] Define player and population statistic models.
+- [x] Track sufficient counts and uncertainty by position, street, and size.
+- [x] Maintain baseline, inferred, and exploit-adjusted ranges separately.
+- [x] Implement confidence-scaled, capped deviations.
+- [x] Add nodelock-like experiments and supplied-EV best-response analysis.
+- [x] Explain adjustment evidence, sample size, and uncertainty.
+- [x] Test synthetic profiles and small-sample shrinkage.
 
 Exit: synthetic profiles produce stable, explainable, regression-tested adjustments.
 

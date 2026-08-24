@@ -1,0 +1,65 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "baseline_actions": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "title": "Baseline Actions",
+      "type": "object"
+    },
+    "ev_bb": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "title": "Ev Bb",
+      "type": "object"
+    },
+    "best_actions": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Best Actions",
+      "type": "array"
+    },
+    "best_response_actions": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "title": "Best Response Actions",
+      "type": "object"
+    },
+    "baseline_ev_bb": {
+      "title": "Baseline Ev Bb",
+      "type": "number"
+    },
+    "best_response_ev_bb": {
+      "title": "Best Response Ev Bb",
+      "type": "number"
+    },
+    "improvement_bb": {
+      "minimum": 0,
+      "title": "Improvement Bb",
+      "type": "number"
+    },
+    "assumptions": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Assumptions",
+      "type": "array"
+    }
+  },
+  "required": [
+    "baseline_actions",
+    "ev_bb",
+    "best_actions",
+    "best_response_actions",
+    "baseline_ev_bb",
+    "best_response_ev_bb",
+    "improvement_bb",
+    "assumptions"
+  ],
+  "title": "BestResponseAnalysis",
+  "type": "object"
+}

@@ -2,8 +2,9 @@
 
 - Last updated: 2026-08-24 (Asia/Jakarta)
 - Current milestone: Milestone 6 — GTO strategy integration
-- Overall project: 4 of 11 milestones complete
-- Current state: Milestone 5 complete; M3/M4 promotion gates remain pending recorded evidence
+- Overall project: 5 of 11 milestones complete
+- Current state: Milestone 7 complete; Milestone 6 source-data integration and M3/M4 promotion gates
+  remain pending
 - Live control: Disabled
 
 ## Latest checkpoint
@@ -34,11 +35,16 @@
 - Added the Milestone 6 preflop strategy resolver: exact/nearest GTO matches require a
   `gto_solution` artifact; absent GTO returns `unavailable` while any reference prior is exposed in
   a separate field. Stack abstraction reports distance and reduces confidence deterministically.
+- Completed Milestone 7 opponent modeling with Beta-Binomial sufficient counts and approximate 95%
+  posterior intervals sliced by position, street, and size.
+- Added immutable profile updates, baseline/inferred/exploit range snapshots, deterministic
+  log-odds nodelock experiments, sample-shrunk/capped hero action adjustments, and supplied-EV
+  best-response analysis with explicit non-solver assumptions.
 - Added user-selectable 6-max/9-max session setup and BB/native-chip display modes. Exact native
   values format as grouped numbers, K, or M by threshold and remain unnormalized until a blind exists.
 - Audited public solver candidates; current configuration-matched GTO artifacts remain unavailable.
   Approximate reference priors are never promoted to GTO. Control remains disabled.
-- Current full suite: Ruff passed; 193 Pytest/Hypothesis tests passed.
+- Current full suite: Ruff passed; 205 Pytest/Hypothesis tests passed.
 
 ## Completed project checkpoints
 
@@ -47,6 +53,8 @@
 - Milestone 2 — authorized X-Poker window discovery, calibration, normalized capture, and replay diagnostics.
 - Milestone 5 — exact-combo ranges, deterministic poker math, matrix projection, stack abstraction,
   and isolated provenance-bearing 6-max/9-max reference priors.
+- Milestone 7 — uncertainty-bearing opponent profiles, bounded exploit adjustments, nodelock-like
+  range experiments, and synthetic regression evaluation.
 
 ## Next
 
@@ -54,6 +62,8 @@
   exact-GTO results.
 - Source or independently generate configuration-matched 6-max and 9-max no-rake 2 BB solutions.
 - Add exact/nearest strategy-node lookup, quantitative mismatch, and replay comparisons.
+- Connect the completed exploit layer to real reconstructed observations and resolved strategy EVs
+  during Milestone 8 integration.
 - Continue M3/M4 promotion evaluation in parallel when representative standard NLH replays exist.
 
 ## Blockers

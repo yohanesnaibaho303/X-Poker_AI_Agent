@@ -12,3 +12,4 @@ Initial records:
 - `0004-windows-ocr-first-candidate.md`
 - `0005-canonical-range-and-math-core.md`
 - `0006-reference-priors-are-not-gto.md`
+- `0007-confidence-scaled-exploit-model.md`
