@@ -8,6 +8,7 @@ from xpoker_agent.vision.models import (
     CardFaceObservation,
     DealerButtonObservation,
     DerivedActionCandidate,
+    HeroActionControlsObservation,
     HeroCardsObservation,
     LiveCaptureDiagnostic,
     PotDeltaCandidate,
@@ -24,6 +25,7 @@ def _diagnostic(
     *,
     fingerprint: str = "a" * 64,
     mode: str = "standard_nlh",
+    hero_controls: HeroActionControlsObservation | None = None,
 ) -> LiveCaptureDiagnostic:
     return LiveCaptureDiagnostic(
         captured_at=datetime.now(UTC),
@@ -73,6 +75,12 @@ def _diagnostic(
             confidence=0.95,
             reason="test candidate",
         ),
+        hero_action_controls=hero_controls
+        or HeroActionControlsObservation(
+            mode="absent",
+            confidence=0.0,
+            reason="test fixture",
+        ),
         seat_panels=[
             SeatPanelObservation(
                 seat=0,
@@ -111,6 +119,32 @@ def test_live_observation_builds_consensus_and_stops_cleanly() -> None:
         assert "hand_boundary_not_validated" in status.reconstruction_readiness.issues
         assert await service.stop() is True
         assert service.status().running is False
+
+    asyncio.run(scenario())
+
+
+def test_pre_action_controls_stabilize_without_becoming_legal_actions() -> None:
+    async def scenario() -> None:
+        controls = HeroActionControlsObservation(
+            mode="pre_action",
+            pre_action_toggles=["fold_or_check", "call_any"],
+            confidence=0.96,
+            reason="test fixture",
+        )
+
+        async def capture(_: int, sequence: int):
+            return _diagnostic(sequence, hero_controls=controls), CapturedFrame(
+                1, 1, b"\x00" * 4
+            )
+
+        service = LiveObservationService(capture)
+        for _ in range(3):
+            await service.inspect_once(table_size=9)
+
+        result = service.status().hero_control_consensus
+        assert result.accepted is True
+        assert result.value == "pre_action::fold_or_check,call_any:"
+        assert "decision" not in (result.value or "")
 
     asyncio.run(scenario())
 

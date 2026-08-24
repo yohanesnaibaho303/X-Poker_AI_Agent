@@ -189,6 +189,13 @@ fold | check | call | bet | raise | all_in
 
 These are the canonical decisions made by a player during a betting round. The system records the actor, street, amount where applicable, and supporting evidence. `all_in` also changes the player's participation status to `all_in` while the hand continues.
 
+X-Poker's persistent `F/C`, `Check`, and `Call Any` widgets are pre-action toggles, not proof that
+the hero is currently facing a legal decision. Perception must classify the control surface as
+`absent`, `pre_action`, `decision`, or `ambiguous`. Only an unchanged `decision` surface observed in
+at least three distinct frames may supply candidate legal actions; pre-action toggles never do.
+Raw control-region OCR is not retained: diagnostics store the parsed state and a normalized-text
+SHA-256 fingerprint for replay correlation.
+
 ### 5.4 Lifecycle and dealing events
 
 The application still records non-action events required to reconstruct and validate a complete hand:

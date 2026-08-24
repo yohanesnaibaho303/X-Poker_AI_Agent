@@ -207,6 +207,21 @@ class SeatActionConsensus(StrictModel):
     consensus: TemporalConsensus
 
 
+class HeroActionControlsObservation(StrictModel):
+    mode: Literal["absent", "pre_action", "decision", "ambiguous"]
+    available_actions: list[
+        Literal["fold", "check", "call", "bet", "raise", "all_in"]
+    ] = Field(default_factory=list)
+    pre_action_toggles: list[Literal["fold_or_check", "call_any"]] = Field(
+        default_factory=list
+    )
+    call_amount_native: Decimal | None = Field(default=None, ge=0)
+    confidence: float = Field(ge=0.0, le=1.0)
+    accepted: Literal[False] = False
+    ocr_text_sha256: str | None = Field(default=None, min_length=64, max_length=64)
+    reason: str
+
+
 class SeatStatusConsensus(StrictModel):
     seat: int = Field(ge=0, le=8)
     consensus: TemporalConsensus
@@ -360,6 +375,7 @@ class LiveCaptureDiagnostic(StrictModel):
     seat_observations: list[SeatOccupancyObservation] = Field(default_factory=list)
     seat_panels: list[SeatPanelObservation] = Field(default_factory=list)
     seat_actions: list[SeatActionObservation] = Field(default_factory=list)
+    hero_action_controls: HeroActionControlsObservation
 
 
 class LiveObservationStartRequest(StrictModel):
@@ -404,6 +420,7 @@ class LiveObservationStatus(StrictModel):
     pot_consensus: TemporalConsensus
     seat_stack_consensus: list[SeatStackConsensus] = Field(default_factory=list)
     seat_action_consensus: list[SeatActionConsensus] = Field(default_factory=list)
+    hero_control_consensus: TemporalConsensus
     hand_epoch: int = Field(ge=0)
     hand_boundary_validation: LiveHandBoundaryValidation
     reconstruction_readiness: LiveReconstructionReadiness

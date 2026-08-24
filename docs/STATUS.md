@@ -136,7 +136,7 @@
   epochs with zero failures and produced six mutually unique provisional matches: Call 2 and 4,
   plus Bet 4, 3, 6, and 2 native units. None are canonical events yet because legal order and pot
   accounting remain outstanding gates.
-- Current full suite: Ruff passed; 269 Pytest/Hypothesis tests, 11 TypeScript tests, and the
+- Current full suite: Ruff passed; 273 Pytest/Hypothesis tests, 11 TypeScript tests, and the
   production dashboard build passed. Table control remains disabled.
 - Added deterministic provisional clockwise-order validation. Each visual action now carries the
   stable dealer and active-seat context present when it was emitted. Preflop starts after the BB;
@@ -185,6 +185,10 @@
   quickly to repeat three times. They are explicitly non-canonical and become useful only when an
   independently stable action badge and same-seat stack decrease match the exact increase. If both
   endpoints later reach three-frame stability, the same transition is upgraded rather than duplicated.
+- Added a privacy-scoped hero-control parser that distinguishes X-Poker pre-action toggles from a
+  current Fold/Check/Call/Bet/Raise/All-in decision surface. Raw control OCR is discarded after
+  parsing, normalized text is represented only by its SHA-256 fingerprint, and three identical
+  frames are required for consensus. A stable pre-action bar remains explicitly non-actionable.
 
 ## Completed project checkpoints
 

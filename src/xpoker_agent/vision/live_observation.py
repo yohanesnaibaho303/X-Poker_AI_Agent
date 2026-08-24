@@ -73,6 +73,9 @@ class LiveObservationService:
         self._action_samples: dict[int, deque[TemporalSample]] = {
             seat: deque(maxlen=maximum_samples) for seat in range(9)
         }
+        self._hero_control_samples: deque[TemporalSample] = deque(
+            maxlen=maximum_samples
+        )
         self._maximum_consecutive_failures = maximum_consecutive_failures
         self._capture_lock = asyncio.Lock()
         self._stop_event = asyncio.Event()
@@ -133,6 +136,7 @@ class LiveObservationService:
             )
             for seat in range(9)
         ]
+        self._hero_control_consensus = self._empty_consensus("no_samples")
         self._hand_epoch = 0
         self._previous_epoch_dealer: int | None = None
         self._previous_epoch_active_seats: list[int] = []
@@ -189,6 +193,7 @@ class LiveObservationService:
             samples.clear()
         for samples in self._action_samples.values():
             samples.clear()
+        self._hero_control_samples.clear()
         self._mode_consensus = TemporalConsensus(
             accepted=False,
             confidence=0.0,
@@ -230,6 +235,7 @@ class LiveObservationService:
             )
             for seat in range(9)
         ]
+        self._hero_control_consensus = self._empty_consensus("no_samples")
         self._hand_epoch = 0
         self._previous_epoch_dealer = None
         self._previous_epoch_active_seats = []
@@ -635,6 +641,30 @@ class LiveObservationService:
                 )
             action_consensus.append(SeatActionConsensus(seat=seat, consensus=result))
         self._action_consensus = action_consensus
+        controls = diagnostic.hero_action_controls
+        if controls.mode in {"absent", "ambiguous"}:
+            self._hero_control_samples.clear()
+            self._hero_control_consensus = self._empty_consensus(
+                f"current_hero_controls_{controls.mode}"
+            )
+        else:
+            control_value = ":".join(
+                (
+                    controls.mode,
+                    ",".join(controls.available_actions),
+                    ",".join(controls.pre_action_toggles),
+                    str(controls.call_amount_native or ""),
+                )
+            )
+            self._hero_control_consensus = self._append_consecutive(
+                self._hero_control_samples,
+                TemporalSample(
+                    frame_sequence=diagnostic.frame_sequence,
+                    content_sha256=diagnostic.content_sha256,
+                    value=control_value,
+                    confidence=controls.confidence,
+                ),
+            )
         visible_by_seat = {
             action.seat: action.action for action in diagnostic.seat_actions
         }
@@ -919,6 +949,7 @@ class LiveObservationService:
             pot_consensus=self._pot_consensus,
             seat_stack_consensus=self._stack_consensus,
             seat_action_consensus=self._action_consensus,
+            hero_control_consensus=self._hero_control_consensus,
             hand_epoch=self._hand_epoch,
             hand_boundary_validation=self._hand_boundary_validation,
             reconstruction_readiness=self._reconstruction_readiness(),

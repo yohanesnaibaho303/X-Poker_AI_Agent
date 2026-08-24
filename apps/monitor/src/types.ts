@@ -322,6 +322,14 @@ export interface LiveObservationStatus {
       reason: string | null;
     };
   }>;
+  hero_control_consensus: {
+    accepted: boolean;
+    value: string | null;
+    confidence: number;
+    stable_frames: number;
+    alternatives: string[];
+    reason: string | null;
+  };
   hand_epoch: number;
   hand_boundary_validation: {
     hand_epoch: number;

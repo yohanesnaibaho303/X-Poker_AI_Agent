@@ -105,6 +105,100 @@
       "title": "DealerButtonObservation",
       "type": "object"
     },
+    "HeroActionControlsObservation": {
+      "additionalProperties": false,
+      "properties": {
+        "mode": {
+          "enum": [
+            "absent",
+            "pre_action",
+            "decision",
+            "ambiguous"
+          ],
+          "title": "Mode",
+          "type": "string"
+        },
+        "available_actions": {
+          "items": {
+            "enum": [
+              "fold",
+              "check",
+              "call",
+              "bet",
+              "raise",
+              "all_in"
+            ],
+            "type": "string"
+          },
+          "title": "Available Actions",
+          "type": "array"
+        },
+        "pre_action_toggles": {
+          "items": {
+            "enum": [
+              "fold_or_check",
+              "call_any"
+            ],
+            "type": "string"
+          },
+          "title": "Pre Action Toggles",
+          "type": "array"
+        },
+        "call_amount_native": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Call Amount Native"
+        },
+        "confidence": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "accepted": {
+          "const": false,
+          "default": false,
+          "title": "Accepted",
+          "type": "boolean"
+        },
+        "ocr_text_sha256": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "minLength": 64,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ocr Text Sha256"
+        },
+        "reason": {
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "mode",
+        "confidence",
+        "reason"
+      ],
+      "title": "HeroActionControlsObservation",
+      "type": "object"
+    },
     "HeroCardsObservation": {
       "additionalProperties": false,
       "properties": {
@@ -749,6 +843,9 @@
       },
       "title": "Seat Actions",
       "type": "array"
+    },
+    "hero_action_controls": {
+      "$ref": "#/$defs/HeroActionControlsObservation"
     }
   },
   "required": [
@@ -781,7 +878,8 @@
     "board_geometry_confidence",
     "hero_cards",
     "dealer",
-    "regions"
+    "regions",
+    "hero_action_controls"
   ],
   "title": "LiveCaptureDiagnostic",
   "type": "object"

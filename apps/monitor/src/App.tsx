@@ -417,6 +417,7 @@ export default function App() {
             <div className="health-row"><span>Position gate</span><strong>{liveObservation?.positions_reason ?? "waiting"}</strong></div>
             <div className="health-row"><span>Stable stacks</span><strong>{liveObservation?.seat_stack_consensus.filter((seat) => seat.consensus.accepted).length ?? 0}/{tableSize}</strong></div>
             <div className="health-row"><span>Stable action badges</span><strong>{liveObservation?.seat_action_consensus.filter((seat) => seat.consensus.accepted).length ?? 0}</strong></div>
+            <div className="health-row"><span>Hero controls</span><strong>{liveObservation?.hero_control_consensus.accepted ? `${liveObservation.hero_control_consensus.value} · ${liveObservation.hero_control_consensus.stable_frames}` : liveObservation?.hero_control_consensus.reason ?? "waiting"}</strong></div>
             <div className="health-row"><span>Derived candidates</span><strong>{liveObservation?.derived_action_candidates.length ?? 0} · epoch {liveObservation?.hand_epoch ?? 0}</strong></div>
             <div className="health-row"><span>Hand boundary</span><strong>{liveObservation?.hand_boundary_validation.status ?? "waiting"}</strong></div>
             <div className="health-row"><span>Reducer gate</span><strong>{liveObservation?.reconstruction_readiness.ready ? "Ready" : `${liveObservation?.reconstruction_readiness.issues.length ?? 0} blockers`}</strong></div>

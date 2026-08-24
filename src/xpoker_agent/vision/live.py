@@ -12,6 +12,7 @@ from xpoker_agent.capture.recording import capture_authorized_frame
 from xpoker_agent.vision.actions import action_badge_region, parse_action_badge
 from xpoker_agent.vision.card_faces import recognize_card_face
 from xpoker_agent.vision.cards import classify_board_geometry, detect_card_slots
+from xpoker_agent.vision.controls import parse_hero_action_controls
 from xpoker_agent.vision.dealer import detect_dealer_button
 from xpoker_agent.vision.hero_cards import detect_hero_cards
 from xpoker_agent.vision.models import (
@@ -37,6 +38,7 @@ def build_live_capture_diagnostic(
     seat_observations: list[SeatOccupancyObservation] | None = None,
     panel_ocr: dict[int, WindowsOcrResult] | None = None,
     action_ocr: dict[int, WindowsOcrResult] | None = None,
+    controls_ocr: WindowsOcrResult | None = None,
 ) -> LiveCaptureDiagnostic:
     classification = classify_rule_label(rule_ocr.text)
     current_hand_mode = (
@@ -103,6 +105,7 @@ def build_live_capture_diagnostic(
         ocr_latency_ms=(
             rule_ocr.processing_latency_ms
             + pot_ocr.processing_latency_ms
+            + (controls_ocr.processing_latency_ms if controls_ocr else 0.0)
             + sum(result.processing_latency_ms for result in panel_ocr.values())
             + sum(result.processing_latency_ms for result in action_ocr.values())
         ),
@@ -142,6 +145,9 @@ def build_live_capture_diagnostic(
         seat_observations=seat_observations,
         seat_panels=seat_panels,
         seat_actions=seat_actions,
+        hero_action_controls=parse_hero_action_controls(
+            controls_ocr.text if controls_ocr else None
+        ),
     )
 
 
@@ -164,6 +170,10 @@ async def diagnose_authorized_table(
     seat_observations = classify_seat_occupancy(frame, layout)
     rule_crop = crop_layout_region(frame, layout, "rule_label")
     pot_crop = crop_layout_region(frame, layout, "pot")
+    controls_crop = crop_layout_region(frame, layout, "actions")
+    controls_crop = normalize_frame(
+        controls_crop, controls_crop.width * 2, controls_crop.height * 2
+    )
     panel_seats = [
         observation.seat
         for observation in seat_observations
@@ -186,10 +196,11 @@ async def diagnose_authorized_table(
     results = await asyncio.gather(
         recognize_text(rule_crop),
         recognize_text(pot_crop),
+        recognize_text(controls_crop),
         *(recognize_text(crop) for crop in panel_crops),
         *(recognize_text(crop) for crop in action_crops),
     )
-    rule_ocr, pot_ocr, *seat_results = results
+    rule_ocr, pot_ocr, controls_ocr, *seat_results = results
     panel_results = seat_results[: len(panel_seats)]
     action_results = seat_results[len(panel_seats) :]
     panel_ocr = dict(zip(panel_seats, panel_results, strict=True))
@@ -204,6 +215,7 @@ async def diagnose_authorized_table(
             seat_observations=seat_observations,
             panel_ocr=panel_ocr,
             action_ocr=action_ocr,
+            controls_ocr=controls_ocr,
         ),
         frame,
     )
