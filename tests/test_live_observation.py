@@ -120,6 +120,11 @@ def test_changed_numeric_value_requires_fresh_consecutive_consensus() -> None:
         result = service.status().seat_stack_consensus[0].consensus
         assert result.accepted is True
         assert result.value == "98"
+        assert len(service.status().stack_delta_candidates) == 1
+        delta = service.status().stack_delta_candidates[0]
+        assert delta.seat == 0
+        assert delta.committed_native == 2
+        assert delta.canonical_event_accepted is False
 
     asyncio.run(scenario())
 

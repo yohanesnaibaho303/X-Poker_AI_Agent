@@ -8,7 +8,7 @@ from typing import Literal
 
 from pydantic import Field, model_validator
 
-from xpoker_agent.models import CARD_PATTERN, StrictModel
+from xpoker_agent.models import CARD_PATTERN, Position, StrictModel
 
 
 class PixelBox(StrictModel):
@@ -184,6 +184,11 @@ class SeatActionConsensus(StrictModel):
     consensus: TemporalConsensus
 
 
+class SeatStatusConsensus(StrictModel):
+    seat: int = Field(ge=0, le=8)
+    consensus: TemporalConsensus
+
+
 class DerivedActionCandidate(StrictModel):
     event_id: str = Field(min_length=64, max_length=64)
     hand_epoch: int = Field(ge=0)
@@ -194,6 +199,19 @@ class DerivedActionCandidate(StrictModel):
     confidence: float = Field(ge=0.0, le=1.0)
     canonical_event_accepted: Literal[False] = False
     reason: str = "temporal badge candidate; amount/order validation pending"
+
+
+class StackDeltaCandidate(StrictModel):
+    event_id: str = Field(min_length=64, max_length=64)
+    hand_epoch: int = Field(ge=0)
+    frame_sequence: int = Field(ge=0)
+    seat: int = Field(ge=0, le=8)
+    street: Literal["preflop", "flop", "turn", "river", "unknown"]
+    previous_stack_native: Decimal = Field(ge=0)
+    current_stack_native: Decimal = Field(ge=0)
+    committed_native: Decimal = Field(gt=0)
+    canonical_event_accepted: Literal[False] = False
+    reason: str = "stable stack decrease; action and pot reconciliation pending"
 
 
 class LiveCaptureDiagnostic(StrictModel):
@@ -269,10 +287,15 @@ class LiveObservationStatus(StrictModel):
     board_cards_accepted: bool = False
     board_cards_reason: str
     dealer_consensus: TemporalConsensus
+    seat_status_consensus: list[SeatStatusConsensus] = Field(default_factory=list)
+    active_seats: list[int] = Field(default_factory=list)
+    provisional_positions: dict[int, Position] = Field(default_factory=dict)
+    positions_reason: str
     pot_consensus: TemporalConsensus
     seat_stack_consensus: list[SeatStackConsensus] = Field(default_factory=list)
     seat_action_consensus: list[SeatActionConsensus] = Field(default_factory=list)
     hand_epoch: int = Field(ge=0)
     derived_action_candidates: list[DerivedActionCandidate] = Field(default_factory=list)
+    stack_delta_candidates: list[StackDeltaCandidate] = Field(default_factory=list)
     last_error: str | None = None
     controller_enabled: Literal[False] = False

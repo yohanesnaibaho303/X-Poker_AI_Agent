@@ -258,6 +258,20 @@ export interface LiveObservationStatus {
     alternatives: string[];
     reason: string | null;
   };
+  seat_status_consensus: Array<{
+    seat: number;
+    consensus: {
+      accepted: boolean;
+      value: string | null;
+      confidence: number;
+      stable_frames: number;
+      alternatives: string[];
+      reason: string | null;
+    };
+  }>;
+  active_seats: number[];
+  provisional_positions: Record<string, string>;
+  positions_reason: string;
   pot_consensus: {
     accepted: boolean;
     value: string | null;
@@ -298,6 +312,18 @@ export interface LiveObservationStatus {
     street: "preflop" | "flop" | "turn" | "river";
     action: "fold" | "check" | "call" | "bet" | "raise" | "all_in";
     confidence: number;
+    canonical_event_accepted: false;
+    reason: string;
+  }>;
+  stack_delta_candidates: Array<{
+    event_id: string;
+    hand_epoch: number;
+    frame_sequence: number;
+    seat: number;
+    street: "preflop" | "flop" | "turn" | "river" | "unknown";
+    previous_stack_native: string;
+    current_stack_native: string;
+    committed_native: string;
     canonical_event_accepted: false;
     reason: string;
   }>;

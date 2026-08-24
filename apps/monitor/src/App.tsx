@@ -411,9 +411,12 @@ export default function App() {
             <div className="health-row"><span>Board consensus</span><strong>{liveObservation?.board_consensus.accepted ? `${liveObservation.board_consensus.value} cards` : liveObservation?.board_consensus.reason ?? "waiting"}</strong></div>
             <div className="health-row"><span>Recognized board</span><strong>{liveObservation?.board_cards_accepted ? liveObservation.recognized_board_cards.join(" ") : liveObservation?.board_cards_reason ?? "waiting"}</strong></div>
             <div className="health-row"><span>Dealer seat</span><strong>{liveObservation?.dealer_consensus.accepted ? liveObservation.dealer_consensus.value : liveObservation?.dealer_consensus.reason ?? "waiting"}</strong></div>
+            <div className="health-row"><span>Active seats</span><strong>{liveObservation?.active_seats.length ?? 0}/{tableSize}</strong></div>
+            <div className="health-row"><span>Position gate</span><strong>{liveObservation?.positions_reason ?? "waiting"}</strong></div>
             <div className="health-row"><span>Stable stacks</span><strong>{liveObservation?.seat_stack_consensus.filter((seat) => seat.consensus.accepted).length ?? 0}/{tableSize}</strong></div>
             <div className="health-row"><span>Stable action badges</span><strong>{liveObservation?.seat_action_consensus.filter((seat) => seat.consensus.accepted).length ?? 0}</strong></div>
             <div className="health-row"><span>Derived candidates</span><strong>{liveObservation?.derived_action_candidates.length ?? 0} · epoch {liveObservation?.hand_epoch ?? 0}</strong></div>
+            <div className="health-row"><span>Stack deltas</span><strong>{liveObservation?.stack_delta_candidates.length ?? 0}</strong></div>
             <div className="health-row"><span>Strategy</span><strong>{snapshot?.health.strategy_status ?? "unavailable"}</strong></div>
             <div className="health-row"><span>Dropped UI updates</span><strong>{snapshot?.metrics.dropped_deliveries ?? 0}</strong></div>
             <div className="health-row"><span>Snapshot latency</span><strong>{snapshot ? `${snapshot.metrics.processing_latency_ms.toFixed(2)} ms` : "—"}</strong></div>

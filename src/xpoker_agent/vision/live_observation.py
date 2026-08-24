@@ -8,6 +8,7 @@ from collections import deque
 from collections.abc import Awaitable, Callable
 from contextlib import suppress
 from datetime import UTC, datetime
+from decimal import Decimal
 from typing import Literal
 
 from xpoker_agent.capture.frames import CapturedFrame
@@ -18,9 +19,12 @@ from xpoker_agent.vision.models import (
     LiveObservationStatus,
     SeatActionConsensus,
     SeatStackConsensus,
+    SeatStatusConsensus,
+    StackDeltaCandidate,
     TemporalConsensus,
     TemporalSample,
 )
+from xpoker_agent.vision.positions import assign_full_ring_positions
 from xpoker_agent.vision.temporal import consensus
 
 CaptureCallable = Callable[
@@ -89,6 +93,13 @@ class LiveObservationService:
         self._board_cards_reason = "no_postflop_board"
         self._dealer_samples: deque[TemporalSample] = deque(maxlen=maximum_samples)
         self._dealer_consensus = self._empty_consensus("no_samples")
+        self._status_samples: dict[int, deque[TemporalSample]] = {
+            seat: deque(maxlen=maximum_samples) for seat in range(9)
+        }
+        self._seat_status_consensus: list[SeatStatusConsensus] = []
+        self._active_seats: list[int] = []
+        self._provisional_positions = {}
+        self._positions_reason = "seat_statuses_unresolved"
         self._stack_consensus = [
             SeatStackConsensus(
                 seat=seat,
@@ -105,9 +116,11 @@ class LiveObservationService:
         ]
         self._hand_epoch = 0
         self._last_accepted_board_count: int | None = None
-        self._actions_armed = False
+        self._action_armed_seats: set[int] = set()
         self._emitted_action_keys: set[tuple[int, str, int, str]] = set()
         self._derived_actions: deque[DerivedActionCandidate] = deque(maxlen=50)
+        self._last_accepted_stacks: dict[int, Decimal] = {}
+        self._stack_deltas: deque[StackDeltaCandidate] = deque(maxlen=50)
         self.latest_diagnostic: LiveCaptureDiagnostic | None = None
         self.latest_frame: CapturedFrame | None = None
 
@@ -157,6 +170,12 @@ class LiveObservationService:
         self._board_cards_reason = "no_postflop_board"
         self._dealer_samples.clear()
         self._dealer_consensus = self._empty_consensus("no_samples")
+        for samples in self._status_samples.values():
+            samples.clear()
+        self._seat_status_consensus = []
+        self._active_seats = []
+        self._provisional_positions = {}
+        self._positions_reason = "seat_statuses_unresolved"
         self._stack_consensus = [
             SeatStackConsensus(
                 seat=seat,
@@ -173,9 +192,11 @@ class LiveObservationService:
         ]
         self._hand_epoch = 0
         self._last_accepted_board_count = None
-        self._actions_armed = False
+        self._action_armed_seats.clear()
         self._emitted_action_keys.clear()
         self._derived_actions.clear()
+        self._last_accepted_stacks.clear()
+        self._stack_deltas.clear()
         self.latest_diagnostic = None
         self.latest_frame = None
         self._stop_event = asyncio.Event()
@@ -297,7 +318,7 @@ class LiveObservationService:
                     and board_count == 0
                 ):
                     self._hand_epoch += 1
-                    self._actions_armed = False
+                    self._action_armed_seats.clear()
                 self._last_accepted_board_count = board_count
 
         self._record_board_cards(diagnostic)
@@ -314,6 +335,7 @@ class LiveObservationService:
                     confidence=diagnostic.dealer.confidence,
                 ),
             )
+        self._record_seat_statuses(diagnostic)
 
         if diagnostic.pot.value_native is None:
             self._pot_samples.clear()
@@ -353,6 +375,39 @@ class LiveObservationService:
                 SeatStackConsensus(seat=seat, player_status=state, consensus=result)
             )
         self._stack_consensus = stack_consensus
+        street_by_cards = {0: "preflop", 3: "flop", 4: "turn", 5: "river"}
+        stack_street = (
+            street_by_cards.get(int(self._board_consensus.value or "-1"), "unknown")
+            if self._board_consensus.accepted
+            else "unknown"
+        )
+        for item in stack_consensus:
+            result = item.consensus
+            if not result.accepted or result.value is None:
+                continue
+            current = Decimal(result.value)
+            previous = self._last_accepted_stacks.get(item.seat)
+            if previous is not None and current < previous:
+                encoded = (
+                    f"{diagnostic.target_fingerprint}:{self._hand_epoch}:stack:"
+                    f"{item.seat}:{previous}:{current}"
+                ).encode()
+                event_id = hashlib.sha256(encoded).hexdigest()
+                if not any(delta.event_id == event_id for delta in self._stack_deltas):
+                    self._stack_deltas.append(
+                        StackDeltaCandidate(
+                            event_id=event_id,
+                            hand_epoch=self._hand_epoch,
+                            frame_sequence=diagnostic.frame_sequence,
+                            seat=item.seat,
+                            street=stack_street,
+                            previous_stack_native=previous,
+                            current_stack_native=current,
+                            committed_native=previous - current,
+                        )
+                    )
+            if previous != current:
+                self._last_accepted_stacks[item.seat] = current
         by_action_seat = {action.seat: action for action in diagnostic.seat_actions}
         action_consensus: list[SeatActionConsensus] = []
         for seat in range(diagnostic.table_size):
@@ -373,14 +428,14 @@ class LiveObservationService:
                 )
             action_consensus.append(SeatActionConsensus(seat=seat, consensus=result))
         self._action_consensus = action_consensus
-        visible_actions = [
-            action for action in diagnostic.seat_actions if action.action is not None
-        ]
-        if not visible_actions:
-            self._actions_armed = True
+        visible_by_seat = {
+            action.seat: action.action for action in diagnostic.seat_actions
+        }
+        for seat in range(diagnostic.table_size):
+            if visible_by_seat.get(seat) is None:
+                self._action_armed_seats.add(seat)
         if (
-            self._actions_armed
-            and self._board_consensus.accepted
+            self._board_consensus.accepted
             and self._mode_consensus.accepted
         ):
             street_by_cards = {0: "preflop", 3: "flop", 4: "turn", 5: "river"}
@@ -389,6 +444,8 @@ class LiveObservationService:
                 for action in action_consensus:
                     result = action.consensus
                     if not result.accepted or result.value is None:
+                        continue
+                    if action.seat not in self._action_armed_seats:
                         continue
                     key = (self._hand_epoch, street, action.seat, result.value)
                     if key in self._emitted_action_keys:
@@ -409,6 +466,7 @@ class LiveObservationService:
                         )
                     )
                     self._emitted_action_keys.add(key)
+                    self._action_armed_seats.discard(action.seat)
 
     def _record_board_cards(self, diagnostic: LiveCaptureDiagnostic) -> None:
         expected = diagnostic.board_card_slots
@@ -451,6 +509,66 @@ class LiveObservationService:
             self._board_cards_reason = "duplicate physical card candidate"
         else:
             self._board_cards_reason = "insufficient stable card frames"
+
+    def _record_seat_statuses(self, diagnostic: LiveCaptureDiagnostic) -> None:
+        panels = {panel.seat: panel for panel in diagnostic.seat_panels}
+        status_results: list[SeatStatusConsensus] = []
+        for occupancy in diagnostic.seat_observations:
+            panel = panels.get(occupancy.seat)
+            if occupancy.status == "empty":
+                value = "empty"
+                confidence = occupancy.confidence
+            elif panel is not None and panel.status == "on_break":
+                value = "on_break"
+                confidence = panel.confidence
+            elif occupancy.status == "occupied":
+                value = "seated"
+                confidence = occupancy.confidence
+            else:
+                value = None
+                confidence = 0.0
+            samples = self._status_samples[occupancy.seat]
+            if value is None:
+                samples.clear()
+                result = self._empty_consensus("current_seat_status_ambiguous")
+            else:
+                result = self._append_consecutive(
+                    samples,
+                    TemporalSample(
+                        frame_sequence=diagnostic.frame_sequence,
+                        content_sha256=diagnostic.content_sha256,
+                        value=value,
+                        confidence=confidence,
+                    ),
+                )
+            status_results.append(
+                SeatStatusConsensus(seat=occupancy.seat, consensus=result)
+            )
+        self._seat_status_consensus = status_results
+        if len(status_results) != diagnostic.table_size or not all(
+            item.consensus.accepted for item in status_results
+        ):
+            self._active_seats = []
+            self._provisional_positions = {}
+            self._positions_reason = "seat_statuses_unresolved"
+            return
+        self._active_seats = [
+            item.seat for item in status_results if item.consensus.value == "seated"
+        ]
+        if not self._dealer_consensus.accepted or self._dealer_consensus.value is None:
+            self._provisional_positions = {}
+            self._positions_reason = "dealer_unresolved"
+            return
+        try:
+            self._provisional_positions = assign_full_ring_positions(
+                table_size=diagnostic.table_size,
+                dealer_seat=int(self._dealer_consensus.value),
+                active_seats=set(self._active_seats),
+            )
+            self._positions_reason = "full-ring dealer and active-seat gates passed"
+        except ValueError:
+            self._provisional_positions = {}
+            self._positions_reason = "partial_ring_position_naming_unavailable"
 
     def _record_failure(self, error: Exception) -> None:
         self._frames_failed += 1
@@ -511,10 +629,15 @@ class LiveObservationService:
             board_cards_accepted=self._board_cards_accepted,
             board_cards_reason=self._board_cards_reason,
             dealer_consensus=self._dealer_consensus,
+            seat_status_consensus=self._seat_status_consensus,
+            active_seats=self._active_seats,
+            provisional_positions=self._provisional_positions,
+            positions_reason=self._positions_reason,
             pot_consensus=self._pot_consensus,
             seat_stack_consensus=self._stack_consensus,
             seat_action_consensus=self._action_consensus,
             hand_epoch=self._hand_epoch,
             derived_action_candidates=list(self._derived_actions),
+            stack_delta_candidates=list(self._stack_deltas),
             last_error=self._last_error,
         )

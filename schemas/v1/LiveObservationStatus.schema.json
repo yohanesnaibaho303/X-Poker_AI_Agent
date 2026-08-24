@@ -77,6 +77,21 @@
       "title": "DerivedActionCandidate",
       "type": "object"
     },
+    "Position": {
+      "enum": [
+        "UTG",
+        "UTG+1",
+        "MP",
+        "LJ",
+        "HJ",
+        "CO",
+        "BTN",
+        "SB",
+        "BB"
+      ],
+      "title": "Position",
+      "type": "string"
+    },
     "SeatActionConsensus": {
       "additionalProperties": false,
       "properties": {
@@ -126,6 +141,123 @@
         "consensus"
       ],
       "title": "SeatStackConsensus",
+      "type": "object"
+    },
+    "SeatStatusConsensus": {
+      "additionalProperties": false,
+      "properties": {
+        "seat": {
+          "maximum": 8,
+          "minimum": 0,
+          "title": "Seat",
+          "type": "integer"
+        },
+        "consensus": {
+          "$ref": "#/$defs/TemporalConsensus"
+        }
+      },
+      "required": [
+        "seat",
+        "consensus"
+      ],
+      "title": "SeatStatusConsensus",
+      "type": "object"
+    },
+    "StackDeltaCandidate": {
+      "additionalProperties": false,
+      "properties": {
+        "event_id": {
+          "maxLength": 64,
+          "minLength": 64,
+          "title": "Event Id",
+          "type": "string"
+        },
+        "hand_epoch": {
+          "minimum": 0,
+          "title": "Hand Epoch",
+          "type": "integer"
+        },
+        "frame_sequence": {
+          "minimum": 0,
+          "title": "Frame Sequence",
+          "type": "integer"
+        },
+        "seat": {
+          "maximum": 8,
+          "minimum": 0,
+          "title": "Seat",
+          "type": "integer"
+        },
+        "street": {
+          "enum": [
+            "preflop",
+            "flop",
+            "turn",
+            "river",
+            "unknown"
+          ],
+          "title": "Street",
+          "type": "string"
+        },
+        "previous_stack_native": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "title": "Previous Stack Native"
+        },
+        "current_stack_native": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "title": "Current Stack Native"
+        },
+        "committed_native": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "title": "Committed Native"
+        },
+        "canonical_event_accepted": {
+          "const": false,
+          "default": false,
+          "title": "Canonical Event Accepted",
+          "type": "boolean"
+        },
+        "reason": {
+          "default": "stable stack decrease; action and pot reconciliation pending",
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "event_id",
+        "hand_epoch",
+        "frame_sequence",
+        "seat",
+        "street",
+        "previous_stack_native",
+        "current_stack_native",
+        "committed_native"
+      ],
+      "title": "StackDeltaCandidate",
       "type": "object"
     },
     "TemporalConsensus": {
@@ -352,6 +484,31 @@
     "dealer_consensus": {
       "$ref": "#/$defs/TemporalConsensus"
     },
+    "seat_status_consensus": {
+      "items": {
+        "$ref": "#/$defs/SeatStatusConsensus"
+      },
+      "title": "Seat Status Consensus",
+      "type": "array"
+    },
+    "active_seats": {
+      "items": {
+        "type": "integer"
+      },
+      "title": "Active Seats",
+      "type": "array"
+    },
+    "provisional_positions": {
+      "additionalProperties": {
+        "$ref": "#/$defs/Position"
+      },
+      "title": "Provisional Positions",
+      "type": "object"
+    },
+    "positions_reason": {
+      "title": "Positions Reason",
+      "type": "string"
+    },
     "pot_consensus": {
       "$ref": "#/$defs/TemporalConsensus"
     },
@@ -379,6 +536,13 @@
         "$ref": "#/$defs/DerivedActionCandidate"
       },
       "title": "Derived Action Candidates",
+      "type": "array"
+    },
+    "stack_delta_candidates": {
+      "items": {
+        "$ref": "#/$defs/StackDeltaCandidate"
+      },
+      "title": "Stack Delta Candidates",
       "type": "array"
     },
     "last_error": {
@@ -416,6 +580,7 @@
     "board_consensus",
     "board_cards_reason",
     "dealer_consensus",
+    "positions_reason",
     "pot_consensus",
     "hand_epoch"
   ],

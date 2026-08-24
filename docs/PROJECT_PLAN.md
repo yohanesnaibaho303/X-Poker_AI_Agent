@@ -742,6 +742,13 @@ single candidate to the nearest versioned seat anchor. Three distinct frames are
 dealer seat is exposed. The detector fails closed when the marker is absent or non-unique; position
 assignment still waits for a validated hand boundary and active-seat set.
 
+Seat participation now reaches independent temporal consensus for seated, open, and Break states.
+Position naming is available only when every configured 6-max or 9-max seat is actively dealt; a
+partial ring exposes its active-seat indexes but does not silently substitute a different position
+or range set. Stable stack decreases are retained as bounded native-chip candidates with hand epoch,
+street, seat, before/after values, and provenance hash. They remain outside canonical state until a
+same-seat legal action and pot change reconcile.
+
 ### Milestone 9 — Authorized control
 
 - Add action-target mapping and calibration.

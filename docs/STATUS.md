@@ -115,7 +115,17 @@
 - Dealer observations remain candidates until three distinct frames agree; missing or multiple
   marker-shaped components clear consensus. Position assignment is still withheld from canonical
   state until the hand-boundary gate agrees.
-- Current full suite: Ruff passed; 252 Pytest/Hypothesis tests, 11 TypeScript tests, and the
+- Added three-frame seat-status consensus for seated, open, and Break states. Live evidence resolved
+  a seven-player active ring and intentionally withheld position names because the configured
+  9-max ring was partial; six-max ranges were not silently substituted.
+- Added deterministic full-ring position mapping for both selected 6-max and 9-max configurations.
+  BTN follows dealer consensus, then SB/BB and the authoritative early-position sequence clockwise.
+- Added bounded, hashed stable-stack-decrease candidates. Live observations derived decreases of
+  2, 6, 8, 32, and 35 native units across provisional streets, all explicitly non-canonical until
+  action and pot reconciliation.
+- Changed action-badge arming from a global clear requirement to per-seat clearing so one lingering
+  badge cannot block unrelated seats; exactly-once keys remain unchanged.
+- Current full suite: Ruff passed; 255 Pytest/Hypothesis tests, 11 TypeScript tests, and the
   production dashboard build passed. Table control remains disabled.
 
 ## Completed project checkpoints
@@ -145,6 +155,8 @@
   state; keep low-margin cards unknown until the ≥99.9% card gate is measured and passed.
 - Combine dealer consensus with stable occupied/Break states to derive provisional 6-max/9-max
   positions, then validate clockwise action order before creating canonical events.
+- Pair same-seat action badges with stable stack decreases and pot deltas; reject rather than infer
+  a wager when the observer starts mid-action or temporal evidence arrives outside the match window.
 - Continue gradual 3-to-9-player live captures to validate every occupied seat panel, player state,
   stack/bet crop, dealer marker, and clockwise action transition.
 - Add opponent-range, poker-math, exact/abstracted strategy, exploit-frequency, provenance, and
