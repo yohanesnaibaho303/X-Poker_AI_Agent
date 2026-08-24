@@ -1,5 +1,128 @@
 {
   "$defs": {
+    "PotObservation": {
+      "additionalProperties": false,
+      "properties": {
+        "value_native": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Value Native"
+        },
+        "token": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Token"
+        },
+        "confidence": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "accepted": {
+          "const": false,
+          "default": false,
+          "title": "Accepted",
+          "type": "boolean"
+        },
+        "reason": {
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "confidence",
+        "reason"
+      ],
+      "title": "PotObservation",
+      "type": "object"
+    },
+    "SeatActionObservation": {
+      "additionalProperties": false,
+      "properties": {
+        "seat": {
+          "maximum": 8,
+          "minimum": 0,
+          "title": "Seat",
+          "type": "integer"
+        },
+        "action": {
+          "anyOf": [
+            {
+              "enum": [
+                "fold",
+                "check",
+                "call",
+                "bet",
+                "raise",
+                "all_in"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Action"
+        },
+        "confidence": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "accepted": {
+          "const": false,
+          "default": false,
+          "title": "Accepted",
+          "type": "boolean"
+        },
+        "ocr_text_sha256": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "minLength": 64,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ocr Text Sha256"
+        },
+        "reason": {
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "seat",
+        "action",
+        "confidence",
+        "reason"
+      ],
+      "title": "SeatActionObservation",
+      "type": "object"
+    },
     "SeatOccupancyObservation": {
       "additionalProperties": false,
       "properties": {
@@ -186,6 +309,16 @@
       "title": "Frame Height",
       "type": "integer"
     },
+    "target_hwnd": {
+      "minimum": 1,
+      "title": "Target Hwnd",
+      "type": "integer"
+    },
+    "target_process_id": {
+      "minimum": 1,
+      "title": "Target Process Id",
+      "type": "integer"
+    },
     "target_fingerprint": {
       "maxLength": 64,
       "minLength": 64,
@@ -278,6 +411,22 @@
       "default": null,
       "title": "Bomb Pot Interval Hands"
     },
+    "bomb_pot_forced_contribution_native": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Bomb Pot Forced Contribution Native"
+    },
     "rule_confidence": {
       "maximum": 1.0,
       "minimum": 0.0,
@@ -302,6 +451,9 @@
     "pot_text": {
       "title": "Pot Text",
       "type": "string"
+    },
+    "pot": {
+      "$ref": "#/$defs/PotObservation"
     },
     "board_rows": {
       "minimum": 0,
@@ -366,6 +518,13 @@
       },
       "title": "Seat Panels",
       "type": "array"
+    },
+    "seat_actions": {
+      "items": {
+        "$ref": "#/$defs/SeatActionObservation"
+      },
+      "title": "Seat Actions",
+      "type": "array"
     }
   },
   "required": [
@@ -376,6 +535,8 @@
     "table_size",
     "frame_width",
     "frame_height",
+    "target_hwnd",
+    "target_process_id",
     "target_fingerprint",
     "capture_latency_ms",
     "ocr_latency_ms",
@@ -389,6 +550,7 @@
     "mode_reason",
     "rule_text",
     "pot_text",
+    "pot",
     "board_rows",
     "board_card_slots",
     "board_geometry_supported",

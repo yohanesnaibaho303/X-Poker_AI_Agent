@@ -129,6 +129,8 @@ export interface LiveCaptureDiagnostic {
   table_size: TableSize;
   frame_width: number;
   frame_height: number;
+  target_hwnd: number;
+  target_process_id: number;
   target_fingerprint: string;
   capture_latency_ms: number;
   ocr_latency_ms: number;
@@ -140,12 +142,20 @@ export interface LiveCaptureDiagnostic {
   bomb_pot_state: "none" | "scheduled" | "active" | "ambiguous";
   hands_until_bomb: number | null;
   bomb_pot_interval_hands: number | null;
+  bomb_pot_forced_contribution_native: string | null;
   special_rule: "bomb_pot" | null;
   rule_confidence: number;
   mode_reason: string;
   matched_signals: string[];
   rule_text: string;
   pot_text: string;
+  pot: {
+    value_native: string | null;
+    token: string | null;
+    confidence: number;
+    accepted: false;
+    reason: string;
+  };
   board_rows: number;
   board_card_slots: number;
   board_geometry_supported: boolean;
@@ -165,6 +175,14 @@ export interface LiveCaptureDiagnostic {
     status: "empty" | "seated" | "on_break" | "ambiguous";
     stack_native: string | null;
     stack_token: string | null;
+    confidence: number;
+    accepted: false;
+    ocr_text_sha256: string | null;
+    reason: string;
+  }>;
+  seat_actions: Array<{
+    seat: number;
+    action: "fold" | "check" | "call" | "bet" | "raise" | "all_in" | null;
     confidence: number;
     accepted: false;
     ocr_text_sha256: string | null;
@@ -198,6 +216,37 @@ export interface LiveObservationStatus {
     alternatives: string[];
     reason: string | null;
   };
+  pot_consensus: {
+    accepted: boolean;
+    value: string | null;
+    confidence: number;
+    stable_frames: number;
+    alternatives: string[];
+    reason: string | null;
+  };
+  seat_stack_consensus: Array<{
+    seat: number;
+    player_status: "empty" | "seated" | "on_break" | "ambiguous";
+    consensus: {
+      accepted: boolean;
+      value: string | null;
+      confidence: number;
+      stable_frames: number;
+      alternatives: string[];
+      reason: string | null;
+    };
+  }>;
+  seat_action_consensus: Array<{
+    seat: number;
+    consensus: {
+      accepted: boolean;
+      value: string | null;
+      confidence: number;
+      stable_frames: number;
+      alternatives: string[];
+      reason: string | null;
+    };
+  }>;
   last_error: string | null;
   controller_enabled: false;
 }

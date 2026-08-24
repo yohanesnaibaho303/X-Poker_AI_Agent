@@ -14,6 +14,8 @@ from xpoker_agent.vision.live import diagnose_authorized_table
 from xpoker_agent.vision.models import (
     LiveCaptureDiagnostic,
     LiveObservationStatus,
+    SeatActionConsensus,
+    SeatStackConsensus,
     TemporalConsensus,
     TemporalSample,
 )
@@ -24,12 +26,6 @@ CaptureCallable = Callable[
 ]
 
 
-async def _default_capture(
-    table_size: int, sequence: int
-) -> tuple[LiveCaptureDiagnostic, CapturedFrame]:
-    return await diagnose_authorized_table(table_size=table_size, sequence=sequence)
-
-
 class TargetIdentityChanged(RuntimeError):
     pass
 
@@ -37,7 +33,7 @@ class TargetIdentityChanged(RuntimeError):
 class LiveObservationService:
     def __init__(
         self,
-        capture: CaptureCallable = _default_capture,
+        capture: CaptureCallable | None = None,
         *,
         maximum_samples: int = 30,
         maximum_consecutive_failures: int = 3,
@@ -48,6 +44,13 @@ class LiveObservationService:
             raise ValueError("failure threshold must be positive")
         self._capture = capture
         self._samples: deque[TemporalSample] = deque(maxlen=maximum_samples)
+        self._pot_samples: deque[TemporalSample] = deque(maxlen=maximum_samples)
+        self._stack_samples: dict[int, deque[TemporalSample]] = {
+            seat: deque(maxlen=maximum_samples) for seat in range(9)
+        }
+        self._action_samples: dict[int, deque[TemporalSample]] = {
+            seat: deque(maxlen=maximum_samples) for seat in range(9)
+        }
         self._maximum_consecutive_failures = maximum_consecutive_failures
         self._capture_lock = asyncio.Lock()
         self._stop_event = asyncio.Event()
@@ -62,6 +65,8 @@ class LiveObservationService:
         self._frames_failed = 0
         self._consecutive_failures = 0
         self._session_target_fingerprint: str | None = None
+        self._session_hwnd: int | None = None
+        self._session_process_id: int | None = None
         self._target_stable = True
         self._last_error: str | None = None
         self._mode_consensus = TemporalConsensus(
@@ -70,6 +75,21 @@ class LiveObservationService:
             stable_frames=0,
             reason="no_samples",
         )
+        self._pot_consensus = self._empty_consensus("no_samples")
+        self._stack_consensus = [
+            SeatStackConsensus(
+                seat=seat,
+                player_status="ambiguous",
+                consensus=self._empty_consensus("no_samples"),
+            )
+            for seat in range(9)
+        ]
+        self._action_consensus = [
+            SeatActionConsensus(
+                seat=seat, consensus=self._empty_consensus("no_samples")
+            )
+            for seat in range(9)
+        ]
         self.latest_diagnostic: LiveCaptureDiagnostic | None = None
         self.latest_frame: CapturedFrame | None = None
 
@@ -92,15 +112,37 @@ class LiveObservationService:
         self._frames_failed = 0
         self._consecutive_failures = 0
         self._session_target_fingerprint = None
+        self._session_hwnd = None
+        self._session_process_id = None
         self._target_stable = True
         self._last_error = None
         self._samples.clear()
+        self._pot_samples.clear()
+        for samples in self._stack_samples.values():
+            samples.clear()
+        for samples in self._action_samples.values():
+            samples.clear()
         self._mode_consensus = TemporalConsensus(
             accepted=False,
             confidence=0.0,
             stable_frames=0,
             reason="no_samples",
         )
+        self._pot_consensus = self._empty_consensus("no_samples")
+        self._stack_consensus = [
+            SeatStackConsensus(
+                seat=seat,
+                player_status="ambiguous",
+                consensus=self._empty_consensus("no_samples"),
+            )
+            for seat in range(9)
+        ]
+        self._action_consensus = [
+            SeatActionConsensus(
+                seat=seat, consensus=self._empty_consensus("no_samples")
+            )
+            for seat in range(9)
+        ]
         self.latest_diagnostic = None
         self.latest_frame = None
         self._stop_event = asyncio.Event()
@@ -122,7 +164,15 @@ class LiveObservationService:
             sequence = self._latest_sequence + 1
             self._frames_attempted += 1
             try:
-                diagnostic, frame = await self._capture(table_size, sequence)
+                if self._capture is None:
+                    diagnostic, frame = await diagnose_authorized_table(
+                        table_size=table_size,
+                        sequence=sequence,
+                        locked_hwnd=self._session_hwnd,
+                        locked_process_id=self._session_process_id,
+                    )
+                else:
+                    diagnostic, frame = await self._capture(table_size, sequence)
                 self._record_success(diagnostic, frame)
             except (OSError, RuntimeError, ValueError) as error:
                 self._record_failure(error)
@@ -134,6 +184,8 @@ class LiveObservationService:
     ) -> None:
         if self._session_target_fingerprint is None:
             self._session_target_fingerprint = diagnostic.target_fingerprint
+            self._session_hwnd = diagnostic.target_hwnd
+            self._session_process_id = diagnostic.target_process_id
         elif diagnostic.target_fingerprint != self._session_target_fingerprint:
             self._target_stable = False
             raise TargetIdentityChanged("authorized X-Poker target identity changed during capture")
@@ -152,15 +204,94 @@ class LiveObservationService:
                 reason="current_mode_ambiguous",
             )
         else:
-            self._samples.append(
+            self._mode_consensus = self._append_consecutive(
+                self._samples,
                 TemporalSample(
                     frame_sequence=diagnostic.frame_sequence,
                     content_sha256=diagnostic.content_sha256,
                     value=diagnostic.current_hand_mode,
                     confidence=diagnostic.rule_confidence,
-                )
+                ),
             )
-            self._mode_consensus = consensus(list(self._samples))
+        self._record_numeric_observations(diagnostic)
+
+    @staticmethod
+    def _empty_consensus(reason: str) -> TemporalConsensus:
+        return TemporalConsensus(
+            accepted=False,
+            confidence=0.0,
+            stable_frames=0,
+            reason=reason,
+        )
+
+    @staticmethod
+    def _append_consecutive(
+        samples: deque[TemporalSample], sample: TemporalSample
+    ) -> TemporalConsensus:
+        if samples and samples[-1].value != sample.value:
+            samples.clear()
+        samples.append(sample)
+        return consensus(list(samples))
+
+    def _record_numeric_observations(self, diagnostic: LiveCaptureDiagnostic) -> None:
+        if diagnostic.pot.value_native is None:
+            self._pot_samples.clear()
+            self._pot_consensus = self._empty_consensus("current_pot_ambiguous")
+        else:
+            self._pot_consensus = self._append_consecutive(
+                self._pot_samples,
+                TemporalSample(
+                    frame_sequence=diagnostic.frame_sequence,
+                    content_sha256=diagnostic.content_sha256,
+                    value=str(diagnostic.pot.value_native),
+                    confidence=diagnostic.pot.confidence,
+                ),
+            )
+
+        by_seat = {panel.seat: panel for panel in diagnostic.seat_panels}
+        stack_consensus: list[SeatStackConsensus] = []
+        for seat in range(diagnostic.table_size):
+            panel = by_seat.get(seat)
+            samples = self._stack_samples[seat]
+            if panel is None or panel.stack_native is None or panel.status != "seated":
+                samples.clear()
+                state = panel.status if panel is not None else "ambiguous"
+                result = self._empty_consensus("current_stack_ambiguous")
+            else:
+                state = panel.status
+                result = self._append_consecutive(
+                    samples,
+                    TemporalSample(
+                        frame_sequence=diagnostic.frame_sequence,
+                        content_sha256=diagnostic.content_sha256,
+                        value=str(panel.stack_native),
+                        confidence=panel.confidence,
+                    ),
+                )
+            stack_consensus.append(
+                SeatStackConsensus(seat=seat, player_status=state, consensus=result)
+            )
+        self._stack_consensus = stack_consensus
+        by_action_seat = {action.seat: action for action in diagnostic.seat_actions}
+        action_consensus: list[SeatActionConsensus] = []
+        for seat in range(diagnostic.table_size):
+            observation = by_action_seat.get(seat)
+            samples = self._action_samples[seat]
+            if observation is None or observation.action is None:
+                samples.clear()
+                result = self._empty_consensus("current_action_absent")
+            else:
+                result = self._append_consecutive(
+                    samples,
+                    TemporalSample(
+                        frame_sequence=diagnostic.frame_sequence,
+                        content_sha256=diagnostic.content_sha256,
+                        value=observation.action,
+                        confidence=observation.confidence,
+                    ),
+                )
+            action_consensus.append(SeatActionConsensus(seat=seat, consensus=result))
+        self._action_consensus = action_consensus
 
     def _record_failure(self, error: Exception) -> None:
         self._frames_failed += 1
@@ -215,5 +346,8 @@ class LiveObservationService:
                 else False
             ),
             mode_consensus=self._mode_consensus,
+            pot_consensus=self._pot_consensus,
+            seat_stack_consensus=self._stack_consensus,
+            seat_action_consensus=self._action_consensus,
             last_error=self._last_error,
         )

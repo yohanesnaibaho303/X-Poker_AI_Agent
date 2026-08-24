@@ -1,5 +1,56 @@
 {
   "$defs": {
+    "SeatActionConsensus": {
+      "additionalProperties": false,
+      "properties": {
+        "seat": {
+          "maximum": 8,
+          "minimum": 0,
+          "title": "Seat",
+          "type": "integer"
+        },
+        "consensus": {
+          "$ref": "#/$defs/TemporalConsensus"
+        }
+      },
+      "required": [
+        "seat",
+        "consensus"
+      ],
+      "title": "SeatActionConsensus",
+      "type": "object"
+    },
+    "SeatStackConsensus": {
+      "additionalProperties": false,
+      "properties": {
+        "seat": {
+          "maximum": 8,
+          "minimum": 0,
+          "title": "Seat",
+          "type": "integer"
+        },
+        "player_status": {
+          "enum": [
+            "empty",
+            "seated",
+            "on_break",
+            "ambiguous"
+          ],
+          "title": "Player Status",
+          "type": "string"
+        },
+        "consensus": {
+          "$ref": "#/$defs/TemporalConsensus"
+        }
+      },
+      "required": [
+        "seat",
+        "player_status",
+        "consensus"
+      ],
+      "title": "SeatStackConsensus",
+      "type": "object"
+    },
     "TemporalConsensus": {
       "additionalProperties": false,
       "properties": {
@@ -195,6 +246,23 @@
     "mode_consensus": {
       "$ref": "#/$defs/TemporalConsensus"
     },
+    "pot_consensus": {
+      "$ref": "#/$defs/TemporalConsensus"
+    },
+    "seat_stack_consensus": {
+      "items": {
+        "$ref": "#/$defs/SeatStackConsensus"
+      },
+      "title": "Seat Stack Consensus",
+      "type": "array"
+    },
+    "seat_action_consensus": {
+      "items": {
+        "$ref": "#/$defs/SeatActionConsensus"
+      },
+      "title": "Seat Action Consensus",
+      "type": "array"
+    },
     "last_error": {
       "anyOf": [
         {
@@ -226,7 +294,8 @@
     "target_stable",
     "current_hand_mode",
     "current_hand_supported",
-    "mode_consensus"
+    "mode_consensus",
+    "pot_consensus"
   ],
   "title": "LiveObservationStatus",
   "type": "object"

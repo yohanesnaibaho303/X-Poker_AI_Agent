@@ -3,7 +3,11 @@ from datetime import UTC, datetime
 
 from xpoker_agent.capture.frames import CapturedFrame
 from xpoker_agent.vision.live_observation import LiveObservationService
-from xpoker_agent.vision.models import LiveCaptureDiagnostic
+from xpoker_agent.vision.models import (
+    LiveCaptureDiagnostic,
+    PotObservation,
+    SeatPanelObservation,
+)
 
 
 def _diagnostic(
@@ -20,6 +24,8 @@ def _diagnostic(
         table_size=9,
         frame_width=1,
         frame_height=1,
+        target_hwnd=123,
+        target_process_id=456,
         target_fingerprint=fingerprint,
         capture_latency_ms=1,
         ocr_latency_ms=1,
@@ -34,11 +40,27 @@ def _diagnostic(
         mode_reason="test fixture",
         rule_text="Bomb Pot: After 5 hands",
         pot_text="POT 10",
+        pot=PotObservation(
+            value_native=10,
+            token="10",
+            confidence=0.95,
+            reason="test candidate",
+        ),
         board_rows=1,
         board_card_slots=3,
         board_geometry_supported=True,
         board_geometry_confidence=0.99,
         regions={},
+        seat_panels=[
+            SeatPanelObservation(
+                seat=0,
+                status="seated",
+                stack_native=100,
+                stack_token="100",
+                confidence=0.8,
+                reason="test candidate",
+            )
+        ],
     )
 
 
@@ -56,9 +78,40 @@ def test_live_observation_builds_consensus_and_stops_cleanly() -> None:
         assert status.frames_succeeded >= 3
         assert status.mode_consensus.accepted is True
         assert status.mode_consensus.value == "standard_nlh"
+        assert status.pot_consensus.accepted is True
+        assert status.pot_consensus.value == "10"
+        assert status.seat_stack_consensus[0].consensus.accepted is True
+        assert status.seat_stack_consensus[0].consensus.value == "100"
         assert status.target_stable is True
         assert await service.stop() is True
         assert service.status().running is False
+
+    asyncio.run(scenario())
+
+
+def test_changed_numeric_value_requires_fresh_consecutive_consensus() -> None:
+    async def scenario() -> None:
+        values = [100, 100, 100, 98, 98]
+
+        async def capture(_: int, sequence: int):
+            diagnostic = _diagnostic(sequence)
+            value = values[min(sequence - 1, len(values) - 1)]
+            diagnostic.seat_panels[0] = diagnostic.seat_panels[0].model_copy(
+                update={"stack_native": value, "stack_token": str(value)}
+            )
+            return diagnostic, CapturedFrame(1, 1, b"\x00" * 4)
+
+        service = LiveObservationService(capture)
+        for _ in range(5):
+            await service.inspect_once(table_size=9)
+        result = service.status().seat_stack_consensus[0].consensus
+        assert result.accepted is False
+        assert result.stable_frames == 2
+
+        await service.inspect_once(table_size=9)
+        result = service.status().seat_stack_consensus[0].consensus
+        assert result.accepted is True
+        assert result.value == "98"
 
     asyncio.run(scenario())
 

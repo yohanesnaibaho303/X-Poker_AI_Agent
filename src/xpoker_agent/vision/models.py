@@ -107,6 +107,7 @@ class RuleLabelClassification(StrictModel):
     bomb_pot_state: Literal["none", "scheduled", "active", "ambiguous"] = "none"
     hands_until_bomb: int | None = Field(default=None, ge=0)
     bomb_pot_interval_hands: int | None = Field(default=None, ge=1)
+    bomb_pot_forced_contribution_native: Decimal | None = Field(default=None, gt=0)
     confidence: float = Field(ge=0.0, le=1.0)
     matched_signals: list[str] = Field(default_factory=list)
     reason: str
@@ -132,6 +133,34 @@ class SeatPanelObservation(StrictModel):
     reason: str
 
 
+class PotObservation(StrictModel):
+    value_native: Decimal | None = Field(default=None, ge=0)
+    token: str | None = None
+    confidence: float = Field(ge=0.0, le=1.0)
+    accepted: Literal[False] = False
+    reason: str
+
+
+class SeatStackConsensus(StrictModel):
+    seat: int = Field(ge=0, le=8)
+    player_status: Literal["empty", "seated", "on_break", "ambiguous"]
+    consensus: TemporalConsensus
+
+
+class SeatActionObservation(StrictModel):
+    seat: int = Field(ge=0, le=8)
+    action: Literal["fold", "check", "call", "bet", "raise", "all_in"] | None
+    confidence: float = Field(ge=0.0, le=1.0)
+    accepted: Literal[False] = False
+    ocr_text_sha256: str | None = Field(default=None, min_length=64, max_length=64)
+    reason: str
+
+
+class SeatActionConsensus(StrictModel):
+    seat: int = Field(ge=0, le=8)
+    consensus: TemporalConsensus
+
+
 class LiveCaptureDiagnostic(StrictModel):
     schema_version: Literal["1.0"] = "1.0"
     captured_at: datetime
@@ -141,6 +170,8 @@ class LiveCaptureDiagnostic(StrictModel):
     table_size: Literal[6, 9]
     frame_width: int = Field(gt=0)
     frame_height: int = Field(gt=0)
+    target_hwnd: int = Field(ge=1)
+    target_process_id: int = Field(ge=1)
     target_fingerprint: str = Field(min_length=64, max_length=64)
     capture_latency_ms: float = Field(ge=0.0)
     ocr_latency_ms: float = Field(ge=0.0)
@@ -153,11 +184,13 @@ class LiveCaptureDiagnostic(StrictModel):
     bomb_pot_state: Literal["none", "scheduled", "active", "ambiguous"]
     hands_until_bomb: int | None = Field(default=None, ge=0)
     bomb_pot_interval_hands: int | None = Field(default=None, ge=1)
+    bomb_pot_forced_contribution_native: Decimal | None = Field(default=None, gt=0)
     rule_confidence: float = Field(ge=0.0, le=1.0)
     mode_reason: str
     matched_signals: list[str] = Field(default_factory=list)
     rule_text: str
     pot_text: str
+    pot: PotObservation
     board_rows: int = Field(ge=0)
     board_card_slots: int = Field(ge=0)
     board_geometry_supported: bool
@@ -166,6 +199,7 @@ class LiveCaptureDiagnostic(StrictModel):
     regions: dict[str, tuple[float, float, float, float]]
     seat_observations: list[SeatOccupancyObservation] = Field(default_factory=list)
     seat_panels: list[SeatPanelObservation] = Field(default_factory=list)
+    seat_actions: list[SeatActionObservation] = Field(default_factory=list)
 
 
 class LiveObservationStartRequest(StrictModel):
@@ -192,5 +226,8 @@ class LiveObservationStatus(StrictModel):
     current_hand_mode: Literal["standard_nlh", "single_board_bomb_pot", "ambiguous"]
     current_hand_supported: bool
     mode_consensus: TemporalConsensus
+    pot_consensus: TemporalConsensus
+    seat_stack_consensus: list[SeatStackConsensus] = Field(default_factory=list)
+    seat_action_consensus: list[SeatActionConsensus] = Field(default_factory=list)
     last_error: str | None = None
     controller_enabled: Literal[False] = False

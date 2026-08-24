@@ -717,6 +717,13 @@ and native-stack candidates cross the adapter boundary. A single numeric observa
 accepted; temporal stability, stack movement, pot accounting, and hand-state legality remain
 required before it can update canonical state.
 
+Continuous capture now performs full visual authorization once, then locks the exact executable,
+PID, HWND, class, aspect, and layout fingerprint for the observation session. This preserves the
+authorized boundary through table animations; a replaced process/window still fails closed. Live
+diagnostics also expose consecutive-frame pot/stack consensus and privacy-scoped action-badge
+candidates. These observations remain outside canonical hand state until exactly-once event
+derivation passes action-order, amount-delta, pot-accounting, and board-transition validation.
+
 ### Milestone 9 — Authorized control
 
 - Add action-target mapping and calibration.

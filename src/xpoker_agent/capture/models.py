@@ -172,6 +172,8 @@ class CaptureFrameRecord(StrictModel):
     captured_at: datetime
     monotonic_ns: int = Field(ge=0)
     authorization_profile_id: str
+    target_hwnd: int = Field(ge=1)
+    target_process_id: int = Field(ge=1)
     target_fingerprint: str = Field(min_length=64, max_length=64)
     layout_id: str
     source_width: int = Field(gt=0)

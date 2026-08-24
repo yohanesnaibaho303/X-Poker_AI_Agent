@@ -4,11 +4,12 @@ from __future__ import annotations
 
 import asyncio
 
-from xpoker_agent.capture.frames import CapturedFrame
+from xpoker_agent.capture.frames import CapturedFrame, normalize_frame
 from xpoker_agent.capture.layout import load_layout_profile
 from xpoker_agent.capture.models import CaptureFrameRecord, LayoutProfile
 from xpoker_agent.capture.profile import load_target_profile
 from xpoker_agent.capture.recording import capture_authorized_frame
+from xpoker_agent.vision.actions import action_badge_region, parse_action_badge
 from xpoker_agent.vision.cards import classify_board_geometry, detect_card_slots
 from xpoker_agent.vision.models import (
     LiveCaptureDiagnostic,
@@ -16,6 +17,7 @@ from xpoker_agent.vision.models import (
     WindowsOcrResult,
 )
 from xpoker_agent.vision.panels import parse_seat_panel
+from xpoker_agent.vision.pots import parse_pot_label
 from xpoker_agent.vision.primitives import crop_frame, crop_layout_region, normalized_box
 from xpoker_agent.vision.rules import classify_rule_label
 from xpoker_agent.vision.seats import classify_seat_occupancy
@@ -31,6 +33,7 @@ def build_live_capture_diagnostic(
     pot_ocr: WindowsOcrResult,
     seat_observations: list[SeatOccupancyObservation] | None = None,
     panel_ocr: dict[int, WindowsOcrResult] | None = None,
+    action_ocr: dict[int, WindowsOcrResult] | None = None,
 ) -> LiveCaptureDiagnostic:
     classification = classify_rule_label(rule_ocr.text)
     current_hand_mode = (
@@ -60,10 +63,20 @@ def build_live_capture_diagnostic(
     )
     seat_observations = seat_observations or classify_seat_occupancy(frame, layout)
     panel_ocr = panel_ocr or {}
+    action_ocr = action_ocr or {}
     seat_panels = []
     for observation in seat_observations:
         result = panel_ocr.get(observation.seat)
         seat_panels.append(parse_seat_panel(observation, result.text if result else None))
+    seat_actions = [
+        parse_action_badge(
+            observation,
+            action_ocr[observation.seat].text
+            if observation.seat in action_ocr
+            else None,
+        )
+        for observation in seat_observations
+    ]
     board_geometry = classify_board_geometry(
         detect_card_slots(crop_layout_region(frame, layout, "board"))
     )
@@ -75,12 +88,15 @@ def build_live_capture_diagnostic(
         table_size=layout.table_size,
         frame_width=frame.width,
         frame_height=frame.height,
+        target_hwnd=record.target_hwnd,
+        target_process_id=record.target_process_id,
         target_fingerprint=record.target_fingerprint,
         capture_latency_ms=record.capture_latency_ms,
         ocr_latency_ms=(
             rule_ocr.processing_latency_ms
             + pot_ocr.processing_latency_ms
             + sum(result.processing_latency_ms for result in panel_ocr.values())
+            + sum(result.processing_latency_ms for result in action_ocr.values())
         ),
         visual_role_confidence=record.visual_role_confidence,
         current_hand_supported=(
@@ -94,11 +110,15 @@ def build_live_capture_diagnostic(
         bomb_pot_state=classification.bomb_pot_state,
         hands_until_bomb=classification.hands_until_bomb,
         bomb_pot_interval_hands=classification.bomb_pot_interval_hands,
+        bomb_pot_forced_contribution_native=(
+            classification.bomb_pot_forced_contribution_native
+        ),
         rule_confidence=classification.confidence,
         mode_reason=classification.reason,
         matched_signals=classification.matched_signals,
         rule_text=rule_ocr.text,
         pot_text=pot_ocr.text,
+        pot=parse_pot_label(pot_ocr.text),
         board_rows=board_geometry.board_rows,
         board_card_slots=board_geometry.card_slots,
         board_geometry_supported=not board_geometry.unsupported,
@@ -107,15 +127,26 @@ def build_live_capture_diagnostic(
         regions=visible_regions,
         seat_observations=seat_observations,
         seat_panels=seat_panels,
+        seat_actions=seat_actions,
     )
 
 
 async def diagnose_authorized_table(
-    *, table_size: int = 9, sequence: int = 0
+    *,
+    table_size: int = 9,
+    sequence: int = 0,
+    locked_hwnd: int | None = None,
+    locked_process_id: int | None = None,
 ) -> tuple[LiveCaptureDiagnostic, CapturedFrame]:
     profile = load_target_profile()
     layout = load_layout_profile(table_size=table_size)
-    frame, record = capture_authorized_frame(sequence, profile, layout)
+    frame, record = capture_authorized_frame(
+        sequence,
+        profile,
+        layout,
+        locked_hwnd=locked_hwnd,
+        locked_process_id=locked_process_id,
+    )
     seat_observations = classify_seat_occupancy(frame, layout)
     rule_crop = crop_layout_region(frame, layout, "rule_label")
     pot_crop = crop_layout_region(frame, layout, "pot")
@@ -131,13 +162,24 @@ async def diagnose_authorized_table(
         )
         for seat in panel_seats
     ]
+    action_crops = []
+    for seat in panel_seats:
+        crop = crop_frame(
+            frame,
+            normalized_box(frame, action_badge_region(layout.seat_anchors[seat])),
+        )
+        action_crops.append(normalize_frame(crop, crop.width * 5, crop.height * 5))
     results = await asyncio.gather(
         recognize_text(rule_crop),
         recognize_text(pot_crop),
         *(recognize_text(crop) for crop in panel_crops),
+        *(recognize_text(crop) for crop in action_crops),
     )
-    rule_ocr, pot_ocr, *panel_results = results
+    rule_ocr, pot_ocr, *seat_results = results
+    panel_results = seat_results[: len(panel_seats)]
+    action_results = seat_results[len(panel_seats) :]
     panel_ocr = dict(zip(panel_seats, panel_results, strict=True))
+    action_ocr = dict(zip(panel_seats, action_results, strict=True))
     return (
         build_live_capture_diagnostic(
             frame=frame,
@@ -147,6 +189,7 @@ async def diagnose_authorized_table(
             pot_ocr=pot_ocr,
             seat_observations=seat_observations,
             panel_ocr=panel_ocr,
+            action_ocr=action_ocr,
         ),
         frame,
     )

@@ -60,8 +60,25 @@ class AdaptiveFrameScheduler:
         return 1 / self.current_fps
 
 
-def select_authorized_table(profile: AuthorizedTargetProfile) -> WindowCandidate:
-    candidates = discover_xpoker_windows(classify_visual_role=True)
+def select_authorized_table(
+    profile: AuthorizedTargetProfile,
+    *,
+    locked_hwnd: int | None = None,
+    locked_process_id: int | None = None,
+) -> WindowCandidate:
+    locked = locked_hwnd is not None or locked_process_id is not None
+    if locked and (locked_hwnd is None or locked_process_id is None):
+        raise ValueError("locked target requires both HWND and process ID")
+    candidates = discover_xpoker_windows(classify_visual_role=not locked)
+    if locked:
+        candidates = tuple(
+            candidate.model_copy(
+                update={"visual_role": "table", "visual_role_confidence": 1.0}
+            )
+            for candidate in candidates
+            if candidate.hwnd == locked_hwnd
+            and candidate.process_id == locked_process_id
+        )
     eligible = [
         candidate
         for candidate in candidates
@@ -78,6 +95,8 @@ def target_fingerprint(candidate: WindowCandidate, layout: LayoutProfile) -> str
         "process_name": (candidate.process_name or "").casefold(),
         "executable_sha256": candidate.executable_sha256,
         "window_class": candidate.window_class,
+        "process_id": candidate.process_id,
+        "hwnd": candidate.hwnd,
         "visual_role": candidate.visual_role,
         "layout_id": layout.layout_id,
     }
@@ -89,9 +108,16 @@ def capture_authorized_frame(
     sequence: int,
     profile: AuthorizedTargetProfile,
     layout: LayoutProfile,
+    *,
+    locked_hwnd: int | None = None,
+    locked_process_id: int | None = None,
 ) -> tuple[CapturedFrame, CaptureFrameRecord]:
     started_ns = time.monotonic_ns()
-    candidate = select_authorized_table(profile)
+    candidate = select_authorized_table(
+        profile,
+        locked_hwnd=locked_hwnd,
+        locked_process_id=locked_process_id,
+    )
     observed_ratio = candidate.client_rect.width / candidate.client_rect.height
     canonical_ratio = layout.canonical_width / layout.canonical_height
     if abs(observed_ratio - canonical_ratio) / canonical_ratio > 0.025:
@@ -100,7 +126,10 @@ def capture_authorized_frame(
     captured = capture_occluded_client(candidate)
     normalized = normalize_frame(captured, layout.canonical_width, layout.canonical_height)
     role, confidence = classify_xpoker_window(normalized)
-    if role != "table" or confidence < profile.minimum_visual_role_confidence:
+    locked = locked_hwnd is not None and locked_process_id is not None
+    if not locked and (
+        role != "table" or confidence < profile.minimum_visual_role_confidence
+    ):
         raise RuntimeError("authorized table identity was lost before capture")
     captured_at = datetime.now(UTC)
     latency_ms = (time.monotonic_ns() - started_ns) / 1_000_000
@@ -110,6 +139,8 @@ def capture_authorized_frame(
         captured_at=captured_at,
         monotonic_ns=started_ns,
         authorization_profile_id=profile.profile_id,
+        target_hwnd=candidate.hwnd,
+        target_process_id=candidate.process_id,
         target_fingerprint=target_fingerprint(candidate, layout),
         layout_id=layout.layout_id,
         source_width=captured.width,

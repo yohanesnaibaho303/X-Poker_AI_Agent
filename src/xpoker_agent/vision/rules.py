@@ -5,10 +5,12 @@ from __future__ import annotations
 import re
 
 from xpoker_agent.vision.models import RuleLabelClassification
+from xpoker_agent.vision.numbers import parse_chip_amount
 
 
 def _ocr_count(value: str) -> int:
-    return int(value.replace("o", "0").replace("i", "1").replace("l", "1"))
+    compact = re.sub(r"\s+", "", value)
+    return int(compact.replace("o", "0").replace("i", "1").replace("l", "1"))
 
 
 def classify_rule_label(text: str) -> RuleLabelClassification:
@@ -16,8 +18,31 @@ def classify_rule_label(text: str) -> RuleLabelClassification:
     signals: list[str] = []
     if "bomb pot" in normalized:
         signals.append("literal_bomb_pot")
+    active = re.search(
+        r"bomb\s+pot\s*[\(\[]\s*(?P<amount>\d+(?:\.\d+)?[km]?)\s*[\)\]]",
+        normalized,
+    )
+    if active:
+        contribution = parse_chip_amount(active.group("amount"), confidence=0.99)
+        return RuleLabelClassification(
+            supported_standard_nlh=False,
+            supported_single_board_bomb_pot=True,
+            special_rule="bomb_pot",
+            bomb_pot_state="active",
+            hands_until_bomb=0,
+            bomb_pot_forced_contribution_native=contribution.value,
+            confidence=0.99,
+            matched_signals=[*signals, "active_parenthesized_contribution"],
+            reason=(
+                "single-board NLH Bomb Pot label is active with observed forced "
+                f"contribution {contribution.value}"
+            ),
+        )
     # Windows OCR can lose the small leading word while retaining the distinctive schedule.
-    schedule = re.search(r"pot\s*:\s*after\s+(?P<count>[0-9oil]+)\s+hands", normalized)
+    schedule = re.search(
+        r"pot\s*:\s*after\s+(?P<count>[0-9oil](?:\s*[0-9oil])*)\s+hands",
+        normalized,
+    )
     if schedule:
         signals.append("scheduled_pot_after_hands")
         hands_until_bomb = _ocr_count(schedule.group("count"))
@@ -44,7 +69,10 @@ def classify_rule_label(text: str) -> RuleLabelClassification:
             matched_signals=signals,
             reason="single-board NLH Bomb Pot hand is active",
         )
-    recurring = re.search(r"pot\s*:\s*every\s+(?P<count>[0-9oil]+)\s+hands", normalized)
+    recurring = re.search(
+        r"pot\s*:\s*every\s+(?P<count>[0-9oil](?:\s*[0-9oil])*)\s+hands",
+        normalized,
+    )
     if recurring:
         interval = _ocr_count(recurring.group("count"))
         return RuleLabelClassification(

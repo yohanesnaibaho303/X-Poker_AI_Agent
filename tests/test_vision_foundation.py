@@ -263,6 +263,13 @@ def test_scheduled_bomb_pot_normalizes_ocr_letter_i_as_countdown_one() -> None:
     assert result.hands_until_bomb == 1
 
 
+def test_scheduled_bomb_pot_normalizes_spaced_ocr_digits() -> None:
+    result = classify_rule_label("Somb Pot: After I I hands (2-4) Blinds: 1/2")
+
+    assert result.supported_standard_nlh is True
+    assert result.hands_until_bomb == 11
+
+
 def test_active_bomb_pot_is_classified_despite_minor_ocr_damage() -> None:
     result = classify_rule_label("aon-,h Pot: After O handsa 1000-3,000)")
 
@@ -270,6 +277,15 @@ def test_active_bomb_pot_is_classified_despite_minor_ocr_damage() -> None:
     assert result.supported_single_board_bomb_pot is True
     assert result.special_rule == "bomb_pot"
     assert result.bomb_pot_state == "active"
+
+
+def test_active_bomb_pot_parenthesized_contribution_is_structured() -> None:
+    result = classify_rule_label("24 aug Bomb Pot(4) Blinds: 1/2")
+
+    assert result.supported_single_board_bomb_pot is True
+    assert result.bomb_pot_state == "active"
+    assert result.bomb_pot_forced_contribution_native == 4
+    assert "active_parenthesized_contribution" in result.matched_signals
     assert result.hands_until_bomb == 0
     assert result.confidence >= 0.9
 
@@ -299,6 +315,8 @@ def test_live_capture_diagnostic_supports_countdown_hand_and_exposes_schedule() 
         captured_at=datetime.now(UTC),
         monotonic_ns=1,
         authorization_profile_id="authorized-test",
+        target_hwnd=123,
+        target_process_id=456,
         target_fingerprint="a" * 64,
         layout_id="xpoker-windows-10-portrait-v1",
         source_width=10,

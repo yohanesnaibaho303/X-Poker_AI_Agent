@@ -63,7 +63,10 @@ def classify_seat_occupancy(
         if dark_fraction >= 0.3:
             status = "occupied"
             confidence = min(0.99, 0.8 + (dark_fraction - 0.3))
-        elif dark_fraction <= 0.2 and horizontal >= 10 and vertical >= 10:
+        # Idle seats use a plus, while in-hand empty seats use X-Poker's circular OPEN
+        # control. Both produce the same long neutral horizontal stroke, but the OPEN
+        # glyph has a slightly shorter vertical stroke in the calibrated portrait UI.
+        elif dark_fraction <= 0.2 and horizontal >= 10 and vertical >= 8:
             status = "empty"
             confidence = min(0.99, 0.8 + min(horizontal, vertical) / 100)
         else:

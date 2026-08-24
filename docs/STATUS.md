@@ -80,7 +80,17 @@
 - Validated the candidate path on the authorized active nine-max layout: the observer remained
   target-stable with zero capture failures and extracted multiple stack candidates while refusing
   unclear panels. This is calibration evidence, not an OCR-accuracy promotion.
-- Current full suite: Ruff passed; 238 Pytest/Hypothesis tests, 11 TypeScript tests, and the
+- Locked continuous capture to the exact authorized PID/HWND after the initial executable-hash,
+  process, class, geometry, and visual-table gate. In-hand animations can no longer make the table
+  disappear, while any actual window/process identity change still stops observation.
+- Added consecutive-frame pot and stack consensus. A changed amount must independently repeat for
+  three distinct frames; an ambiguous current crop clears its prior consensus.
+- Calibrated in-play `OPEN` seats, stylized pot-label OCR aliases, and upscaled per-seat action-badge
+  crops. Live evidence reached eight occupied seats and produced fail-closed Fold, Check, Bet, and
+  All-in candidates; temporally stable badges are exposed separately from canonical events.
+- Structured X-Poker's active `Bomb Pot(4)` label as a forced-contribution candidate, while run-it-
+  multiple-times overlays correctly quarantine false board geometry until the overlay disappears.
+- Current full suite: Ruff passed; 246 Pytest/Hypothesis tests, 11 TypeScript tests, and the
   production dashboard build passed. Table control remains disabled.
 
 ## Completed project checkpoints
@@ -104,6 +114,8 @@
 - Connect recorded/live capture, perception evidence, and reconstructed observations to the monitor.
 - Record complete scheduled standard hands and an active single-board Bomb Pot from the authorized
   spectated table for temporal contribution and hand-mode calibration.
+- Convert accepted action badges and amount deltas into exactly-once candidate events, then feed
+  only pot/stack/order-consistent sequences to the existing deterministic hand-state reducer.
 - Continue gradual 3-to-9-player live captures to validate every occupied seat panel, player state,
   stack/bet crop, dealer marker, and clockwise action transition.
 - Add opponent-range, poker-math, exact/abstracted strategy, exploit-frequency, provenance, and

@@ -73,3 +73,20 @@ def test_authorized_selection_returns_unique_table(monkeypatch) -> None:
     )
 
     assert select_authorized_table(authorized_profile()) == expected
+
+
+def test_locked_selection_uses_exact_hwnd_and_pid_without_reclassifying(monkeypatch) -> None:
+    expected = table_candidate(2)
+    calls = []
+
+    def discover(**kwargs):
+        calls.append(kwargs)
+        return (table_candidate(1), expected)
+
+    monkeypatch.setattr("xpoker_agent.capture.recording.discover_xpoker_windows", discover)
+    selected = select_authorized_table(
+        authorized_profile(), locked_hwnd=2, locked_process_id=1
+    )
+
+    assert selected.hwnd == expected.hwnd
+    assert calls == [{"classify_visual_role": False}]
