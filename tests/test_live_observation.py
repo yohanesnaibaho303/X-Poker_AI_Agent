@@ -47,7 +47,7 @@ def _diagnostic(
         current_hand_supported=mode != "ambiguous",
         current_hand_mode=mode,
         standard_nlh_supported=mode == "standard_nlh",
-        single_board_bomb_pot_supported=False,
+        single_board_bomb_pot_supported=mode == "single_board_bomb_pot",
         bomb_pot_state="scheduled",
         hands_until_bomb=5,
         small_blind_native=1,
@@ -457,6 +457,54 @@ def test_board_cards_require_temporal_consensus_and_physical_uniqueness() -> Non
 
         assert status.board_cards_accepted is True
         assert status.recognized_board_cards == ["Jh", "2d", "8h"]
+
+    asyncio.run(scenario())
+
+
+def test_direct_bomb_pot_flop_change_can_validate_a_hand_boundary() -> None:
+    async def scenario() -> None:
+        async def capture(_: int, sequence: int):
+            diagnostic = _diagnostic(sequence, mode="single_board_bomb_pot")
+            cards = ("Jh", "2d", "8h") if sequence <= 3 else ("Qs", "3c", "9d")
+            diagnostic.board_cards = [
+                CardFaceObservation(
+                    card=card,
+                    confidence=0.95,
+                    rank_distance=0.01,
+                    rank_margin=0.1,
+                    reason="test candidate",
+                )
+                for card in cards
+            ]
+            diagnostic.dealer = DealerButtonObservation(
+                seat=4 if sequence <= 3 else 0,
+                confidence=0.95,
+                reason="test candidate",
+            )
+            active = {0, 1, 4}
+            diagnostic.seat_observations = [
+                SeatOccupancyObservation(
+                    seat=seat,
+                    status="occupied" if seat in active else "empty",
+                    confidence=0.95,
+                    dark_panel_fraction=0.8 if seat in active else 0.1,
+                    plus_horizontal_pixels=0 if seat in active else 10,
+                    plus_vertical_pixels=0 if seat in active else 10,
+                )
+                for seat in range(9)
+            ]
+            return diagnostic, CapturedFrame(1, 1, b"\x00" * 4)
+
+        service = LiveObservationService(capture)
+        for _ in range(6):
+            await service.inspect_once(table_size=9)
+        status = service.status()
+
+        assert status.hand_epoch == 1
+        assert status.hand_boundary_validation.status == "validated"
+        assert status.hand_boundary_validation.previous_dealer_seat == 4
+        assert status.hand_boundary_validation.current_dealer_seat == 0
+        assert status.hand_boundary_validation.expected_dealer_seat == 0
 
     asyncio.run(scenario())
 

@@ -490,7 +490,8 @@ The desktop dashboard will show:
 - Exact solution or abstraction status.
 - Explanation and assumptions.
 - Source provenance.
-- Event log and hand replay.
+- Event log. The already implemented replay view is optional diagnostic tooling and will not be
+  expanded or treated as an MVP product requirement.
 - System health, latency, and current operating mode.
 
 The dashboard will provide distinct modes:
@@ -656,7 +657,8 @@ xpoker-agent/
 - Implement the NLH state machine.
 - Validate action order, pot accounting, stack movement, and card uniqueness.
 - Export completed hands in an internal canonical format.
-- Build a replay viewer.
+- Keep deterministic recorded-hand tests for safety; a user-facing replay viewer is not required
+  for MVP completion.
 
 **Exit criterion:** At least 98% of supported recorded test hands reconstruct correctly from start to completion.
 

@@ -136,7 +136,7 @@
   epochs with zero failures and produced six mutually unique provisional matches: Call 2 and 4,
   plus Bet 4, 3, 6, and 2 native units. None are canonical events yet because legal order and pot
   accounting remain outstanding gates.
-- Current full suite: Ruff passed; 281 Pytest/Hypothesis tests, 11 TypeScript tests, and the
+- Current full suite: Ruff passed; 282 Pytest/Hypothesis tests, 11 TypeScript tests, and the
   production dashboard build passed. Table control remains disabled.
 - Added deterministic provisional clockwise-order validation. Each visual action now carries the
   stable dealer and active-seat context present when it was emitted. Preflop starts after the BB;
@@ -203,6 +203,13 @@
   simultaneous numeric-only badge at that seat. This prevents an overlaid blind or wager from being
   misread as the remaining stack and generating a false large decrease; the stack remains unknown
   until the unobscured panel stabilizes again.
+- Added a Bomb-Pot-only direct-flop boundary path for tables that never expose three stable empty
+  board frames between hands. It requires a changed three-card board, three-frame dealer consensus,
+  unchanged active ring, and exact next-dealt-seat button movement; run-it-multiple-times board
+  changes with an unchanged dealer do not create a hand boundary.
+- Per user direction, no further product work will be spent on replay. The existing replay view
+  remains available but optional; small deterministic recorded-hand tests remain internal safety
+  infrastructure for recognition and reducer changes.
 
 ## Completed project checkpoints
 
@@ -227,7 +234,7 @@
   spectated table for temporal contribution and hand-mode calibration.
 - Feed only mutually unique action/amount matches that also pass clockwise order and pot/stack
   accounting into the existing deterministic hand-state reducer.
-- Expand held-out board-card replay coverage across every rank/suit and lighting/result-overlay
+- Expand held-out board-card evaluation coverage across every rank/suit and lighting/result-overlay
   state; keep low-margin cards unknown until the ≥99.9% card gate is measured and passed.
 - Combine dealer consensus with stable occupied/Break states to derive provisional 6-max/9-max
   positions, then validate clockwise action order before creating canonical events.
@@ -239,10 +246,10 @@
   decision-trace views as those upstream results become available.
 - Continue Milestone 6 solution import/resolution while keeping reference priors ineligible for exact-GTO results.
 - Source or independently generate configuration-matched 6-max and 9-max no-rake 2 BB solutions.
-- Add exact/nearest strategy-node lookup, quantitative mismatch, and replay comparisons.
+- Add exact/nearest strategy-node lookup and quantitative mismatch reporting.
 - Connect the completed exploit layer to real reconstructed observations and resolved strategy EVs
   during Milestone 8 integration.
-- Continue M3/M4 promotion evaluation in parallel when representative standard NLH replays exist.
+- Continue M3/M4 promotion evaluation when representative standard NLH recorded hands exist.
 
 ## Blockers
 

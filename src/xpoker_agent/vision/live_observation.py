@@ -154,6 +154,9 @@ class LiveObservationService:
             reason="observer has not witnessed a complete hand boundary",
         )
         self._last_accepted_board_count: int | None = None
+        self._last_board_signature: tuple[str, ...] | None = None
+        self._last_board_dealer: int | None = None
+        self._last_board_active_seats: list[int] = []
         self._action_armed_seats: set[int] = set()
         self._action_occurrence_counts: dict[tuple[int, str, int, str], int] = {}
         self._derived_actions: deque[DerivedActionCandidate] = deque(maxlen=50)
@@ -260,6 +263,9 @@ class LiveObservationService:
             reason="observer has not witnessed a complete hand boundary",
         )
         self._last_accepted_board_count = None
+        self._last_board_signature = None
+        self._last_board_dealer = None
+        self._last_board_active_seats = []
         self._action_armed_seats.clear()
         self._action_occurrence_counts.clear()
         self._derived_actions.clear()
@@ -416,6 +422,9 @@ class LiveObservationService:
                     self._epoch_active_evidence = []
                     self._hand_epoch += 1
                     self._hand_epoch_start_sequence = diagnostic.frame_sequence
+                    self._last_board_signature = None
+                    self._last_board_dealer = None
+                    self._last_board_active_seats = []
                     self._dealer_samples.clear()
                     self._dealer_consensus = self._empty_consensus(
                         "new_hand_dealer_unresolved"
@@ -459,6 +468,7 @@ class LiveObservationService:
             if self._dealer_consensus.accepted and self._dealer_consensus.value is not None:
                 self._epoch_dealer_evidence = int(self._dealer_consensus.value)
         self._record_seat_statuses(diagnostic)
+        self._record_direct_bomb_pot_boundary(diagnostic)
 
         if diagnostic.pot.value_native is None:
             self._pot_samples.clear()
@@ -952,6 +962,78 @@ class LiveObservationService:
         except ValueError:
             self._provisional_positions = {}
             self._positions_reason = "partial_ring_position_naming_unavailable"
+
+    def _record_direct_bomb_pot_boundary(
+        self, diagnostic: LiveCaptureDiagnostic
+    ) -> None:
+        if not self._board_cards_accepted or len(self._recognized_board_cards) < 3:
+            return
+        signature = tuple(self._recognized_board_cards)
+        current_dealer = (
+            int(self._dealer_consensus.value)
+            if self._dealer_consensus.accepted
+            and self._dealer_consensus.value is not None
+            else None
+        )
+        current_active = list(self._active_seats)
+        previous_signature = self._last_board_signature
+        previous_dealer = self._last_board_dealer
+        previous_active = list(self._last_board_active_seats)
+        changed_flop = (
+            previous_signature is not None
+            and signature != previous_signature
+            and len(signature) == 3
+        )
+        dealer_changed = (
+            previous_dealer is not None
+            and current_dealer is not None
+            and current_dealer != previous_dealer
+        )
+        if (
+            changed_flop
+            and dealer_changed
+            and self._mode_consensus.accepted
+            and self._mode_consensus.value == "single_board_bomb_pot"
+        ):
+            next_epoch = self._hand_epoch + 1
+            validation = validate_live_hand_boundary(
+                hand_epoch=next_epoch,
+                table_size=diagnostic.table_size,
+                previous_dealer_seat=previous_dealer,
+                current_dealer_seat=current_dealer,
+                previous_active_seats=previous_active,
+                current_active_seats=current_active,
+            )
+            self._hand_boundary_validation = validation
+            if validation.status == "validated":
+                first_card_samples = self._card_samples[0]
+                self._previous_epoch_dealer = previous_dealer
+                self._previous_epoch_active_seats = previous_active
+                self._hand_epoch = next_epoch
+                self._hand_epoch_start_sequence = (
+                    first_card_samples[0].frame_sequence
+                    if first_card_samples
+                    else diagnostic.frame_sequence
+                )
+                self._epoch_dealer_evidence = current_dealer
+                self._epoch_active_evidence = current_active
+                self._action_armed_seats.clear()
+                self._action_occurrence_counts.clear()
+                for samples in self._hero_card_samples.values():
+                    samples.clear()
+                self._hero_card_consensus = []
+                self._recognized_hero_cards = []
+                self._hero_cards_accepted = False
+                self._hero_cards_reason = "new_direct_bomb_pot_epoch"
+                for samples in self._badge_amount_samples.values():
+                    samples.clear()
+                self._badge_amount_armed_seats = set(range(diagnostic.table_size))
+                self._last_accepted_pot = None
+                self._last_high_confidence_pot_sample = None
+        if current_dealer is not None and current_active:
+            self._last_board_signature = signature
+            self._last_board_dealer = current_dealer
+            self._last_board_active_seats = current_active
 
     def _record_failure(self, error: Exception) -> None:
         self._frames_failed += 1
