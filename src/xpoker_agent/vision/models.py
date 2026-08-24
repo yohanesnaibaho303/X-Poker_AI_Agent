@@ -161,6 +161,18 @@ class SeatActionConsensus(StrictModel):
     consensus: TemporalConsensus
 
 
+class DerivedActionCandidate(StrictModel):
+    event_id: str = Field(min_length=64, max_length=64)
+    hand_epoch: int = Field(ge=0)
+    frame_sequence: int = Field(ge=0)
+    seat: int = Field(ge=0, le=8)
+    street: Literal["preflop", "flop", "turn", "river"]
+    action: Literal["fold", "check", "call", "bet", "raise", "all_in"]
+    confidence: float = Field(ge=0.0, le=1.0)
+    canonical_event_accepted: Literal[False] = False
+    reason: str = "temporal badge candidate; amount/order validation pending"
+
+
 class LiveCaptureDiagnostic(StrictModel):
     schema_version: Literal["1.0"] = "1.0"
     captured_at: datetime
@@ -226,8 +238,11 @@ class LiveObservationStatus(StrictModel):
     current_hand_mode: Literal["standard_nlh", "single_board_bomb_pot", "ambiguous"]
     current_hand_supported: bool
     mode_consensus: TemporalConsensus
+    board_consensus: TemporalConsensus
     pot_consensus: TemporalConsensus
     seat_stack_consensus: list[SeatStackConsensus] = Field(default_factory=list)
     seat_action_consensus: list[SeatActionConsensus] = Field(default_factory=list)
+    hand_epoch: int = Field(ge=0)
+    derived_action_candidates: list[DerivedActionCandidate] = Field(default_factory=list)
     last_error: str | None = None
     controller_enabled: Literal[False] = False

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+import hashlib
 from collections import deque
 from collections.abc import Awaitable, Callable
 from contextlib import suppress
@@ -12,6 +13,7 @@ from typing import Literal
 from xpoker_agent.capture.frames import CapturedFrame
 from xpoker_agent.vision.live import diagnose_authorized_table
 from xpoker_agent.vision.models import (
+    DerivedActionCandidate,
     LiveCaptureDiagnostic,
     LiveObservationStatus,
     SeatActionConsensus,
@@ -45,6 +47,7 @@ class LiveObservationService:
         self._capture = capture
         self._samples: deque[TemporalSample] = deque(maxlen=maximum_samples)
         self._pot_samples: deque[TemporalSample] = deque(maxlen=maximum_samples)
+        self._board_samples: deque[TemporalSample] = deque(maxlen=maximum_samples)
         self._stack_samples: dict[int, deque[TemporalSample]] = {
             seat: deque(maxlen=maximum_samples) for seat in range(9)
         }
@@ -76,6 +79,7 @@ class LiveObservationService:
             reason="no_samples",
         )
         self._pot_consensus = self._empty_consensus("no_samples")
+        self._board_consensus = self._empty_consensus("no_samples")
         self._stack_consensus = [
             SeatStackConsensus(
                 seat=seat,
@@ -90,6 +94,11 @@ class LiveObservationService:
             )
             for seat in range(9)
         ]
+        self._hand_epoch = 0
+        self._last_accepted_board_count: int | None = None
+        self._actions_armed = False
+        self._emitted_action_keys: set[tuple[int, str, int, str]] = set()
+        self._derived_actions: deque[DerivedActionCandidate] = deque(maxlen=50)
         self.latest_diagnostic: LiveCaptureDiagnostic | None = None
         self.latest_frame: CapturedFrame | None = None
 
@@ -118,6 +127,7 @@ class LiveObservationService:
         self._last_error = None
         self._samples.clear()
         self._pot_samples.clear()
+        self._board_samples.clear()
         for samples in self._stack_samples.values():
             samples.clear()
         for samples in self._action_samples.values():
@@ -129,6 +139,7 @@ class LiveObservationService:
             reason="no_samples",
         )
         self._pot_consensus = self._empty_consensus("no_samples")
+        self._board_consensus = self._empty_consensus("no_samples")
         self._stack_consensus = [
             SeatStackConsensus(
                 seat=seat,
@@ -143,6 +154,11 @@ class LiveObservationService:
             )
             for seat in range(9)
         ]
+        self._hand_epoch = 0
+        self._last_accepted_board_count = None
+        self._actions_armed = False
+        self._emitted_action_keys.clear()
+        self._derived_actions.clear()
         self.latest_diagnostic = None
         self.latest_frame = None
         self._stop_event = asyncio.Event()
@@ -234,6 +250,35 @@ class LiveObservationService:
         return consensus(list(samples))
 
     def _record_numeric_observations(self, diagnostic: LiveCaptureDiagnostic) -> None:
+        if not diagnostic.board_geometry_supported or diagnostic.board_card_slots not in {
+            0,
+            3,
+            4,
+            5,
+        }:
+            self._board_samples.clear()
+            self._board_consensus = self._empty_consensus("current_board_ambiguous")
+        else:
+            self._board_consensus = self._append_consecutive(
+                self._board_samples,
+                TemporalSample(
+                    frame_sequence=diagnostic.frame_sequence,
+                    content_sha256=diagnostic.content_sha256,
+                    value=str(diagnostic.board_card_slots),
+                    confidence=max(0.9, diagnostic.board_geometry_confidence),
+                ),
+            )
+            if self._board_consensus.accepted:
+                board_count = int(self._board_consensus.value or "0")
+                if (
+                    self._last_accepted_board_count is not None
+                    and self._last_accepted_board_count >= 3
+                    and board_count == 0
+                ):
+                    self._hand_epoch += 1
+                    self._actions_armed = False
+                self._last_accepted_board_count = board_count
+
         if diagnostic.pot.value_native is None:
             self._pot_samples.clear()
             self._pot_consensus = self._empty_consensus("current_pot_ambiguous")
@@ -292,6 +337,42 @@ class LiveObservationService:
                 )
             action_consensus.append(SeatActionConsensus(seat=seat, consensus=result))
         self._action_consensus = action_consensus
+        visible_actions = [
+            action for action in diagnostic.seat_actions if action.action is not None
+        ]
+        if not visible_actions:
+            self._actions_armed = True
+        if (
+            self._actions_armed
+            and self._board_consensus.accepted
+            and self._mode_consensus.accepted
+        ):
+            street_by_cards = {0: "preflop", 3: "flop", 4: "turn", 5: "river"}
+            street = street_by_cards.get(int(self._board_consensus.value or "-1"))
+            if street is not None:
+                for action in action_consensus:
+                    result = action.consensus
+                    if not result.accepted or result.value is None:
+                        continue
+                    key = (self._hand_epoch, street, action.seat, result.value)
+                    if key in self._emitted_action_keys:
+                        continue
+                    encoded = (
+                        f"{diagnostic.target_fingerprint}:{self._hand_epoch}:"
+                        f"{street}:{action.seat}:{result.value}"
+                    ).encode()
+                    self._derived_actions.append(
+                        DerivedActionCandidate(
+                            event_id=hashlib.sha256(encoded).hexdigest(),
+                            hand_epoch=self._hand_epoch,
+                            frame_sequence=diagnostic.frame_sequence,
+                            seat=action.seat,
+                            street=street,
+                            action=result.value,
+                            confidence=result.confidence,
+                        )
+                    )
+                    self._emitted_action_keys.add(key)
 
     def _record_failure(self, error: Exception) -> None:
         self._frames_failed += 1
@@ -346,8 +427,11 @@ class LiveObservationService:
                 else False
             ),
             mode_consensus=self._mode_consensus,
+            board_consensus=self._board_consensus,
             pot_consensus=self._pot_consensus,
             seat_stack_consensus=self._stack_consensus,
             seat_action_consensus=self._action_consensus,
+            hand_epoch=self._hand_epoch,
+            derived_action_candidates=list(self._derived_actions),
             last_error=self._last_error,
         )

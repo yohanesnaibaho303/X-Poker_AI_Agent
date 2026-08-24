@@ -90,7 +90,14 @@
   All-in candidates; temporally stable badges are exposed separately from canonical events.
 - Structured X-Poker's active `Bomb Pot(4)` label as a forced-contribution candidate, while run-it-
   multiple-times overlays correctly quarantine false board geometry until the overlay disappears.
-- Current full suite: Ruff passed; 246 Pytest/Hypothesis tests, 11 TypeScript tests, and the
+- Added consecutive board-count consensus and bounded exactly-once derived action candidates. A
+  badge is eligible only after a clear frame, stable hand mode, supported/stable board street, and
+  three distinct matching frames; candidates remain ineligible for canonical state until amount,
+  order, dealer, and pot validation pass.
+- Live validation produced one non-duplicated seat-2 preflop Call candidate and advanced the hand
+  epoch on a stable postflop-to-preflop board transition. The candidate was correctly labeled
+  non-canonical with accounting pending.
+- Current full suite: Ruff passed; 247 Pytest/Hypothesis tests, 11 TypeScript tests, and the
   production dashboard build passed. Table control remains disabled.
 
 ## Completed project checkpoints

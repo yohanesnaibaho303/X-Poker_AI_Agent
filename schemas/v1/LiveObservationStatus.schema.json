@@ -1,5 +1,82 @@
 {
   "$defs": {
+    "DerivedActionCandidate": {
+      "additionalProperties": false,
+      "properties": {
+        "event_id": {
+          "maxLength": 64,
+          "minLength": 64,
+          "title": "Event Id",
+          "type": "string"
+        },
+        "hand_epoch": {
+          "minimum": 0,
+          "title": "Hand Epoch",
+          "type": "integer"
+        },
+        "frame_sequence": {
+          "minimum": 0,
+          "title": "Frame Sequence",
+          "type": "integer"
+        },
+        "seat": {
+          "maximum": 8,
+          "minimum": 0,
+          "title": "Seat",
+          "type": "integer"
+        },
+        "street": {
+          "enum": [
+            "preflop",
+            "flop",
+            "turn",
+            "river"
+          ],
+          "title": "Street",
+          "type": "string"
+        },
+        "action": {
+          "enum": [
+            "fold",
+            "check",
+            "call",
+            "bet",
+            "raise",
+            "all_in"
+          ],
+          "title": "Action",
+          "type": "string"
+        },
+        "confidence": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "canonical_event_accepted": {
+          "const": false,
+          "default": false,
+          "title": "Canonical Event Accepted",
+          "type": "boolean"
+        },
+        "reason": {
+          "default": "temporal badge candidate; amount/order validation pending",
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "event_id",
+        "hand_epoch",
+        "frame_sequence",
+        "seat",
+        "street",
+        "action",
+        "confidence"
+      ],
+      "title": "DerivedActionCandidate",
+      "type": "object"
+    },
     "SeatActionConsensus": {
       "additionalProperties": false,
       "properties": {
@@ -246,6 +323,9 @@
     "mode_consensus": {
       "$ref": "#/$defs/TemporalConsensus"
     },
+    "board_consensus": {
+      "$ref": "#/$defs/TemporalConsensus"
+    },
     "pot_consensus": {
       "$ref": "#/$defs/TemporalConsensus"
     },
@@ -261,6 +341,18 @@
         "$ref": "#/$defs/SeatActionConsensus"
       },
       "title": "Seat Action Consensus",
+      "type": "array"
+    },
+    "hand_epoch": {
+      "minimum": 0,
+      "title": "Hand Epoch",
+      "type": "integer"
+    },
+    "derived_action_candidates": {
+      "items": {
+        "$ref": "#/$defs/DerivedActionCandidate"
+      },
+      "title": "Derived Action Candidates",
       "type": "array"
     },
     "last_error": {
@@ -295,7 +387,9 @@
     "current_hand_mode",
     "current_hand_supported",
     "mode_consensus",
-    "pot_consensus"
+    "board_consensus",
+    "pot_consensus",
+    "hand_epoch"
   ],
   "title": "LiveObservationStatus",
   "type": "object"

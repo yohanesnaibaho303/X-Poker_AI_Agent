@@ -724,6 +724,12 @@ diagnostics also expose consecutive-frame pot/stack consensus and privacy-scoped
 candidates. These observations remain outside canonical hand state until exactly-once event
 derivation passes action-order, amount-delta, pot-accounting, and board-transition validation.
 
+The live observer now derives a bounded, deterministic candidate stream from stable action badges.
+It arms only after a badge-clear frame, keys each candidate by target/hand epoch/street/seat/action,
+and cannot emit the same key twice. Supported board counts establish the provisional street and a
+stable postflop-to-zero transition advances the provisional hand epoch. These are explicitly not
+`HandEvent` records; dealer, amount, action order, and accounting gates are still required.
+
 ### Milestone 9 — Authorized control
 
 - Add action-target mapping and calibration.

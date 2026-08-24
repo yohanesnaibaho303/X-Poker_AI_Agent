@@ -6,6 +6,7 @@ from xpoker_agent.vision.live_observation import LiveObservationService
 from xpoker_agent.vision.models import (
     LiveCaptureDiagnostic,
     PotObservation,
+    SeatActionObservation,
     SeatPanelObservation,
 )
 
@@ -112,6 +113,38 @@ def test_changed_numeric_value_requires_fresh_consecutive_consensus() -> None:
         result = service.status().seat_stack_consensus[0].consensus
         assert result.accepted is True
         assert result.value == "98"
+
+    asyncio.run(scenario())
+
+
+def test_action_candidate_is_derived_once_after_clear_and_stable_badge() -> None:
+    async def scenario() -> None:
+        async def capture(_: int, sequence: int):
+            diagnostic = _diagnostic(sequence)
+            if sequence >= 4:
+                diagnostic.seat_actions = [
+                    SeatActionObservation(
+                        seat=2,
+                        action="fold",
+                        confidence=0.9,
+                        reason="test candidate",
+                    )
+                ]
+            return diagnostic, CapturedFrame(1, 1, b"\x00" * 4)
+
+        service = LiveObservationService(capture)
+        for _ in range(8):
+            await service.inspect_once(table_size=9)
+        status = service.status()
+
+        assert status.board_consensus.accepted is True
+        assert status.board_consensus.value == "3"
+        assert len(status.derived_action_candidates) == 1
+        candidate = status.derived_action_candidates[0]
+        assert candidate.seat == 2
+        assert candidate.street == "flop"
+        assert candidate.action == "fold"
+        assert candidate.canonical_event_accepted is False
 
     asyncio.run(scenario())
 

@@ -407,8 +407,10 @@ export default function App() {
             <div className="health-row"><span>Target</span><strong>{liveObservation?.target_stable === false ? "Changed · stopped" : liveObservation?.target_fingerprint ? "Stable" : "Waiting"}</strong></div>
             <div className="health-row"><span>Mode consensus</span><strong>{liveObservation?.mode_consensus.accepted ? `${liveObservation.mode_consensus.value} · ${liveObservation.mode_consensus.stable_frames}` : liveObservation?.mode_consensus.reason ?? "waiting"}</strong></div>
             <div className="health-row"><span>Pot consensus</span><strong>{liveObservation?.pot_consensus.accepted ? `${liveObservation.pot_consensus.value} · ${liveObservation.pot_consensus.stable_frames}` : liveObservation?.pot_consensus.reason ?? "waiting"}</strong></div>
+            <div className="health-row"><span>Board consensus</span><strong>{liveObservation?.board_consensus.accepted ? `${liveObservation.board_consensus.value} cards` : liveObservation?.board_consensus.reason ?? "waiting"}</strong></div>
             <div className="health-row"><span>Stable stacks</span><strong>{liveObservation?.seat_stack_consensus.filter((seat) => seat.consensus.accepted).length ?? 0}/{tableSize}</strong></div>
             <div className="health-row"><span>Stable action badges</span><strong>{liveObservation?.seat_action_consensus.filter((seat) => seat.consensus.accepted).length ?? 0}</strong></div>
+            <div className="health-row"><span>Derived candidates</span><strong>{liveObservation?.derived_action_candidates.length ?? 0} · epoch {liveObservation?.hand_epoch ?? 0}</strong></div>
             <div className="health-row"><span>Strategy</span><strong>{snapshot?.health.strategy_status ?? "unavailable"}</strong></div>
             <div className="health-row"><span>Dropped UI updates</span><strong>{snapshot?.metrics.dropped_deliveries ?? 0}</strong></div>
             <div className="health-row"><span>Snapshot latency</span><strong>{snapshot ? `${snapshot.metrics.processing_latency_ms.toFixed(2)} ms` : "—"}</strong></div>
