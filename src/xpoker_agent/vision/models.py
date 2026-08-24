@@ -5,10 +5,11 @@ from __future__ import annotations
 from datetime import datetime
 from decimal import Decimal
 from typing import Literal
+from uuid import UUID
 
 from pydantic import Field, model_validator
 
-from xpoker_agent.models import CARD_PATTERN, Position, StrictModel
+from xpoker_agent.models import CARD_PATTERN, HandEvent, HandState, Position, StrictModel
 
 
 class PixelBox(StrictModel):
@@ -350,8 +351,18 @@ class LiveReconstructionReadiness(StrictModel):
     big_blind_native: Decimal | None = Field(default=None, gt=0)
     eligible_action_event_ids: list[str] = Field(default_factory=list)
     issues: list[str] = Field(default_factory=list)
-    canonical_events_emitted: Literal[False] = False
+    canonical_events_emitted: bool = False
     reason: str
+
+
+class LiveCanonicalHandPrefix(StrictModel):
+    hand_epoch: int = Field(ge=1)
+    hand_id: UUID
+    events: list[HandEvent]
+    state: HandState
+    source_action_event_ids: list[str] = Field(default_factory=list)
+    complete: Literal[False] = False
+    reason: str = "validated live canonical hand prefix"
 
 
 class LiveCaptureDiagnostic(StrictModel):
@@ -452,7 +463,10 @@ class LiveObservationStatus(StrictModel):
     blind_post_reconciliations: list[BlindPostReconciliation] = Field(
         default_factory=list
     )
+    hand_starting_stacks_native: dict[int, Decimal] = Field(default_factory=dict)
     reconstruction_readiness: LiveReconstructionReadiness
+    canonical_hand: LiveCanonicalHandPrefix | None = None
+    canonical_reconstruction_error: str | None = None
     derived_action_candidates: list[DerivedActionCandidate] = Field(default_factory=list)
     seat_badge_amount_candidates: list[SeatBadgeAmountCandidate] = Field(
         default_factory=list

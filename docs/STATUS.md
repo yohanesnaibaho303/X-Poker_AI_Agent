@@ -3,7 +3,7 @@
 - Last updated: 2026-08-24 (Asia/Jakarta)
 - Current milestone: Milestone 8 — live monitoring application
 - Overall project: 5 of 11 milestones complete
-- Current state: Milestone 8 synthetic-replay dashboard checkpoint complete; live-session exit gate,
+- Current state: Milestone 8 live-observation dashboard integration in progress; live-session exit gate,
   Milestone 6 source-data integration, and M3/M4 promotion gates remain pending
 - Live control: Disabled
 
@@ -136,7 +136,7 @@
   epochs with zero failures and produced six mutually unique provisional matches: Call 2 and 4,
   plus Bet 4, 3, 6, and 2 native units. None are canonical events yet because legal order and pot
   accounting remain outstanding gates.
-- Current full suite: Ruff passed; 284 Pytest/Hypothesis tests, 11 TypeScript tests, and the
+- Current full suite: Ruff passed; 287 Pytest/Hypothesis tests, 11 TypeScript tests, and the
   production dashboard build passed. Table control remains disabled.
 - Added deterministic provisional clockwise-order validation. Each visual action now carries the
   stable dealer and active-seat context present when it was emitted. Preflop starts after the BB;
@@ -214,6 +214,10 @@
   evidence now persists for its provisional hand, and three-frame native blinds persist for the
   capture session through temporary overlays. Contradictory stable mode or blind values create a
   sticky fail-closed conflict; the dashboard exposes both current and retained consensus channels.
+- Added the first deterministic live-to-canonical bridge for standard NLH. A witnessed boundary now
+  snapshots pre-blind starting stacks; accepted blinds, hero cards, legal action candidates, and
+  board transitions are reduced into a deterministic hand prefix only when exact stable current
+  stacks and pot match the reducer. Rejections remain inspectable and control stays disabled.
 
 ## Completed project checkpoints
 
@@ -233,9 +237,9 @@
 
 ## Next
 
-- Connect recorded/live capture, perception evidence, and reconstructed observations to the monitor.
-- Record complete scheduled standard hands and an active single-board Bomb Pot from the authorized
-  spectated table for temporal contribution and hand-mode calibration.
+- Continue live capture, perception evidence, and reconstructed-observation integration in the monitor.
+- Observe complete standard hands and an active single-board Bomb Pot on the authorized table for
+  temporal contribution and hand-mode calibration; no new user-facing replay work is required.
 - Feed only mutually unique action/amount matches that also pass clockwise order and pot/stack
   accounting into the existing deterministic hand-state reducer.
 - Expand held-out board-card evaluation coverage across every rank/suit and lighting/result-overlay
@@ -253,7 +257,8 @@
 - Add exact/nearest strategy-node lookup and quantitative mismatch reporting.
 - Connect the completed exploit layer to real reconstructed observations and resolved strategy EVs
   during Milestone 8 integration.
-- Continue M3/M4 promotion evaluation when representative standard NLH recorded hands exist.
+- Continue M3/M4 promotion evaluation from representative live standard NLH evidence, retaining
+  only minimal internal regression fixtures needed for deterministic safety tests.
 
 ## Blockers
 

@@ -14,6 +14,7 @@ from typing import Literal
 from xpoker_agent.capture.frames import CapturedFrame
 from xpoker_agent.vision.action_order import validate_action_order
 from xpoker_agent.vision.blind_posts import reconcile_blind_posts
+from xpoker_agent.vision.canonical import build_standard_live_hand_prefix
 from xpoker_agent.vision.hand_boundary import validate_live_hand_boundary
 from xpoker_agent.vision.live import diagnose_authorized_table
 from xpoker_agent.vision.models import (
@@ -21,6 +22,7 @@ from xpoker_agent.vision.models import (
     ActionPotReconciliation,
     BlindPostReconciliation,
     DerivedActionCandidate,
+    LiveCanonicalHandPrefix,
     LiveCaptureDiagnostic,
     LiveHandBoundaryValidation,
     LiveObservationStatus,
@@ -149,6 +151,7 @@ class LiveObservationService:
         self._hero_control_consensus = self._empty_consensus("no_samples")
         self._hand_epoch = 0
         self._hand_epoch_start_sequence = 0
+        self._hand_starting_stacks_native: dict[int, Decimal] = {}
         self._previous_epoch_dealer: int | None = None
         self._previous_epoch_active_seats: list[int] = []
         self._hand_boundary_validation = LiveHandBoundaryValidation(
@@ -262,6 +265,7 @@ class LiveObservationService:
         self._hero_control_consensus = self._empty_consensus("no_samples")
         self._hand_epoch = 0
         self._hand_epoch_start_sequence = 0
+        self._hand_starting_stacks_native = {}
         self._previous_epoch_dealer = None
         self._previous_epoch_active_seats = []
         self._hand_boundary_validation = LiveHandBoundaryValidation(
@@ -455,6 +459,11 @@ class LiveObservationService:
                     self._previous_epoch_active_seats = list(
                         self._epoch_active_evidence
                     )
+                    self._hand_starting_stacks_native = {
+                        seat: self._last_accepted_stacks[seat]
+                        for seat in self._previous_epoch_active_seats
+                        if seat in self._last_accepted_stacks
+                    }
                     self._epoch_dealer_evidence = None
                     self._epoch_active_evidence = []
                     self._hand_epoch += 1
@@ -1051,6 +1060,7 @@ class LiveObservationService:
                 self._previous_epoch_dealer = previous_dealer
                 self._previous_epoch_active_seats = previous_active
                 self._hand_epoch = next_epoch
+                self._hand_starting_stacks_native = {}
                 self._epoch_mode_consensus = self._empty_consensus(
                     "new_hand_mode_unresolved"
                 )
@@ -1107,6 +1117,28 @@ class LiveObservationService:
         latest_age_ms = None
         if latest_at is not None:
             latest_age_ms = max(0.0, (datetime.now(UTC) - latest_at).total_seconds() * 1000)
+        readiness = self._reconstruction_readiness()
+        canonical_hand: LiveCanonicalHandPrefix | None = None
+        canonical_error: str | None = None
+        if readiness.ready:
+            try:
+                canonical_hand = self._build_canonical_prefix()
+            except ValueError as error:
+                canonical_error = str(error)
+                readiness = readiness.model_copy(
+                    update={
+                        "ready": False,
+                        "issues": [*readiness.issues, "canonical_reducer_rejected"],
+                        "reason": "deterministic reducer rejected the live prefix",
+                    }
+                )
+            else:
+                readiness = readiness.model_copy(
+                    update={
+                        "canonical_events_emitted": True,
+                        "reason": "all gates passed and reducer validated the live prefix",
+                    }
+                )
         return LiveObservationStatus(
             running=self.running,
             table_size=self._table_size,
@@ -1157,7 +1189,10 @@ class LiveObservationService:
             hand_epoch=self._hand_epoch,
             hand_boundary_validation=self._hand_boundary_validation,
             blind_post_reconciliations=self._reconcile_blind_posts(),
-            reconstruction_readiness=self._reconstruction_readiness(),
+            hand_starting_stacks_native=self._hand_starting_stacks_native,
+            reconstruction_readiness=readiness,
+            canonical_hand=canonical_hand,
+            canonical_reconstruction_error=canonical_error,
             derived_action_candidates=list(self._derived_actions),
             seat_badge_amount_candidates=list(self._badge_amount_candidates),
             stack_delta_candidates=list(self._stack_deltas),
@@ -1273,6 +1308,11 @@ class LiveObservationService:
         }
         if not set(self._active_seats).issubset(stable_stack_seats):
             issues.append("active_stacks_not_stable")
+        boundary_active = set(self._hand_boundary_validation.current_active_seats)
+        if not boundary_active or not boundary_active.issubset(
+            self._hand_starting_stacks_native
+        ):
+            issues.append("starting_stacks_not_captured")
         if 0 in self._active_seats and not self._hero_cards_accepted:
             issues.append("hero_cards_not_stable")
         if (
@@ -1281,6 +1321,8 @@ class LiveObservationService:
             and not self._board_cards_accepted
         ):
             issues.append("board_cards_not_stable")
+        if not self._pot_consensus.accepted or self._pot_consensus.value is None:
+            issues.append("current_pot_not_stable")
 
         current_actions = [
             action for action in self._derived_actions if action.hand_epoch == self._hand_epoch
@@ -1325,6 +1367,46 @@ class LiveObservationService:
                 if not issues
                 else "one or more fail-closed reconstruction gates remain"
             ),
+        )
+
+    def _build_canonical_prefix(self) -> LiveCanonicalHandPrefix:
+        if self._session_target_fingerprint is None:
+            raise ValueError("target fingerprint is unavailable")
+        boundary = self._hand_boundary_validation
+        if boundary.current_dealer_seat is None:
+            raise ValueError("validated current dealer is unavailable")
+        if self._session_blind_consensus.value is None:
+            raise ValueError("retained native blinds are unavailable")
+        if self._pot_consensus.value is None:
+            raise ValueError("stable current pot is unavailable")
+        _, big_token = self._session_blind_consensus.value.split("/", maxsplit=1)
+        active = set(boundary.current_active_seats)
+        current_stacks = {
+            item.seat: Decimal(item.consensus.value)
+            for item in self._stack_consensus
+            if item.seat in active
+            and item.consensus.accepted
+            and item.consensus.value is not None
+        }
+        return build_standard_live_hand_prefix(
+            target_fingerprint=self._session_target_fingerprint,
+            hand_epoch=self._hand_epoch,
+            table_size=self._table_size,
+            hero_seat=0,
+            dealer_seat=boundary.current_dealer_seat,
+            starting_stacks_native=dict(self._hand_starting_stacks_native),
+            current_stacks_native=current_stacks,
+            current_pot_native=Decimal(self._pot_consensus.value),
+            big_blind_native=Decimal(big_token),
+            blind_posts=self._reconcile_blind_posts(),
+            hero_cards=list(self._recognized_hero_cards),
+            board_cards=list(self._recognized_board_cards),
+            actions=[
+                action
+                for action in self._derived_actions
+                if action.hand_epoch == self._hand_epoch
+            ],
+            amount_reconciliations=self._reconcile_action_amounts(),
         )
 
     def _reconcile_blind_posts(self) -> list[BlindPostReconciliation]:

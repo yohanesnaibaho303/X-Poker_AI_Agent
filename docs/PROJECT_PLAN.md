@@ -778,9 +778,14 @@ The prior epoch uses its last accepted dealer/ring evidence, so a transient resu
 board reset cannot erase established context; current-frame outputs still clear while occluded.
 
 The live status combines these prerequisites into an explicit reducer-readiness result. Every
-unresolved boundary, mode, blind, dealer, ring, stack, card, amount, pot, or clockwise-order gate is
-listed, and only action IDs passing all provisional reconciliation layers are eligible. Readiness is
-inspectable but does not itself create canonical events or enable control.
+unresolved boundary, mode, blind, dealer, ring, starting/current stack, card, amount, pot, or
+clockwise-order gate is listed, and only action IDs passing all provisional reconciliation layers
+are eligible. A validated standard-hand boundary snapshots pre-blind starting stacks. When every
+gate passes, the observer builds deterministic canonical events and feeds the entire prefix through
+the existing hand-state reducer; exact current stack and pot agreement is mandatory. A rejected
+prefix is exposed with its reducer error and remains non-canonical. This path never enables control.
+Direct-flop Bomb Pot boundaries still fail closed because their initial forced contributions and
+pre-contribution stacks have not yet been reconstructed exactly.
 
 Fast-changing pot labels may produce a lower-trust transition from two consecutive 0.95+ OCR
 observations even when neither value repeats three times. That transition remains non-canonical and

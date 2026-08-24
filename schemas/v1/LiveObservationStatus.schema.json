@@ -287,6 +287,27 @@
       "title": "ActionPotReconciliation",
       "type": "object"
     },
+    "Alternative": {
+      "additionalProperties": false,
+      "properties": {
+        "value": {
+          "title": "Value",
+          "type": "string"
+        },
+        "score": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Score",
+          "type": "number"
+        }
+      },
+      "required": [
+        "value",
+        "score"
+      ],
+      "title": "Alternative",
+      "type": "object"
+    },
     "BlindPostReconciliation": {
       "additionalProperties": false,
       "properties": {
@@ -378,6 +399,40 @@
         "reason"
       ],
       "title": "BlindPostReconciliation",
+      "type": "object"
+    },
+    "Confidence": {
+      "additionalProperties": false,
+      "properties": {
+        "score": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Score",
+          "type": "number"
+        },
+        "calibration_id": {
+          "title": "Calibration Id",
+          "type": "string"
+        },
+        "alternatives": {
+          "items": {
+            "$ref": "#/$defs/Alternative"
+          },
+          "title": "Alternatives",
+          "type": "array"
+        },
+        "stable_frames": {
+          "default": 1,
+          "minimum": 1,
+          "title": "Stable Frames",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "score",
+        "calibration_id"
+      ],
+      "title": "Confidence",
       "type": "object"
     },
     "DerivedActionCandidate": {
@@ -482,6 +537,497 @@
         "confidence"
       ],
       "title": "DerivedActionCandidate",
+      "type": "object"
+    },
+    "EventAmount": {
+      "additionalProperties": false,
+      "properties": {
+        "to_bb": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "To Bb"
+        },
+        "added_bb": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "default": "0",
+          "title": "Added Bb"
+        }
+      },
+      "title": "EventAmount",
+      "type": "object"
+    },
+    "EventCategory": {
+      "enum": [
+        "betting_action",
+        "lifecycle",
+        "forced_wager",
+        "dealing",
+        "settlement"
+      ],
+      "title": "EventCategory",
+      "type": "string"
+    },
+    "HandEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "1.0",
+          "default": "1.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "event_id": {
+          "format": "uuid",
+          "title": "Event Id",
+          "type": "string"
+        },
+        "hand_id": {
+          "format": "uuid",
+          "title": "Hand Id",
+          "type": "string"
+        },
+        "sequence": {
+          "minimum": 1,
+          "title": "Sequence",
+          "type": "integer"
+        },
+        "category": {
+          "$ref": "#/$defs/EventCategory"
+        },
+        "type": {
+          "title": "Type",
+          "type": "string"
+        },
+        "hand_mode": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/HandMode"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "actor_seat": {
+          "anyOf": [
+            {
+              "maximum": 8,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Actor Seat"
+        },
+        "street": {
+          "$ref": "#/$defs/Street",
+          "default": "none"
+        },
+        "amount": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventAmount"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "cards": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Cards",
+          "type": "array"
+        },
+        "dealer_seat": {
+          "anyOf": [
+            {
+              "maximum": 8,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Dealer Seat"
+        },
+        "winner_seat": {
+          "anyOf": [
+            {
+              "maximum": 8,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Winner Seat"
+        },
+        "pot_index": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Pot Index"
+        },
+        "input_observations": {
+          "items": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "title": "Input Observations",
+          "type": "array"
+        },
+        "confidence": {
+          "$ref": "#/$defs/Confidence"
+        },
+        "assumptions": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Assumptions",
+          "type": "array"
+        }
+      },
+      "required": [
+        "hand_id",
+        "sequence",
+        "category",
+        "type",
+        "confidence"
+      ],
+      "title": "HandEvent",
+      "type": "object"
+    },
+    "HandMode": {
+      "enum": [
+        "standard_nlh",
+        "single_board_bomb_pot"
+      ],
+      "title": "HandMode",
+      "type": "string"
+    },
+    "HandState": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "1.0",
+          "default": "1.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "state_id": {
+          "format": "uuid",
+          "title": "State Id",
+          "type": "string"
+        },
+        "hand_id": {
+          "format": "uuid",
+          "title": "Hand Id",
+          "type": "string"
+        },
+        "revision": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Revision",
+          "type": "integer"
+        },
+        "last_event_sequence": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Last Event Sequence",
+          "type": "integer"
+        },
+        "config_version": {
+          "title": "Config Version",
+          "type": "string"
+        },
+        "table_size": {
+          "enum": [
+            6,
+            9
+          ],
+          "title": "Table Size",
+          "type": "integer"
+        },
+        "hand_mode": {
+          "$ref": "#/$defs/HandMode",
+          "default": "standard_nlh"
+        },
+        "table_status": {
+          "$ref": "#/$defs/TableStatus",
+          "default": "waiting_for_hand"
+        },
+        "street": {
+          "$ref": "#/$defs/Street",
+          "default": "none"
+        },
+        "dealer_seat": {
+          "anyOf": [
+            {
+              "maximum": 8,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Dealer Seat"
+        },
+        "hero_seat": {
+          "maximum": 8,
+          "minimum": 0,
+          "title": "Hero Seat",
+          "type": "integer"
+        },
+        "hero_position": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Position"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "hero_cards": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Hero Cards",
+          "type": "array"
+        },
+        "board": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Board",
+          "type": "array"
+        },
+        "seats": {
+          "items": {
+            "$ref": "#/$defs/SeatState"
+          },
+          "title": "Seats",
+          "type": "array"
+        },
+        "pot_main_bb": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "default": "0",
+          "title": "Pot Main Bb"
+        },
+        "pot_layers": {
+          "items": {
+            "$ref": "#/$defs/PotLayer"
+          },
+          "title": "Pot Layers",
+          "type": "array"
+        },
+        "current_bet_bb": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "default": "0",
+          "title": "Current Bet Bb"
+        },
+        "minimum_raise_increment_bb": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "default": "0",
+          "title": "Minimum Raise Increment Bb"
+        },
+        "last_aggressor_seat": {
+          "anyOf": [
+            {
+              "maximum": 8,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Last Aggressor Seat"
+        },
+        "next_to_act_seat": {
+          "anyOf": [
+            {
+              "maximum": 8,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Next To Act Seat"
+        },
+        "acted_seats": {
+          "items": {
+            "type": "integer"
+          },
+          "title": "Acted Seats",
+          "type": "array"
+        },
+        "raise_locked_seats": {
+          "items": {
+            "type": "integer"
+          },
+          "title": "Raise Locked Seats",
+          "type": "array"
+        },
+        "initial_total_chips_bb": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "default": "0",
+          "title": "Initial Total Chips Bb"
+        },
+        "available_actions": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Available Actions",
+          "type": "array"
+        },
+        "event_ids": {
+          "items": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "title": "Event Ids",
+          "type": "array"
+        },
+        "validation": {
+          "$ref": "#/$defs/ValidationState"
+        }
+      },
+      "required": [
+        "hand_id",
+        "config_version",
+        "table_size",
+        "hero_seat",
+        "seats"
+      ],
+      "title": "HandState",
+      "type": "object"
+    },
+    "LiveCanonicalHandPrefix": {
+      "additionalProperties": false,
+      "properties": {
+        "hand_epoch": {
+          "minimum": 1,
+          "title": "Hand Epoch",
+          "type": "integer"
+        },
+        "hand_id": {
+          "format": "uuid",
+          "title": "Hand Id",
+          "type": "string"
+        },
+        "events": {
+          "items": {
+            "$ref": "#/$defs/HandEvent"
+          },
+          "title": "Events",
+          "type": "array"
+        },
+        "state": {
+          "$ref": "#/$defs/HandState"
+        },
+        "source_action_event_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Source Action Event Ids",
+          "type": "array"
+        },
+        "complete": {
+          "const": false,
+          "default": false,
+          "title": "Complete",
+          "type": "boolean"
+        },
+        "reason": {
+          "default": "validated live canonical hand prefix",
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "hand_epoch",
+        "hand_id",
+        "events",
+        "state"
+      ],
+      "title": "LiveCanonicalHandPrefix",
       "type": "object"
     },
     "LiveHandBoundaryValidation": {
@@ -626,7 +1172,6 @@
           "type": "array"
         },
         "canonical_events_emitted": {
-          "const": false,
           "default": false,
           "title": "Canonical Events Emitted",
           "type": "boolean"
@@ -643,6 +1188,20 @@
       ],
       "title": "LiveReconstructionReadiness",
       "type": "object"
+    },
+    "ParticipationStatus": {
+      "enum": [
+        "empty",
+        "seated",
+        "active",
+        "folded",
+        "all_in",
+        "sitting_out",
+        "on_break",
+        "disconnected"
+      ],
+      "title": "ParticipationStatus",
+      "type": "string"
     },
     "Position": {
       "enum": [
@@ -765,6 +1324,76 @@
       "title": "PotDeltaCandidate",
       "type": "object"
     },
+    "PotLayer": {
+      "additionalProperties": false,
+      "properties": {
+        "pot_index": {
+          "minimum": 0,
+          "title": "Pot Index",
+          "type": "integer"
+        },
+        "amount_bb": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "title": "Amount Bb"
+        },
+        "remaining_bb": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "title": "Remaining Bb"
+        },
+        "cap_per_player_bb": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "title": "Cap Per Player Bb"
+        },
+        "contributing_seats": {
+          "items": {
+            "type": "integer"
+          },
+          "title": "Contributing Seats",
+          "type": "array"
+        },
+        "eligible_seats": {
+          "items": {
+            "type": "integer"
+          },
+          "title": "Eligible Seats",
+          "type": "array"
+        }
+      },
+      "required": [
+        "pot_index",
+        "amount_bb",
+        "remaining_bb",
+        "cap_per_player_bb",
+        "contributing_seats",
+        "eligible_seats"
+      ],
+      "title": "PotLayer",
+      "type": "object"
+    },
     "SeatActionConsensus": {
       "additionalProperties": false,
       "properties": {
@@ -880,6 +1509,87 @@
         "consensus"
       ],
       "title": "SeatStackConsensus",
+      "type": "object"
+    },
+    "SeatState": {
+      "additionalProperties": false,
+      "properties": {
+        "seat": {
+          "maximum": 8,
+          "minimum": 0,
+          "title": "Seat",
+          "type": "integer"
+        },
+        "position": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Position"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "participation": {
+          "$ref": "#/$defs/ParticipationStatus"
+        },
+        "starting_stack_bb": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "title": "Starting Stack Bb"
+        },
+        "stack_bb": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "title": "Stack Bb"
+        },
+        "committed_by_street_bb": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "propertyNames": {
+            "$ref": "#/$defs/Street"
+          },
+          "title": "Committed By Street Bb",
+          "type": "object"
+        },
+        "cards": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Cards",
+          "type": "array"
+        }
+      },
+      "required": [
+        "seat",
+        "participation",
+        "starting_stack_bb",
+        "stack_bb"
+      ],
+      "title": "SeatState",
       "type": "object"
     },
     "SeatStatusConsensus": {
@@ -999,6 +1709,29 @@
       "title": "StackDeltaCandidate",
       "type": "object"
     },
+    "Street": {
+      "enum": [
+        "none",
+        "preflop",
+        "flop",
+        "turn",
+        "river",
+        "showdown"
+      ],
+      "title": "Street",
+      "type": "string"
+    },
+    "TableStatus": {
+      "enum": [
+        "unavailable",
+        "ready",
+        "waiting_for_hand",
+        "in_hand",
+        "hand_complete"
+      ],
+      "title": "TableStatus",
+      "type": "string"
+    },
     "TemporalConsensus": {
       "additionalProperties": false,
       "properties": {
@@ -1055,6 +1788,25 @@
         "stable_frames"
       ],
       "title": "TemporalConsensus",
+      "type": "object"
+    },
+    "ValidationState": {
+      "additionalProperties": false,
+      "properties": {
+        "legal": {
+          "default": true,
+          "title": "Legal",
+          "type": "boolean"
+        },
+        "issues": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Issues",
+          "type": "array"
+        }
+      },
+      "title": "ValidationState",
       "type": "object"
     }
   },
@@ -1315,8 +2067,45 @@
       "title": "Blind Post Reconciliations",
       "type": "array"
     },
+    "hand_starting_stacks_native": {
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "string"
+          }
+        ]
+      },
+      "title": "Hand Starting Stacks Native",
+      "type": "object"
+    },
     "reconstruction_readiness": {
       "$ref": "#/$defs/LiveReconstructionReadiness"
+    },
+    "canonical_hand": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/LiveCanonicalHandPrefix"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "canonical_reconstruction_error": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Canonical Reconstruction Error"
     },
     "derived_action_candidates": {
       "items": {

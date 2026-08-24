@@ -505,6 +505,7 @@ def test_direct_bomb_pot_flop_change_can_validate_a_hand_boundary() -> None:
         assert status.hand_boundary_validation.previous_dealer_seat == 4
         assert status.hand_boundary_validation.current_dealer_seat == 0
         assert status.hand_boundary_validation.expected_dealer_seat == 0
+        assert status.hand_starting_stacks_native == {}
 
     asyncio.run(scenario())
 
@@ -566,6 +567,17 @@ def test_hand_boundary_uses_last_stable_epoch_context_when_button_is_occluded() 
                 )
                 for seat in range(9)
             ]
+            diagnostic.seat_panels = [
+                SeatPanelObservation(
+                    seat=seat,
+                    status="seated",
+                    stack_native=100 + seat,
+                    stack_token=str(100 + seat),
+                    confidence=0.95,
+                    reason="test candidate",
+                )
+                for seat in active
+            ]
             return diagnostic, CapturedFrame(1, 1, b"\x00" * 4)
 
         service = LiveObservationService(capture)
@@ -578,6 +590,11 @@ def test_hand_boundary_uses_last_stable_epoch_context_when_button_is_occluded() 
         assert status.hand_boundary_validation.previous_dealer_seat == 4
         assert status.hand_boundary_validation.current_dealer_seat == 0
         assert status.hand_boundary_validation.expected_dealer_seat == 0
+        assert status.hand_starting_stacks_native == {
+            0: Decimal("100"),
+            1: Decimal("101"),
+            4: Decimal("104"),
+        }
 
     asyncio.run(scenario())
 

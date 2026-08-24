@@ -370,15 +370,26 @@ export interface LiveObservationStatus {
     canonical_event_accepted: false;
     reason: string;
   }>;
+  hand_starting_stacks_native: Record<string, string>;
   reconstruction_readiness: {
     hand_epoch: number;
     ready: boolean;
     big_blind_native: string | null;
     eligible_action_event_ids: string[];
     issues: string[];
-    canonical_events_emitted: false;
+    canonical_events_emitted: boolean;
     reason: string;
   };
+  canonical_hand: {
+    hand_epoch: number;
+    hand_id: string;
+    events: Array<Record<string, unknown>>;
+    state: Record<string, unknown>;
+    source_action_event_ids: string[];
+    complete: false;
+    reason: string;
+  } | null;
+  canonical_reconstruction_error: string | null;
   derived_action_candidates: Array<{
     event_id: string;
     hand_epoch: number;
