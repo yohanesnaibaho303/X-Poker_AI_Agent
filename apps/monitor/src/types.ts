@@ -169,6 +169,13 @@ export interface LiveCaptureDiagnostic {
     accepted: false;
     reason: string;
   }>;
+  dealer: {
+    seat: number | null;
+    confidence: number;
+    box: { left: number; top: number; right: number; bottom: number } | null;
+    accepted: false;
+    reason: string;
+  };
   regions: Record<string, [number, number, number, number]>;
   seat_observations: Array<{
     seat: number;
@@ -243,6 +250,14 @@ export interface LiveObservationStatus {
   recognized_board_cards: string[];
   board_cards_accepted: boolean;
   board_cards_reason: string;
+  dealer_consensus: {
+    accepted: boolean;
+    value: string | null;
+    confidence: number;
+    stable_frames: number;
+    alternatives: string[];
+    reason: string | null;
+  };
   pot_consensus: {
     accepted: boolean;
     value: string | null;

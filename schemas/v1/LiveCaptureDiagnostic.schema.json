@@ -53,6 +53,92 @@
       "title": "CardFaceObservation",
       "type": "object"
     },
+    "DealerButtonObservation": {
+      "additionalProperties": false,
+      "properties": {
+        "seat": {
+          "anyOf": [
+            {
+              "maximum": 8,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Seat"
+        },
+        "confidence": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "box": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PixelBox"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "accepted": {
+          "const": false,
+          "default": false,
+          "title": "Accepted",
+          "type": "boolean"
+        },
+        "reason": {
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "confidence",
+        "reason"
+      ],
+      "title": "DealerButtonObservation",
+      "type": "object"
+    },
+    "PixelBox": {
+      "additionalProperties": false,
+      "description": "Top-down, half-open pixel coordinates.",
+      "properties": {
+        "left": {
+          "minimum": 0,
+          "title": "Left",
+          "type": "integer"
+        },
+        "top": {
+          "minimum": 0,
+          "title": "Top",
+          "type": "integer"
+        },
+        "right": {
+          "minimum": 1,
+          "title": "Right",
+          "type": "integer"
+        },
+        "bottom": {
+          "minimum": 1,
+          "title": "Bottom",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "left",
+        "top",
+        "right",
+        "bottom"
+      ],
+      "title": "PixelBox",
+      "type": "object"
+    },
     "PotObservation": {
       "additionalProperties": false,
       "properties": {
@@ -542,6 +628,9 @@
       "title": "Board Cards",
       "type": "array"
     },
+    "dealer": {
+      "$ref": "#/$defs/DealerButtonObservation"
+    },
     "regions": {
       "additionalProperties": {
         "maxItems": 4,
@@ -615,6 +704,7 @@
     "board_card_slots",
     "board_geometry_supported",
     "board_geometry_confidence",
+    "dealer",
     "regions"
   ],
   "title": "LiveCaptureDiagnostic",

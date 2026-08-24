@@ -87,6 +87,8 @@ class LiveObservationService:
         self._recognized_board_cards: list[str] = []
         self._board_cards_accepted = False
         self._board_cards_reason = "no_postflop_board"
+        self._dealer_samples: deque[TemporalSample] = deque(maxlen=maximum_samples)
+        self._dealer_consensus = self._empty_consensus("no_samples")
         self._stack_consensus = [
             SeatStackConsensus(
                 seat=seat,
@@ -153,6 +155,8 @@ class LiveObservationService:
         self._recognized_board_cards = []
         self._board_cards_accepted = False
         self._board_cards_reason = "no_postflop_board"
+        self._dealer_samples.clear()
+        self._dealer_consensus = self._empty_consensus("no_samples")
         self._stack_consensus = [
             SeatStackConsensus(
                 seat=seat,
@@ -297,6 +301,19 @@ class LiveObservationService:
                 self._last_accepted_board_count = board_count
 
         self._record_board_cards(diagnostic)
+        if diagnostic.dealer.seat is None:
+            self._dealer_samples.clear()
+            self._dealer_consensus = self._empty_consensus("current_dealer_ambiguous")
+        else:
+            self._dealer_consensus = self._append_consecutive(
+                self._dealer_samples,
+                TemporalSample(
+                    frame_sequence=diagnostic.frame_sequence,
+                    content_sha256=diagnostic.content_sha256,
+                    value=str(diagnostic.dealer.seat),
+                    confidence=diagnostic.dealer.confidence,
+                ),
+            )
 
         if diagnostic.pot.value_native is None:
             self._pot_samples.clear()
@@ -493,6 +510,7 @@ class LiveObservationService:
             recognized_board_cards=self._recognized_board_cards,
             board_cards_accepted=self._board_cards_accepted,
             board_cards_reason=self._board_cards_reason,
+            dealer_consensus=self._dealer_consensus,
             pot_consensus=self._pot_consensus,
             seat_stack_consensus=self._stack_consensus,
             seat_action_consensus=self._action_consensus,

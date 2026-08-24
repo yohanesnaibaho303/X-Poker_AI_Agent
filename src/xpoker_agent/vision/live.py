@@ -12,6 +12,7 @@ from xpoker_agent.capture.recording import capture_authorized_frame
 from xpoker_agent.vision.actions import action_badge_region, parse_action_badge
 from xpoker_agent.vision.card_faces import recognize_card_face
 from xpoker_agent.vision.cards import classify_board_geometry, detect_card_slots
+from xpoker_agent.vision.dealer import detect_dealer_button
 from xpoker_agent.vision.models import (
     LiveCaptureDiagnostic,
     SeatOccupancyObservation,
@@ -131,6 +132,7 @@ def build_live_capture_diagnostic(
         board_geometry_confidence=board_geometry.confidence,
         board_geometry_reasons=board_geometry.reasons,
         board_cards=board_cards,
+        dealer=detect_dealer_button(frame, layout),
         regions=visible_regions,
         seat_observations=seat_observations,
         seat_panels=seat_panels,

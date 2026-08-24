@@ -109,7 +109,13 @@
 - Added three-frame per-slot card consensus and physical-card uniqueness. One subsequent unlabeled
   live flop reached stable `Jc Kc Td`; a chat overlay prevented visual labeling, so it is not counted
   as accuracy evidence.
-- Current full suite: Ruff passed; 250 Pytest/Hypothesis tests, 11 TypeScript tests, and the
+- Added deterministic dealer-button component detection and nearest-seat mapping for the portrait
+  layout. It matched the visually labeled dealer seat on five saved authorized frames spanning
+  seats 0, 2, 4, 5, and 6, then reached five-frame live consensus on seat 4.
+- Dealer observations remain candidates until three distinct frames agree; missing or multiple
+  marker-shaped components clear consensus. Position assignment is still withheld from canonical
+  state until the hand-boundary gate agrees.
+- Current full suite: Ruff passed; 252 Pytest/Hypothesis tests, 11 TypeScript tests, and the
   production dashboard build passed. Table control remains disabled.
 
 ## Completed project checkpoints
@@ -137,6 +143,8 @@
   only pot/stack/order-consistent sequences to the existing deterministic hand-state reducer.
 - Expand held-out board-card replay coverage across every rank/suit and lighting/result-overlay
   state; keep low-margin cards unknown until the ≥99.9% card gate is measured and passed.
+- Combine dealer consensus with stable occupied/Break states to derive provisional 6-max/9-max
+  positions, then validate clockwise action order before creating canonical events.
 - Continue gradual 3-to-9-player live captures to validate every occupied seat panel, player state,
   stack/bet crop, dealer marker, and clockwise action transition.
 - Add opponent-range, poker-math, exact/abstracted strategy, exploit-frequency, provenance, and

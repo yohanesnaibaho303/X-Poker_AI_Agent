@@ -349,6 +349,9 @@
       "title": "Board Cards Reason",
       "type": "string"
     },
+    "dealer_consensus": {
+      "$ref": "#/$defs/TemporalConsensus"
+    },
     "pot_consensus": {
       "$ref": "#/$defs/TemporalConsensus"
     },
@@ -412,6 +415,7 @@
     "mode_consensus",
     "board_consensus",
     "board_cards_reason",
+    "dealer_consensus",
     "pot_consensus",
     "hand_epoch"
   ],

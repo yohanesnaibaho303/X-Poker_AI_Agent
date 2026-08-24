@@ -84,6 +84,14 @@ class CardFaceObservation(StrictModel):
         return self
 
 
+class DealerButtonObservation(StrictModel):
+    seat: int | None = Field(default=None, ge=0, le=8)
+    confidence: float = Field(ge=0.0, le=1.0)
+    box: PixelBox | None = None
+    accepted: Literal[False] = False
+    reason: str
+
+
 class TemporalSample(StrictModel):
     frame_sequence: int = Field(ge=0)
     content_sha256: str = Field(min_length=64, max_length=64)
@@ -224,6 +232,7 @@ class LiveCaptureDiagnostic(StrictModel):
     board_geometry_confidence: float = Field(ge=0.0, le=1.0)
     board_geometry_reasons: list[str] = Field(default_factory=list)
     board_cards: list[CardFaceObservation] = Field(default_factory=list)
+    dealer: DealerButtonObservation
     regions: dict[str, tuple[float, float, float, float]]
     seat_observations: list[SeatOccupancyObservation] = Field(default_factory=list)
     seat_panels: list[SeatPanelObservation] = Field(default_factory=list)
@@ -259,6 +268,7 @@ class LiveObservationStatus(StrictModel):
     recognized_board_cards: list[str] = Field(default_factory=list)
     board_cards_accepted: bool = False
     board_cards_reason: str
+    dealer_consensus: TemporalConsensus
     pot_consensus: TemporalConsensus
     seat_stack_consensus: list[SeatStackConsensus] = Field(default_factory=list)
     seat_action_consensus: list[SeatActionConsensus] = Field(default_factory=list)

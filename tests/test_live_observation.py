@@ -5,6 +5,7 @@ from xpoker_agent.capture.frames import CapturedFrame
 from xpoker_agent.vision.live_observation import LiveObservationService
 from xpoker_agent.vision.models import (
     CardFaceObservation,
+    DealerButtonObservation,
     LiveCaptureDiagnostic,
     PotObservation,
     SeatActionObservation,
@@ -53,6 +54,11 @@ def _diagnostic(
         board_geometry_supported=True,
         board_geometry_confidence=0.99,
         regions={},
+        dealer=DealerButtonObservation(
+            seat=4,
+            confidence=0.95,
+            reason="test candidate",
+        ),
         seat_panels=[
             SeatPanelObservation(
                 seat=0,

@@ -737,6 +737,11 @@ three-frame slot consensus, and physical-card uniqueness all fail closed indepen
 calibration path cannot satisfy the card-accuracy exit gate until a larger held-out labeled replay
 set passes it.
 
+Dealer-button detection now uses the calibrated X-Poker white-marker component geometry and maps a
+single candidate to the nearest versioned seat anchor. Three distinct frames are required before a
+dealer seat is exposed. The detector fails closed when the marker is absent or non-unique; position
+assignment still waits for a validated hand boundary and active-seat set.
+
 ### Milestone 9 — Authorized control
 
 - Add action-target mapping and calibration.
