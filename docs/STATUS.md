@@ -31,11 +31,14 @@
   prior folds, confidence 0.55, and warnings that the charts are approximate/not solver-derived.
 - Added a hard `reference_prior` versus `gto_solution` artifact-role boundary so the bootstrap
   ranges cannot be presented as exact GTO.
+- Added the Milestone 6 preflop strategy resolver: exact/nearest GTO matches require a
+  `gto_solution` artifact; absent GTO returns `unavailable` while any reference prior is exposed in
+  a separate field. Stack abstraction reports distance and reduces confidence deterministically.
 - Added user-selectable 6-max/9-max session setup and BB/native-chip display modes. Exact native
   values format as grouped numbers, K, or M by threshold and remain unnormalized until a blind exists.
 - Audited public solver candidates; current configuration-matched GTO artifacts remain unavailable.
   Approximate reference priors are never promoted to GTO. Control remains disabled.
-- Current full suite: Ruff passed; 187 Pytest/Hypothesis tests passed.
+- Current full suite: Ruff passed; 193 Pytest/Hypothesis tests passed.
 
 ## Completed project checkpoints
 

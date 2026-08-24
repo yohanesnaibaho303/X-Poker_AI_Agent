@@ -24,6 +24,7 @@ from xpoker_agent.models import (
 )
 from xpoker_agent.ranges.library import RangeArtifact
 from xpoker_agent.ranges.matrix import RangeMatrix
+from xpoker_agent.strategy.resolver import StrategyResolution
 
 MODELS = [
     GameConfig,
@@ -41,6 +42,7 @@ MODELS = [
     RangeArtifact,
     RangeMatrix,
     StrategyMatch,
+    StrategyResolution,
     DecisionEnvelope,
     ActionAttempt,
 ]

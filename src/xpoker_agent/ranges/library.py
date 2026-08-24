@@ -115,6 +115,8 @@ class RangeArtifact(StrictModel):
             raise ValueError(
                 f"artifact uses unsupported stack bucket: {self.spot.stack_depth_bb} BB"
             )
+        if self.strategy_role == "gto_solution" and self.fact_class != "solver_derived":
+            raise ValueError("GTO solution artifacts must be solver-derived")
         return self
 
     @field_validator("combos")

@@ -94,12 +94,12 @@ Exit: range lookup is deterministic, poker-math tests pass completely, and posit
 
 ## Milestone 6 — GTO strategy integration
 
-- [ ] Define strategy artifact import and validation format.
+- [x] Define provenance-bearing preflop strategy artifact import and validation format.
 - [ ] Integrate licensed/generated/authorized solution sources.
 - [ ] Implement full spot keys and exact-node lookup.
-- [ ] Implement nearest compatible abstraction and mismatch metrics.
+- [x] Implement preflop exact/nearest-stack resolution and quantitative mismatch metrics.
 - [ ] Expose combo actions, frequencies, EV, equity, and EV loss.
-- [ ] Add source, assumptions, configuration, and confidence to every result.
+- [x] Add source, assumptions, configuration, role, and confidence to every preflop result.
 - [ ] Build reference-comparison and replay regression suites.
 
 Exit: replayed spots return deterministic, source-backed results and never present approximations as exact GTO.

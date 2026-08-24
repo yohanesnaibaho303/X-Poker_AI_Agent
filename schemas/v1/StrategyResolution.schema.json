@@ -1,0 +1,254 @@
+{
+  "$defs": {
+    "ComboStrategy": {
+      "additionalProperties": false,
+      "properties": {
+        "weight": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Weight",
+          "type": "number"
+        },
+        "actions": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "title": "Actions",
+          "type": "object"
+        },
+        "equity": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Equity"
+        },
+        "ev_bb": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "title": "Ev Bb",
+          "type": "object"
+        }
+      },
+      "required": [
+        "weight"
+      ],
+      "title": "ComboStrategy",
+      "type": "object"
+    },
+    "StrategyMatch": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "1.0",
+          "default": "1.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "match_id": {
+          "format": "uuid",
+          "title": "Match Id",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "exact",
+            "abstracted",
+            "unavailable"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "requested_spot": {
+          "additionalProperties": true,
+          "title": "Requested Spot",
+          "type": "object"
+        },
+        "matched_spot": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Matched Spot"
+        },
+        "distance": {
+          "additionalProperties": true,
+          "title": "Distance",
+          "type": "object"
+        },
+        "source_artifact_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Artifact Id"
+        },
+        "confidence": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "assumptions": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Assumptions",
+          "type": "array"
+        }
+      },
+      "required": [
+        "status",
+        "requested_spot",
+        "confidence"
+      ],
+      "title": "StrategyMatch",
+      "type": "object"
+    },
+    "Street": {
+      "enum": [
+        "none",
+        "preflop",
+        "flop",
+        "turn",
+        "river",
+        "showdown"
+      ],
+      "title": "Street",
+      "type": "string"
+    },
+    "WeightedRange": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "1.0",
+          "default": "1.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "range_id": {
+          "format": "uuid",
+          "title": "Range Id",
+          "type": "string"
+        },
+        "player_ref": {
+          "title": "Player Ref",
+          "type": "string"
+        },
+        "hand_id": {
+          "format": "uuid",
+          "title": "Hand Id",
+          "type": "string"
+        },
+        "street": {
+          "$ref": "#/$defs/Street"
+        },
+        "spot_key": {
+          "title": "Spot Key",
+          "type": "string"
+        },
+        "combos": {
+          "additionalProperties": {
+            "$ref": "#/$defs/ComboStrategy"
+          },
+          "title": "Combos",
+          "type": "object"
+        },
+        "blocked_cards": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Blocked Cards",
+          "type": "array"
+        },
+        "source": {
+          "additionalProperties": true,
+          "title": "Source",
+          "type": "object"
+        },
+        "assumptions": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Assumptions",
+          "type": "array"
+        },
+        "confidence": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "version": {
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "player_ref",
+        "hand_id",
+        "street",
+        "spot_key",
+        "combos",
+        "source",
+        "confidence",
+        "version"
+      ],
+      "title": "WeightedRange",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "match": {
+      "$ref": "#/$defs/StrategyMatch"
+    },
+    "strategy": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/WeightedRange"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "reference_prior": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/WeightedRange"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    }
+  },
+  "required": [
+    "match"
+  ],
+  "title": "StrategyResolution",
+  "type": "object"
+}
