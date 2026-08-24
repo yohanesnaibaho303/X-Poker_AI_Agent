@@ -758,6 +758,13 @@ and fold/check are explicitly amount-free. Live play produced six such provision
 three hand epochs with zero capture failures; legal order and pot accounting still block canonical
 event promotion.
 
+Every derived action also snapshots the accepted dealer and active-seat context. A deterministic
+validator checks a gap-free clockwise prefix from the first legal preflop or postflop seat, removing
+folded and all-in seats from the remaining ring. Unobserved intervening actions remain pending and a
+context change within one street is inconsistent; neither case is repaired by inference. Badge-clear
+rearming uses a bounded per-hand occurrence ordinal, so the same seat may legally produce the same
+action type more than once on one street without duplicate event IDs.
+
 ### Milestone 9 — Authorized control
 
 - Add action-target mapping and calibration.

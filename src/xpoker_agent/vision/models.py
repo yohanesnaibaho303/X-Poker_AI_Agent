@@ -197,6 +197,9 @@ class DerivedActionCandidate(StrictModel):
     street: Literal["preflop", "flop", "turn", "river"]
     action: Literal["fold", "check", "call", "bet", "raise", "all_in"]
     confidence: float = Field(ge=0.0, le=1.0)
+    occurrence: int = Field(default=1, ge=1)
+    dealer_seat: int | None = Field(default=None, ge=0, le=8)
+    active_seats: list[int] = Field(default_factory=list)
     canonical_event_accepted: Literal[False] = False
     reason: str = "temporal badge candidate; amount/order validation pending"
 
@@ -221,6 +224,19 @@ class ActionAmountReconciliation(StrictModel):
     action: Literal["fold", "check", "call", "bet", "raise", "all_in"]
     amount_native: Decimal | None = Field(default=None, ge=0)
     status: Literal["not_required", "matched", "pending", "ambiguous"]
+    canonical_event_accepted: Literal[False] = False
+    reason: str
+
+
+class ActionOrderValidation(StrictModel):
+    hand_epoch: int = Field(ge=0)
+    street: Literal["preflop", "flop", "turn", "river"]
+    action_event_ids: list[str] = Field(default_factory=list)
+    observed_seats: list[int] = Field(default_factory=list)
+    expected_start_seat: int | None = Field(default=None, ge=0, le=8)
+    expected_next_seat: int | None = Field(default=None, ge=0, le=8)
+    status: Literal["prefix_consistent", "pending", "inconsistent"]
+    issues: list[str] = Field(default_factory=list)
     canonical_event_accepted: Literal[False] = False
     reason: str
 
@@ -311,5 +327,6 @@ class LiveObservationStatus(StrictModel):
     action_amount_reconciliations: list[ActionAmountReconciliation] = Field(
         default_factory=list
     )
+    action_order_validations: list[ActionOrderValidation] = Field(default_factory=list)
     last_error: str | None = None
     controller_enabled: Literal[False] = False

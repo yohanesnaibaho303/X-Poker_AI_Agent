@@ -312,6 +312,9 @@ export interface LiveObservationStatus {
     street: "preflop" | "flop" | "turn" | "river";
     action: "fold" | "check" | "call" | "bet" | "raise" | "all_in";
     confidence: number;
+    occurrence: number;
+    dealer_seat: number | null;
+    active_seats: number[];
     canonical_event_accepted: false;
     reason: string;
   }>;
@@ -334,6 +337,18 @@ export interface LiveObservationStatus {
     action: "fold" | "check" | "call" | "bet" | "raise" | "all_in";
     amount_native: string | null;
     status: "not_required" | "matched" | "pending" | "ambiguous";
+    canonical_event_accepted: false;
+    reason: string;
+  }>;
+  action_order_validations: Array<{
+    hand_epoch: number;
+    street: "preflop" | "flop" | "turn" | "river";
+    action_event_ids: string[];
+    observed_seats: number[];
+    expected_start_seat: number | null;
+    expected_next_seat: number | null;
+    status: "prefix_consistent" | "pending" | "inconsistent";
+    issues: string[];
     canonical_event_accepted: false;
     reason: string;
   }>;

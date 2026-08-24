@@ -12,6 +12,7 @@ from decimal import Decimal
 from typing import Literal
 
 from xpoker_agent.capture.frames import CapturedFrame
+from xpoker_agent.vision.action_order import validate_action_order
 from xpoker_agent.vision.live import diagnose_authorized_table
 from xpoker_agent.vision.models import (
     ActionAmountReconciliation,
@@ -118,7 +119,7 @@ class LiveObservationService:
         self._hand_epoch = 0
         self._last_accepted_board_count: int | None = None
         self._action_armed_seats: set[int] = set()
-        self._emitted_action_keys: set[tuple[int, str, int, str]] = set()
+        self._action_occurrence_counts: dict[tuple[int, str, int, str], int] = {}
         self._derived_actions: deque[DerivedActionCandidate] = deque(maxlen=50)
         self._last_accepted_stacks: dict[int, Decimal] = {}
         self._stack_deltas: deque[StackDeltaCandidate] = deque(maxlen=50)
@@ -194,7 +195,7 @@ class LiveObservationService:
         self._hand_epoch = 0
         self._last_accepted_board_count = None
         self._action_armed_seats.clear()
-        self._emitted_action_keys.clear()
+        self._action_occurrence_counts.clear()
         self._derived_actions.clear()
         self._last_accepted_stacks.clear()
         self._stack_deltas.clear()
@@ -320,6 +321,7 @@ class LiveObservationService:
                 ):
                     self._hand_epoch += 1
                     self._action_armed_seats.clear()
+                    self._action_occurrence_counts.clear()
                 self._last_accepted_board_count = board_count
 
         self._record_board_cards(diagnostic)
@@ -448,12 +450,16 @@ class LiveObservationService:
                         continue
                     if action.seat not in self._action_armed_seats:
                         continue
-                    key = (self._hand_epoch, street, action.seat, result.value)
-                    if key in self._emitted_action_keys:
-                        continue
+                    occurrence_key = (
+                        self._hand_epoch,
+                        street,
+                        action.seat,
+                        result.value,
+                    )
+                    occurrence = self._action_occurrence_counts.get(occurrence_key, 0) + 1
                     encoded = (
                         f"{diagnostic.target_fingerprint}:{self._hand_epoch}:"
-                        f"{street}:{action.seat}:{result.value}"
+                        f"{street}:{action.seat}:{result.value}:{occurrence}"
                     ).encode()
                     self._derived_actions.append(
                         DerivedActionCandidate(
@@ -464,9 +470,17 @@ class LiveObservationService:
                             street=street,
                             action=result.value,
                             confidence=result.confidence,
+                            occurrence=occurrence,
+                            dealer_seat=(
+                                int(self._dealer_consensus.value)
+                                if self._dealer_consensus.accepted
+                                and self._dealer_consensus.value is not None
+                                else None
+                            ),
+                            active_seats=list(self._active_seats),
                         )
                     )
-                    self._emitted_action_keys.add(key)
+                    self._action_occurrence_counts[occurrence_key] = occurrence
                     self._action_armed_seats.discard(action.seat)
 
     def _record_board_cards(self, diagnostic: LiveCaptureDiagnostic) -> None:
@@ -641,6 +655,9 @@ class LiveObservationService:
             derived_action_candidates=list(self._derived_actions),
             stack_delta_candidates=list(self._stack_deltas),
             action_amount_reconciliations=self._reconcile_action_amounts(),
+            action_order_validations=validate_action_order(
+                list(self._derived_actions), table_size=self._table_size
+            ),
             last_error=self._last_error,
         )
 

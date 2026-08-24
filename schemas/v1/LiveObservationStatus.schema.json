@@ -88,6 +88,102 @@
       "title": "ActionAmountReconciliation",
       "type": "object"
     },
+    "ActionOrderValidation": {
+      "additionalProperties": false,
+      "properties": {
+        "hand_epoch": {
+          "minimum": 0,
+          "title": "Hand Epoch",
+          "type": "integer"
+        },
+        "street": {
+          "enum": [
+            "preflop",
+            "flop",
+            "turn",
+            "river"
+          ],
+          "title": "Street",
+          "type": "string"
+        },
+        "action_event_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Action Event Ids",
+          "type": "array"
+        },
+        "observed_seats": {
+          "items": {
+            "type": "integer"
+          },
+          "title": "Observed Seats",
+          "type": "array"
+        },
+        "expected_start_seat": {
+          "anyOf": [
+            {
+              "maximum": 8,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expected Start Seat"
+        },
+        "expected_next_seat": {
+          "anyOf": [
+            {
+              "maximum": 8,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expected Next Seat"
+        },
+        "status": {
+          "enum": [
+            "prefix_consistent",
+            "pending",
+            "inconsistent"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "issues": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Issues",
+          "type": "array"
+        },
+        "canonical_event_accepted": {
+          "const": false,
+          "default": false,
+          "title": "Canonical Event Accepted",
+          "type": "boolean"
+        },
+        "reason": {
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "hand_epoch",
+        "street",
+        "status",
+        "reason"
+      ],
+      "title": "ActionOrderValidation",
+      "type": "object"
+    },
     "DerivedActionCandidate": {
       "additionalProperties": false,
       "properties": {
@@ -140,6 +236,33 @@
           "minimum": 0.0,
           "title": "Confidence",
           "type": "number"
+        },
+        "occurrence": {
+          "default": 1,
+          "minimum": 1,
+          "title": "Occurrence",
+          "type": "integer"
+        },
+        "dealer_seat": {
+          "anyOf": [
+            {
+              "maximum": 8,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Dealer Seat"
+        },
+        "active_seats": {
+          "items": {
+            "type": "integer"
+          },
+          "title": "Active Seats",
+          "type": "array"
         },
         "canonical_event_accepted": {
           "const": false,
@@ -638,6 +761,13 @@
         "$ref": "#/$defs/ActionAmountReconciliation"
       },
       "title": "Action Amount Reconciliations",
+      "type": "array"
+    },
+    "action_order_validations": {
+      "items": {
+        "$ref": "#/$defs/ActionOrderValidation"
+      },
+      "title": "Action Order Validations",
       "type": "array"
     },
     "last_error": {

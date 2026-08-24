@@ -167,6 +167,33 @@ def test_action_candidate_is_derived_once_after_clear_and_stable_badge() -> None
     asyncio.run(scenario())
 
 
+def test_cleared_badge_can_emit_a_second_same_action_occurrence() -> None:
+    async def scenario() -> None:
+        async def capture(_: int, sequence: int):
+            diagnostic = _diagnostic(sequence)
+            if sequence in {4, 5, 6, 8, 9, 10}:
+                diagnostic.seat_actions = [
+                    SeatActionObservation(
+                        seat=3,
+                        action="call",
+                        confidence=0.9,
+                        reason="test candidate",
+                    )
+                ]
+            return diagnostic, CapturedFrame(1, 1, b"\x00" * 4)
+
+        service = LiveObservationService(capture)
+        for _ in range(10):
+            await service.inspect_once(table_size=9)
+        candidates = service.status().derived_action_candidates
+
+        assert len(candidates) == 2
+        assert [candidate.occurrence for candidate in candidates] == [1, 2]
+        assert candidates[0].event_id != candidates[1].event_id
+
+    asyncio.run(scenario())
+
+
 def test_action_amount_reconciliation_requires_a_mutually_unique_delta() -> None:
     async def capture(_: int, sequence: int):
         return _diagnostic(sequence), CapturedFrame(1, 1, b"\x00" * 4)

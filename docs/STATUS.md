@@ -136,8 +136,15 @@
   epochs with zero failures and produced six mutually unique provisional matches: Call 2 and 4,
   plus Bet 4, 3, 6, and 2 native units. None are canonical events yet because legal order and pot
   accounting remain outstanding gates.
-- Current full suite: Ruff passed; 256 Pytest/Hypothesis tests, 11 TypeScript tests, and the
+- Current full suite: Ruff passed; 260 Pytest/Hypothesis tests, 11 TypeScript tests, and the
   production dashboard build passed. Table control remains disabled.
+- Added deterministic provisional clockwise-order validation. Each visual action now carries the
+  stable dealer and active-seat context present when it was emitted. Preflop starts after the BB;
+  postflop starts left of the dealer; folds and all-ins leave the actionable ring. Missing
+  intervening actions stay pending, context changes are inconsistent, and no action is inferred.
+- Replaced the prior one-action-per-seat/type key with a bounded per-hand occurrence ordinal. A
+  badge must still clear and regain three-frame consensus, but valid repeated calls or raises by
+  the same seat on one street now receive distinct deterministic event IDs.
 
 ## Completed project checkpoints
 
