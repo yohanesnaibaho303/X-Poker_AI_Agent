@@ -209,6 +209,19 @@
       "default": null,
       "title": "Winner Seat"
     },
+    "pot_index": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Pot Index"
+    },
     "input_observations": {
       "items": {
         "format": "uuid",

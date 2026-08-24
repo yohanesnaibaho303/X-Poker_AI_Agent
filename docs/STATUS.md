@@ -18,9 +18,15 @@
   street advancement.
 - Added full-state chip conservation and physical-card uniqueness across every observed seat and
   board.
+- Added contribution-capped main/side-pot layers, eligibility validation, side-pot-specific awards,
+  and repeated split awards with exact conservation.
+- Added explicit raise locks after short all-ins so previously acted players may respond but cannot
+  illegally re-raise when action was not reopened.
+- Event batches are atomic; invalid replay stops at the last valid state with a reason and failed
+  payload hash. Canonical JSON hand histories are byte-deterministic.
 - M3 remains fail closed: no recognition output can enter this reducer until its confidence and
   validation boundary passes. Raw live frames remain ignored and control remains disabled.
-- Current full suite: Ruff passed; 93 Pytest/Hypothesis tests passed.
+- Current full suite: Ruff passed; 100 Pytest/Hypothesis tests passed.
 
 ## Completed project checkpoints
 
@@ -30,9 +36,8 @@
 
 ## Next
 
-- Implement deterministic side-pot construction, eligibility, split awards, and accounting.
-- Handle cumulative short-raise reopening and heads-up blind/action-order exceptions.
-- Add hand-boundary/dealer movement validation, ambiguity quarantine, and canonical hand-history
+- Handle cumulative short-raise reopening, odd chips, and heads-up blind/action-order exceptions.
+- Add hand-boundary/dealer movement validation, persisted evidence bundles, and readable hand-history
   export.
 - Continue the M3 held-out recognition work in parallel; M4 live evaluation remains blocked on it.
 

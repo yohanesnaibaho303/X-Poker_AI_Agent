@@ -121,6 +121,7 @@ def simulated_events() -> list[HandEvent]:
             EventCategory.SETTLEMENT,
             "pot_awarded",
             winner_seat=6,
+            pot_index=0,
             street=Street.FLOP,
             amount=EventAmount(added_bb=Decimal("7")),
         ),

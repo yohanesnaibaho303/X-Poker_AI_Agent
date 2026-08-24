@@ -76,6 +76,13 @@ class AppendOnlyEventStore:
         return hashlib.sha256(f"{previous_hash}:{payload}".encode()).hexdigest()
 
     def append(self, event: HandEvent) -> str:
+        try:
+            with self._connection:
+                return self._append_without_commit(event)
+        except sqlite3.IntegrityError as error:
+            raise EventStoreError(f"event append rejected: {error}") from error
+
+    def _append_without_commit(self, event: HandEvent) -> str:
         row = self._connection.execute(
             "SELECT sequence, event_hash FROM hand_events WHERE hand_id = ? "
             "ORDER BY sequence DESC LIMIT 1",
@@ -89,29 +96,34 @@ class AppendOnlyEventStore:
         previous_hash = _GENESIS_HASH if row is None else str(row["event_hash"])
         payload = self._canonical_payload(event)
         event_hash = self._event_hash(previous_hash, payload)
-        try:
-            with self._connection:
-                self._connection.execute(
-                    "INSERT INTO hand_events "
-                    "(hand_id, sequence, event_id, payload_json, previous_hash, event_hash) "
-                    "VALUES (?, ?, ?, ?, ?, ?)",
-                    (
-                        str(event.hand_id),
-                        event.sequence,
-                        str(event.event_id),
-                        payload,
-                        previous_hash,
-                        event_hash,
-                    ),
-                )
-        except sqlite3.IntegrityError as error:
-            raise EventStoreError(f"event append rejected: {error}") from error
+        self._connection.execute(
+            "INSERT INTO hand_events "
+            "(hand_id, sequence, event_id, payload_json, previous_hash, event_hash) "
+            "VALUES (?, ?, ?, ?, ?, ?)",
+            (
+                str(event.hand_id),
+                event.sequence,
+                str(event.event_id),
+                payload,
+                previous_hash,
+                event_hash,
+            ),
+        )
         return event_hash
 
     def append_many(self, events: Iterable[HandEvent]) -> list[str]:
         hashes: list[str] = []
-        for event in events:
-            hashes.append(self.append(event))
+        try:
+            self._connection.execute("BEGIN IMMEDIATE")
+            for event in events:
+                hashes.append(self._append_without_commit(event))
+            self._connection.commit()
+        except EventStoreError:
+            self._connection.rollback()
+            raise
+        except sqlite3.IntegrityError as error:
+            self._connection.rollback()
+            raise EventStoreError(f"event batch append rejected: {error}") from error
         return hashes
 
     def load_hand(self, hand_id: UUID) -> list[HandEvent]:

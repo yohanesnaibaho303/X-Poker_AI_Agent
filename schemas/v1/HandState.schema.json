@@ -29,6 +29,76 @@
       "title": "Position",
       "type": "string"
     },
+    "PotLayer": {
+      "additionalProperties": false,
+      "properties": {
+        "pot_index": {
+          "minimum": 0,
+          "title": "Pot Index",
+          "type": "integer"
+        },
+        "amount_bb": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "title": "Amount Bb"
+        },
+        "remaining_bb": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "title": "Remaining Bb"
+        },
+        "cap_per_player_bb": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "title": "Cap Per Player Bb"
+        },
+        "contributing_seats": {
+          "items": {
+            "type": "integer"
+          },
+          "title": "Contributing Seats",
+          "type": "array"
+        },
+        "eligible_seats": {
+          "items": {
+            "type": "integer"
+          },
+          "title": "Eligible Seats",
+          "type": "array"
+        }
+      },
+      "required": [
+        "pot_index",
+        "amount_bb",
+        "remaining_bb",
+        "cap_per_player_bb",
+        "contributing_seats",
+        "eligible_seats"
+      ],
+      "title": "PotLayer",
+      "type": "object"
+    },
     "SeatState": {
       "additionalProperties": false,
       "properties": {
@@ -260,6 +330,13 @@
       "default": "0",
       "title": "Pot Main Bb"
     },
+    "pot_layers": {
+      "items": {
+        "$ref": "#/$defs/PotLayer"
+      },
+      "title": "Pot Layers",
+      "type": "array"
+    },
     "current_bet_bb": {
       "anyOf": [
         {
@@ -319,6 +396,13 @@
         "type": "integer"
       },
       "title": "Acted Seats",
+      "type": "array"
+    },
+    "raise_locked_seats": {
+      "items": {
+        "type": "integer"
+      },
+      "title": "Raise Locked Seats",
       "type": "array"
     },
     "initial_total_chips_bb": {

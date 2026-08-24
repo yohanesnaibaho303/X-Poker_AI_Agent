@@ -20,12 +20,21 @@ from deterministic fixtures, not raw live OCR output.
 - Short all-in raises are represented without lowering the full-raise increment.
 - The reducer tracks the next actionable seat, rejects out-of-turn actions, and prevents street
   advancement before the betting round closes.
+- Main and side pots are constructed at all-in contribution caps with explicit contributors,
+  eligible seats, original amounts, and remaining amounts.
+- Pot awards name a pot layer; ineligible winners and over-awards are rejected. Repeated awards can
+  represent split pots while preserving exact chip conservation.
+- A short all-in can increase the call target without lowering the minimum full-raise increment;
+  players who already acted are explicitly raise-locked until action is legitimately reopened.
 - Known physical cards are unique across every observed seat and board.
 - Player stacks plus reconstructed pot must equal the initial table-chip total after every event.
+- Multi-event database appends are atomic. Invalid replay stops at the last valid revision and emits
+  a compact quarantine record containing the failure reason and failed-event payload hash.
+- Canonical JSON hand-history export is byte-deterministic for identical inputs.
 
 ## Verification
 
-- Full project suite: 93 Pytest/Hypothesis tests.
+- Full project suite: 100 Pytest/Hypothesis tests.
 - Deterministic simulated hand: 14 canonical events, 15 states, exact replay equivalence.
 - Event-store tests cover round-trip, hash-chain verification, non-contiguous sequence rejection,
   and database mutation rejection.
@@ -33,9 +42,8 @@ from deterministic fixtures, not raw live OCR output.
 
 ## Not yet complete
 
-- Side-pot eligibility, construction, split awards, and odd-chip rules.
-- Cumulative short-raise reopening rules and all heads-up blind/order exceptions.
+- Odd-chip assignment rules and cumulative short-raise reopening rules.
+- Heads-up blind/order exceptions.
 - Hand-boundary detection and dealer/blind movement across distinct hands.
-- Observation-to-event inference, ambiguity quarantine, evidence bundles, and canonical text export.
+- Observation-to-event inference, persisted evidence bundles, and human-readable text export.
 - Recorded complete-hand evaluation and the 98% exact reconstruction gate.
-

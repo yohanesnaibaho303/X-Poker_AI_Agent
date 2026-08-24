@@ -69,12 +69,12 @@ Exit: supported-layout recognition meets the per-component targets in `docs/QUAL
 - [x] Implement separate table lifecycle, street, seat-participation, and betting-action models.
 - [x] Implement categorized reconstruction events and an append-only event store.
 - [x] Implement the NLH state reducer and street/action ordering.
-- [ ] Validate unique cards, blinds, calls, raises, all-ins, and side pots.
-- [ ] Reconcile stack, bet, pot, and award accounting.
+- [x] Validate unique cards, blinds, calls, raises, all-ins, and side pots.
+- [x] Reconcile stack, bet, pot, and award accounting.
 - [ ] Handle heads-up and multiway play within the nine-seat layout.
 - [ ] Detect hand boundaries and dealer/blind movement.
-- [ ] Quarantine ambiguous or impossible hands with evidence.
-- [ ] Export canonical hand histories and build replay inspection.
+- [x] Quarantine ambiguous or impossible hands with evidence.
+- [x] Export canonical hand histories and build replay inspection.
 
 Exit: at least 98% of supported recorded hands reconstruct correctly, with unsupported states always stopping or falling back.
 

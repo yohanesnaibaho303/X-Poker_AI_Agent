@@ -256,6 +256,7 @@ class HandEvent(StrictModel):
     cards: list[str] = Field(default_factory=list)
     dealer_seat: int | None = Field(default=None, ge=0, le=8)
     winner_seat: int | None = Field(default=None, ge=0, le=8)
+    pot_index: int | None = Field(default=None, ge=0)
     input_observations: list[UUID] = Field(default_factory=list)
     confidence: Confidence
     assumptions: list[str] = Field(default_factory=list)
@@ -282,8 +283,12 @@ class HandEvent(StrictModel):
             raise ValueError(f"{self.type} requires cards")
         if self.type == "hole_cards_observed" and self.actor_seat is None:
             raise ValueError("hole_cards_observed requires actor_seat")
-        if self.type == "pot_awarded" and (self.winner_seat is None or self.amount is None):
-            raise ValueError("pot_awarded requires winner_seat and amount")
+        if self.type == "pot_awarded" and (
+            self.winner_seat is None or self.amount is None or self.pot_index is None
+        ):
+            raise ValueError("pot_awarded requires winner_seat, pot_index, and amount")
+        if self.type != "pot_awarded" and self.pot_index is not None:
+            raise ValueError("pot_index is valid only for pot_awarded")
         if self.type == "pot_awarded" and self.amount is not None and self.amount.added_bb <= 0:
             raise ValueError("pot_awarded requires a positive award amount")
         if self.type in {"call", "bet", "raise", "all_in", "blind_posted"} and (
@@ -315,6 +320,27 @@ class ValidationState(StrictModel):
     issues: list[str] = Field(default_factory=list)
 
 
+class PotLayer(StrictModel):
+    pot_index: int = Field(ge=0)
+    amount_bb: Decimal = Field(gt=0)
+    remaining_bb: Decimal = Field(ge=0)
+    cap_per_player_bb: Decimal = Field(gt=0)
+    contributing_seats: list[int]
+    eligible_seats: list[int]
+
+    @model_validator(mode="after")
+    def validate_layer(self) -> PotLayer:
+        if self.remaining_bb > self.amount_bb:
+            raise ValueError("pot-layer remainder cannot exceed its original amount")
+        if len(self.contributing_seats) != len(set(self.contributing_seats)):
+            raise ValueError("pot-layer contributors must be unique")
+        if len(self.eligible_seats) != len(set(self.eligible_seats)):
+            raise ValueError("pot-layer eligible seats must be unique")
+        if not set(self.eligible_seats).issubset(self.contributing_seats):
+            raise ValueError("eligible seats must have contributed to the pot layer")
+        return self
+
+
 class HandState(StrictModel):
     schema_version: Literal["1.0"] = SCHEMA_VERSION
     state_id: UUID = Field(default_factory=uuid4)
@@ -331,11 +357,13 @@ class HandState(StrictModel):
     board: list[str] = Field(default_factory=list)
     seats: list[SeatState]
     pot_main_bb: Decimal = Field(default=Decimal("0"), ge=0)
+    pot_layers: list[PotLayer] = Field(default_factory=list)
     current_bet_bb: Decimal = Field(default=Decimal("0"), ge=0)
     minimum_raise_increment_bb: Decimal = Field(default=Decimal("0"), ge=0)
     last_aggressor_seat: int | None = Field(default=None, ge=0, le=8)
     next_to_act_seat: int | None = Field(default=None, ge=0, le=8)
     acted_seats: list[int] = Field(default_factory=list)
+    raise_locked_seats: list[int] = Field(default_factory=list)
     initial_total_chips_bb: Decimal = Field(default=Decimal("0"), ge=0)
     available_actions: list[str] = Field(default_factory=list)
     event_ids: list[UUID] = Field(default_factory=list)
@@ -366,10 +394,22 @@ class HandState(StrictModel):
                 raise ValueError(
                     "chip conservation failed: stacks plus pot do not equal the initial total"
                 )
+        if [layer.pot_index for layer in self.pot_layers] != list(range(len(self.pot_layers))):
+            raise ValueError("pot layers must use contiguous zero-based indices")
+        if sum((layer.remaining_bb for layer in self.pot_layers), start=Decimal("0")) != (
+            self.pot_main_bb
+        ):
+            raise ValueError("pot-layer remainders must equal the reconstructed pot")
         if len(self.acted_seats) != len(set(self.acted_seats)) or any(
             seat < 0 or seat > 8 for seat in self.acted_seats
         ):
             raise ValueError("acted_seats must contain unique seat numbers from zero through eight")
+        if len(self.raise_locked_seats) != len(set(self.raise_locked_seats)) or any(
+            seat < 0 or seat > 8 for seat in self.raise_locked_seats
+        ):
+            raise ValueError(
+                "raise_locked_seats must contain unique seat numbers from zero through eight"
+            )
         return self
 
 

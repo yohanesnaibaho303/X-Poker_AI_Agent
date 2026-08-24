@@ -14,6 +14,7 @@ from xpoker_agent.models import (
     Street,
     TableStatus,
 )
+from xpoker_agent.reconstruction.pots import build_pot_layers
 
 
 class StateTransitionError(ValueError):
@@ -102,11 +103,13 @@ class HandStateReducer:
         state.board = []
         state.hero_cards = []
         state.pot_main_bb = Decimal("0")
+        state.pot_layers = []
         state.current_bet_bb = Decimal("0")
         state.minimum_raise_increment_bb = Decimal("0")
         state.last_aggressor_seat = None
         state.next_to_act_seat = None
         state.acted_seats = []
+        state.raise_locked_seats = []
         for seat in state.seats:
             if seat.participation is ParticipationStatus.SEATED:
                 seat.participation = ParticipationStatus.ACTIVE
@@ -139,7 +142,9 @@ class HandStateReducer:
         seat.committed_by_street_bb[state.street] = (
             seat.committed_by_street_bb.get(state.street, Decimal("0")) + added
         )
-        state.pot_main_bb += added
+        # These fields form one invariant and are validated together on the returned state.
+        object.__setattr__(state, "pot_main_bb", state.pot_main_bb + added)
+        object.__setattr__(state, "pot_layers", build_pot_layers(state.seats))
         return seat, committed + added
 
     def _on_blind_posted(self, state: HandState, event: HandEvent) -> None:
@@ -188,6 +193,7 @@ class HandStateReducer:
         state.minimum_raise_increment_bb = Decimal("0")
         state.last_aggressor_seat = None
         state.acted_seats = []
+        state.raise_locked_seats = []
         state.next_to_act_seat = self._next_actionable_after(state, state.dealer_seat)
 
     def _betting_actor(self, state: HandState, event: HandEvent) -> SeatState:
@@ -236,6 +242,7 @@ class HandStateReducer:
 
     def _on_fold(self, state: HandState, event: HandEvent) -> None:
         self._betting_actor(state, event).participation = ParticipationStatus.FOLDED
+        state.pot_layers = build_pot_layers(state.seats)
         self._advance_action(state, event.actor_seat)
 
     def _on_check(self, state: HandState, event: HandEvent) -> None:
@@ -274,6 +281,8 @@ class HandStateReducer:
         seat = self._betting_actor(state, event)
         if state.current_bet_bb == 0:
             raise StateTransitionError("raise requires an existing wager; use bet")
+        if event.actor_seat in state.raise_locked_seats:
+            raise StateTransitionError("raising was not reopened after a short all-in")
         if event.amount is None or event.amount.to_bb is None:
             raise StateTransitionError("raise requires a resulting total amount")
         if event.amount.added_bb == seat.stack_bb:
@@ -287,15 +296,25 @@ class HandStateReducer:
         state.current_bet_bb = resulting_total
         state.minimum_raise_increment_bb = increment
         state.last_aggressor_seat = event.actor_seat
+        state.raise_locked_seats = []
         self._advance_action(state, event.actor_seat, reset=True)
 
     def _on_all_in(self, state: HandState, event: HandEvent) -> None:
         seat = self._betting_actor(state, event)
         previous_bet = state.current_bet_bb
+        if (
+            event.amount is not None
+            and event.amount.to_bb is not None
+            and event.amount.to_bb > previous_bet
+            and event.actor_seat in state.raise_locked_seats
+        ):
+            raise StateTransitionError("raising was not reopened after a short all-in")
+        previously_acted = list(state.acted_seats)
         _, resulting_total = self._debit(state, event)
         if seat.stack_bb != 0:
             raise StateTransitionError("all-in action must commit the player's entire stack")
         seat.participation = ParticipationStatus.ALL_IN
+        state.pot_layers = build_pot_layers(state.seats)
         if resulting_total > previous_bet:
             increment = resulting_total - previous_bet
             state.current_bet_bb = resulting_total
@@ -304,8 +323,12 @@ class HandStateReducer:
                     resulting_total if previous_bet == 0 else increment
                 )
                 state.last_aggressor_seat = event.actor_seat
+                state.raise_locked_seats = []
                 self._advance_action(state, event.actor_seat, reset=True)
                 return
+            state.raise_locked_seats = list(
+                dict.fromkeys([*state.raise_locked_seats, *previously_acted])
+            )
         self._advance_action(state, event.actor_seat)
 
     def _on_showdown_started(self, state: HandState, event: HandEvent) -> None:
@@ -317,15 +340,23 @@ class HandStateReducer:
 
     def _on_pot_awarded(self, state: HandState, event: HandEvent) -> None:
         self._require_in_hand(state)
-        if event.amount is None or event.winner_seat is None:
-            raise StateTransitionError("pot award requires winner and amount")
+        if state.next_to_act_seat is not None:
+            raise StateTransitionError("pot cannot be awarded before betting closes")
+        if event.amount is None or event.winner_seat is None or event.pot_index is None:
+            raise StateTransitionError("pot award requires winner, pot index, and amount")
         award = event.amount.added_bb
-        if award > state.pot_main_bb:
-            raise StateTransitionError("pot award exceeds reconstructed pot")
+        if event.pot_index >= len(state.pot_layers):
+            raise StateTransitionError("pot award references an unknown pot layer")
+        layer = state.pot_layers[event.pot_index]
+        if event.winner_seat not in layer.eligible_seats:
+            raise StateTransitionError("winner is not eligible for the referenced pot layer")
+        if award > layer.remaining_bb:
+            raise StateTransitionError("pot award exceeds the referenced pot-layer remainder")
         winner = self._seat(state, event.winner_seat)
         if winner.participation is ParticipationStatus.EMPTY:
             raise StateTransitionError("pot cannot be awarded to an empty seat")
         winner.stack_bb += award
+        layer.remaining_bb -= award
         state.pot_main_bb -= award
 
     def _on_hand_completed(self, state: HandState, event: HandEvent) -> None:
