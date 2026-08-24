@@ -46,7 +46,9 @@ def match_authorized_target(
     if process_name not in profile.allowed_process_names:
         reasons.append("process name is not allowlisted")
 
-    if not any(re.search(pattern, candidate.title) for pattern in profile.title_patterns):
+    if profile.require_title_match and not any(
+        re.search(pattern, candidate.title) for pattern in profile.title_patterns
+    ):
         reasons.append("window title does not match the authorized X-Poker pattern")
 
     if (

@@ -67,6 +67,42 @@
       ],
       "title": "NormalizedRect",
       "type": "object"
+    },
+    "SeatAnchorCalibration": {
+      "additionalProperties": false,
+      "properties": {
+        "seat": {
+          "maximum": 8,
+          "minimum": 0,
+          "title": "Seat",
+          "type": "integer"
+        },
+        "anchor_region": {
+          "$ref": "#/$defs/NormalizedRect"
+        },
+        "player_panel_region": {
+          "$ref": "#/$defs/NormalizedRect"
+        },
+        "calibration_confidence": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Calibration Confidence",
+          "type": "number"
+        },
+        "evidence": {
+          "title": "Evidence",
+          "type": "string"
+        }
+      },
+      "required": [
+        "seat",
+        "anchor_region",
+        "player_panel_region",
+        "calibration_confidence",
+        "evidence"
+      ],
+      "title": "SeatAnchorCalibration",
+      "type": "object"
     }
   },
   "additionalProperties": false,
@@ -139,6 +175,13 @@
         "$ref": "#/$defs/LayoutAnchor"
       },
       "title": "Anchors",
+      "type": "array"
+    },
+    "seat_anchors": {
+      "items": {
+        "$ref": "#/$defs/SeatAnchorCalibration"
+      },
+      "title": "Seat Anchors",
       "type": "array"
     }
   },

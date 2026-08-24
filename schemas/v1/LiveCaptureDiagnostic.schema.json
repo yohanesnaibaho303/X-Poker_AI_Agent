@@ -1,4 +1,58 @@
 {
+  "$defs": {
+    "SeatOccupancyObservation": {
+      "additionalProperties": false,
+      "properties": {
+        "seat": {
+          "maximum": 8,
+          "minimum": 0,
+          "title": "Seat",
+          "type": "integer"
+        },
+        "status": {
+          "enum": [
+            "occupied",
+            "empty",
+            "ambiguous"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "confidence": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "dark_panel_fraction": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Dark Panel Fraction",
+          "type": "number"
+        },
+        "plus_horizontal_pixels": {
+          "minimum": 0,
+          "title": "Plus Horizontal Pixels",
+          "type": "integer"
+        },
+        "plus_vertical_pixels": {
+          "minimum": 0,
+          "title": "Plus Vertical Pixels",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "seat",
+        "status",
+        "confidence",
+        "dark_panel_fraction",
+        "plus_horizontal_pixels",
+        "plus_vertical_pixels"
+      ],
+      "title": "SeatOccupancyObservation",
+      "type": "object"
+    }
+  },
   "additionalProperties": false,
   "properties": {
     "schema_version": {
@@ -15,6 +69,14 @@
     "layout_id": {
       "title": "Layout Id",
       "type": "string"
+    },
+    "table_size": {
+      "enum": [
+        6,
+        9
+      ],
+      "title": "Table Size",
+      "type": "integer"
     },
     "frame_width": {
       "exclusiveMinimum": 0,
@@ -105,6 +167,19 @@
       "default": null,
       "title": "Hands Until Bomb"
     },
+    "bomb_pot_interval_hands": {
+      "anyOf": [
+        {
+          "minimum": 1,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Bomb Pot Interval Hands"
+    },
     "rule_confidence": {
       "maximum": 1.0,
       "minimum": 0.0,
@@ -152,11 +227,19 @@
       },
       "title": "Regions",
       "type": "object"
+    },
+    "seat_observations": {
+      "items": {
+        "$ref": "#/$defs/SeatOccupancyObservation"
+      },
+      "title": "Seat Observations",
+      "type": "array"
     }
   },
   "required": [
     "captured_at",
     "layout_id",
+    "table_size",
     "frame_width",
     "frame_height",
     "target_fingerprint",

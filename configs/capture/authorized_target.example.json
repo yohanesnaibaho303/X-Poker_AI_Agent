@@ -7,6 +7,7 @@
   "title_patterns": [
     "(?i)x[- ]?poker"
   ],
+  "require_title_match": false,
   "allowed_window_classes": [],
   "required_visual_role": "table",
   "minimum_visual_role_confidence": 0.9,

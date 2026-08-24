@@ -61,9 +61,15 @@
   hand in standard NLH; an active single-board Bomb Pot requires observed forced contributions,
   skips preflop action, and enters the shared NLH state machine on the flop. Ambiguous modes,
   contribution amounts, multi-board hands, and Omaha remain quarantined.
-- Current full suite: Ruff passed; 223 Pytest/Hypothesis tests, 11 TypeScript tests, and the
+- Current full suite: Ruff passed; 228 Pytest/Hypothesis tests, 11 TypeScript tests, and the
   production dashboard build passed. Live authorized diagnostics show a supported standard hand
   with a five-hand Bomb Pot countdown; table control remains disabled.
+- Added a dedicated `xpoker-windows-10-portrait-9max-v1` profile with nine canonical seat anchors.
+  Live frames validated five occupied/four empty before play and three occupied/six empty during
+  play after widening the plus-anchor search for side-seat movement.
+- Removed mutable room titles from the default authorization gate. Capture still requires the
+  allowlisted X-Poker executable hash and process, GLFW window class, supported geometry, and a
+  high-confidence visual table role; PID/HWND remain session-scoped evidence.
 
 ## Completed project checkpoints
 
@@ -86,6 +92,8 @@
 - Connect recorded/live capture, perception evidence, and reconstructed observations to the monitor.
 - Record complete scheduled standard hands and an active single-board Bomb Pot from the authorized
   spectated table for temporal contribution and hand-mode calibration.
+- Continue gradual 3-to-9-player live captures to validate every occupied seat panel, player state,
+  stack/bet crop, dealer marker, and clockwise action transition.
 - Add opponent-range, poker-math, exact/abstracted strategy, exploit-frequency, provenance, and
   decision-trace views as those upstream results become available.
 - Continue Milestone 6 solution import/resolution while keeping reference priors ineligible for exact-GTO results.

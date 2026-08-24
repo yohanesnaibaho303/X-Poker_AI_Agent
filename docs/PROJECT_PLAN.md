@@ -84,6 +84,9 @@ The application will:
 
 - Detect the X-Poker process or its Android emulator window.
 - Identify the correct authorized test-table window.
+- Treat room titles as mutable metadata rather than stable identity. Authorization combines the
+  allowlisted X-Poker executable hash, process name, window class, supported geometry, and visual
+  table role; PID/HWND are session-scoped because they change after restart.
 - Capture only the required table region.
 - Handle window movement, resizing, display scaling, and supported themes.
 - Detect whether a hand is active.
@@ -110,6 +113,8 @@ The vision system must recognize:
 - Bet input, slider, and preset sizing controls.
 - Sit-out, disconnected, empty-seat, and folded states.
 - Multiway and heads-up states within supported six-seat and nine-seat tables.
+- All nine canonical seat anchors in the portrait 9-max layout, with deterministic
+  occupied/empty/ambiguous classification independent of player names.
 
 The implementation will use a hybrid approach:
 
@@ -692,6 +697,12 @@ privacy-scoped rule/pot OCR, scheduled-versus-active Bomb Pot classification, an
 ambiguous/unsupported-mode quarantine. The milestone remains in
 progress until component recognition and standard-NLH reconstruction output, opponent ranges,
 resolved strategy/equity/EV views, and complete authorized-session evidence pass their gates.
+
+The authorized 9-max calibration profile now contains all nine canonical seat anchors. Live idle
+and playing frames validate empty-plus versus occupied-panel classification as population changes;
+the first playing checkpoint correctly classified three occupied and six empty seats, a five-card
+board, pot text, and the scheduled Bomb Pot countdown. This is calibration evidence, not yet an M3
+accuracy promotion.
 
 ### Milestone 9 — Authorized control
 

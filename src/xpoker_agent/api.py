@@ -166,11 +166,13 @@ def capture_status() -> dict[str, object]:
 
 
 @app.post("/v1/capture/diagnostic")
-async def capture_diagnostic() -> dict[str, object]:
+async def capture_diagnostic(table_size: int = 9) -> dict[str, object]:
     global latest_live_frame
     async with live_capture_lock:
         try:
-            diagnostic, frame = await diagnose_authorized_table()
+            diagnostic, frame = await diagnose_authorized_table(
+                table_size=require_table_size(table_size)
+            )
         except (OSError, RuntimeError, ValueError) as error:
             raise HTTPException(status_code=409, detail=str(error)) from error
         latest_live_frame = frame

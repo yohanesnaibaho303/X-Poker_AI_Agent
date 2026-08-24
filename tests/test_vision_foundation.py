@@ -243,6 +243,17 @@ def test_active_bomb_pot_is_classified_despite_minor_ocr_damage() -> None:
     assert result.confidence >= 0.9
 
 
+def test_recurring_bomb_pot_label_is_scheduled_not_active() -> None:
+    result = classify_rule_label("24 aug Bomb Pot: Every 12 hands (2-4) Blinds: 1/2")
+
+    assert result.supported_standard_nlh is True
+    assert result.supported_single_board_bomb_pot is False
+    assert result.bomb_pot_state == "scheduled"
+    assert result.hands_until_bomb is None
+    assert result.bomb_pot_interval_hands == 12
+    assert "recurring_pot_every_hands" in result.matched_signals
+
+
 def test_unknown_rule_label_never_establishes_supported_nlh() -> None:
     result = classify_rule_label("NLH")
 
@@ -272,7 +283,7 @@ def test_live_capture_diagnostic_supports_countdown_hand_and_exposes_schedule() 
     diagnostic = build_live_capture_diagnostic(
         frame=frame,
         record=record,
-        layout=load_layout_profile(),
+        layout=load_layout_profile(table_size=6),
         rule_ocr=WindowsOcrResult(
             text="Bomb Pot: After 2 hands (1,000-3,000) Blinds: 500/1,000",
             lines=["Bomb Pot: After 2 hands", "Blinds: 500/1,000"],
@@ -288,6 +299,7 @@ def test_live_capture_diagnostic_supports_countdown_hand_and_exposes_schedule() 
     )
 
     assert diagnostic.current_hand_supported is True
+    assert diagnostic.table_size == 6
     assert diagnostic.current_hand_mode == "standard_nlh"
     assert diagnostic.standard_nlh_supported is True
     assert diagnostic.single_board_bomb_pot_supported is False

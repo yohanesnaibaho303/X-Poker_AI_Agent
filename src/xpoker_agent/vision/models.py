@@ -106,15 +106,26 @@ class RuleLabelClassification(StrictModel):
     special_rule: Literal["bomb_pot"] | None = None
     bomb_pot_state: Literal["none", "scheduled", "active", "ambiguous"] = "none"
     hands_until_bomb: int | None = Field(default=None, ge=0)
+    bomb_pot_interval_hands: int | None = Field(default=None, ge=1)
     confidence: float = Field(ge=0.0, le=1.0)
     matched_signals: list[str] = Field(default_factory=list)
     reason: str
+
+
+class SeatOccupancyObservation(StrictModel):
+    seat: int = Field(ge=0, le=8)
+    status: Literal["occupied", "empty", "ambiguous"]
+    confidence: float = Field(ge=0.0, le=1.0)
+    dark_panel_fraction: float = Field(ge=0.0, le=1.0)
+    plus_horizontal_pixels: int = Field(ge=0)
+    plus_vertical_pixels: int = Field(ge=0)
 
 
 class LiveCaptureDiagnostic(StrictModel):
     schema_version: Literal["1.0"] = "1.0"
     captured_at: datetime
     layout_id: str
+    table_size: Literal[6, 9]
     frame_width: int = Field(gt=0)
     frame_height: int = Field(gt=0)
     target_fingerprint: str = Field(min_length=64, max_length=64)
@@ -128,9 +139,11 @@ class LiveCaptureDiagnostic(StrictModel):
     special_rule: Literal["bomb_pot"] | None = None
     bomb_pot_state: Literal["none", "scheduled", "active", "ambiguous"]
     hands_until_bomb: int | None = Field(default=None, ge=0)
+    bomb_pot_interval_hands: int | None = Field(default=None, ge=1)
     rule_confidence: float = Field(ge=0.0, le=1.0)
     mode_reason: str
     matched_signals: list[str] = Field(default_factory=list)
     rule_text: str
     pot_text: str
     regions: dict[str, tuple[float, float, float, float]]
+    seat_observations: list[SeatOccupancyObservation] = Field(default_factory=list)

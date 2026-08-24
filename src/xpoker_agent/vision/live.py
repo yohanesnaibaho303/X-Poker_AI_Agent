@@ -12,6 +12,7 @@ from xpoker_agent.capture.recording import capture_authorized_frame
 from xpoker_agent.vision.models import LiveCaptureDiagnostic, WindowsOcrResult
 from xpoker_agent.vision.primitives import crop_layout_region
 from xpoker_agent.vision.rules import classify_rule_label
+from xpoker_agent.vision.seats import classify_seat_occupancy
 from xpoker_agent.vision.windows_ocr import recognize_text
 
 
@@ -38,9 +39,22 @@ def build_live_capture_diagnostic(
         for name, region in layout.regions.items()
         if name in {"board", "pot", "rule_label", "seat_ring", "actions"}
     }
+    visible_regions.update(
+        {
+            f"seat_{calibration.seat}_anchor": (
+                calibration.anchor_region.x,
+                calibration.anchor_region.y,
+                calibration.anchor_region.width,
+                calibration.anchor_region.height,
+            )
+            for calibration in layout.seat_anchors
+        }
+    )
+    seat_observations = classify_seat_occupancy(frame, layout)
     return LiveCaptureDiagnostic(
         captured_at=record.captured_at,
         layout_id=layout.layout_id,
+        table_size=layout.table_size,
         frame_width=frame.width,
         frame_height=frame.height,
         target_fingerprint=record.target_fingerprint,
@@ -57,18 +71,22 @@ def build_live_capture_diagnostic(
         special_rule=classification.special_rule,
         bomb_pot_state=classification.bomb_pot_state,
         hands_until_bomb=classification.hands_until_bomb,
+        bomb_pot_interval_hands=classification.bomb_pot_interval_hands,
         rule_confidence=classification.confidence,
         mode_reason=classification.reason,
         matched_signals=classification.matched_signals,
         rule_text=rule_ocr.text,
         pot_text=pot_ocr.text,
         regions=visible_regions,
+        seat_observations=seat_observations,
     )
 
 
-async def diagnose_authorized_table() -> tuple[LiveCaptureDiagnostic, CapturedFrame]:
+async def diagnose_authorized_table(
+    *, table_size: int = 9
+) -> tuple[LiveCaptureDiagnostic, CapturedFrame]:
     profile = load_target_profile()
-    layout = load_layout_profile()
+    layout = load_layout_profile(table_size=table_size)
     frame, record = capture_authorized_frame(0, profile, layout)
     rule_crop = crop_layout_region(frame, layout, "rule_label")
     pot_crop = crop_layout_region(frame, layout, "pot")

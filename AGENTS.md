@@ -57,6 +57,9 @@ Native chips remain exact internally and display below 100,000 as a grouped numb
 - Fail closed on ambiguous cards, amounts, actions, table identity, or unsupported states.
 - Do not enable table control until the acceptance thresholds in the project plan pass.
 - Scope active interaction to the explicitly authorized private test environment.
+- Do not use mutable club-room titles as the primary window identity. Gate capture with the
+  allowlisted X-Poker executable hash, process, window class, supported geometry, and visual table
+  role; use PID/HWND only as session-scoped evidence.
 
 ## Research and External Sources
 

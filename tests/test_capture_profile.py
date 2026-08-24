@@ -9,6 +9,7 @@ def candidate(*, title: str = "X-Poker", process_name: str = "xpoker.exe") -> Wi
         process_id=202,
         process_name=process_name,
         executable_path=f"C:\\AuthorizedTest\\{process_name}",
+        executable_sha256="a" * 64,
         title=title,
         window_class="QtWindow",
         window_rect=PixelRect(left=0, top=0, right=900, bottom=700),
@@ -26,6 +27,7 @@ def profile(*, enabled: bool = True) -> AuthorizedTargetProfile:
         profile_id="authorized-xpoker-test",
         enabled=enabled,
         allowed_process_names=["xpoker.exe"],
+        allowed_executable_sha256=["a" * 64],
         title_patterns=[r"(?i)^x-poker"],
         allowed_window_classes=["QtWindow"],
         notes="test profile",
@@ -53,6 +55,20 @@ def test_explicit_xpoker_profile_matches() -> None:
 
     assert result.eligible is True
     assert result.reasons == []
+
+
+def test_room_title_is_not_a_stable_authorization_requirement() -> None:
+    result = match_authorized_target(candidate(title="24 aug"), profile())
+
+    assert result.eligible is True
+
+
+def test_title_can_still_be_enabled_as_an_optional_extra_gate() -> None:
+    strict_profile = profile().model_copy(update={"require_title_match": True})
+    result = match_authorized_target(candidate(title="24 aug"), strict_profile)
+
+    assert result.eligible is False
+    assert "window title does not match" in result.reasons[0]
 
 
 def test_other_poker_clients_never_match() -> None:

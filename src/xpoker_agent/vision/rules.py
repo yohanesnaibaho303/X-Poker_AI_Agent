@@ -40,6 +40,21 @@ def classify_rule_label(text: str) -> RuleLabelClassification:
             matched_signals=signals,
             reason="single-board NLH Bomb Pot hand is active",
         )
+    recurring = re.search(r"pot\s*:\s*every\s+(?P<count>[0-9o]+)\s+hands", normalized)
+    if recurring:
+        interval = int(recurring.group("count").replace("o", "0"))
+        return RuleLabelClassification(
+            supported_standard_nlh=True,
+            special_rule="bomb_pot",
+            bomb_pot_state="scheduled",
+            bomb_pot_interval_hands=interval,
+            confidence=0.99 if "literal_bomb_pot" in signals else 0.93,
+            matched_signals=[*signals, "recurring_pot_every_hands"],
+            reason=(
+                "standard NLH hands between single-board Bomb Pots scheduled every "
+                f"{interval} hands"
+            ),
+        )
     if signals:
         return RuleLabelClassification(
             supported_standard_nlh=False,

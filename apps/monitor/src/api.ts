@@ -60,8 +60,8 @@ export function stopReplay(): Promise<unknown> {
   return requestJson("/v1/monitor/replay/stop", { method: "POST" });
 }
 
-export function runCaptureDiagnostic(): Promise<LiveCaptureDiagnostic> {
-  return requestJson("/v1/capture/diagnostic", { method: "POST" });
+export function runCaptureDiagnostic(tableSize: TableSize): Promise<LiveCaptureDiagnostic> {
+  return requestJson(`/v1/capture/diagnostic?table_size=${tableSize}`, { method: "POST" });
 }
 
 export function seekReplay(tableSize: TableSize, index: number): Promise<unknown> {

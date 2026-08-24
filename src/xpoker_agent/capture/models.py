@@ -63,6 +63,7 @@ class AuthorizedTargetProfile(StrictModel):
     allowed_process_names: list[str] = Field(default_factory=list)
     allowed_executable_sha256: list[str] = Field(default_factory=list)
     title_patterns: list[str] = Field(default_factory=lambda: [r"(?i)x[- ]?poker"])
+    require_title_match: bool = False
     allowed_window_classes: list[str] = Field(default_factory=list)
     required_visual_role: Literal["table"] = "table"
     minimum_visual_role_confidence: float = Field(default=0.9, ge=0.0, le=1.0)
@@ -91,8 +92,10 @@ class AuthorizedTargetProfile(StrictModel):
     def require_explicit_identity_when_enabled(self) -> AuthorizedTargetProfile:
         if self.enabled and not self.allowed_process_names:
             raise ValueError("enabled profiles require an explicit process-name allowlist")
-        if self.enabled and not self.title_patterns:
-            raise ValueError("enabled profiles require at least one X-Poker title pattern")
+        if self.enabled and not self.allowed_executable_sha256:
+            raise ValueError("enabled profiles require an executable SHA-256 allowlist")
+        if self.require_title_match and not self.title_patterns:
+            raise ValueError("title matching requires at least one title pattern")
         return self
 
 
@@ -122,6 +125,14 @@ class LayoutAnchor(StrictModel):
     minimum_confidence: float = Field(ge=0.0, le=1.0)
 
 
+class SeatAnchorCalibration(StrictModel):
+    seat: int = Field(ge=0, le=8)
+    anchor_region: NormalizedRect
+    player_panel_region: NormalizedRect
+    calibration_confidence: float = Field(ge=0.0, le=1.0)
+    evidence: str
+
+
 class LayoutProfile(StrictModel):
     schema_version: Literal["1.0"] = "1.0"
     layout_id: str
@@ -135,6 +146,7 @@ class LayoutProfile(StrictModel):
     color_format: Literal["BGRA8"] = "BGRA8"
     regions: dict[str, NormalizedRect]
     anchors: list[LayoutAnchor]
+    seat_anchors: list[SeatAnchorCalibration] = Field(default_factory=list)
 
     @model_validator(mode="after")
     def validate_layout(self) -> LayoutProfile:
@@ -146,6 +158,11 @@ class LayoutProfile(StrictModel):
             raise ValueError(f"layout is missing required regions: {missing}")
         if not self.anchors:
             raise ValueError("layout requires at least one stable anchor")
+        seat_numbers = [anchor.seat for anchor in self.seat_anchors]
+        if len(seat_numbers) != len(set(seat_numbers)):
+            raise ValueError("layout seat anchors must be unique")
+        if self.table_size == 9 and seat_numbers != list(range(9)):
+            raise ValueError("nine-max layout requires canonical seat anchors 0 through 8")
         return self
 
 

@@ -165,6 +165,8 @@ function RangeGrid({ matrix, loading }: { matrix: RangeMatrix | null; loading: b
 }
 
 function CapturePreview({ diagnostic, nonce }: { diagnostic: LiveCaptureDiagnostic; nonce: number }) {
+  const occupiedSeats = diagnostic.seat_observations.filter((seat) => seat.status === "occupied").length;
+  const ambiguousSeats = diagnostic.seat_observations.filter((seat) => seat.status === "ambiguous").length;
   return (
     <section className="panel capture-panel">
       <div className="panel-heading compact">
@@ -190,11 +192,18 @@ function CapturePreview({ diagnostic, nonce }: { diagnostic: LiveCaptureDiagnost
         <span>Role confidence <strong>{formatPercent(diagnostic.visual_role_confidence)}</strong></span>
         <span>OCR <strong>{diagnostic.ocr_latency_ms.toFixed(1)} ms</strong></span>
       </div>
+      <div className="capture-facts">
+        <span>Layout <strong>{diagnostic.table_size}-max</strong></span>
+        <span>Seats <strong>{occupiedSeats}/{diagnostic.table_size} occupied{ambiguousSeats ? ` · ${ambiguousSeats} ambiguous` : ""}</strong></span>
+      </div>
       <p className={`mode-copy ${diagnostic.current_hand_supported ? "supported" : "quarantined"}`}>
         {diagnostic.mode_reason}
       </p>
       {diagnostic.bomb_pot_state === "scheduled" && diagnostic.hands_until_bomb !== null && (
         <small>Bomb Pot scheduled after {diagnostic.hands_until_bomb} hand{diagnostic.hands_until_bomb === 1 ? "" : "s"}</small>
+      )}
+      {diagnostic.bomb_pot_state === "scheduled" && diagnostic.bomb_pot_interval_hands !== null && (
+        <small>Bomb Pot configured every {diagnostic.bomb_pot_interval_hands} hands</small>
       )}
       <small>{diagnostic.rule_text || "No rule label recognized"}</small>
     </section>
@@ -257,7 +266,7 @@ export default function App() {
 
   const inspectCapture = async () => {
     try {
-      const result = await runCaptureDiagnostic();
+      const result = await runCaptureDiagnostic(tableSize);
       setCaptureDiagnostic(result);
       setCaptureNonce(Date.now());
       setCaptureError(null);

@@ -124,6 +124,7 @@ export interface LiveCaptureDiagnostic {
   schema_version: "1.0";
   captured_at: string;
   layout_id: string;
+  table_size: TableSize;
   frame_width: number;
   frame_height: number;
   target_fingerprint: string;
@@ -136,6 +137,7 @@ export interface LiveCaptureDiagnostic {
   single_board_bomb_pot_supported: boolean;
   bomb_pot_state: "none" | "scheduled" | "active" | "ambiguous";
   hands_until_bomb: number | null;
+  bomb_pot_interval_hands: number | null;
   special_rule: "bomb_pot" | null;
   rule_confidence: number;
   mode_reason: string;
@@ -143,4 +145,12 @@ export interface LiveCaptureDiagnostic {
   rule_text: string;
   pot_text: string;
   regions: Record<string, [number, number, number, number]>;
+  seat_observations: Array<{
+    seat: number;
+    status: "occupied" | "empty" | "ambiguous";
+    confidence: number;
+    dark_panel_fraction: number;
+    plus_horizontal_pixels: number;
+    plus_vertical_pixels: number;
+  }>;
 }
