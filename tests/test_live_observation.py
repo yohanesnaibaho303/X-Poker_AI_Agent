@@ -180,6 +180,32 @@ def test_numeric_badge_becomes_one_temporal_candidate() -> None:
     asyncio.run(scenario())
 
 
+def test_numeric_badge_value_is_not_also_accepted_as_a_stack() -> None:
+    async def scenario() -> None:
+        badge = SeatActionObservation(
+            seat=0,
+            action=None,
+            badge_amount_native=100,
+            confidence=0.95,
+            reason="test fixture",
+        )
+
+        async def capture(_: int, sequence: int):
+            return _diagnostic(sequence, seat_actions=[badge]), CapturedFrame(
+                1, 1, b"\x00" * 4
+            )
+
+        service = LiveObservationService(capture)
+        for _ in range(3):
+            await service.inspect_once(table_size=9)
+
+        result = service.status().seat_stack_consensus[0].consensus
+        assert result.accepted is False
+        assert result.reason == "current_stack_obscured_by_numeric_badge"
+
+    asyncio.run(scenario())
+
+
 def test_changed_numeric_value_requires_fresh_consecutive_consensus() -> None:
     async def scenario() -> None:
         values = [100, 100, 100, 98, 98]

@@ -136,7 +136,7 @@
   epochs with zero failures and produced six mutually unique provisional matches: Call 2 and 4,
   plus Bet 4, 3, 6, and 2 native units. None are canonical events yet because legal order and pot
   accounting remain outstanding gates.
-- Current full suite: Ruff passed; 280 Pytest/Hypothesis tests, 11 TypeScript tests, and the
+- Current full suite: Ruff passed; 281 Pytest/Hypothesis tests, 11 TypeScript tests, and the
   production dashboard build passed. Table control remains disabled.
 - Added deterministic provisional clockwise-order validation. Each visual action now carries the
   stable dealer and active-seat context present when it was emitted. Preflop starts after the BB;
@@ -199,6 +199,10 @@
   limited to twelve frames after the witnessed boundary; later changes, duplicate interpretations,
   and aggregated blind-plus-call/raise deltas remain pending or ambiguous. Reducer readiness
   requires both posts explicitly.
+- Cross-channel stack validation now quarantines a seat-panel amount when it exactly equals a
+  simultaneous numeric-only badge at that seat. This prevents an overlaid blind or wager from being
+  misread as the remaining stack and generating a false large decrease; the stack remains unknown
+  until the unobscured panel stabilizes again.
 
 ## Completed project checkpoints
 

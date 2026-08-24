@@ -585,14 +585,33 @@ class LiveObservationService:
                 self._last_accepted_pot = current_pot
 
         by_seat = {panel.seat: panel for panel in diagnostic.seat_panels}
+        numeric_badge_by_seat = {
+            action.seat: action.badge_amount_native
+            for action in diagnostic.seat_actions
+            if action.badge_amount_native is not None
+        }
         stack_consensus: list[SeatStackConsensus] = []
         for seat in range(diagnostic.table_size):
             panel = by_seat.get(seat)
             samples = self._stack_samples[seat]
-            if panel is None or panel.stack_native is None or panel.status != "seated":
+            stack_obscured_by_badge = (
+                panel is not None
+                and panel.stack_native is not None
+                and numeric_badge_by_seat.get(seat) == panel.stack_native
+            )
+            if (
+                panel is None
+                or panel.stack_native is None
+                or panel.status != "seated"
+                or stack_obscured_by_badge
+            ):
                 samples.clear()
                 state = panel.status if panel is not None else "ambiguous"
-                result = self._empty_consensus("current_stack_ambiguous")
+                result = self._empty_consensus(
+                    "current_stack_obscured_by_numeric_badge"
+                    if stack_obscured_by_badge
+                    else "current_stack_ambiguous"
+                )
             else:
                 state = panel.status
                 result = self._append_consecutive(
