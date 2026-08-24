@@ -136,7 +136,7 @@
   epochs with zero failures and produced six mutually unique provisional matches: Call 2 and 4,
   plus Bet 4, 3, 6, and 2 native units. None are canonical events yet because legal order and pot
   accounting remain outstanding gates.
-- Current full suite: Ruff passed; 276 Pytest/Hypothesis tests, 11 TypeScript tests, and the
+- Current full suite: Ruff passed; 277 Pytest/Hypothesis tests, 11 TypeScript tests, and the
   production dashboard build passed. Table control remains disabled.
 - Added deterministic provisional clockwise-order validation. Each visual action now carries the
   stable dealer and active-seat context present when it was emitted. Preflop starts after the BB;
@@ -170,6 +170,10 @@
 - Blind-token confidence is independent of Bomb-Pot mode confidence: live OCR damaged the unrelated
   label to `Bomb Fh)t` while retaining a clear `Blinds: 1/2`. The blind channel now remains eligible
   at 0.99 without making the ambiguous hand mode eligible.
+- Corrected the live temporal wiring after a reload reproduced the inverse behavior: mode consensus
+  now consumes only rule/mode confidence, while blind consensus consumes only native-blind
+  confidence. A clear `1/2` observation can therefore remain stable while damaged mode text blocks
+  the hand independently.
 - Added a live hand-boundary gate layered on the stable postflop-to-zero transition. It snapshots
   the prior dealer and active ring, clears dealer consensus, and requires the button to advance to
   the next dealt seat after three new frames. An unchanged marker stays pending; a skipped dealer or

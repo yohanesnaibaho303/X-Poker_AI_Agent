@@ -324,7 +324,7 @@ class LiveObservationService:
                     frame_sequence=diagnostic.frame_sequence,
                     content_sha256=diagnostic.content_sha256,
                     value=diagnostic.current_hand_mode,
-                    confidence=diagnostic.blind_confidence,
+                    confidence=diagnostic.rule_confidence,
                 ),
             )
         self._record_numeric_observations(diagnostic)
@@ -364,7 +364,7 @@ class LiveObservationService:
                         f"{diagnostic.small_blind_native}/"
                         f"{diagnostic.big_blind_native}"
                     ),
-                    confidence=diagnostic.rule_confidence,
+                    confidence=diagnostic.blind_confidence,
                 ),
             )
         previous_board_value = self._board_samples[-1].value if self._board_samples else None

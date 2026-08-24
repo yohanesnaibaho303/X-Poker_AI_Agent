@@ -26,6 +26,8 @@ def _diagnostic(
     fingerprint: str = "a" * 64,
     mode: str = "standard_nlh",
     hero_controls: HeroActionControlsObservation | None = None,
+    rule_confidence: float = 0.99,
+    blind_confidence: float = 0.99,
 ) -> LiveCaptureDiagnostic:
     return LiveCaptureDiagnostic(
         captured_at=datetime.now(UTC),
@@ -49,8 +51,8 @@ def _diagnostic(
         hands_until_bomb=5,
         small_blind_native=1,
         big_blind_native=2,
-        blind_confidence=0.99,
-        rule_confidence=0.99,
+        blind_confidence=blind_confidence,
+        rule_confidence=rule_confidence,
         mode_reason="test fixture",
         rule_text="Bomb Pot: After 5 hands",
         pot_text="POT 10",
@@ -530,5 +532,27 @@ def test_ambiguous_mode_never_becomes_accepted_consensus() -> None:
         assert status.mode_consensus.accepted is False
         assert status.mode_consensus.reason == "current_mode_ambiguous"
         await service.stop()
+
+    asyncio.run(scenario())
+
+
+def test_mode_and_blind_confidence_channels_are_independent() -> None:
+    async def scenario() -> None:
+        async def capture(_: int, sequence: int):
+            return _diagnostic(
+                sequence,
+                rule_confidence=0.0,
+                blind_confidence=0.99,
+            ), CapturedFrame(1, 1, b"\x00" * 4)
+
+        service = LiveObservationService(capture)
+        for _ in range(3):
+            await service.inspect_once(table_size=9)
+
+        status = service.status()
+        assert status.mode_consensus.accepted is False
+        assert status.mode_consensus.reason == "confidence_below_threshold"
+        assert status.blind_consensus.accepted is True
+        assert status.blind_consensus.value == "1/2"
 
     asyncio.run(scenario())
