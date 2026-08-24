@@ -283,6 +283,19 @@ class ActionOrderValidation(StrictModel):
     reason: str
 
 
+class LiveHandBoundaryValidation(StrictModel):
+    hand_epoch: int = Field(ge=0)
+    previous_dealer_seat: int | None = Field(default=None, ge=0, le=8)
+    current_dealer_seat: int | None = Field(default=None, ge=0, le=8)
+    expected_dealer_seat: int | None = Field(default=None, ge=0, le=8)
+    previous_active_seats: list[int] = Field(default_factory=list)
+    current_active_seats: list[int] = Field(default_factory=list)
+    status: Literal["pending", "validated", "rejected"]
+    issues: list[str] = Field(default_factory=list)
+    canonical_event_accepted: Literal[False] = False
+    reason: str
+
+
 class LiveCaptureDiagnostic(StrictModel):
     schema_version: Literal["1.0"] = "1.0"
     captured_at: datetime
@@ -372,6 +385,7 @@ class LiveObservationStatus(StrictModel):
     seat_stack_consensus: list[SeatStackConsensus] = Field(default_factory=list)
     seat_action_consensus: list[SeatActionConsensus] = Field(default_factory=list)
     hand_epoch: int = Field(ge=0)
+    hand_boundary_validation: LiveHandBoundaryValidation
     derived_action_candidates: list[DerivedActionCandidate] = Field(default_factory=list)
     stack_delta_candidates: list[StackDeltaCandidate] = Field(default_factory=list)
     pot_delta_candidates: list[PotDeltaCandidate] = Field(default_factory=list)

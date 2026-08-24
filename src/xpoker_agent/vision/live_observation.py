@@ -13,12 +13,14 @@ from typing import Literal
 
 from xpoker_agent.capture.frames import CapturedFrame
 from xpoker_agent.vision.action_order import validate_action_order
+from xpoker_agent.vision.hand_boundary import validate_live_hand_boundary
 from xpoker_agent.vision.live import diagnose_authorized_table
 from xpoker_agent.vision.models import (
     ActionAmountReconciliation,
     ActionPotReconciliation,
     DerivedActionCandidate,
     LiveCaptureDiagnostic,
+    LiveHandBoundaryValidation,
     LiveObservationStatus,
     PotDeltaCandidate,
     SeatActionConsensus,
@@ -128,6 +130,14 @@ class LiveObservationService:
             for seat in range(9)
         ]
         self._hand_epoch = 0
+        self._previous_epoch_dealer: int | None = None
+        self._previous_epoch_active_seats: list[int] = []
+        self._hand_boundary_validation = LiveHandBoundaryValidation(
+            hand_epoch=0,
+            status="pending",
+            issues=["prior_hand_context_unavailable"],
+            reason="observer has not witnessed a complete hand boundary",
+        )
         self._last_accepted_board_count: int | None = None
         self._action_armed_seats: set[int] = set()
         self._action_occurrence_counts: dict[tuple[int, str, int, str], int] = {}
@@ -214,6 +224,14 @@ class LiveObservationService:
             for seat in range(9)
         ]
         self._hand_epoch = 0
+        self._previous_epoch_dealer = None
+        self._previous_epoch_active_seats = []
+        self._hand_boundary_validation = LiveHandBoundaryValidation(
+            hand_epoch=0,
+            status="pending",
+            issues=["prior_hand_context_unavailable"],
+            reason="observer has not witnessed a complete hand boundary",
+        )
         self._last_accepted_board_count = None
         self._action_armed_seats.clear()
         self._action_occurrence_counts.clear()
@@ -361,7 +379,26 @@ class LiveObservationService:
                     and self._last_accepted_board_count >= 3
                     and board_count == 0
                 ):
+                    self._previous_epoch_dealer = (
+                        int(self._dealer_consensus.value)
+                        if self._dealer_consensus.accepted
+                        and self._dealer_consensus.value is not None
+                        else None
+                    )
+                    self._previous_epoch_active_seats = list(self._active_seats)
                     self._hand_epoch += 1
+                    self._dealer_samples.clear()
+                    self._dealer_consensus = self._empty_consensus(
+                        "new_hand_dealer_unresolved"
+                    )
+                    self._hand_boundary_validation = validate_live_hand_boundary(
+                        hand_epoch=self._hand_epoch,
+                        table_size=diagnostic.table_size,
+                        previous_dealer_seat=self._previous_epoch_dealer,
+                        current_dealer_seat=None,
+                        previous_active_seats=self._previous_epoch_active_seats,
+                        current_active_seats=[],
+                    )
                     self._action_armed_seats.clear()
                     self._action_occurrence_counts.clear()
                     for samples in self._hero_card_samples.values():
@@ -704,6 +741,15 @@ class LiveObservationService:
             self._provisional_positions = {}
             self._positions_reason = "dealer_unresolved"
             return
+        if self._hand_epoch > 0:
+            self._hand_boundary_validation = validate_live_hand_boundary(
+                hand_epoch=self._hand_epoch,
+                table_size=diagnostic.table_size,
+                previous_dealer_seat=self._previous_epoch_dealer,
+                current_dealer_seat=int(self._dealer_consensus.value),
+                previous_active_seats=self._previous_epoch_active_seats,
+                current_active_seats=self._active_seats,
+            )
         try:
             self._provisional_positions = assign_full_ring_positions(
                 table_size=diagnostic.table_size,
@@ -787,6 +833,7 @@ class LiveObservationService:
             seat_stack_consensus=self._stack_consensus,
             seat_action_consensus=self._action_consensus,
             hand_epoch=self._hand_epoch,
+            hand_boundary_validation=self._hand_boundary_validation,
             derived_action_candidates=list(self._derived_actions),
             stack_delta_candidates=list(self._stack_deltas),
             pot_delta_candidates=list(self._pot_deltas),

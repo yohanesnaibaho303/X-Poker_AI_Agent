@@ -323,6 +323,18 @@ export interface LiveObservationStatus {
     };
   }>;
   hand_epoch: number;
+  hand_boundary_validation: {
+    hand_epoch: number;
+    previous_dealer_seat: number | null;
+    current_dealer_seat: number | null;
+    expected_dealer_seat: number | null;
+    previous_active_seats: number[];
+    current_active_seats: number[];
+    status: "pending" | "validated" | "rejected";
+    issues: string[];
+    canonical_event_accepted: false;
+    reason: string;
+  };
   derived_action_candidates: Array<{
     event_id: string;
     hand_epoch: number;

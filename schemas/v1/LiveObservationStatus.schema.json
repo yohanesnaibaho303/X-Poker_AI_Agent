@@ -391,6 +391,105 @@
       "title": "DerivedActionCandidate",
       "type": "object"
     },
+    "LiveHandBoundaryValidation": {
+      "additionalProperties": false,
+      "properties": {
+        "hand_epoch": {
+          "minimum": 0,
+          "title": "Hand Epoch",
+          "type": "integer"
+        },
+        "previous_dealer_seat": {
+          "anyOf": [
+            {
+              "maximum": 8,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Previous Dealer Seat"
+        },
+        "current_dealer_seat": {
+          "anyOf": [
+            {
+              "maximum": 8,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Current Dealer Seat"
+        },
+        "expected_dealer_seat": {
+          "anyOf": [
+            {
+              "maximum": 8,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expected Dealer Seat"
+        },
+        "previous_active_seats": {
+          "items": {
+            "type": "integer"
+          },
+          "title": "Previous Active Seats",
+          "type": "array"
+        },
+        "current_active_seats": {
+          "items": {
+            "type": "integer"
+          },
+          "title": "Current Active Seats",
+          "type": "array"
+        },
+        "status": {
+          "enum": [
+            "pending",
+            "validated",
+            "rejected"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "issues": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Issues",
+          "type": "array"
+        },
+        "canonical_event_accepted": {
+          "const": false,
+          "default": false,
+          "title": "Canonical Event Accepted",
+          "type": "boolean"
+        },
+        "reason": {
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "hand_epoch",
+        "status",
+        "reason"
+      ],
+      "title": "LiveHandBoundaryValidation",
+      "type": "object"
+    },
     "Position": {
       "enum": [
         "UTG",
@@ -961,6 +1060,9 @@
       "title": "Hand Epoch",
       "type": "integer"
     },
+    "hand_boundary_validation": {
+      "$ref": "#/$defs/LiveHandBoundaryValidation"
+    },
     "derived_action_candidates": {
       "items": {
         "$ref": "#/$defs/DerivedActionCandidate"
@@ -1042,7 +1144,8 @@
     "dealer_consensus",
     "positions_reason",
     "pot_consensus",
-    "hand_epoch"
+    "hand_epoch",
+    "hand_boundary_validation"
   ],
   "title": "LiveObservationStatus",
   "type": "object"
