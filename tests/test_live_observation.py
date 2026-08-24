@@ -9,6 +9,7 @@ from xpoker_agent.vision.models import (
     DealerButtonObservation,
     DerivedActionCandidate,
     LiveCaptureDiagnostic,
+    PotDeltaCandidate,
     PotObservation,
     SeatActionObservation,
     SeatPanelObservation,
@@ -132,6 +133,35 @@ def test_changed_numeric_value_requires_fresh_consecutive_consensus() -> None:
     asyncio.run(scenario())
 
 
+def test_pot_delta_requires_two_stable_endpoints_and_does_not_bridge_ambiguity() -> None:
+    async def scenario() -> None:
+        values = [10, 10, 10, 16, 16, 16, None, 20, 20, 20]
+
+        async def capture(_: int, sequence: int):
+            diagnostic = _diagnostic(sequence)
+            value = values[sequence - 1]
+            diagnostic.pot = PotObservation(
+                value_native=value,
+                token=None if value is None else str(value),
+                confidence=0.0 if value is None else 0.95,
+                reason="test candidate",
+            )
+            return diagnostic, CapturedFrame(1, 1, b"\x00" * 4)
+
+        service = LiveObservationService(capture)
+        for _ in values:
+            await service.inspect_once(table_size=9)
+        deltas = service.status().pot_delta_candidates
+
+        assert len(deltas) == 1
+        assert deltas[0].previous_pot_native == Decimal("10")
+        assert deltas[0].current_pot_native == Decimal("16")
+        assert deltas[0].increase_native == Decimal("6")
+        assert deltas[0].canonical_event_accepted is False
+
+    asyncio.run(scenario())
+
+
 def test_action_candidate_is_derived_once_after_clear_and_stable_badge() -> None:
     async def scenario() -> None:
         async def capture(_: int, sequence: int):
@@ -229,6 +259,25 @@ def test_action_amount_reconciliation_requires_a_mutually_unique_delta() -> None
     assert result[0].delta_event_id == delta.event_id
     assert result[0].canonical_event_accepted is False
 
+    service._pot_deltas.append(
+        PotDeltaCandidate(
+            event_id="e" * 64,
+            hand_epoch=3,
+            frame_sequence=23,
+            street="turn",
+            previous_pot_native=Decimal("12"),
+            current_pot_native=Decimal("18"),
+            increase_native=Decimal("6"),
+        )
+    )
+    pot_result = service._reconcile_action_pot()
+
+    assert len(pot_result) == 1
+    assert pot_result[0].status == "matched"
+    assert pot_result[0].amount_native == Decimal("6")
+    assert pot_result[0].pot_delta_event_id == "e" * 64
+    assert pot_result[0].canonical_event_accepted is False
+
     service._derived_actions.append(
         action.model_copy(
             update={
@@ -242,6 +291,10 @@ def test_action_amount_reconciliation_requires_a_mutually_unique_delta() -> None
 
     assert [item.status for item in result] == ["ambiguous", "ambiguous"]
     assert all(item.amount_native is None for item in result)
+    assert [item.status for item in service._reconcile_action_pot()] == [
+        "ambiguous",
+        "ambiguous",
+    ]
 
 
 def test_board_cards_require_temporal_consensus_and_physical_uniqueness() -> None:

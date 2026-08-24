@@ -330,6 +330,17 @@ export interface LiveObservationStatus {
     canonical_event_accepted: false;
     reason: string;
   }>;
+  pot_delta_candidates: Array<{
+    event_id: string;
+    hand_epoch: number;
+    frame_sequence: number;
+    street: "preflop" | "flop" | "turn" | "river" | "unknown";
+    previous_pot_native: string;
+    current_pot_native: string;
+    increase_native: string;
+    canonical_event_accepted: false;
+    reason: string;
+  }>;
   action_amount_reconciliations: Array<{
     action_event_id: string;
     delta_event_id: string | null;
@@ -349,6 +360,17 @@ export interface LiveObservationStatus {
     expected_next_seat: number | null;
     status: "prefix_consistent" | "pending" | "inconsistent";
     issues: string[];
+    canonical_event_accepted: false;
+    reason: string;
+  }>;
+  action_pot_reconciliations: Array<{
+    action_event_id: string;
+    stack_delta_event_id: string | null;
+    pot_delta_event_id: string | null;
+    seat: number;
+    action: "fold" | "check" | "call" | "bet" | "raise" | "all_in";
+    amount_native: string | null;
+    status: "not_required" | "matched" | "pending" | "ambiguous" | "mismatch";
     canonical_event_accepted: false;
     reason: string;
   }>;

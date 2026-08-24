@@ -16,9 +16,11 @@ from xpoker_agent.vision.action_order import validate_action_order
 from xpoker_agent.vision.live import diagnose_authorized_table
 from xpoker_agent.vision.models import (
     ActionAmountReconciliation,
+    ActionPotReconciliation,
     DerivedActionCandidate,
     LiveCaptureDiagnostic,
     LiveObservationStatus,
+    PotDeltaCandidate,
     SeatActionConsensus,
     SeatStackConsensus,
     SeatStatusConsensus,
@@ -123,6 +125,8 @@ class LiveObservationService:
         self._derived_actions: deque[DerivedActionCandidate] = deque(maxlen=50)
         self._last_accepted_stacks: dict[int, Decimal] = {}
         self._stack_deltas: deque[StackDeltaCandidate] = deque(maxlen=50)
+        self._last_accepted_pot: Decimal | None = None
+        self._pot_deltas: deque[PotDeltaCandidate] = deque(maxlen=50)
         self.latest_diagnostic: LiveCaptureDiagnostic | None = None
         self.latest_frame: CapturedFrame | None = None
 
@@ -199,6 +203,8 @@ class LiveObservationService:
         self._derived_actions.clear()
         self._last_accepted_stacks.clear()
         self._stack_deltas.clear()
+        self._last_accepted_pot = None
+        self._pot_deltas.clear()
         self.latest_diagnostic = None
         self.latest_frame = None
         self._stop_event = asyncio.Event()
@@ -343,6 +349,7 @@ class LiveObservationService:
         if diagnostic.pot.value_native is None:
             self._pot_samples.clear()
             self._pot_consensus = self._empty_consensus("current_pot_ambiguous")
+            self._last_accepted_pot = None
         else:
             self._pot_consensus = self._append_consecutive(
                 self._pot_samples,
@@ -353,6 +360,37 @@ class LiveObservationService:
                     confidence=diagnostic.pot.confidence,
                 ),
             )
+        if self._pot_consensus.accepted and self._pot_consensus.value is not None:
+            current_pot = Decimal(self._pot_consensus.value)
+            previous_pot = self._last_accepted_pot
+            if previous_pot is not None and current_pot > previous_pot:
+                street_by_cards = {0: "preflop", 3: "flop", 4: "turn", 5: "river"}
+                pot_street = (
+                    street_by_cards.get(
+                        int(self._board_consensus.value or "-1"), "unknown"
+                    )
+                    if self._board_consensus.accepted
+                    else "unknown"
+                )
+                encoded = (
+                    f"{diagnostic.target_fingerprint}:{self._hand_epoch}:pot:"
+                    f"{diagnostic.frame_sequence}:{previous_pot}:{current_pot}"
+                ).encode()
+                event_id = hashlib.sha256(encoded).hexdigest()
+                if not any(delta.event_id == event_id for delta in self._pot_deltas):
+                    self._pot_deltas.append(
+                        PotDeltaCandidate(
+                            event_id=event_id,
+                            hand_epoch=self._hand_epoch,
+                            frame_sequence=diagnostic.frame_sequence,
+                            street=pot_street,
+                            previous_pot_native=previous_pot,
+                            current_pot_native=current_pot,
+                            increase_native=current_pot - previous_pot,
+                        )
+                    )
+            if previous_pot != current_pot:
+                self._last_accepted_pot = current_pot
 
         by_seat = {panel.seat: panel for panel in diagnostic.seat_panels}
         stack_consensus: list[SeatStackConsensus] = []
@@ -654,7 +692,9 @@ class LiveObservationService:
             hand_epoch=self._hand_epoch,
             derived_action_candidates=list(self._derived_actions),
             stack_delta_candidates=list(self._stack_deltas),
+            pot_delta_candidates=list(self._pot_deltas),
             action_amount_reconciliations=self._reconcile_action_amounts(),
+            action_pot_reconciliations=self._reconcile_action_pot(),
             action_order_validations=validate_action_order(
                 list(self._derived_actions), table_size=self._table_size
             ),
@@ -725,6 +765,115 @@ class LiveObservationService:
                         action=action.action,
                         status="pending",
                         reason="no mutually unique same-seat stack delta in the match window",
+                    )
+                )
+        return results
+
+    def _reconcile_action_pot(self) -> list[ActionPotReconciliation]:
+        amount_results = {
+            result.action_event_id: result for result in self._reconcile_action_amounts()
+        }
+        action_by_id = {action.event_id: action for action in self._derived_actions}
+        exact_matches: dict[str, list[PotDeltaCandidate]] = {}
+        nearby: dict[str, list[PotDeltaCandidate]] = {}
+        reverse_count: dict[str, int] = {}
+        for event_id, amount_result in amount_results.items():
+            action = action_by_id[event_id]
+            if amount_result.status != "matched" or amount_result.amount_native is None:
+                continue
+            candidates = [
+                delta
+                for delta in self._pot_deltas
+                if delta.hand_epoch == action.hand_epoch
+                and abs(delta.frame_sequence - action.frame_sequence) <= 8
+                and (delta.street == "unknown" or delta.street == action.street)
+            ]
+            nearby[event_id] = candidates
+            exact_matches[event_id] = [
+                delta
+                for delta in candidates
+                if delta.increase_native == amount_result.amount_native
+            ]
+            for delta in exact_matches[event_id]:
+                reverse_count[delta.event_id] = reverse_count.get(delta.event_id, 0) + 1
+
+        results: list[ActionPotReconciliation] = []
+        for event_id, amount_result in amount_results.items():
+            action = action_by_id[event_id]
+            if amount_result.status == "not_required":
+                results.append(
+                    ActionPotReconciliation(
+                        action_event_id=event_id,
+                        seat=action.seat,
+                        action=action.action,
+                        amount_native=Decimal("0"),
+                        status="not_required",
+                        reason="fold/check requires no chip or pot increase",
+                    )
+                )
+                continue
+            if amount_result.status != "matched":
+                results.append(
+                    ActionPotReconciliation(
+                        action_event_id=event_id,
+                        stack_delta_event_id=amount_result.delta_event_id,
+                        seat=action.seat,
+                        action=action.action,
+                        amount_native=amount_result.amount_native,
+                        status="pending" if amount_result.status == "pending" else "ambiguous",
+                        reason="a unique stack amount is required before pot reconciliation",
+                    )
+                )
+                continue
+            matches = exact_matches.get(event_id, [])
+            if len(matches) == 1 and reverse_count[matches[0].event_id] == 1:
+                pot_delta = matches[0]
+                results.append(
+                    ActionPotReconciliation(
+                        action_event_id=event_id,
+                        stack_delta_event_id=amount_result.delta_event_id,
+                        pot_delta_event_id=pot_delta.event_id,
+                        seat=action.seat,
+                        action=action.action,
+                        amount_native=amount_result.amount_native,
+                        status="matched",
+                        reason="mutually unique equal stack decrease and pot increase",
+                    )
+                )
+            elif matches:
+                results.append(
+                    ActionPotReconciliation(
+                        action_event_id=event_id,
+                        stack_delta_event_id=amount_result.delta_event_id,
+                        seat=action.seat,
+                        action=action.action,
+                        amount_native=amount_result.amount_native,
+                        status="ambiguous",
+                        reason="multiple actions or pot deltas share the exact temporal match",
+                    )
+                )
+            elif nearby.get(event_id):
+                results.append(
+                    ActionPotReconciliation(
+                        action_event_id=event_id,
+                        stack_delta_event_id=amount_result.delta_event_id,
+                        seat=action.seat,
+                        action=action.action,
+                        amount_native=amount_result.amount_native,
+                        status="mismatch",
+                        reason="nearby stable pot increase does not equal the stack decrease",
+                    )
+                )
+            else:
+                results.append(
+                    ActionPotReconciliation(
+                        action_event_id=event_id,
+                        stack_delta_event_id=amount_result.delta_event_id,
+                        seat=action.seat,
+                        action=action.action,
+                        amount_native=amount_result.amount_native,
+                        status="pending",
+                        reason="no stable pot increase in the temporal match window",
                     )
                 )
         return results

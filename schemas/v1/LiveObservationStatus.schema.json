@@ -184,6 +184,109 @@
       "title": "ActionOrderValidation",
       "type": "object"
     },
+    "ActionPotReconciliation": {
+      "additionalProperties": false,
+      "properties": {
+        "action_event_id": {
+          "maxLength": 64,
+          "minLength": 64,
+          "title": "Action Event Id",
+          "type": "string"
+        },
+        "stack_delta_event_id": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "minLength": 64,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Stack Delta Event Id"
+        },
+        "pot_delta_event_id": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "minLength": 64,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Pot Delta Event Id"
+        },
+        "seat": {
+          "maximum": 8,
+          "minimum": 0,
+          "title": "Seat",
+          "type": "integer"
+        },
+        "action": {
+          "enum": [
+            "fold",
+            "check",
+            "call",
+            "bet",
+            "raise",
+            "all_in"
+          ],
+          "title": "Action",
+          "type": "string"
+        },
+        "amount_native": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Amount Native"
+        },
+        "status": {
+          "enum": [
+            "not_required",
+            "matched",
+            "pending",
+            "ambiguous",
+            "mismatch"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "canonical_event_accepted": {
+          "const": false,
+          "default": false,
+          "title": "Canonical Event Accepted",
+          "type": "boolean"
+        },
+        "reason": {
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "action_event_id",
+        "seat",
+        "action",
+        "status",
+        "reason"
+      ],
+      "title": "ActionPotReconciliation",
+      "type": "object"
+    },
     "DerivedActionCandidate": {
       "additionalProperties": false,
       "properties": {
@@ -302,6 +405,96 @@
       ],
       "title": "Position",
       "type": "string"
+    },
+    "PotDeltaCandidate": {
+      "additionalProperties": false,
+      "properties": {
+        "event_id": {
+          "maxLength": 64,
+          "minLength": 64,
+          "title": "Event Id",
+          "type": "string"
+        },
+        "hand_epoch": {
+          "minimum": 0,
+          "title": "Hand Epoch",
+          "type": "integer"
+        },
+        "frame_sequence": {
+          "minimum": 0,
+          "title": "Frame Sequence",
+          "type": "integer"
+        },
+        "street": {
+          "enum": [
+            "preflop",
+            "flop",
+            "turn",
+            "river",
+            "unknown"
+          ],
+          "title": "Street",
+          "type": "string"
+        },
+        "previous_pot_native": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "title": "Previous Pot Native"
+        },
+        "current_pot_native": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "title": "Current Pot Native"
+        },
+        "increase_native": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "title": "Increase Native"
+        },
+        "canonical_event_accepted": {
+          "const": false,
+          "default": false,
+          "title": "Canonical Event Accepted",
+          "type": "boolean"
+        },
+        "reason": {
+          "default": "stable pot increase; action and stack reconciliation pending",
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "event_id",
+        "hand_epoch",
+        "frame_sequence",
+        "street",
+        "previous_pot_native",
+        "current_pot_native",
+        "increase_native"
+      ],
+      "title": "PotDeltaCandidate",
+      "type": "object"
     },
     "SeatActionConsensus": {
       "additionalProperties": false,
@@ -756,11 +949,25 @@
       "title": "Stack Delta Candidates",
       "type": "array"
     },
+    "pot_delta_candidates": {
+      "items": {
+        "$ref": "#/$defs/PotDeltaCandidate"
+      },
+      "title": "Pot Delta Candidates",
+      "type": "array"
+    },
     "action_amount_reconciliations": {
       "items": {
         "$ref": "#/$defs/ActionAmountReconciliation"
       },
       "title": "Action Amount Reconciliations",
+      "type": "array"
+    },
+    "action_pot_reconciliations": {
+      "items": {
+        "$ref": "#/$defs/ActionPotReconciliation"
+      },
+      "title": "Action Pot Reconciliations",
       "type": "array"
     },
     "action_order_validations": {

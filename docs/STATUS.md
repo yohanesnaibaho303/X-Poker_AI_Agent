@@ -136,7 +136,7 @@
   epochs with zero failures and produced six mutually unique provisional matches: Call 2 and 4,
   plus Bet 4, 3, 6, and 2 native units. None are canonical events yet because legal order and pot
   accounting remain outstanding gates.
-- Current full suite: Ruff passed; 260 Pytest/Hypothesis tests, 11 TypeScript tests, and the
+- Current full suite: Ruff passed; 261 Pytest/Hypothesis tests, 11 TypeScript tests, and the
   production dashboard build passed. Table control remains disabled.
 - Added deterministic provisional clockwise-order validation. Each visual action now carries the
   stable dealer and active-seat context present when it was emitted. Preflop starts after the BB;
@@ -145,6 +145,16 @@
 - Replaced the prior one-action-per-seat/type key with a bounded per-hand occurrence ordinal. A
   badge must still clear and regain three-frame consensus, but valid repeated calls or raises by
   the same seat on one street now receive distinct deterministic event IDs.
+- Live validation after loading the order gate reached 538 frames and 11 provisional hand epochs
+  with zero capture failures. Five preflop/flop streams formed gap-free clockwise prefixes; 14
+  incomplete streets remained pending. A read-only synchronized visual check confirmed the table
+  continued changing between point-in-time reads, so disagreements require matching frame hashes
+  before they can be labeled recognition errors.
+- Added bounded stable-pot-increase candidates and a third fail-closed reconciliation layer. An
+  amount-bearing action passes this layer only when its already unique stack decrease equals exactly
+  one same-hand, same-street stable pot increase within eight frames, and that pot delta maps back to
+  only that action. Different nearby increases are mismatches; missing evidence stays pending;
+  ambiguity clears the pot baseline so gaps are never bridged.
 
 ## Completed project checkpoints
 

@@ -765,6 +765,13 @@ context change within one street is inconsistent; neither case is repaired by in
 rearming uses a bounded per-hand occurrence ordinal, so the same seat may legally produce the same
 action type more than once on one street without duplicate event IDs.
 
+Stable pot increases now form a separate bounded candidate stream. A wager passes the provisional
+accounting layer only when its mutually unique stack decrease equals a mutually unique pot increase
+from the same hand epoch, compatible street, and eight-frame window. A nearby unequal increase is a
+mismatch, missing evidence remains pending, and an ambiguous pot crop clears the accepted baseline
+so the system cannot bridge an unobserved interval. These results remain non-canonical until the
+full legal reducer can reproduce the street totals and resulting pot.
+
 ### Milestone 9 — Authorized control
 
 - Add action-target mapping and calibration.

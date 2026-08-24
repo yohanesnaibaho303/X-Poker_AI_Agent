@@ -417,7 +417,9 @@ export default function App() {
             <div className="health-row"><span>Stable action badges</span><strong>{liveObservation?.seat_action_consensus.filter((seat) => seat.consensus.accepted).length ?? 0}</strong></div>
             <div className="health-row"><span>Derived candidates</span><strong>{liveObservation?.derived_action_candidates.length ?? 0} · epoch {liveObservation?.hand_epoch ?? 0}</strong></div>
             <div className="health-row"><span>Stack deltas</span><strong>{liveObservation?.stack_delta_candidates.length ?? 0}</strong></div>
+            <div className="health-row"><span>Pot deltas</span><strong>{liveObservation?.pot_delta_candidates.length ?? 0}</strong></div>
             <div className="health-row"><span>Amount matches</span><strong>{liveObservation?.action_amount_reconciliations.filter((item) => item.status === "matched").length ?? 0}</strong></div>
+            <div className="health-row"><span>Pot matches</span><strong>{liveObservation?.action_pot_reconciliations.filter((item) => item.status === "matched").length ?? 0}</strong></div>
             <div className="health-row"><span>Order prefixes</span><strong>{liveObservation?.action_order_validations.filter((item) => item.status === "prefix_consistent").length ?? 0}/{liveObservation?.action_order_validations.length ?? 0}</strong></div>
             <div className="health-row"><span>Strategy</span><strong>{snapshot?.health.strategy_status ?? "unavailable"}</strong></div>
             <div className="health-row"><span>Dropped UI updates</span><strong>{snapshot?.metrics.dropped_deliveries ?? 0}</strong></div>

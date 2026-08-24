@@ -217,6 +217,18 @@ class StackDeltaCandidate(StrictModel):
     reason: str = "stable stack decrease; action and pot reconciliation pending"
 
 
+class PotDeltaCandidate(StrictModel):
+    event_id: str = Field(min_length=64, max_length=64)
+    hand_epoch: int = Field(ge=0)
+    frame_sequence: int = Field(ge=0)
+    street: Literal["preflop", "flop", "turn", "river", "unknown"]
+    previous_pot_native: Decimal = Field(ge=0)
+    current_pot_native: Decimal = Field(gt=0)
+    increase_native: Decimal = Field(gt=0)
+    canonical_event_accepted: Literal[False] = False
+    reason: str = "stable pot increase; action and stack reconciliation pending"
+
+
 class ActionAmountReconciliation(StrictModel):
     action_event_id: str = Field(min_length=64, max_length=64)
     delta_event_id: str | None = Field(default=None, min_length=64, max_length=64)
@@ -224,6 +236,18 @@ class ActionAmountReconciliation(StrictModel):
     action: Literal["fold", "check", "call", "bet", "raise", "all_in"]
     amount_native: Decimal | None = Field(default=None, ge=0)
     status: Literal["not_required", "matched", "pending", "ambiguous"]
+    canonical_event_accepted: Literal[False] = False
+    reason: str
+
+
+class ActionPotReconciliation(StrictModel):
+    action_event_id: str = Field(min_length=64, max_length=64)
+    stack_delta_event_id: str | None = Field(default=None, min_length=64, max_length=64)
+    pot_delta_event_id: str | None = Field(default=None, min_length=64, max_length=64)
+    seat: int = Field(ge=0, le=8)
+    action: Literal["fold", "check", "call", "bet", "raise", "all_in"]
+    amount_native: Decimal | None = Field(default=None, ge=0)
+    status: Literal["not_required", "matched", "pending", "ambiguous", "mismatch"]
     canonical_event_accepted: Literal[False] = False
     reason: str
 
@@ -324,9 +348,11 @@ class LiveObservationStatus(StrictModel):
     hand_epoch: int = Field(ge=0)
     derived_action_candidates: list[DerivedActionCandidate] = Field(default_factory=list)
     stack_delta_candidates: list[StackDeltaCandidate] = Field(default_factory=list)
+    pot_delta_candidates: list[PotDeltaCandidate] = Field(default_factory=list)
     action_amount_reconciliations: list[ActionAmountReconciliation] = Field(
         default_factory=list
     )
+    action_pot_reconciliations: list[ActionPotReconciliation] = Field(default_factory=list)
     action_order_validations: list[ActionOrderValidation] = Field(default_factory=list)
     last_error: str | None = None
     controller_enabled: Literal[False] = False
