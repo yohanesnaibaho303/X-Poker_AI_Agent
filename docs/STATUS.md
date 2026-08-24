@@ -175,6 +175,10 @@
   that neighboring blue pixels cannot override the right-card spade.
 - After loading the suit fix, a live `Jh 8d` hand correctly classified the existing right-8 diamond
   while withholding the unknown left-J. The left-J mask was enrolled with its exact frame hash.
+- Live validation then reached a complete, visually verified `8c 6h` hero detection: internal seat
+  0, BB, four-handed on the selected 9-max layout, 60 BB stack/effective stack, 5.5 BB stable pot,
+  and 10.91 SPR. The dashboard now highlights the detected hand class and shows its aggregated 2-BB
+  open frequency only when a compatible unopened-position reference prior exists; BB stays unavailable.
 - Added privacy-scoped native blind parsing from X-Poker's rule label, including grouped and compact
   chip tokens. Small and big blinds must appear together with `0 < SB < BB`, then repeat for three
   distinct frames before the live status exposes a `SB/BB` normalization basis. Ambiguous OCR clears

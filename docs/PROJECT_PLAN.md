@@ -706,6 +706,9 @@ xpoker-agent/
   position, normalize accepted stack/pot/call evidence to BB, and display deterministic pot odds,
   effective stack, SPR, and the matching provenance-bearing range. Full replay and complete
   opponent-history presentation are not on the MVP critical path.
+- When a compatible unopened-position reference prior exists, highlight the detected 169-class
+  cell and display its aggregated 2-BB open frequency. BB or unresolved/non-unopened nodes must
+  remain unavailable instead of showing a stale chart.
 - Resolve 3-to-9-handed positions from the actually dealt clockwise ring. A selected 9-max table
   remains 9-max range scope when temporarily short-handed; expose the seat-count mismatch rather
   than silently substituting six-max ranges.

@@ -133,7 +133,15 @@ function ActionHistory({ events }: { events: HandEvent[] }) {
   );
 }
 
-function RangeGrid({ matrix, loading }: { matrix: RangeMatrix | null; loading: boolean }) {
+function RangeGrid({
+  matrix,
+  loading,
+  heroHandClass,
+}: {
+  matrix: RangeMatrix | null;
+  loading: boolean;
+  heroHandClass: string | null;
+}) {
   return (
     <section className="panel range-panel">
       <div className="panel-heading compact">
@@ -141,7 +149,7 @@ function RangeGrid({ matrix, loading }: { matrix: RangeMatrix | null; loading: b
           <p className="eyebrow">Combination strategy</p>
           <h3>Reference prior matrix</h3>
         </div>
-        <StatusPill tone="warn">Not GTO</StatusPill>
+        <StatusPill tone={heroHandClass ? "ok" : "warn"}>{heroHandClass ?? "Not GTO"}</StatusPill>
       </div>
       {loading && <div className="matrix-skeleton">Loading 1,326 combinations…</div>}
       {!loading && matrix && (
@@ -151,7 +159,7 @@ function RangeGrid({ matrix, loading }: { matrix: RangeMatrix | null; loading: b
               const raise = cell.action_mix["raise@2bb"] ?? 0;
               return (
                 <div
-                  className="range-cell"
+                  className={`range-cell ${cell.hand_class === heroHandClass ? "hero-hand" : ""}`}
                   key={cell.hand_class}
                   style={{ "--raise": raise } as CSSProperties}
                   title={`${cell.hand_class}: raise ${(raise * 100).toFixed(0)}%`}
@@ -252,6 +260,10 @@ export default function App() {
   const rangePosition = liveObservation?.running
     ? liveObservation.detected_hero_position
     : position;
+  const heroRangeCell = useMemo(
+    () => matrix?.cells.find((cell) => cell.hand_class === liveHero?.hand_class) ?? null,
+    [liveHero?.hand_class, matrix],
+  );
 
   useEffect(() => {
     if (!POSITIONS[tableSize].includes(position)) setPosition("BTN");
@@ -495,7 +507,7 @@ export default function App() {
             </div>
           </section>
           <div className="intel-grid">
-            <RangeGrid matrix={matrix} loading={matrixLoading} />
+            <RangeGrid matrix={matrix} loading={matrixLoading} heroHandClass={liveHero?.hand_class ?? null} />
             <section className="panel strategy-panel">
               <div className="panel-heading compact">
                 <div><p className="eyebrow">Live hero intelligence</p><h3>Hand, range & calculation</h3></div>
@@ -506,8 +518,8 @@ export default function App() {
                 <small>{liveHero?.hero_seat != null ? `Seat ${liveHero.hero_seat + 1} · ${liveHero.hero_position ?? "position pending"}` : "Waiting for local hero evidence."}</small>
               </div>
               <div className="strategy-block">
-                <span>Range source</span><strong>{matrix ? "Reference prior" : "Unavailable"}</strong>
-                <small>{liveHero?.hero_position ? `${liveHero.hero_position} selected automatically · ${liveHero.dealt_player_count}-handed · range mismatch ${liveHero.range_seat_mismatch} seat(s). Not exact GTO.` : "Waiting for a resolved dealt position."}</small>
+                <span>Detected range action</span><strong>{heroRangeCell ? `Open 2 BB ${formatPercent(heroRangeCell.action_mix["raise@2bb"] ?? 0)}` : "Unavailable"}</strong>
+                <small>{liveHero?.hero_position ? `${liveHero.hand_class ?? "Hand pending"} at ${liveHero.hero_position} selected automatically · ${liveHero.dealt_player_count}-handed · range mismatch ${liveHero.range_seat_mismatch} seat(s). Reference prior, not exact GTO.` : "Waiting for a resolved dealt position."}</small>
               </div>
               <div className="strategy-block">
                 <span>Live blockers</span><strong>{liveHero?.issues.length ?? 0}</strong>
