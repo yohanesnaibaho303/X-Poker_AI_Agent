@@ -46,6 +46,7 @@ class MonitorSnapshot(StrictModel):
     health: MonitorHealth
     metrics: MonitorMetrics
     replay: ReplayProgress
+    poker_math: dict[str, object]
     strategy: dict[str, object]
     exploit: dict[str, object]
     audit: list[dict[str, object]] = Field(default_factory=list)
@@ -80,4 +81,10 @@ class MonitorHistory(StrictModel):
 
 class ReplayStartRequest(StrictModel):
     table_size: Literal[6, 9]
+    interval_ms: int = Field(default=250, ge=25, le=5000)
+
+
+class ReplaySeekRequest(StrictModel):
+    table_size: Literal[6, 9]
+    index: int = Field(ge=0, le=14)
     interval_ms: int = Field(default=250, ge=25, le=5000)

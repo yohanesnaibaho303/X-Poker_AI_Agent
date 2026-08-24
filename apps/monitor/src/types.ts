@@ -68,9 +68,19 @@ export interface MonitorSnapshot {
     processing_latency_ms: number;
   };
   replay: { active: boolean; index: number; total: number; interval_ms: number };
+  poker_math: {
+    effective_stack_bb: string | null;
+    call_amount_bb: string;
+    pot_odds_required_equity: string | null;
+    spr: string | null;
+    equity: number | null;
+    call_ev_bb: string | null;
+    status: string;
+    assumptions: string[];
+  };
   strategy: Record<string, unknown>;
   exploit: Record<string, unknown>;
-  audit: Array<Record<string, unknown>>;
+  audit: Array<{ check: string; status: string; detail: string; source: string }>;
 }
 
 export interface MonitorEnvelope {

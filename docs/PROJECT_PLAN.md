@@ -673,10 +673,11 @@ xpoker-agent/
 **Current checkpoint (2026-08-24):** The local React/TypeScript dashboard and FastAPI/WebSocket
 boundary run complete deterministic 6-max and 9-max synthetic hand replays. Schema-versioned
 snapshots, bounded event delivery, gap recovery, session/chip controls, reconstructed state, action
-history, health, reference-prior ranges, assumptions, and fail-closed strategy/control status are
-inspectable. The milestone remains in progress until live capture/vision output, opponent and
-resolved-strategy/math views, richer replay inspection, latency/soak telemetry, and complete
-authorized-session evidence pass their gates.
+history, replay scrubbing, health/latency, deterministic pot odds and SPR, reference-prior ranges,
+decision gates, assumptions, and fail-closed strategy/control status are inspectable. A 20-session,
+300-snapshot synthetic soak regression protects stream/state integrity. The milestone remains in
+progress until live capture/vision output, opponent ranges, resolved strategy/equity/EV views, and
+complete authorized-session evidence pass their gates.
 
 ### Milestone 9 — Authorized control
 

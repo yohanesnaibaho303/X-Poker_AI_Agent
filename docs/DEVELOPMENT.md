@@ -82,7 +82,8 @@ GTO solutions.
 - Exact/seeded equity, exhaustive hand evaluation, and deterministic chip-EV metrics.
 - Hash-verified, isolated 6-max and 9-max reference-prior RFI libraries.
 - Synthetic 6-max/9-max monitoring replay with bounded WebSocket delivery, gap recovery, health,
-  action history, range matrix inspection, and explicit control lockout.
+  action history, replay scrubbing, deterministic pot odds/SPR, decision-gate inspection, range
+  matrix inspection, latency/drop telemetry, synthetic soak coverage, and explicit control lockout.
 
 ## Current limitations
 

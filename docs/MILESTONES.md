@@ -124,14 +124,15 @@ Exit: synthetic profiles produce stable, explainable, regression-tested adjustme
 - [ ] Display capture overlays, confidence, state, action history, and health.
 - [ ] Display hero/opponent ranges and GTO/exploit frequencies.
 - [ ] Display equity, EV, pot odds, abstraction mismatch, assumptions, and sources.
-- [ ] Add replay navigation and decision/audit inspection.
-- [ ] Add gap recovery, backpressure, and long-session telemetry.
+- [x] Add replay navigation and decision/audit inspection.
+- [x] Add gap recovery, backpressure, and long-session telemetry.
 
 Checkpoint: synthetic 6-max and 9-max replays stream complete legal traces into the dashboard.
-State, action history, confidence, health, the hero reference-prior matrix, explicit unavailable-GTO
-status, source assumptions, and control lockout are visible. Snapshot recovery and bounded delivery
-are implemented. The unchecked items require live capture/vision evidence, resolved strategy/math
-data, richer replay inspection, and long-session evaluation.
+State, action history, confidence, health/latency, deterministic pot odds and SPR, the hero
+reference-prior matrix, explicit unavailable-GTO status, source assumptions, decision gates, and
+control lockout are visible. Scrubbing, snapshot recovery, bounded delivery, and a 20-session
+synthetic soak regression are implemented. The unchecked items require live capture/vision evidence,
+opponent ranges, and resolved strategy/equity/EV data.
 
 Exit: complete authorized sessions can be monitored without state corruption and with acceptable resource use.
 

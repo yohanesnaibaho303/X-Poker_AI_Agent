@@ -1,0 +1,32 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "table_size": {
+      "enum": [
+        6,
+        9
+      ],
+      "title": "Table Size",
+      "type": "integer"
+    },
+    "index": {
+      "maximum": 14,
+      "minimum": 0,
+      "title": "Index",
+      "type": "integer"
+    },
+    "interval_ms": {
+      "default": 250,
+      "maximum": 5000,
+      "minimum": 25,
+      "title": "Interval Ms",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "table_size",
+    "index"
+  ],
+  "title": "ReplaySeekRequest",
+  "type": "object"
+}

@@ -881,6 +881,11 @@
     "replay": {
       "$ref": "#/$defs/ReplayProgress"
     },
+    "poker_math": {
+      "additionalProperties": true,
+      "title": "Poker Math",
+      "type": "object"
+    },
     "strategy": {
       "additionalProperties": true,
       "title": "Strategy",
@@ -909,6 +914,7 @@
     "health",
     "metrics",
     "replay",
+    "poker_math",
     "strategy",
     "exploit"
   ],

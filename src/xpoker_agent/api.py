@@ -20,7 +20,7 @@ from xpoker_agent.config import load_game_config, load_runtime_config
 from xpoker_agent.logging import configure_logging
 from xpoker_agent.models import Position, SessionSetupRequest, positions_for_table_size
 from xpoker_agent.monitoring import MonitorHub, ReplayController, build_replay_snapshot
-from xpoker_agent.monitoring.models import ReplayStartRequest
+from xpoker_agent.monitoring.models import ReplaySeekRequest, ReplayStartRequest
 from xpoker_agent.ranges.library import (
     ObservedRangeAction,
     PreflopSpotKey,
@@ -221,6 +221,21 @@ async def start_monitor_replay(request: ReplayStartRequest) -> dict[str, object]
 async def stop_monitor_replay() -> dict[str, object]:
     await replay_controller.stop()
     return {"stopped": True, "controller_enabled": False}
+
+
+@app.post("/v1/monitor/replay/seek")
+async def seek_monitor_replay(request: ReplaySeekRequest) -> dict[str, object]:
+    await replay_controller.seek(
+        table_size=request.table_size,
+        index=request.index,
+        interval_ms=request.interval_ms,
+    )
+    return {
+        "seeked": True,
+        "table_size": request.table_size,
+        "index": request.index,
+        "controller_enabled": False,
+    }
 
 
 @app.websocket("/v1/monitor/stream")

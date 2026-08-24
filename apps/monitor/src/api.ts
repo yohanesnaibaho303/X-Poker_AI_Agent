@@ -59,6 +59,13 @@ export function stopReplay(): Promise<unknown> {
   return requestJson("/v1/monitor/replay/stop", { method: "POST" });
 }
 
+export function seekReplay(tableSize: TableSize, index: number): Promise<unknown> {
+  return requestJson("/v1/monitor/replay/seek", {
+    method: "POST",
+    body: JSON.stringify({ table_size: tableSize, index, interval_ms: 250 }),
+  });
+}
+
 export function monitorWebSocketUrl(): string {
   const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
   return `${protocol}//${window.location.host}/v1/monitor/stream`;

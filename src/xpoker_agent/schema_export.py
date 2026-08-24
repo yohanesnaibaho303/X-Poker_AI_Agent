@@ -33,6 +33,7 @@ from xpoker_agent.monitoring.models import (
     MonitorEnvelope,
     MonitorHistory,
     MonitorSnapshot,
+    ReplaySeekRequest,
     ReplayStartRequest,
 )
 from xpoker_agent.ranges.library import RangeArtifact
@@ -64,6 +65,7 @@ MODELS = [
     MonitorSnapshot,
     MonitorEnvelope,
     MonitorHistory,
+    ReplaySeekRequest,
     ReplayStartRequest,
     DecisionEnvelope,
     ActionAttempt,

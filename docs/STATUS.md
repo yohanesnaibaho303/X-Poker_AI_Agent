@@ -51,7 +51,11 @@
   queues, retained history, gap detection/recovery, and deterministic 6-max/9-max replay sources.
 - Verified complete 14-transition six-max and nine-max browser replays with no console errors;
   strategy and capture absence remain explicit and table control stays unavailable.
-- Current full suite: Ruff passed; 214 Pytest/Hypothesis tests and 11 TypeScript tests passed.
+- Added deterministic replay seek/step controls, pot odds, required equity, effective stack, SPR,
+  snapshot latency, and inspectable legality/strategy/control decision gates. Equity and EV remain
+  explicitly unavailable without a validated opponent range.
+- Added a 20-session, 300-snapshot bounded-stream soak regression with exact drop telemetry.
+- Current full suite: Ruff passed; 217 Pytest/Hypothesis tests and 11 TypeScript tests passed.
 
 ## Completed project checkpoints
 
@@ -66,14 +70,14 @@
 ## In-progress checkpoint
 
 - Milestone 8 — local dashboard, session/chip controls, schema-versioned replay stream, bounded
-  delivery, health/state/action inspection, and reference-prior visualization are implemented.
+  delivery, health/state/action/math inspection, replay scrubbing, decision audit, synthetic soak,
+  and reference-prior visualization are implemented.
 
 ## Next
 
 - Connect recorded/live capture, perception evidence, and reconstructed observations to the monitor.
 - Add opponent-range, poker-math, exact/abstracted strategy, exploit-frequency, provenance, and
   decision-trace views as those upstream results become available.
-- Add replay scrubbing plus latency and long-session soak evaluation.
 - Continue Milestone 6 solution import/resolution while keeping reference priors ineligible for exact-GTO results.
 - Source or independently generate configuration-matched 6-max and 9-max no-rake 2 BB solutions.
 - Add exact/nearest strategy-node lookup, quantitative mismatch, and replay comparisons.

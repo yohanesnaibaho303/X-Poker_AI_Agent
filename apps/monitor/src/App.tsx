@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState, type CSSProperties, type ReactNode } from
 import {
   fetchReferenceRange,
   previewSession,
+  seekReplay,
   startReplay,
   stopReplay,
 } from "./api";
@@ -208,6 +209,10 @@ export default function App() {
     await refresh();
   };
 
+  const seek = async (index: number) => {
+    await seekReplay(tableSize, Math.max(0, Math.min(14, index)));
+  };
+
   const state = snapshot?.state;
   return (
     <main className="app-shell">
@@ -272,6 +277,7 @@ export default function App() {
             <div className="health-row"><span>Capture</span><strong>{snapshot?.health.capture_active ? "Active" : "Inactive"}</strong></div>
             <div className="health-row"><span>Strategy</span><strong>{snapshot?.health.strategy_status ?? "unavailable"}</strong></div>
             <div className="health-row"><span>Dropped UI updates</span><strong>{snapshot?.metrics.dropped_deliveries ?? 0}</strong></div>
+            <div className="health-row"><span>Snapshot latency</span><strong>{snapshot ? `${snapshot.metrics.processing_latency_ms.toFixed(2)} ms` : "—"}</strong></div>
             {(error || snapshot?.health.warnings.length) && (
               <div className="warning-stack">
                 {error && <p>{error}</p>}
@@ -288,9 +294,19 @@ export default function App() {
               <p className="eyebrow">Replay transport</p>
               <strong>{snapshot?.replay.index ?? 0} / {snapshot?.replay.total ?? 14} transitions</strong>
             </div>
-            <div className="progress-track"><span style={{ width: `${((snapshot?.replay.index ?? 0) / (snapshot?.replay.total || 14)) * 100}%` }} /></div>
+            <input
+              aria-label="Replay transition"
+              className="replay-slider"
+              type="range"
+              min="0"
+              max={snapshot?.replay.total ?? 14}
+              value={snapshot?.replay.index ?? 0}
+              onChange={(event) => void seek(Number(event.target.value))}
+            />
             <div className="button-row">
+              <button className="secondary-button step-button" aria-label="Previous transition" onClick={() => void seek((snapshot?.replay.index ?? 0) - 1)}>‹</button>
               <button className="primary-button" onClick={() => void runReplay()}>Run replay</button>
+              <button className="secondary-button step-button" aria-label="Next transition" onClick={() => void seek((snapshot?.replay.index ?? 0) + 1)}>›</button>
               <button className="secondary-button" onClick={() => void stopReplay()}>Stop</button>
             </div>
           </section>
@@ -313,6 +329,14 @@ export default function App() {
                 <span>Exploit model</span><strong>{String(snapshot?.exploit.status ?? "synthetic_only")}</strong>
                 <small>Waiting for reconstructed opponent observations.</small>
               </div>
+              <div className="math-grid">
+                <div><span>Effective</span><strong>{snapshot?.poker_math.effective_stack_bb ? `${snapshot.poker_math.effective_stack_bb}BB` : "—"}</strong></div>
+                <div><span>SPR</span><strong>{snapshot?.poker_math.spr ? Number(snapshot.poker_math.spr).toFixed(2) : "—"}</strong></div>
+                <div><span>Call</span><strong>{snapshot ? `${snapshot.poker_math.call_amount_bb}BB` : "—"}</strong></div>
+                <div><span>Required equity</span><strong>{snapshot?.poker_math.pot_odds_required_equity ? formatPercent(Number(snapshot.poker_math.pot_odds_required_equity)) : "—"}</strong></div>
+                <div><span>Equity</span><strong>{formatPercent(snapshot?.poker_math.equity)}</strong></div>
+                <div><span>Call EV</span><strong>{snapshot?.poker_math.call_ev_bb ?? "—"}</strong></div>
+              </div>
               <label htmlFor="position">Range position</label>
               <select id="position" value={position} onChange={(event) => setPosition(event.target.value)}>
                 {POSITIONS[tableSize].map((item) => <option key={item}>{item}</option>)}
@@ -327,7 +351,16 @@ export default function App() {
             <p className="eyebrow">Safety boundary</p>
             <h3>Decision audit</h3>
             <div className="audit-lock">LOCKED</div>
-            <p>No action can be sent to X-Poker. Arming, target verification, and click execution do not exist in this milestone.</p>
+            <div className="audit-checks">
+              {snapshot?.audit.map((item) => (
+                <article key={item.check}>
+                  <span className={item.status}>{item.status}</span>
+                  <strong>{item.check.replaceAll("_", " ")}</strong>
+                  <p>{item.detail}</p>
+                  <small>{item.source}</small>
+                </article>
+              ))}
+            </div>
           </section>
         </aside>
       </div>
