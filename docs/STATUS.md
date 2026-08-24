@@ -24,9 +24,11 @@
   illegally re-raise when action was not reopened.
 - Event batches are atomic; invalid replay stops at the last valid state with a reason and failed
   payload hash. Canonical JSON hand histories are byte-deterministic.
+- Added heads-up preflop/postflop order coverage, cross-hand identity/configuration/dealt-seat checks,
+  clockwise dealer movement validation, and idempotent quarantine persistence.
 - M3 remains fail closed: no recognition output can enter this reducer until its confidence and
   validation boundary passes. Raw live frames remain ignored and control remains disabled.
-- Current full suite: Ruff passed; 100 Pytest/Hypothesis tests passed.
+- Current full suite: Ruff passed; 104 Pytest/Hypothesis tests passed.
 
 ## Completed project checkpoints
 
@@ -36,9 +38,9 @@
 
 ## Next
 
-- Handle cumulative short-raise reopening, odd chips, and heads-up blind/action-order exceptions.
-- Add hand-boundary/dealer movement validation, persisted evidence bundles, and readable hand-history
-  export.
+- Add explicit blind-role observations, cumulative short-raise/odd-chip house-rule details, and
+  readable hand-history export.
+- Connect validated M3 observation batches to quarantinable event inference with frame evidence.
 - Continue the M3 held-out recognition work in parallel; M4 live evaluation remains blocked on it.
 
 ## Blockers

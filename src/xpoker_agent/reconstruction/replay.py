@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+from pathlib import Path
 
 from pydantic import Field
 
@@ -73,3 +74,25 @@ def export_canonical_history(
         "final_state": final_state.model_dump(mode="json"),
     }
     return (json.dumps(payload, sort_keys=True, separators=(",", ":")) + "\n").encode()
+
+
+def persist_quarantine(result: ReplayResult, directory: Path) -> Path:
+    if result.accepted or result.failure is None:
+        raise ValueError("only failed replay results can be quarantined")
+    directory.mkdir(parents=True, exist_ok=True)
+    failure = result.failure
+    filename = (
+        f"{failure.hand_id}-event-{failure.failed_event_sequence:06d}-"
+        f"{failure.event_payload_sha256[:12]}.json"
+    )
+    path = directory / filename
+    payload = (
+        json.dumps(result.model_dump(mode="json"), sort_keys=True, separators=(",", ":"))
+        + "\n"
+    ).encode()
+    if path.exists():
+        if path.read_bytes() != payload:
+            raise OSError("quarantine artifact path contains different evidence")
+        return path
+    path.write_bytes(payload)
+    return path

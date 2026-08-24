@@ -31,10 +31,15 @@ from deterministic fixtures, not raw live OCR output.
 - Multi-event database appends are atomic. Invalid replay stops at the last valid revision and emits
   a compact quarantine record containing the failure reason and failed-event payload hash.
 - Canonical JSON hand-history export is byte-deterministic for identical inputs.
+- Heads-up tests verify button/small-blind first action preflop and the other seat's first action
+  postflop within the nine-seat coordinate model.
+- Cross-hand validation requires a new hand identity, stable configuration and dealt-seat set, a
+  completed previous hand, and clockwise dealer movement to the next dealt seat.
+- Failed replay quarantine records persist idempotently under a content-derived filename.
 
 ## Verification
 
-- Full project suite: 100 Pytest/Hypothesis tests.
+- Full project suite: 104 Pytest/Hypothesis tests.
 - Deterministic simulated hand: 14 canonical events, 15 states, exact replay equivalence.
 - Event-store tests cover round-trip, hash-chain verification, non-contiguous sequence rejection,
   and database mutation rejection.
@@ -43,7 +48,6 @@ from deterministic fixtures, not raw live OCR output.
 ## Not yet complete
 
 - Odd-chip assignment rules and cumulative short-raise reopening rules.
-- Heads-up blind/order exceptions.
-- Hand-boundary detection and dealer/blind movement across distinct hands.
-- Observation-to-event inference, persisted evidence bundles, and human-readable text export.
+- Blind-role labels and odd-chip/cumulative-short-raise house-rule details.
+- Observation-to-event inference, frame-evidence bundles, and human-readable text export.
 - Recorded complete-hand evaluation and the 98% exact reconstruction gate.

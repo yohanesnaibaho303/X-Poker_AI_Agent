@@ -71,8 +71,8 @@ Exit: supported-layout recognition meets the per-component targets in `docs/QUAL
 - [x] Implement the NLH state reducer and street/action ordering.
 - [x] Validate unique cards, blinds, calls, raises, all-ins, and side pots.
 - [x] Reconcile stack, bet, pot, and award accounting.
-- [ ] Handle heads-up and multiway play within the nine-seat layout.
-- [ ] Detect hand boundaries and dealer/blind movement.
+- [x] Handle heads-up and multiway play within the nine-seat layout.
+- [x] Detect hand boundaries and dealer/blind movement.
 - [x] Quarantine ambiguous or impossible hands with evidence.
 - [x] Export canonical hand histories and build replay inspection.
 
