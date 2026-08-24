@@ -1,0 +1,14 @@
+{
+  "schema_version": "1.0",
+  "profile_id": "xpoker-authorized-test-example",
+  "enabled": false,
+  "allowed_process_names": [],
+  "allowed_executable_sha256": [],
+  "title_patterns": [
+    "(?i)x[- ]?poker"
+  ],
+  "allowed_window_classes": [],
+  "required_visual_role": "table",
+  "minimum_visual_role_confidence": 0.9,
+  "notes": "Copy to authorized_target.local.json during authorized-instance calibration. Never commit machine-specific authorization data."
+}

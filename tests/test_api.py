@@ -1,4 +1,5 @@
 from xpoker_agent.api import (
+    capture_status,
     controller_status,
     game_config,
     health,
@@ -7,6 +8,7 @@ from xpoker_agent.api import (
     research_sources,
     simulation_hand,
 )
+from xpoker_agent.capture.profile import EXAMPLE_PROFILE, load_target_profile
 
 
 def test_health_reports_disabled_controller() -> None:
@@ -34,6 +36,18 @@ def test_controller_endpoint_is_fail_closed() -> None:
     result = controller_status()
     assert result["enabled"] is False
     assert result["available"] is False
+
+
+def test_capture_status_is_xpoker_only_and_inactive(monkeypatch) -> None:
+    monkeypatch.setattr(
+        "xpoker_agent.api.load_target_profile",
+        lambda: load_target_profile(EXAMPLE_PROFILE),
+    )
+    result = capture_status()
+    assert result["runtime_target"] == "X-Poker"
+    assert result["authorization_enabled"] is False
+    assert result["eligible_count"] == 0
+    assert result["capture_active"] is False
 
 
 def test_research_sources_are_inspectable() -> None:

@@ -25,6 +25,8 @@ dev = [
 xpoker-agent = "xpoker_agent.main:run"
 xpoker-simulate = "xpoker_agent.simulation:main"
 xpoker-export-schemas = "xpoker_agent.schema_export:main"
+xpoker-windows = "xpoker_agent.capture.cli:main"
+xpoker-capture = "xpoker_agent.capture.recording:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}

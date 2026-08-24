@@ -35,6 +35,12 @@ This creates `.venv`, verifies Python 3.12, and installs the exact direct depend
 
 # Run the deterministic replay fixture
 .\.venv\Scripts\python.exe -m xpoker_agent.simulation
+
+# List X-Poker candidates and fail-closed authorization results
+.\.venv\Scripts\python.exe -m xpoker_agent.capture.cli
+
+# Record and verify local authorized client-area frames (Git-ignored)
+.\.venv\Scripts\python.exe -m xpoker_agent.capture.recording --frames 5
 ```
 
 The API binds only to `127.0.0.1:8765`. Interactive documentation is available locally at `/docs` while it is running.
@@ -56,11 +62,21 @@ No computer-vision, OCR, ML, solver, or browser-shell dependency is installed ye
 - Deterministic event reduction and replay identifiers.
 - Versioned JSON Schemas under `schemas/v1`.
 - Observe-only local API with an explicitly unavailable controller.
+- X-Poker-only Win32 discovery and machine-local target authorization.
+- Occlusion-tolerant client-area capture, canonical BGRA8 normalization, and replay manifests.
+- First supported X-Poker 10.0 portrait capture layout at 445×800 and 96 canonical DPI.
 
 ## Current limitations
 
-- No X-Poker window capture or supported visual layout exists yet.
-- No visual recognition, OCR, range library, equity engine, GTO data, exploit model, or dashboard exists yet.
+- The first capture layout has broad primary regions; component-specific recognition regions and accuracy calibration belong to Milestone 3.
+- No complete visual recognition, OCR, range library, equity engine, GTO data, exploit model, or dashboard exists yet.
 - The reducer foundation validates event ordering, cards, chip debits, street changes, and awards for the simulated path; full NLH action-order, minimum-raise, all-in, multiway, and side-pot rules belong to Milestone 4.
 - No table input/control implementation exists. Control is disabled in configuration, schemas, and API responses.
 - The project license has not been selected; external-source boundaries are documented in ADR 0002.
+
+## Capture privacy and authorization
+
+Copy `configs/capture/authorized_target.example.json` to the ignored
+`configs/capture/authorized_target.local.json` only while calibrating an explicitly authorized
+X-Poker instance. Live replay frames are written beneath ignored `data/frames/`. Do not commit raw
+frames containing account balances, player names, club identifiers, or table identifiers.

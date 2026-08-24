@@ -40,14 +40,14 @@ Exit: a reviewable, licensed/provenanced catalog contains representative example
 
 ## Milestone 2 — Window capture and calibration
 
-- [ ] Enumerate X-Poker/emulator candidate windows.
-- [ ] Implement authorized-target profiles and identity validation.
-- [ ] Capture client-area frames without unrelated screen regions.
-- [ ] Normalize DPI, dimensions, color format, and orientation.
-- [ ] Locate table anchors and version the first layout profile.
-- [ ] Handle movement, resizing, minimization, and identity loss.
-- [ ] Add adaptive frame scheduling, hashes, and performance telemetry.
-- [ ] Create capture recordings and deterministic replay diagnostics.
+- [x] Enumerate X-Poker/emulator candidate windows.
+- [x] Implement authorized-target profiles and identity validation.
+- [x] Capture client-area frames without unrelated screen regions.
+- [x] Normalize DPI, dimensions, color format, and orientation.
+- [x] Locate table anchors and version the first layout profile.
+- [x] Handle movement, resizing, minimization, and identity loss.
+- [x] Add adaptive frame scheduling, hashes, and performance telemetry.
+- [x] Create capture recordings and deterministic replay diagnostics.
 
 Exit: stable normalized frames are automatically collected from the authorized instance with target identity and replay evidence.
 

@@ -8,6 +8,8 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
 from xpoker_agent import __version__
+from xpoker_agent.capture.profile import load_target_profile, match_authorized_target
+from xpoker_agent.capture.windows import discover_xpoker_windows
 from xpoker_agent.config import load_game_config, load_runtime_config
 from xpoker_agent.logging import configure_logging
 from xpoker_agent.research.assets import AssetManifest
@@ -95,4 +97,19 @@ def controller_status() -> dict[str, object]:
         "enabled": False,
         "available": False,
         "reason": "Control is unavailable until the required acceptance gates pass.",
+    }
+
+
+@app.get("/v1/capture/status")
+def capture_status() -> dict[str, object]:
+    profile = load_target_profile()
+    candidates = discover_xpoker_windows(classify_visual_role=True)
+    matches = [match_authorized_target(candidate, profile) for candidate in candidates]
+    return {
+        "runtime_target": "X-Poker",
+        "profile_id": profile.profile_id,
+        "authorization_enabled": profile.enabled,
+        "candidate_count": len(candidates),
+        "eligible_count": sum(match.eligible for match in matches),
+        "capture_active": False,
     }

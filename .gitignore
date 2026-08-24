@@ -11,6 +11,7 @@ build/
 *.egg-info/
 .env
 configs/runtime/local.json
+configs/capture/authorized_target.local.json
 data/frames/
 data/transcripts/
 data/hands/
