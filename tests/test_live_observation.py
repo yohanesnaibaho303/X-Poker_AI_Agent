@@ -171,7 +171,39 @@ def test_pot_delta_requires_two_stable_endpoints_and_does_not_bridge_ambiguity()
         assert deltas[0].previous_pot_native == Decimal("10")
         assert deltas[0].current_pot_native == Decimal("16")
         assert deltas[0].increase_native == Decimal("6")
+        assert deltas[0].evidence_mode == "stable_endpoints"
+        assert deltas[0].confidence >= 0.95
         assert deltas[0].canonical_event_accepted is False
+
+    asyncio.run(scenario())
+
+
+def test_high_confidence_pot_transition_is_candidate_only_until_cross_signal_match() -> None:
+    async def scenario() -> None:
+        async def capture(_: int, sequence: int):
+            diagnostic = _diagnostic(sequence)
+            value = 10 if sequence == 1 else 12
+            diagnostic.pot = PotObservation(
+                value_native=value,
+                token=str(value),
+                confidence=0.99,
+                reason="test candidate",
+            )
+            return diagnostic, CapturedFrame(1, 1, b"\x00" * 4)
+
+        service = LiveObservationService(capture)
+        await service.inspect_once(table_size=9)
+        await service.inspect_once(table_size=9)
+        status = service.status()
+
+        assert status.pot_consensus.accepted is False
+        assert len(status.pot_delta_candidates) == 1
+        assert status.pot_delta_candidates[0].increase_native == Decimal("2")
+        assert (
+            status.pot_delta_candidates[0].evidence_mode
+            == "cross_signal_single_frame"
+        )
+        assert status.pot_delta_candidates[0].canonical_event_accepted is False
 
     asyncio.run(scenario())
 

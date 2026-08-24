@@ -763,6 +763,11 @@ unresolved boundary, mode, blind, dealer, ring, stack, card, amount, pot, or clo
 listed, and only action IDs passing all provisional reconciliation layers are eligible. Readiness is
 inspectable but does not itself create canonical events or enable control.
 
+Fast-changing pot labels may produce a lower-trust transition from two consecutive 0.95+ OCR
+observations even when neither value repeats three times. That transition remains non-canonical and
+is eligible only for exact cross-signal reconciliation with a stable action badge and same-seat stack
+decrease. A later three-frame endpoint result upgrades the candidate instead of duplicating it.
+
 Dealer-button detection now uses the calibrated X-Poker white-marker component geometry and maps a
 single candidate to the nearest versioned seat anchor. Three distinct frames are required before a
 dealer seat is exposed. The detector fails closed when the marker is absent or non-unique; position

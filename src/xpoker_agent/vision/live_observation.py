@@ -59,6 +59,7 @@ class LiveObservationService:
         self._samples: deque[TemporalSample] = deque(maxlen=maximum_samples)
         self._blind_samples: deque[TemporalSample] = deque(maxlen=maximum_samples)
         self._pot_samples: deque[TemporalSample] = deque(maxlen=maximum_samples)
+        self._last_high_confidence_pot_sample: TemporalSample | None = None
         self._board_samples: deque[TemporalSample] = deque(maxlen=maximum_samples)
         self._card_samples: dict[int, deque[TemporalSample]] = {
             index: deque(maxlen=maximum_samples) for index in range(5)
@@ -178,6 +179,7 @@ class LiveObservationService:
         self._samples.clear()
         self._blind_samples.clear()
         self._pot_samples.clear()
+        self._last_high_confidence_pot_sample = None
         self._board_samples.clear()
         for samples in self._card_samples.values():
             samples.clear()
@@ -436,7 +438,63 @@ class LiveObservationService:
             self._pot_samples.clear()
             self._pot_consensus = self._empty_consensus("current_pot_ambiguous")
             self._last_accepted_pot = None
+            self._last_high_confidence_pot_sample = None
         else:
+            current_raw_pot = TemporalSample(
+                frame_sequence=diagnostic.frame_sequence,
+                content_sha256=diagnostic.content_sha256,
+                value=str(diagnostic.pot.value_native),
+                confidence=diagnostic.pot.confidence,
+            )
+            previous_raw_pot = self._last_high_confidence_pot_sample
+            if diagnostic.pot.confidence >= 0.95:
+                if (
+                    previous_raw_pot is not None
+                    and diagnostic.frame_sequence - previous_raw_pot.frame_sequence <= 2
+                    and Decimal(current_raw_pot.value) > Decimal(previous_raw_pot.value)
+                ):
+                    street_by_cards = {
+                        0: "preflop",
+                        3: "flop",
+                        4: "turn",
+                        5: "river",
+                    }
+                    raw_street = (
+                        street_by_cards.get(
+                            int(self._board_consensus.value or "-1"), "unknown"
+                        )
+                        if self._board_consensus.accepted
+                        else "unknown"
+                    )
+                    previous_value = Decimal(previous_raw_pot.value)
+                    current_value = Decimal(current_raw_pot.value)
+                    encoded = (
+                        f"{diagnostic.target_fingerprint}:{self._hand_epoch}:pot-raw:"
+                        f"{diagnostic.frame_sequence}:{previous_value}:{current_value}"
+                    ).encode()
+                    self._pot_deltas.append(
+                        PotDeltaCandidate(
+                            event_id=hashlib.sha256(encoded).hexdigest(),
+                            hand_epoch=self._hand_epoch,
+                            frame_sequence=diagnostic.frame_sequence,
+                            street=raw_street,
+                            previous_pot_native=previous_value,
+                            current_pot_native=current_value,
+                            increase_native=current_value - previous_value,
+                            evidence_mode="cross_signal_single_frame",
+                            confidence=min(
+                                previous_raw_pot.confidence,
+                                current_raw_pot.confidence,
+                            ),
+                            reason=(
+                                "consecutive high-confidence pot observations; "
+                                "independent action and stack signals required"
+                            ),
+                        )
+                    )
+                self._last_high_confidence_pot_sample = current_raw_pot
+            else:
+                self._last_high_confidence_pot_sample = None
             self._pot_consensus = self._append_consecutive(
                 self._pot_samples,
                 TemporalSample(
@@ -463,7 +521,27 @@ class LiveObservationService:
                     f"{diagnostic.frame_sequence}:{previous_pot}:{current_pot}"
                 ).encode()
                 event_id = hashlib.sha256(encoded).hexdigest()
-                if not any(delta.event_id == event_id for delta in self._pot_deltas):
+                equivalent_index = next(
+                    (
+                        index
+                        for index, delta in enumerate(self._pot_deltas)
+                        if delta.hand_epoch == self._hand_epoch
+                        and delta.previous_pot_native == previous_pot
+                        and delta.current_pot_native == current_pot
+                    ),
+                    None,
+                )
+                if equivalent_index is not None:
+                    existing = self._pot_deltas[equivalent_index]
+                    self._pot_deltas[equivalent_index] = existing.model_copy(
+                        update={
+                            "street": pot_street,
+                            "evidence_mode": "stable_endpoints",
+                            "confidence": self._pot_consensus.confidence,
+                            "reason": "three-frame stable pot endpoints",
+                        }
+                    )
+                elif not any(delta.event_id == event_id for delta in self._pot_deltas):
                     self._pot_deltas.append(
                         PotDeltaCandidate(
                             event_id=event_id,
@@ -473,6 +551,8 @@ class LiveObservationService:
                             previous_pot_native=previous_pot,
                             current_pot_native=current_pot,
                             increase_native=current_pot - previous_pot,
+                            evidence_mode="stable_endpoints",
+                            confidence=self._pot_consensus.confidence,
                         )
                     )
             if previous_pot != current_pot:

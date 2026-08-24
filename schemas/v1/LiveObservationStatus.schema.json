@@ -632,6 +632,22 @@
           ],
           "title": "Increase Native"
         },
+        "evidence_mode": {
+          "default": "stable_endpoints",
+          "enum": [
+            "stable_endpoints",
+            "cross_signal_single_frame"
+          ],
+          "title": "Evidence Mode",
+          "type": "string"
+        },
+        "confidence": {
+          "default": 0.0,
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Confidence",
+          "type": "number"
+        },
         "canonical_event_accepted": {
           "const": false,
           "default": false,

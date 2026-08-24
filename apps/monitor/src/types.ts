@@ -378,6 +378,8 @@ export interface LiveObservationStatus {
     previous_pot_native: string;
     current_pot_native: string;
     increase_native: string;
+    evidence_mode: "stable_endpoints" | "cross_signal_single_frame";
+    confidence: number;
     canonical_event_accepted: false;
     reason: string;
   }>;

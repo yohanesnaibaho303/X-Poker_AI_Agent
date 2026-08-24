@@ -248,6 +248,10 @@ class PotDeltaCandidate(StrictModel):
     previous_pot_native: Decimal = Field(ge=0)
     current_pot_native: Decimal = Field(gt=0)
     increase_native: Decimal = Field(gt=0)
+    evidence_mode: Literal["stable_endpoints", "cross_signal_single_frame"] = (
+        "stable_endpoints"
+    )
+    confidence: float = Field(default=0.0, ge=0.0, le=1.0)
     canonical_event_accepted: Literal[False] = False
     reason: str = "stable pot increase; action and stack reconciliation pending"
 
