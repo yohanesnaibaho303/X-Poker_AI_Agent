@@ -43,6 +43,8 @@ def test_builds_bb_normalized_live_hero_calculation() -> None:
 
     assert result.ready is True
     assert result.hand_class == "AKo"
+    assert result.dealt_player_count == 2
+    assert result.range_seat_mismatch == 7
     assert result.hero_stack_bb == Decimal("50")
     assert result.pot_bb == Decimal("3")
     assert result.call_amount_bb == Decimal("1")

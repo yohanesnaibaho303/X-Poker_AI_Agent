@@ -18,6 +18,8 @@ class LiveHeroCalculation(StrictModel):
     hero_seat: int | None = None
     hero_seat_confidence: float = 0.0
     hero_position: Position | None = None
+    dealt_player_count: int = 0
+    range_seat_mismatch: int = 0
     cards: list[str]
     hand_class: str | None = None
     big_blind_native: Decimal | None = None
@@ -126,6 +128,8 @@ def build_live_hero_calculation(status: LiveObservationStatus) -> LiveHeroCalcul
         hero_seat=seat,
         hero_seat_confidence=status.hero_seat_confidence,
         hero_position=status.detected_hero_position,
+        dealt_player_count=len(status.active_seats),
+        range_seat_mismatch=max(0, status.table_size - len(status.active_seats)),
         cards=cards,
         hand_class=hand_class,
         big_blind_native=big_blind,

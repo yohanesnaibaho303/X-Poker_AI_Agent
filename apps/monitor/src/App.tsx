@@ -507,7 +507,7 @@ export default function App() {
               </div>
               <div className="strategy-block">
                 <span>Range source</span><strong>{matrix ? "Reference prior" : "Unavailable"}</strong>
-                <small>{liveHero?.hero_position ? `${liveHero.hero_position} selected automatically. Not exact GTO.` : "Waiting for a fully resolved position."}</small>
+                <small>{liveHero?.hero_position ? `${liveHero.hero_position} selected automatically · ${liveHero.dealt_player_count}-handed · range mismatch ${liveHero.range_seat_mismatch} seat(s). Not exact GTO.` : "Waiting for a resolved dealt position."}</small>
               </div>
               <div className="strategy-block">
                 <span>Live blockers</span><strong>{liveHero?.issues.length ?? 0}</strong>

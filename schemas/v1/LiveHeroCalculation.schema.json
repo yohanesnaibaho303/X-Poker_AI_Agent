@@ -46,6 +46,16 @@
       ],
       "default": null
     },
+    "dealt_player_count": {
+      "default": 0,
+      "title": "Dealt Player Count",
+      "type": "integer"
+    },
+    "range_seat_mismatch": {
+      "default": 0,
+      "title": "Range Seat Mismatch",
+      "type": "integer"
+    },
     "cards": {
       "items": {
         "type": "string"

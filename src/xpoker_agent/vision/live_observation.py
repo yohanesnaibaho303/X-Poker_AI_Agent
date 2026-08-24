@@ -36,7 +36,7 @@ from xpoker_agent.vision.models import (
     TemporalConsensus,
     TemporalSample,
 )
-from xpoker_agent.vision.positions import assign_full_ring_positions
+from xpoker_agent.vision.positions import assign_dealt_positions
 from xpoker_agent.vision.temporal import consensus
 
 CaptureCallable = Callable[
@@ -1003,15 +1003,23 @@ class LiveObservationService:
                 current_active_seats=self._active_seats,
             )
         try:
-            self._provisional_positions = assign_full_ring_positions(
+            self._provisional_positions = assign_dealt_positions(
                 table_size=diagnostic.table_size,
                 dealer_seat=int(self._dealer_consensus.value),
                 active_seats=set(self._active_seats),
             )
-            self._positions_reason = "full-ring dealer and active-seat gates passed"
+            mismatch = diagnostic.table_size - len(self._active_seats)
+            self._positions_reason = (
+                "full-ring dealer and active-seat gates passed"
+                if mismatch == 0
+                else (
+                    f"{len(self._active_seats)}-handed positions resolved on "
+                    f"{diagnostic.table_size}-max layout; range seat mismatch {mismatch}"
+                )
+            )
         except ValueError:
             self._provisional_positions = {}
-            self._positions_reason = "partial_ring_position_naming_unavailable"
+            self._positions_reason = "dealt_position_naming_unavailable"
 
     def _record_direct_bomb_pot_boundary(
         self, diagnostic: LiveCaptureDiagnostic

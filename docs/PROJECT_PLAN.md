@@ -706,6 +706,9 @@ xpoker-agent/
   position, normalize accepted stack/pot/call evidence to BB, and display deterministic pot odds,
   effective stack, SPR, and the matching provenance-bearing range. Full replay and complete
   opponent-history presentation are not on the MVP critical path.
+- Resolve 3-to-9-handed positions from the actually dealt clockwise ring. A selected 9-max table
+  remains 9-max range scope when temporarily short-handed; expose the seat-count mismatch rather
+  than silently substituting six-max ranges.
 
 **Exit criterion:** The authorized table can be monitored continuously for complete sessions without state corruption.
 

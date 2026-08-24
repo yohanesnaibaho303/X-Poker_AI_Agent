@@ -5,6 +5,8 @@ export interface LiveHeroCalculation {
   hero_seat: number | null;
   hero_seat_confidence: number;
   hero_position: string | null;
+  dealt_player_count: number;
+  range_seat_mismatch: number;
   cards: string[];
   hand_class: string | null;
   big_blind_native: string | null;
