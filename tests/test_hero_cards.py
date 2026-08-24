@@ -15,7 +15,7 @@ def test_enrolled_hero_rank_masks_match_only_their_declared_position() -> None:
 
     assert payload["schema_version"] == "1.0"
     assert "not held-out accuracy evidence" in payload["intended_use"]
-    assert len(payload["templates"]) == 10
+    assert len(payload["templates"]) == 13
     for template in payload["templates"]:
         rank, distance, margin = match_hero_rank_signature(
             bytes.fromhex(template["signature"]), template["position"]

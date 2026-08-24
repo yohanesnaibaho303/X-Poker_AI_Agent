@@ -158,7 +158,7 @@
 - Added an X-Poker-specific hero-card region for both supported portrait layouts. A deterministic
   detector isolates the single merged surface, splits the angled left/right cards, uses a separate
   orientation-scoped rank-mask artifact, and classifies suits from the local palette.
-- The hero artifact contains ten derived masks across enrolled left/right orientations and only
+- The hero artifact contains thirteen derived masks across enrolled left/right orientations and only
   source-frame hashes, not table pixels. A live `Kc 8h` frame exposed a false nearest-template
   match at the initial 0.12 distance; the gate was tightened to 0.08 before temporal integration.
   Three distinct frames plus hero/board physical uniqueness are required, and an accepted hand is
@@ -166,6 +166,9 @@
 - Live hero-priority calibration visually labeled `9s 5c`; the previously unknown left-9 and right-5
   masks were enrolled with the matching authorized frame hash. This expands calibration coverage
   without treating the self-match as held-out accuracy evidence.
+- Subsequent live hands labeled `7c 5c` and `7d 6s`. The previously enrolled right-5 recognized on
+  the next appearance; two lighting variants for left-7 and the new right-6 mask were added with
+  their exact frame hashes.
 - Added privacy-scoped native blind parsing from X-Poker's rule label, including grouped and compact
   chip tokens. Small and big blinds must appear together with `0 < SB < BB`, then repeat for three
   distinct frames before the live status exposes a `SB/BB` normalization basis. Ambiguous OCR clears
