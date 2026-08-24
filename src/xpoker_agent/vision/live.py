@@ -9,6 +9,7 @@ from xpoker_agent.capture.layout import load_layout_profile
 from xpoker_agent.capture.models import CaptureFrameRecord, LayoutProfile
 from xpoker_agent.capture.profile import load_target_profile
 from xpoker_agent.capture.recording import capture_authorized_frame
+from xpoker_agent.vision.cards import classify_board_geometry, detect_card_slots
 from xpoker_agent.vision.models import LiveCaptureDiagnostic, WindowsOcrResult
 from xpoker_agent.vision.primitives import crop_layout_region
 from xpoker_agent.vision.rules import classify_rule_label
@@ -51,8 +52,13 @@ def build_live_capture_diagnostic(
         }
     )
     seat_observations = classify_seat_occupancy(frame, layout)
+    board_geometry = classify_board_geometry(
+        detect_card_slots(crop_layout_region(frame, layout, "board"))
+    )
     return LiveCaptureDiagnostic(
         captured_at=record.captured_at,
+        frame_sequence=record.sequence,
+        content_sha256=record.content_sha256,
         layout_id=layout.layout_id,
         table_size=layout.table_size,
         frame_width=frame.width,
@@ -77,17 +83,22 @@ def build_live_capture_diagnostic(
         matched_signals=classification.matched_signals,
         rule_text=rule_ocr.text,
         pot_text=pot_ocr.text,
+        board_rows=board_geometry.board_rows,
+        board_card_slots=board_geometry.card_slots,
+        board_geometry_supported=not board_geometry.unsupported,
+        board_geometry_confidence=board_geometry.confidence,
+        board_geometry_reasons=board_geometry.reasons,
         regions=visible_regions,
         seat_observations=seat_observations,
     )
 
 
 async def diagnose_authorized_table(
-    *, table_size: int = 9
+    *, table_size: int = 9, sequence: int = 0
 ) -> tuple[LiveCaptureDiagnostic, CapturedFrame]:
     profile = load_target_profile()
     layout = load_layout_profile(table_size=table_size)
-    frame, record = capture_authorized_frame(0, profile, layout)
+    frame, record = capture_authorized_frame(sequence, profile, layout)
     rule_crop = crop_layout_region(frame, layout, "rule_label")
     pot_crop = crop_layout_region(frame, layout, "pot")
     rule_ocr, pot_ocr = await asyncio.gather(

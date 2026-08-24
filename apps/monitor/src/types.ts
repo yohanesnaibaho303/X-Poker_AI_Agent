@@ -123,6 +123,8 @@ export interface SessionPreview {
 export interface LiveCaptureDiagnostic {
   schema_version: "1.0";
   captured_at: string;
+  frame_sequence: number;
+  content_sha256: string;
   layout_id: string;
   table_size: TableSize;
   frame_width: number;
@@ -144,6 +146,11 @@ export interface LiveCaptureDiagnostic {
   matched_signals: string[];
   rule_text: string;
   pot_text: string;
+  board_rows: number;
+  board_card_slots: number;
+  board_geometry_supported: boolean;
+  board_geometry_confidence: number;
+  board_geometry_reasons: string[];
   regions: Record<string, [number, number, number, number]>;
   seat_observations: Array<{
     seat: number;
@@ -153,4 +160,34 @@ export interface LiveCaptureDiagnostic {
     plus_horizontal_pixels: number;
     plus_vertical_pixels: number;
   }>;
+}
+
+export interface LiveObservationStatus {
+  schema_version: "1.0";
+  running: boolean;
+  table_size: TableSize;
+  interval_ms: number;
+  started_at: string | null;
+  stopped_at: string | null;
+  latest_sequence: number;
+  frames_attempted: number;
+  frames_succeeded: number;
+  frames_failed: number;
+  consecutive_failures: number;
+  latest_captured_at: string | null;
+  latest_age_ms: number | null;
+  target_fingerprint: string | null;
+  target_stable: boolean;
+  current_hand_mode: "standard_nlh" | "single_board_bomb_pot" | "ambiguous";
+  current_hand_supported: boolean;
+  mode_consensus: {
+    accepted: boolean;
+    value: string | null;
+    confidence: number;
+    stable_frames: number;
+    alternatives: string[];
+    reason: string | null;
+  };
+  last_error: string | null;
+  controller_enabled: false;
 }

@@ -30,7 +30,21 @@ def detect_card_slots(frame: CapturedFrame) -> list[CardSlotCandidate]:
             continue
         aspect_score = max(0.0, 1.0 - abs(aspect - 0.67) / 0.35)
         candidates.append(CardSlotCandidate(box=box, confidence=0.7 + 0.25 * aspect_score))
-    return assign_card_rows(candidates)
+    outermost = [
+        candidate
+        for candidate in candidates
+        if not any(
+            other.box.left <= candidate.box.left
+            and other.box.top <= candidate.box.top
+            and other.box.right >= candidate.box.right
+            and other.box.bottom >= candidate.box.bottom
+            and other.box.width * other.box.height
+            >= candidate.box.width * candidate.box.height * 2
+            for other in candidates
+            if other is not candidate
+        )
+    ]
+    return assign_card_rows(outermost)
 
 
 def assign_card_rows(candidates: list[CardSlotCandidate]) -> list[CardSlotCandidate]:

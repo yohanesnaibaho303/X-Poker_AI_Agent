@@ -124,6 +124,8 @@ class SeatOccupancyObservation(StrictModel):
 class LiveCaptureDiagnostic(StrictModel):
     schema_version: Literal["1.0"] = "1.0"
     captured_at: datetime
+    frame_sequence: int = Field(ge=0)
+    content_sha256: str = Field(min_length=64, max_length=64)
     layout_id: str
     table_size: Literal[6, 9]
     frame_width: int = Field(gt=0)
@@ -145,5 +147,38 @@ class LiveCaptureDiagnostic(StrictModel):
     matched_signals: list[str] = Field(default_factory=list)
     rule_text: str
     pot_text: str
+    board_rows: int = Field(ge=0)
+    board_card_slots: int = Field(ge=0)
+    board_geometry_supported: bool
+    board_geometry_confidence: float = Field(ge=0.0, le=1.0)
+    board_geometry_reasons: list[str] = Field(default_factory=list)
     regions: dict[str, tuple[float, float, float, float]]
     seat_observations: list[SeatOccupancyObservation] = Field(default_factory=list)
+
+
+class LiveObservationStartRequest(StrictModel):
+    table_size: Literal[6, 9] = 9
+    interval_ms: int = Field(default=500, ge=200, le=5000)
+
+
+class LiveObservationStatus(StrictModel):
+    schema_version: Literal["1.0"] = "1.0"
+    running: bool
+    table_size: Literal[6, 9]
+    interval_ms: int = Field(ge=1)
+    started_at: datetime | None = None
+    stopped_at: datetime | None = None
+    latest_sequence: int = Field(ge=0)
+    frames_attempted: int = Field(ge=0)
+    frames_succeeded: int = Field(ge=0)
+    frames_failed: int = Field(ge=0)
+    consecutive_failures: int = Field(ge=0)
+    latest_captured_at: datetime | None = None
+    latest_age_ms: float | None = Field(default=None, ge=0.0)
+    target_fingerprint: str | None = Field(default=None, min_length=64, max_length=64)
+    target_stable: bool
+    current_hand_mode: Literal["standard_nlh", "single_board_bomb_pot", "ambiguous"]
+    current_hand_supported: bool
+    mode_consensus: TemporalConsensus
+    last_error: str | None = None
+    controller_enabled: Literal[False] = False

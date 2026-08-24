@@ -704,6 +704,13 @@ the first playing checkpoint correctly classified three occupied and six empty s
 board, pot text, and the scheduled Bomb Pot countdown. This is calibration evidence, not yet an M3
 accuracy promotion.
 
+The capture boundary also supports a bounded continuous observer. It retains only the latest frame
+and 30 mode samples in memory, locks the target fingerprint for the session, stops after three
+consecutive capture failures or any target-identity change, and exposes freshness, failure counts,
+seat occupancy, single-board geometry, and non-ambiguous temporal consensus. Ambiguous observations
+can never become accepted consensus. This diagnostic loop does not yet emit betting actions or
+completed hands.
+
 ### Milestone 9 — Authorized control
 
 - Add action-target mapping and calibration.

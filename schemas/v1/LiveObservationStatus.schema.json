@@ -1,0 +1,233 @@
+{
+  "$defs": {
+    "TemporalConsensus": {
+      "additionalProperties": false,
+      "properties": {
+        "accepted": {
+          "title": "Accepted",
+          "type": "boolean"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Value"
+        },
+        "confidence": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "stable_frames": {
+          "minimum": 0,
+          "title": "Stable Frames",
+          "type": "integer"
+        },
+        "alternatives": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Alternatives",
+          "type": "array"
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reason"
+        }
+      },
+      "required": [
+        "accepted",
+        "confidence",
+        "stable_frames"
+      ],
+      "title": "TemporalConsensus",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "running": {
+      "title": "Running",
+      "type": "boolean"
+    },
+    "table_size": {
+      "enum": [
+        6,
+        9
+      ],
+      "title": "Table Size",
+      "type": "integer"
+    },
+    "interval_ms": {
+      "minimum": 1,
+      "title": "Interval Ms",
+      "type": "integer"
+    },
+    "started_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Started At"
+    },
+    "stopped_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Stopped At"
+    },
+    "latest_sequence": {
+      "minimum": 0,
+      "title": "Latest Sequence",
+      "type": "integer"
+    },
+    "frames_attempted": {
+      "minimum": 0,
+      "title": "Frames Attempted",
+      "type": "integer"
+    },
+    "frames_succeeded": {
+      "minimum": 0,
+      "title": "Frames Succeeded",
+      "type": "integer"
+    },
+    "frames_failed": {
+      "minimum": 0,
+      "title": "Frames Failed",
+      "type": "integer"
+    },
+    "consecutive_failures": {
+      "minimum": 0,
+      "title": "Consecutive Failures",
+      "type": "integer"
+    },
+    "latest_captured_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Latest Captured At"
+    },
+    "latest_age_ms": {
+      "anyOf": [
+        {
+          "minimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Latest Age Ms"
+    },
+    "target_fingerprint": {
+      "anyOf": [
+        {
+          "maxLength": 64,
+          "minLength": 64,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Target Fingerprint"
+    },
+    "target_stable": {
+      "title": "Target Stable",
+      "type": "boolean"
+    },
+    "current_hand_mode": {
+      "enum": [
+        "standard_nlh",
+        "single_board_bomb_pot",
+        "ambiguous"
+      ],
+      "title": "Current Hand Mode",
+      "type": "string"
+    },
+    "current_hand_supported": {
+      "title": "Current Hand Supported",
+      "type": "boolean"
+    },
+    "mode_consensus": {
+      "$ref": "#/$defs/TemporalConsensus"
+    },
+    "last_error": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Last Error"
+    },
+    "controller_enabled": {
+      "const": false,
+      "default": false,
+      "title": "Controller Enabled",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "running",
+    "table_size",
+    "interval_ms",
+    "latest_sequence",
+    "frames_attempted",
+    "frames_succeeded",
+    "frames_failed",
+    "consecutive_failures",
+    "target_stable",
+    "current_hand_mode",
+    "current_hand_supported",
+    "mode_consensus"
+  ],
+  "title": "LiveObservationStatus",
+  "type": "object"
+}

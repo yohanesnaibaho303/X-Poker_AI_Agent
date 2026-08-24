@@ -1,6 +1,7 @@
 import type {
   ChipMode,
   LiveCaptureDiagnostic,
+  LiveObservationStatus,
   MonitorSnapshot,
   RangeMatrix,
   SessionPreview,
@@ -62,6 +63,28 @@ export function stopReplay(): Promise<unknown> {
 
 export function runCaptureDiagnostic(tableSize: TableSize): Promise<LiveCaptureDiagnostic> {
   return requestJson(`/v1/capture/diagnostic?table_size=${tableSize}`, { method: "POST" });
+}
+
+export function fetchLatestCaptureDiagnostic(): Promise<LiveCaptureDiagnostic> {
+  return requestJson("/v1/capture/latest/diagnostic");
+}
+
+export function fetchLiveObservationStatus(): Promise<LiveObservationStatus> {
+  return requestJson("/v1/capture/live/status");
+}
+
+export function startLiveObservation(
+  tableSize: TableSize,
+  intervalMs = 500,
+): Promise<{ started: boolean; status: LiveObservationStatus }> {
+  return requestJson("/v1/capture/live/start", {
+    method: "POST",
+    body: JSON.stringify({ table_size: tableSize, interval_ms: intervalMs }),
+  });
+}
+
+export function stopLiveObservation(): Promise<{ stopped: boolean; status: LiveObservationStatus }> {
+  return requestJson("/v1/capture/live/stop", { method: "POST" });
 }
 
 export function seekReplay(tableSize: TableSize, index: number): Promise<unknown> {

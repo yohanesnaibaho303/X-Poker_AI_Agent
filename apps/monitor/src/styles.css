@@ -58,6 +58,7 @@ input:focus, select:focus { border-color: rgba(78, 230, 165, .6); box-shadow: 0 
 .primary-button { background: var(--green); color: #052218; }
 .secondary-button { color: #d6e2de; background: rgba(255,255,255,.04); border-color: var(--line); }
 .capture-button { width: 100%; color: var(--cyan); background: rgba(118,219,232,.055); border: 1px solid rgba(118,219,232,.22); border-radius: 10px; padding: 10px; font-size: 10px; font-weight: 700; }
+.capture-controls { display: grid; grid-template-columns: 1fr auto; gap: 7px; margin-top: 7px; }.capture-controls .secondary-button { min-width: 54px; }
 .setup-panel > .primary-button { width: 100%; margin-top: 16px; }
 .validation-card { margin-top: 12px; display: grid; gap: 4px; padding: 11px; border-radius: 10px; background: rgba(78, 230, 165, .06); border: 1px solid rgba(78, 230, 165, .15); }
 .validation-card strong { font-size: 11px; }.validation-card span { color: var(--green); font: 14px "Cascadia Mono", Consolas, monospace; }.validation-card small { color: var(--muted); font-size: 10px; }

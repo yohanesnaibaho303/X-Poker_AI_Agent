@@ -7,16 +7,20 @@ import re
 from xpoker_agent.vision.models import RuleLabelClassification
 
 
+def _ocr_count(value: str) -> int:
+    return int(value.replace("o", "0").replace("i", "1").replace("l", "1"))
+
+
 def classify_rule_label(text: str) -> RuleLabelClassification:
     normalized = " ".join(text.casefold().split())
     signals: list[str] = []
     if "bomb pot" in normalized:
         signals.append("literal_bomb_pot")
     # Windows OCR can lose the small leading word while retaining the distinctive schedule.
-    schedule = re.search(r"pot\s*:\s*after\s+(?P<count>[0-9o]+)\s+hands", normalized)
+    schedule = re.search(r"pot\s*:\s*after\s+(?P<count>[0-9oil]+)\s+hands", normalized)
     if schedule:
         signals.append("scheduled_pot_after_hands")
-        hands_until_bomb = int(schedule.group("count").replace("o", "0"))
+        hands_until_bomb = _ocr_count(schedule.group("count"))
         if hands_until_bomb > 0:
             return RuleLabelClassification(
                 supported_standard_nlh=True,
@@ -40,9 +44,9 @@ def classify_rule_label(text: str) -> RuleLabelClassification:
             matched_signals=signals,
             reason="single-board NLH Bomb Pot hand is active",
         )
-    recurring = re.search(r"pot\s*:\s*every\s+(?P<count>[0-9o]+)\s+hands", normalized)
+    recurring = re.search(r"pot\s*:\s*every\s+(?P<count>[0-9oil]+)\s+hands", normalized)
     if recurring:
-        interval = int(recurring.group("count").replace("o", "0"))
+        interval = _ocr_count(recurring.group("count"))
         return RuleLabelClassification(
             supported_standard_nlh=True,
             special_rule="bomb_pot",

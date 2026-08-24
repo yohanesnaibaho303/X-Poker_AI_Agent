@@ -1,10 +1,14 @@
 import { useEffect, useMemo, useState, type CSSProperties, type ReactNode } from "react";
 import {
+  fetchLatestCaptureDiagnostic,
+  fetchLiveObservationStatus,
   fetchReferenceRange,
   previewSession,
   runCaptureDiagnostic,
   seekReplay,
   startReplay,
+  startLiveObservation,
+  stopLiveObservation,
   stopReplay,
 } from "./api";
 import { formatPercent, formatStack } from "./format";
@@ -13,6 +17,7 @@ import type {
   HandEvent,
   HandState,
   LiveCaptureDiagnostic,
+  LiveObservationStatus,
   RangeMatrix,
   SessionPreview,
   TableSize,
@@ -196,6 +201,10 @@ function CapturePreview({ diagnostic, nonce }: { diagnostic: LiveCaptureDiagnost
         <span>Layout <strong>{diagnostic.table_size}-max</strong></span>
         <span>Seats <strong>{occupiedSeats}/{diagnostic.table_size} occupied{ambiguousSeats ? ` · ${ambiguousSeats} ambiguous` : ""}</strong></span>
       </div>
+      <div className="capture-facts">
+        <span>Board <strong>{diagnostic.board_card_slots} cards · {diagnostic.board_rows} row</strong></span>
+        <span>Geometry <strong>{diagnostic.board_geometry_supported ? "Supported" : "Quarantined"}</strong></span>
+      </div>
       <p className={`mode-copy ${diagnostic.current_hand_supported ? "supported" : "quarantined"}`}>
         {diagnostic.mode_reason}
       </p>
@@ -221,6 +230,7 @@ export default function App() {
   const [matrix, setMatrix] = useState<RangeMatrix | null>(null);
   const [matrixLoading, setMatrixLoading] = useState(false);
   const [captureDiagnostic, setCaptureDiagnostic] = useState<LiveCaptureDiagnostic | null>(null);
+  const [liveObservation, setLiveObservation] = useState<LiveObservationStatus | null>(null);
   const [captureError, setCaptureError] = useState<string | null>(null);
   const [captureNonce, setCaptureNonce] = useState(0);
   const { snapshot, connection, error, refresh } = useMonitor(tableSize);
@@ -238,6 +248,34 @@ export default function App() {
       .catch(() => setMatrix(null))
       .finally(() => setMatrixLoading(false));
   }, [position, tableSize]);
+
+  useEffect(() => {
+    let mounted = true;
+    const poll = async () => {
+      try {
+        const status = await fetchLiveObservationStatus();
+        if (!mounted) return;
+        setLiveObservation(status);
+        if (status.latest_sequence > 0) {
+          const diagnostic = await fetchLatestCaptureDiagnostic();
+          if (!mounted) return;
+          setCaptureDiagnostic(diagnostic);
+          setCaptureNonce(Date.now());
+          setCaptureError(status.last_error);
+        }
+      } catch (reason) {
+        if (mounted) {
+          setCaptureError(reason instanceof Error ? reason.message : "Live observation poll failed");
+        }
+      }
+    };
+    void poll();
+    const timer = window.setInterval(() => void poll(), 1000);
+    return () => {
+      mounted = false;
+      window.clearInterval(timer);
+    };
+  }, []);
 
   const validateSession = async () => {
     try {
@@ -273,6 +311,21 @@ export default function App() {
     } catch (reason) {
       setCaptureError(reason instanceof Error ? reason.message : "Capture diagnostic failed");
     }
+  };
+
+  const startLiveCapture = async () => {
+    try {
+      const result = await startLiveObservation(tableSize, 500);
+      setLiveObservation(result.status);
+      setCaptureError(null);
+    } catch (reason) {
+      setCaptureError(reason instanceof Error ? reason.message : "Live observation failed to start");
+    }
+  };
+
+  const stopLiveCapture = async () => {
+    const result = await stopLiveObservation();
+    setLiveObservation(result.status);
   };
 
   const state = snapshot?.state;
@@ -334,13 +387,20 @@ export default function App() {
           </section>
 
           <button className="capture-button" onClick={() => void inspectCapture()}>Inspect live X-Poker table</button>
+          <div className="capture-controls">
+            <button className="capture-button" disabled={liveObservation?.running} onClick={() => void startLiveCapture()}>Start continuous observation</button>
+            <button className="secondary-button" disabled={!liveObservation?.running} onClick={() => void stopLiveCapture()}>Stop</button>
+          </div>
           {captureError && <p className="error-copy sidebar-error">{captureError}</p>}
           {captureDiagnostic && <CapturePreview diagnostic={captureDiagnostic} nonce={captureNonce} />}
 
           <section className="panel health-panel">
             <p className="eyebrow">System health</p>
             <div className="health-row"><span>Source</span><strong>{snapshot?.source_mode.replaceAll("_", " ") ?? "loading"}</strong></div>
-            <div className="health-row"><span>Capture</span><strong>{captureDiagnostic ? "Diagnostic ready" : "Inactive"}</strong></div>
+            <div className="health-row"><span>Capture</span><strong>{liveObservation?.running ? `Live · ${liveObservation.frames_succeeded} frames` : captureDiagnostic ? "Diagnostic ready" : "Inactive"}</strong></div>
+            <div className="health-row"><span>Freshness</span><strong>{liveObservation?.latest_age_ms != null ? `${Math.round(liveObservation.latest_age_ms)} ms` : "—"}</strong></div>
+            <div className="health-row"><span>Target</span><strong>{liveObservation?.target_stable === false ? "Changed · stopped" : liveObservation?.target_fingerprint ? "Stable" : "Waiting"}</strong></div>
+            <div className="health-row"><span>Mode consensus</span><strong>{liveObservation?.mode_consensus.accepted ? `${liveObservation.mode_consensus.value} · ${liveObservation.mode_consensus.stable_frames}` : liveObservation?.mode_consensus.reason ?? "waiting"}</strong></div>
             <div className="health-row"><span>Strategy</span><strong>{snapshot?.health.strategy_status ?? "unavailable"}</strong></div>
             <div className="health-row"><span>Dropped UI updates</span><strong>{snapshot?.metrics.dropped_deliveries ?? 0}</strong></div>
             <div className="health-row"><span>Snapshot latency</span><strong>{snapshot ? `${snapshot.metrics.processing_latency_ms.toFixed(2)} ms` : "—"}</strong></div>

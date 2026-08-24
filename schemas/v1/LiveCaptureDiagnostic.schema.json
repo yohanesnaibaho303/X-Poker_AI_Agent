@@ -66,6 +66,17 @@
       "title": "Captured At",
       "type": "string"
     },
+    "frame_sequence": {
+      "minimum": 0,
+      "title": "Frame Sequence",
+      "type": "integer"
+    },
+    "content_sha256": {
+      "maxLength": 64,
+      "minLength": 64,
+      "title": "Content Sha256",
+      "type": "string"
+    },
     "layout_id": {
       "title": "Layout Id",
       "type": "string"
@@ -205,6 +216,33 @@
       "title": "Pot Text",
       "type": "string"
     },
+    "board_rows": {
+      "minimum": 0,
+      "title": "Board Rows",
+      "type": "integer"
+    },
+    "board_card_slots": {
+      "minimum": 0,
+      "title": "Board Card Slots",
+      "type": "integer"
+    },
+    "board_geometry_supported": {
+      "title": "Board Geometry Supported",
+      "type": "boolean"
+    },
+    "board_geometry_confidence": {
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Board Geometry Confidence",
+      "type": "number"
+    },
+    "board_geometry_reasons": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Board Geometry Reasons",
+      "type": "array"
+    },
     "regions": {
       "additionalProperties": {
         "maxItems": 4,
@@ -238,6 +276,8 @@
   },
   "required": [
     "captured_at",
+    "frame_sequence",
+    "content_sha256",
     "layout_id",
     "table_size",
     "frame_width",
@@ -255,6 +295,10 @@
     "mode_reason",
     "rule_text",
     "pot_text",
+    "board_rows",
+    "board_card_slots",
+    "board_geometry_supported",
+    "board_geometry_confidence",
     "regions"
   ],
   "title": "LiveCaptureDiagnostic",

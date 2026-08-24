@@ -39,7 +39,11 @@ from xpoker_agent.monitoring.models import (
 from xpoker_agent.ranges.library import RangeArtifact
 from xpoker_agent.ranges.matrix import RangeMatrix
 from xpoker_agent.strategy.resolver import StrategyResolution
-from xpoker_agent.vision.models import LiveCaptureDiagnostic
+from xpoker_agent.vision.models import (
+    LiveCaptureDiagnostic,
+    LiveObservationStartRequest,
+    LiveObservationStatus,
+)
 
 MODELS = [
     GameConfig,
@@ -69,6 +73,8 @@ MODELS = [
     ReplaySeekRequest,
     ReplayStartRequest,
     LiveCaptureDiagnostic,
+    LiveObservationStartRequest,
+    LiveObservationStatus,
     DecisionEnvelope,
     ActionAttempt,
 ]

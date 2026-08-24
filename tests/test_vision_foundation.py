@@ -120,6 +120,29 @@ def test_standard_single_board_row_is_supported() -> None:
     assert result.board_rows == 1
 
 
+def test_card_slot_detector_drops_nested_bright_components() -> None:
+    frame = _frame_with_cards([(80, 4)])
+    pixels = bytearray(frame.bgra_bottom_up)
+
+    def paint(left: int, top: int, right: int, bottom: int) -> None:
+        for y_top in range(top, bottom):
+            y_bottom = frame.height - 1 - y_top
+            for x in range(left, right):
+                offset = (y_bottom * frame.width + x) * 4
+                pixels[offset : offset + 4] = b"\xff\xff\xff\xff"
+
+    # One card-like outline contains a disconnected rank-like inner component.
+    paint(127, 80, 147, 83)
+    paint(127, 107, 147, 110)
+    paint(127, 83, 130, 107)
+    paint(144, 83, 147, 107)
+    paint(133, 89, 141, 103)
+
+    slots = detect_card_slots(CapturedFrame(frame.width, frame.height, bytes(pixels)))
+
+    assert len(slots) == 5
+
+
 def test_multiple_board_rows_fail_closed() -> None:
     slots = detect_card_slots(_frame_with_cards([(25, 3), (80, 5), (140, 3)]))
 
@@ -232,6 +255,14 @@ def test_scheduled_bomb_pot_does_not_quarantine_current_standard_hand() -> None:
     assert result.confidence >= 0.9
 
 
+def test_scheduled_bomb_pot_normalizes_ocr_letter_i_as_countdown_one() -> None:
+    result = classify_rule_label("24 aug Bomb Pot: After I hands (2-4) Blinds: 1/2")
+
+    assert result.supported_standard_nlh is True
+    assert result.bomb_pot_state == "scheduled"
+    assert result.hands_until_bomb == 1
+
+
 def test_active_bomb_pot_is_classified_despite_minor_ocr_damage() -> None:
     result = classify_rule_label("aon-,h Pot: After O handsa 1000-3,000)")
 
@@ -308,5 +339,8 @@ def test_live_capture_diagnostic_supports_countdown_hand_and_exposes_schedule() 
     assert diagnostic.special_rule == "bomb_pot"
     assert diagnostic.rule_confidence == 0.99
     assert diagnostic.pot_text == "POT 4,500"
+    assert diagnostic.board_rows == 0
+    assert diagnostic.board_card_slots == 0
+    assert diagnostic.board_geometry_supported is True
     assert diagnostic.ocr_latency_ms == 5
     assert set(diagnostic.regions) == {"board", "pot", "rule_label", "seat_ring", "actions"}

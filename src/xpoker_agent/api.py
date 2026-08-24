@@ -14,7 +14,6 @@ from fastapi.responses import Response
 from fastapi.staticfiles import StaticFiles
 
 from xpoker_agent import __version__
-from xpoker_agent.capture.frames import CapturedFrame
 from xpoker_agent.capture.profile import load_target_profile, match_authorized_target
 from xpoker_agent.capture.windows import discover_xpoker_windows
 from xpoker_agent.chips import create_session_setup
@@ -33,12 +32,12 @@ from xpoker_agent.research.assets import AssetManifest
 from xpoker_agent.research.catalog import ComponentCatalog
 from xpoker_agent.research.registry import SourceRegistry
 from xpoker_agent.simulation import run_simulated_hand
-from xpoker_agent.vision.live import diagnose_authorized_table
+from xpoker_agent.vision.live_observation import LiveObservationService
+from xpoker_agent.vision.models import LiveObservationStartRequest
 
 monitor_hub = MonitorHub()
 replay_controller = ReplayController(monitor_hub)
-latest_live_frame: CapturedFrame | None = None
-live_capture_lock = asyncio.Lock()
+live_observation = LiveObservationService()
 
 
 def require_table_size(value: int) -> Literal[6, 9]:
@@ -53,6 +52,7 @@ async def lifespan(_: FastAPI) -> AsyncIterator[None]:
     load_game_config()
     load_runtime_config()
     yield
+    await live_observation.stop()
     await replay_controller.stop()
 
 
@@ -161,30 +161,61 @@ def capture_status() -> dict[str, object]:
         "authorization_enabled": profile.enabled,
         "candidate_count": len(candidates),
         "eligible_count": sum(match.eligible for match in matches),
-        "capture_active": False,
+        "capture_active": live_observation.running,
+        "live_observation": live_observation.status().model_dump(mode="json"),
     }
 
 
 @app.post("/v1/capture/diagnostic")
 async def capture_diagnostic(table_size: int = 9) -> dict[str, object]:
-    global latest_live_frame
-    async with live_capture_lock:
-        try:
-            diagnostic, frame = await diagnose_authorized_table(
-                table_size=require_table_size(table_size)
-            )
-        except (OSError, RuntimeError, ValueError) as error:
-            raise HTTPException(status_code=409, detail=str(error)) from error
-        latest_live_frame = frame
+    try:
+        diagnostic = await live_observation.inspect_once(
+            table_size=require_table_size(table_size)
+        )
+    except (OSError, RuntimeError, ValueError) as error:
+        raise HTTPException(status_code=409, detail=str(error)) from error
     return diagnostic.model_dump(mode="json")
+
+
+@app.post("/v1/capture/live/start")
+async def start_live_observation(request: LiveObservationStartRequest) -> dict[str, object]:
+    started = await live_observation.start(
+        table_size=request.table_size,
+        interval_ms=request.interval_ms,
+    )
+    return {
+        "started": started,
+        "status": live_observation.status().model_dump(mode="json"),
+    }
+
+
+@app.post("/v1/capture/live/stop")
+async def stop_live_observation() -> dict[str, object]:
+    stopped = await live_observation.stop()
+    return {
+        "stopped": stopped,
+        "status": live_observation.status().model_dump(mode="json"),
+    }
+
+
+@app.get("/v1/capture/live/status")
+def live_observation_status() -> dict[str, object]:
+    return live_observation.status().model_dump(mode="json")
+
+
+@app.get("/v1/capture/latest/diagnostic")
+def latest_capture_diagnostic() -> dict[str, object]:
+    if live_observation.latest_diagnostic is None:
+        raise HTTPException(status_code=404, detail="no authorized capture diagnostic exists")
+    return live_observation.latest_diagnostic.model_dump(mode="json")
 
 
 @app.get("/v1/capture/latest.bmp", response_class=Response)
 def latest_capture_frame() -> Response:
-    if latest_live_frame is None:
+    if live_observation.latest_frame is None:
         raise HTTPException(status_code=404, detail="no authorized capture diagnostic exists")
     return Response(
-        content=latest_live_frame.to_bmp(),
+        content=live_observation.latest_frame.to_bmp(),
         media_type="image/bmp",
         headers={"Cache-Control": "no-store, max-age=0"},
     )
