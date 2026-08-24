@@ -756,6 +756,11 @@ then requires three fresh frames showing the button on the next dealt seat with 
 The old marker remains pending; a skipped dealer or changed ring is rejected. An observer that began
 mid-hand must wait for this witnessed boundary before constructing a canonical initial state.
 
+The live status combines these prerequisites into an explicit reducer-readiness result. Every
+unresolved boundary, mode, blind, dealer, ring, stack, card, amount, pot, or clockwise-order gate is
+listed, and only action IDs passing all provisional reconciliation layers are eligible. Readiness is
+inspectable but does not itself create canonical events or enable control.
+
 Dealer-button detection now uses the calibrated X-Poker white-marker component geometry and maps a
 single candidate to the nearest versioned seat anchor. Three distinct frames are required before a
 dealer seat is exposed. The detector fails closed when the marker is absent or non-unique; position

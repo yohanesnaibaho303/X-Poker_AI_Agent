@@ -335,6 +335,15 @@ export interface LiveObservationStatus {
     canonical_event_accepted: false;
     reason: string;
   };
+  reconstruction_readiness: {
+    hand_epoch: number;
+    ready: boolean;
+    big_blind_native: string | null;
+    eligible_action_event_ids: string[];
+    issues: string[];
+    canonical_events_emitted: false;
+    reason: string;
+  };
   derived_action_candidates: Array<{
     event_id: string;
     hand_epoch: number;

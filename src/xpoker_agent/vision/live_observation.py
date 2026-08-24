@@ -22,6 +22,7 @@ from xpoker_agent.vision.models import (
     LiveCaptureDiagnostic,
     LiveHandBoundaryValidation,
     LiveObservationStatus,
+    LiveReconstructionReadiness,
     PotDeltaCandidate,
     SeatActionConsensus,
     SeatStackConsensus,
@@ -834,6 +835,7 @@ class LiveObservationService:
             seat_action_consensus=self._action_consensus,
             hand_epoch=self._hand_epoch,
             hand_boundary_validation=self._hand_boundary_validation,
+            reconstruction_readiness=self._reconstruction_readiness(),
             derived_action_candidates=list(self._derived_actions),
             stack_delta_candidates=list(self._stack_deltas),
             pot_delta_candidates=list(self._pot_deltas),
@@ -912,6 +914,85 @@ class LiveObservationService:
                     )
                 )
         return results
+
+    def _reconstruction_readiness(self) -> LiveReconstructionReadiness:
+        issues: list[str] = []
+        if self._hand_boundary_validation.status != "validated":
+            issues.append("hand_boundary_not_validated")
+        if not self._mode_consensus.accepted:
+            issues.append("hand_mode_not_stable")
+        elif self._mode_consensus.value == "single_board_bomb_pot":
+            issues.append("bomb_pot_contributions_not_reconstructed")
+        big_blind: Decimal | None = None
+        if not self._blind_consensus.accepted or self._blind_consensus.value is None:
+            issues.append("native_blinds_not_stable")
+        else:
+            _, big_token = self._blind_consensus.value.split("/", maxsplit=1)
+            big_blind = Decimal(big_token)
+        if not self._dealer_consensus.accepted:
+            issues.append("dealer_not_stable")
+        if len(self._active_seats) < 2:
+            issues.append("active_seat_ring_not_stable")
+        stable_stack_seats = {
+            item.seat
+            for item in self._stack_consensus
+            if item.consensus.accepted and item.consensus.value is not None
+        }
+        if not set(self._active_seats).issubset(stable_stack_seats):
+            issues.append("active_stacks_not_stable")
+        if 0 in self._active_seats and not self._hero_cards_accepted:
+            issues.append("hero_cards_not_stable")
+        if (
+            self._board_consensus.accepted
+            and self._board_consensus.value in {"3", "4", "5"}
+            and not self._board_cards_accepted
+        ):
+            issues.append("board_cards_not_stable")
+
+        current_actions = [
+            action for action in self._derived_actions if action.hand_epoch == self._hand_epoch
+        ]
+        current_ids = {action.event_id for action in current_actions}
+        amount_by_id = {
+            item.action_event_id: item for item in self._reconcile_action_amounts()
+        }
+        pot_by_id = {item.action_event_id: item for item in self._reconcile_action_pot()}
+        eligible_ids: list[str] = []
+        for action in current_actions:
+            amount = amount_by_id.get(action.event_id)
+            pot = pot_by_id.get(action.event_id)
+            if amount is None or amount.status not in {"matched", "not_required"}:
+                issues.append(f"action_amount_unresolved:{action.event_id}")
+                continue
+            if pot is None or pot.status not in {"matched", "not_required"}:
+                issues.append(f"action_pot_unresolved:{action.event_id}")
+                continue
+            eligible_ids.append(action.event_id)
+        order_results = [
+            result
+            for result in validate_action_order(
+                list(self._derived_actions), table_size=self._table_size
+            )
+            if result.hand_epoch == self._hand_epoch
+        ]
+        if current_ids and (
+            not order_results
+            or any(result.status != "prefix_consistent" for result in order_results)
+        ):
+            issues.append("clockwise_action_order_incomplete")
+        issues = list(dict.fromkeys(issues))
+        return LiveReconstructionReadiness(
+            hand_epoch=self._hand_epoch,
+            ready=not issues,
+            big_blind_native=big_blind,
+            eligible_action_event_ids=eligible_ids,
+            issues=issues,
+            reason=(
+                "all provisional gates passed; canonical event construction may begin"
+                if not issues
+                else "one or more fail-closed reconstruction gates remain"
+            ),
+        )
 
     def _reconcile_action_pot(self) -> list[ActionPotReconciliation]:
         amount_results = {

@@ -174,6 +174,10 @@
   the prior dealer and active ring, clears dealer consensus, and requires the button to advance to
   the next dealt seat after three new frames. An unchanged marker stays pending; a skipped dealer or
   changed active-seat set is rejected. The observer's first partial hand cannot establish a boundary.
+- Added one inspectable reducer-readiness result for the current epoch. It lists unresolved boundary,
+  mode, blind, dealer, active-ring, stack, hero/board card, amount, pot, and clockwise-order gates;
+  exposes the accepted native BB only after blind consensus; and enumerates only fully reconciled
+  action IDs. It never emits canonical events itself, and the dashboard shows its blocker count.
 
 ## Completed project checkpoints
 

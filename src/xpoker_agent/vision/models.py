@@ -301,6 +301,16 @@ class LiveHandBoundaryValidation(StrictModel):
     reason: str
 
 
+class LiveReconstructionReadiness(StrictModel):
+    hand_epoch: int = Field(ge=0)
+    ready: bool
+    big_blind_native: Decimal | None = Field(default=None, gt=0)
+    eligible_action_event_ids: list[str] = Field(default_factory=list)
+    issues: list[str] = Field(default_factory=list)
+    canonical_events_emitted: Literal[False] = False
+    reason: str
+
+
 class LiveCaptureDiagnostic(StrictModel):
     schema_version: Literal["1.0"] = "1.0"
     captured_at: datetime
@@ -392,6 +402,7 @@ class LiveObservationStatus(StrictModel):
     seat_action_consensus: list[SeatActionConsensus] = Field(default_factory=list)
     hand_epoch: int = Field(ge=0)
     hand_boundary_validation: LiveHandBoundaryValidation
+    reconstruction_readiness: LiveReconstructionReadiness
     derived_action_candidates: list[DerivedActionCandidate] = Field(default_factory=list)
     stack_delta_candidates: list[StackDeltaCandidate] = Field(default_factory=list)
     pot_delta_candidates: list[PotDeltaCandidate] = Field(default_factory=list)

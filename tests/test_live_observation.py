@@ -106,6 +106,8 @@ def test_live_observation_builds_consensus_and_stops_cleanly() -> None:
         assert status.seat_stack_consensus[0].consensus.accepted is True
         assert status.seat_stack_consensus[0].consensus.value == "100"
         assert status.target_stable is True
+        assert status.reconstruction_readiness.ready is False
+        assert "hand_boundary_not_validated" in status.reconstruction_readiness.issues
         assert await service.stop() is True
         assert service.status().running is False
 

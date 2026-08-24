@@ -490,6 +490,67 @@
       "title": "LiveHandBoundaryValidation",
       "type": "object"
     },
+    "LiveReconstructionReadiness": {
+      "additionalProperties": false,
+      "properties": {
+        "hand_epoch": {
+          "minimum": 0,
+          "title": "Hand Epoch",
+          "type": "integer"
+        },
+        "ready": {
+          "title": "Ready",
+          "type": "boolean"
+        },
+        "big_blind_native": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Big Blind Native"
+        },
+        "eligible_action_event_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Eligible Action Event Ids",
+          "type": "array"
+        },
+        "issues": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Issues",
+          "type": "array"
+        },
+        "canonical_events_emitted": {
+          "const": false,
+          "default": false,
+          "title": "Canonical Events Emitted",
+          "type": "boolean"
+        },
+        "reason": {
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "hand_epoch",
+        "ready",
+        "reason"
+      ],
+      "title": "LiveReconstructionReadiness",
+      "type": "object"
+    },
     "Position": {
       "enum": [
         "UTG",
@@ -1063,6 +1124,9 @@
     "hand_boundary_validation": {
       "$ref": "#/$defs/LiveHandBoundaryValidation"
     },
+    "reconstruction_readiness": {
+      "$ref": "#/$defs/LiveReconstructionReadiness"
+    },
     "derived_action_candidates": {
       "items": {
         "$ref": "#/$defs/DerivedActionCandidate"
@@ -1145,7 +1209,8 @@
     "positions_reason",
     "pot_consensus",
     "hand_epoch",
-    "hand_boundary_validation"
+    "hand_boundary_validation",
+    "reconstruction_readiness"
   ],
   "title": "LiveObservationStatus",
   "type": "object"
