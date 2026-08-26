@@ -101,6 +101,14 @@ export interface MonitorSnapshot {
     role: "gto_solution" | "reference_prior" | "none";
     confidence: number;
     source_artifact_id: string | null;
+    hero_combo: string | null;
+    equity: number | null;
+    action_frequencies: Array<{
+      action: string;
+      frequency: number;
+      ev_chips: number | null;
+      ev_loss_chips: number | null;
+    }>;
     mismatch: Record<string, unknown>;
     assumptions: string[];
   };
@@ -108,6 +116,9 @@ export interface MonitorSnapshot {
     status: "available" | "synthetic_only" | "unavailable";
     confidence: number;
     sample_size: number;
+    opponent_range_status: "validated" | "synthetic" | "unavailable";
+    baseline_actions: Record<string, number>;
+    adjusted_actions: Record<string, number>;
     assumptions: string[];
   };
   audit: Array<{ check: string; status: string; detail: string; source: string }>;

@@ -126,6 +126,30 @@
           "title": "Sample Size",
           "type": "integer"
         },
+        "opponent_range_status": {
+          "default": "unavailable",
+          "enum": [
+            "validated",
+            "synthetic",
+            "unavailable"
+          ],
+          "title": "Opponent Range Status",
+          "type": "string"
+        },
+        "baseline_actions": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "title": "Baseline Actions",
+          "type": "object"
+        },
+        "adjusted_actions": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "title": "Adjusted Actions",
+          "type": "object"
+        },
         "assumptions": {
           "items": {
             "type": "string"
@@ -959,6 +983,52 @@
       "title": "SeatState",
       "type": "object"
     },
+    "StrategyActionSnapshot": {
+      "additionalProperties": false,
+      "properties": {
+        "action": {
+          "title": "Action",
+          "type": "string"
+        },
+        "frequency": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Frequency",
+          "type": "number"
+        },
+        "ev_chips": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ev Chips"
+        },
+        "ev_loss_chips": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ev Loss Chips"
+        }
+      },
+      "required": [
+        "action",
+        "frequency"
+      ],
+      "title": "StrategyActionSnapshot",
+      "type": "object"
+    },
     "StrategySnapshot": {
       "additionalProperties": false,
       "properties": {
@@ -997,6 +1067,39 @@
           ],
           "default": null,
           "title": "Source Artifact Id"
+        },
+        "hero_combo": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Hero Combo"
+        },
+        "equity": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Equity"
+        },
+        "action_frequencies": {
+          "items": {
+            "$ref": "#/$defs/StrategyActionSnapshot"
+          },
+          "title": "Action Frequencies",
+          "type": "array"
         },
         "mismatch": {
           "additionalProperties": true,

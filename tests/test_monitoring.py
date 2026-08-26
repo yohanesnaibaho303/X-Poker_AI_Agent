@@ -36,6 +36,17 @@ def test_replay_math_exposes_exact_preflop_pot_odds_without_inventing_equity() -
     assert snapshot.poker_math.call_ev_chips is None
 
 
+def test_replay_reference_prior_is_never_presented_as_gto() -> None:
+    snapshots = [build_replay_snapshot(index) for index in range(15)]
+    resolved = [snapshot for snapshot in snapshots if snapshot.strategy.hero_combo]
+
+    assert resolved
+    assert all(snapshot.strategy.role == "reference_prior" for snapshot in resolved)
+    assert all(snapshot.strategy.status == "unavailable" for snapshot in resolved)
+    assert all(snapshot.health.strategy_status == "unavailable" for snapshot in resolved)
+    assert all(snapshot.exploit.opponent_range_status == "unavailable" for snapshot in snapshots)
+
+
 def test_monitor_api_exposes_fixed_table_and_reference_matrix() -> None:
     snapshot = monitor_snapshot()
     matrix = reference_range(Position.BTN)

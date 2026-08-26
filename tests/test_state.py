@@ -2,8 +2,6 @@ from decimal import Decimal
 
 import pytest
 from conftest import make_event, make_initial_state
-from hypothesis import given
-from hypothesis import strategies as st
 
 from xpoker_agent.models import (
     EventAmount,
@@ -282,7 +280,7 @@ def test_hand_cannot_complete_with_unawarded_pot(initial_state) -> None:
             3,
             EventCategory.FORCED_WAGER,
             "blind_posted",
-            actor_seat=8,
+            actor_seat=7,
             street=Street.PREFLOP,
             amount=EventAmount(to_chips=Decimal("1"), added_chips=Decimal("1")),
         ),
@@ -292,13 +290,8 @@ def test_hand_cannot_complete_with_unawarded_pot(initial_state) -> None:
         reducer.apply(state, make_event(4, EventCategory.LIFECYCLE, "hand_completed"))
 
 
-@given(st.integers(min_value=1, max_value=10_000))
-def test_posted_blind_conserves_chips(units: int) -> None:
+def test_authoritative_small_blind_conserves_native_chips() -> None:
     initial_state = make_initial_state()
-    amount = Decimal(units) / Decimal("100")
-    initial_state.seats[8].stack_chips = amount
-    initial_state.seats[8].starting_stack_chips = amount
-    initial_state.initial_total_chips = amount + Decimal("200")
     reducer = HandStateReducer()
     state = reducer.apply(initial_state, make_event(1, EventCategory.LIFECYCLE, "hand_started"))
     state = reducer.apply(
@@ -316,15 +309,43 @@ def test_posted_blind_conserves_chips(units: int) -> None:
             3,
             EventCategory.FORCED_WAGER,
             "blind_posted",
-            actor_seat=8,
+            actor_seat=7,
             street=Street.PREFLOP,
-            amount=EventAmount(to_chips=amount, added_chips=amount),
+            amount=EventAmount(to_chips=Decimal("1"), added_chips=Decimal("1")),
         ),
     )
 
-    assert state.seats[8].stack_chips == 0
-    assert state.pot_main_chips == amount
-    assert state.seats[8].stack_chips + state.pot_main_chips == amount
+    assert state.seats[7].stack_chips == Decimal("99")
+    assert state.pot_main_chips == Decimal("1")
+    assert state.seats[7].stack_chips + state.pot_main_chips == Decimal("100")
+
+
+@pytest.mark.parametrize("amount", ["0.5", "2", "3"])
+def test_non_authoritative_small_blind_is_rejected(amount: str) -> None:
+    reducer = HandStateReducer()
+    state = reducer.apply(
+        make_initial_state(), make_event(1, EventCategory.LIFECYCLE, "hand_started")
+    )
+    state = reducer.apply(
+        state,
+        make_event(2, EventCategory.DEALING, "dealer_assigned", dealer_seat=6),
+    )
+
+    with pytest.raises(StateTransitionError, match="exactly SB 1 and BB 2"):
+        reducer.apply(
+            state,
+            make_event(
+                3,
+                EventCategory.FORCED_WAGER,
+                "blind_posted",
+                actor_seat=7,
+                street=Street.PREFLOP,
+                amount=EventAmount(
+                    to_chips=Decimal(amount),
+                    added_chips=Decimal(amount),
+                ),
+            ),
+        )
 
 
 def test_known_card_cannot_reappear_on_board(initial_state) -> None:

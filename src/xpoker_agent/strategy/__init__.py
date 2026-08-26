@@ -1,5 +1,14 @@
 """Source-backed GTO resolution and explicitly separate reference fallbacks."""
 
+from xpoker_agent.strategy.importer import ImportedSolverExport, SolverExport, load_solver_export
+from xpoker_agent.strategy.nodes import (
+    StrategyNodeAction,
+    StrategyNodeArtifact,
+    StrategyNodeDistance,
+    StrategyNodeKey,
+    StrategyNodeLibrary,
+    StrategyNodeLookup,
+)
 from xpoker_agent.strategy.resolver import (
     ComboActionComparison,
     ComboActionResult,
@@ -18,4 +27,13 @@ __all__ = [
     "StrategyComboResult",
     "StrategyResolution",
     "compare_combo_results",
+    "StrategyNodeAction",
+    "StrategyNodeArtifact",
+    "StrategyNodeDistance",
+    "StrategyNodeKey",
+    "StrategyNodeLibrary",
+    "StrategyNodeLookup",
+    "ImportedSolverExport",
+    "SolverExport",
+    "load_solver_export",
 ]

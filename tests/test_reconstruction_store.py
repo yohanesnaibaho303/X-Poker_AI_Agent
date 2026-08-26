@@ -41,7 +41,7 @@ def _preflop_after_blinds():
             "blind_posted",
             actor_seat=7,
             street=Street.PREFLOP,
-            amount=EventAmount(to_chips=Decimal("0.5"), added_chips=Decimal("0.5")),
+            amount=EventAmount(to_chips=Decimal("1"), added_chips=Decimal("1")),
         ),
     )
     state = reducer.apply(
@@ -52,7 +52,7 @@ def _preflop_after_blinds():
             "blind_posted",
             actor_seat=8,
             street=Street.PREFLOP,
-            amount=EventAmount(to_chips=Decimal("1"), added_chips=Decimal("1")),
+            amount=EventAmount(to_chips=Decimal("2"), added_chips=Decimal("2")),
         ),
     )
     return reducer, state
@@ -178,7 +178,7 @@ def test_call_must_match_current_wager_exactly() -> None:
                 "call",
                 actor_seat=6,
                 street=Street.PREFLOP,
-                amount=EventAmount(to_chips=Decimal("0.5"), added_chips=Decimal("0.5")),
+                amount=EventAmount(to_chips=Decimal("1"), added_chips=Decimal("1")),
             ),
         )
 
@@ -200,7 +200,7 @@ def test_raise_must_meet_minimum_full_raise_increment() -> None:
         )
 
 
-def test_short_all_in_raise_is_legal_but_does_not_lower_minimum_increment() -> None:
+def test_short_all_in_call_is_legal_but_does_not_lower_minimum_increment() -> None:
     reducer, state = _preflop_after_blinds()
     state.seats[6].stack_chips = Decimal("1.5")
     state.seats[6].starting_stack_chips = Decimal("1.5")
@@ -219,8 +219,8 @@ def test_short_all_in_raise_is_legal_but_does_not_lower_minimum_increment() -> N
     )
 
     assert result.seats[6].participation is ParticipationStatus.ALL_IN
-    assert result.current_bet_chips == Decimal("1.5")
-    assert result.minimum_raise_increment_chips == Decimal("1")
+    assert result.current_bet_chips == Decimal("2")
+    assert result.minimum_raise_increment_chips == Decimal("2")
     reconstructed_total = (
         sum((seat.stack_chips for seat in result.seats), start=Decimal("0")) + result.pot_main_chips
     )
@@ -229,9 +229,9 @@ def test_short_all_in_raise_is_legal_but_does_not_lower_minimum_increment() -> N
 
 def test_short_all_in_does_not_reopen_raise_for_player_who_already_acted() -> None:
     reducer, state = _preflop_after_blinds()
-    state.seats[7].stack_chips = Decimal("3.5")
-    state.seats[7].starting_stack_chips = Decimal("4")
-    state.initial_total_chips = Decimal("204")
+    state.seats[7].stack_chips = Decimal("4")
+    state.seats[7].starting_stack_chips = Decimal("5")
+    state.initial_total_chips = Decimal("205")
     state = reducer.apply(
         state,
         make_event(
@@ -240,7 +240,7 @@ def test_short_all_in_does_not_reopen_raise_for_player_who_already_acted() -> No
             "raise",
             actor_seat=6,
             street=Street.PREFLOP,
-            amount=EventAmount(to_chips=Decimal("3"), added_chips=Decimal("3")),
+            amount=EventAmount(to_chips=Decimal("4"), added_chips=Decimal("4")),
         ),
     )
     state = reducer.apply(
@@ -251,7 +251,7 @@ def test_short_all_in_does_not_reopen_raise_for_player_who_already_acted() -> No
             "all_in",
             actor_seat=7,
             street=Street.PREFLOP,
-            amount=EventAmount(to_chips=Decimal("4"), added_chips=Decimal("3.5")),
+            amount=EventAmount(to_chips=Decimal("5"), added_chips=Decimal("4")),
         ),
     )
     state = reducer.apply(
@@ -262,7 +262,7 @@ def test_short_all_in_does_not_reopen_raise_for_player_who_already_acted() -> No
             "call",
             actor_seat=8,
             street=Street.PREFLOP,
-            amount=EventAmount(to_chips=Decimal("4"), added_chips=Decimal("3")),
+            amount=EventAmount(to_chips=Decimal("5"), added_chips=Decimal("3")),
         ),
     )
 
@@ -277,7 +277,7 @@ def test_short_all_in_does_not_reopen_raise_for_player_who_already_acted() -> No
                 "raise",
                 actor_seat=6,
                 street=Street.PREFLOP,
-                amount=EventAmount(to_chips=Decimal("6"), added_chips=Decimal("3")),
+                amount=EventAmount(to_chips=Decimal("7"), added_chips=Decimal("3")),
             ),
         )
 

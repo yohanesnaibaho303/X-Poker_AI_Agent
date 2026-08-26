@@ -13,7 +13,7 @@ import {
   stopReplay,
 } from "./api";
 import { formatPercent, formatStack } from "./format";
-import { buildActionRows } from "./strategy";
+import { buildActionRows, buildStrategyComparisonRows } from "./strategy";
 import type {
   HandEvent,
   HandState,
@@ -39,6 +39,29 @@ function Card({ value }: { value: string }) {
 
 function StatusPill({ tone, children }: { tone: string; children: ReactNode }) {
   return <span className={`status-pill ${tone}`}>{children}</span>;
+}
+
+function StrategyComparison({ snapshot }: { snapshot: ReturnType<typeof useMonitor>["snapshot"] }) {
+  const rows = buildStrategyComparisonRows(snapshot?.strategy ?? null, snapshot?.exploit ?? null);
+  if (!snapshot || rows.length === 0) {
+    return (
+      <div className="strategy-block">
+        <span>GTO / exploit comparison</span><strong>Unavailable</strong>
+        <small>Requires a configuration-matched GTO solution and validated opponent range. Reference priors are never labeled GTO.</small>
+      </div>
+    );
+  }
+  return (
+    <div className="strategy-block">
+      <span>GTO / exploit comparison</span>
+      {rows.map((row) => (
+        <strong key={row.action}>
+          {row.action}: GTO {row.baseline == null ? "—" : formatPercent(row.baseline)} · exploit {row.exploit == null ? "—" : formatPercent(row.exploit)}
+        </strong>
+      ))}
+      <small>Source {snapshot.strategy.source_artifact_id ?? "unknown"} · mismatch {JSON.stringify(snapshot.strategy.mismatch)}</small>
+    </div>
+  );
 }
 
 function TableCanvas({ state }: { state: HandState }) {
@@ -511,6 +534,7 @@ export default function App() {
                     : "Waiting for strategy status."}
                 </small>
               </div>
+              <StrategyComparison snapshot={snapshot} />
               <div className="math-grid">
                 <div><span>Hero stack</span><strong>{liveHero?.hero_stack_chips ? formatStack(liveHero.hero_stack_chips) : "—"}</strong></div>
                 <div><span>Effective</span><strong>{liveHero?.effective_stack_chips ? formatStack(liveHero.effective_stack_chips) : snapshot?.poker_math.effective_stack_chips ? formatStack(snapshot.poker_math.effective_stack_chips) : "—"}</strong></div>

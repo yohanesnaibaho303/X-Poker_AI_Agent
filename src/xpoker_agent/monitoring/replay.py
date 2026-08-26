@@ -8,7 +8,7 @@ from datetime import UTC, datetime
 from decimal import Decimal
 from time import perf_counter_ns
 
-from xpoker_agent.models import HandState, ParticipationStatus
+from xpoker_agent.models import HandState, ParticipationStatus, Position
 from xpoker_agent.monitoring.hub import MonitorHub
 from xpoker_agent.monitoring.models import (
     ExploitSnapshot,
@@ -17,9 +17,16 @@ from xpoker_agent.monitoring.models import (
     MonitorSnapshot,
     PokerMathSnapshot,
     ReplayProgress,
+    StrategyActionSnapshot,
     StrategySnapshot,
 )
 from xpoker_agent.poker_math import effective_stack, pot_odds_required_equity, stack_to_pot_ratio
+from xpoker_agent.ranges.cards import canonical_combo
+from xpoker_agent.ranges.library import (
+    ObservedRangeAction,
+    PreflopSpotKey,
+    load_seeded_reference_library,
+)
 from xpoker_agent.simulation import run_simulated_hand
 
 
@@ -64,6 +71,66 @@ def _replay_math(state: HandState) -> PokerMathSnapshot:
     )
 
 
+def _replay_strategy(state: HandState) -> StrategySnapshot:
+    if state.hero_position is not Position.BTN or len(state.hero_cards) != 2:
+        return StrategySnapshot(
+            status="unavailable",
+            role="reference_prior",
+            confidence=0.0,
+            assumptions=[
+                "Reference strategy waits for stable hero cards and a supported unopened position."
+            ],
+        )
+    positions = [
+        Position.UTG,
+        Position.UTG_1,
+        Position.UTG_2,
+        Position.LJ,
+        Position.HJ,
+        Position.CO,
+    ]
+    spot = PreflopSpotKey(
+        stack_depth_chips=state.seats[state.hero_seat].starting_stack_chips,
+        player_position=Position.BTN,
+        players_remaining=3,
+        action_sequence=[
+            ObservedRangeAction(actor_position=position, type="fold")
+            for position in positions
+        ],
+    )
+    lookup = load_seeded_reference_library().lookup(spot)
+    combo = canonical_combo(*state.hero_cards)
+    combo_strategy = lookup.artifact.combos.get(combo)
+    if combo_strategy is None:
+        return StrategySnapshot(
+            status="unavailable",
+            role="reference_prior",
+            confidence=0.0,
+            hero_combo=combo,
+            assumptions=["Hero combination is absent from the reference prior."],
+        )
+    return StrategySnapshot(
+        status="unavailable",
+        role="reference_prior",
+        confidence=lookup.artifact.confidence,
+        source_artifact_id=str(lookup.artifact.artifact_id),
+        hero_combo=combo,
+        equity=combo_strategy.equity,
+        action_frequencies=[
+            StrategyActionSnapshot(
+                action=action,
+                frequency=frequency,
+                ev_chips=combo_strategy.ev_chips.get(action),
+            )
+            for action, frequency in sorted(combo_strategy.actions.items())
+        ],
+        assumptions=[
+            *lookup.artifact.assumptions,
+            "Reference prior is displayed separately and is not a GTO solution.",
+        ],
+    )
+
+
 def build_replay_snapshot(
     index: int = 0,
     *,
@@ -100,16 +167,12 @@ def build_replay_snapshot(
             interval_ms=interval_ms,
         ),
         poker_math=_replay_math(state),
-        strategy=StrategySnapshot(
-            status="unavailable",
-            role="reference_prior",
-            confidence=0.55,
-            assumptions=["Reference prior may be displayed separately but is not exact GTO."],
-        ),
+        strategy=_replay_strategy(state),
         exploit=ExploitSnapshot(
             status="synthetic_only",
             confidence=0.0,
             sample_size=0,
+            opponent_range_status="unavailable",
             assumptions=["No live opponent sample is connected."],
         ),
         audit=[

@@ -174,6 +174,34 @@ class HandStateReducer:
             raise StateTransitionError("blinds can be posted only preflop")
         if state.dealer_seat is None:
             raise StateTransitionError("dealer must be assigned before blinds")
+        active_seats = [
+            seat.seat
+            for seat in state.seats
+            if seat.participation is ParticipationStatus.ACTIVE
+        ]
+        if len(active_seats) < 2:
+            raise StateTransitionError("blinds require at least two active players")
+        if len(active_seats) == 2:
+            small_blind_seat = state.dealer_seat
+        else:
+            small_blind_seat = self._next_actionable_after(state, state.dealer_seat)
+        big_blind_seat = self._next_actionable_after(state, small_blind_seat)
+        expected_posts = [(small_blind_seat, Decimal("1")), (big_blind_seat, Decimal("2"))]
+        posted_count = sum(
+            seat.committed_by_street_chips.get(Street.PREFLOP, Decimal("0")) > 0
+            for seat in state.seats
+        )
+        if posted_count >= len(expected_posts):
+            raise StateTransitionError("standard NLH accepts exactly two forced blind posts")
+        expected_seat, expected_amount = expected_posts[posted_count]
+        if event.actor_seat != expected_seat:
+            raise StateTransitionError("blind posted by the wrong seat or out of order")
+        if (
+            event.amount is None
+            or event.amount.to_chips != expected_amount
+            or event.amount.added_chips != expected_amount
+        ):
+            raise StateTransitionError("authoritative forced blinds are exactly SB 1 and BB 2")
         seat, resulting_total = self._debit(state, event)
         state.current_bet_chips = max(state.current_bet_chips, resulting_total)
         state.minimum_raise_increment_chips = max(

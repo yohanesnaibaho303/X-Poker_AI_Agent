@@ -85,7 +85,7 @@ def test_heads_up_action_order_is_button_first_preflop_and_other_seat_postflop()
             "blind_posted",
             actor_seat=6,
             street=Street.PREFLOP,
-            amount=EventAmount(to_chips=Decimal("0.5"), added_chips=Decimal("0.5")),
+            amount=EventAmount(to_chips=Decimal("1"), added_chips=Decimal("1")),
         ),
         _event(
             hand_id,
@@ -94,7 +94,7 @@ def test_heads_up_action_order_is_button_first_preflop_and_other_seat_postflop()
             "blind_posted",
             actor_seat=8,
             street=Street.PREFLOP,
-            amount=EventAmount(to_chips=Decimal("1"), added_chips=Decimal("1")),
+            amount=EventAmount(to_chips=Decimal("2"), added_chips=Decimal("2")),
         ),
     ]
     result = replay_events(state, events)
@@ -111,7 +111,7 @@ def test_heads_up_action_order_is_button_first_preflop_and_other_seat_postflop()
             "call",
             actor_seat=6,
             street=Street.PREFLOP,
-            amount=EventAmount(to_chips=Decimal("1"), added_chips=Decimal("0.5")),
+            amount=EventAmount(to_chips=Decimal("2"), added_chips=Decimal("1")),
         ),
     )
     state = reducer.apply(

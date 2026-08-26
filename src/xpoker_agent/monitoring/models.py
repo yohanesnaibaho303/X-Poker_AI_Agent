@@ -47,11 +47,21 @@ class PokerMathSnapshot(StrictModel):
     assumptions: list[str] = Field(default_factory=list)
 
 
+class StrategyActionSnapshot(StrictModel):
+    action: str
+    frequency: float = Field(ge=0, le=1)
+    ev_chips: float | None = None
+    ev_loss_chips: float | None = Field(default=None, ge=0)
+
+
 class StrategySnapshot(StrictModel):
     status: Literal["exact", "abstracted", "unavailable"]
     role: Literal["gto_solution", "reference_prior", "none"]
     confidence: float = Field(ge=0, le=1)
     source_artifact_id: str | None = None
+    hero_combo: str | None = None
+    equity: float | None = Field(default=None, ge=0, le=1)
+    action_frequencies: list[StrategyActionSnapshot] = Field(default_factory=list)
     mismatch: dict[str, object] = Field(default_factory=dict)
     assumptions: list[str] = Field(default_factory=list)
 
@@ -60,7 +70,22 @@ class ExploitSnapshot(StrictModel):
     status: Literal["available", "synthetic_only", "unavailable"]
     confidence: float = Field(ge=0, le=1)
     sample_size: int = Field(default=0, ge=0)
+    opponent_range_status: Literal["validated", "synthetic", "unavailable"] = "unavailable"
+    baseline_actions: dict[str, float] = Field(default_factory=dict)
+    adjusted_actions: dict[str, float] = Field(default_factory=dict)
     assumptions: list[str] = Field(default_factory=list)
+
+    @model_validator(mode="after")
+    def validate_action_frequencies(self) -> ExploitSnapshot:
+        for actions in (self.baseline_actions, self.adjusted_actions):
+            if actions and (
+                any(value < 0 or value > 1 for value in actions.values())
+                or abs(sum(actions.values()) - 1.0) > 1e-9
+            ):
+                raise ValueError("exploit snapshot action frequencies must sum to one")
+        if set(self.baseline_actions) != set(self.adjusted_actions):
+            raise ValueError("baseline and adjusted exploit actions must use the same keys")
+        return self
 
 
 class MonitorSnapshot(StrictModel):

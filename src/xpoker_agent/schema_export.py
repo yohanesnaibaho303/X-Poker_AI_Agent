@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 
 from xpoker_agent.capture.models import LayoutProfile
+from xpoker_agent.evaluation import RecognitionEvaluationReport
 from xpoker_agent.exploit.models import (
     BestResponseAnalysis,
     ExploitAdjustment,
@@ -40,6 +41,8 @@ from xpoker_agent.monitoring.models import (
 )
 from xpoker_agent.ranges.library import RangeArtifact
 from xpoker_agent.ranges.matrix import RangeMatrix
+from xpoker_agent.strategy.importer import SolverExport
+from xpoker_agent.strategy.nodes import StrategyNodeArtifact, StrategyNodeLookup
 from xpoker_agent.strategy.resolver import (
     StrategyComboComparison,
     StrategyComboResult,
@@ -70,12 +73,16 @@ MODELS = [
     StrategyResolution,
     StrategyComboResult,
     StrategyComboComparison,
+    StrategyNodeArtifact,
+    StrategyNodeLookup,
+    SolverExport,
     OpponentProfile,
     ExploitAdjustment,
     NodelockResult,
     OpponentRangeSnapshot,
     BestResponseAnalysis,
     CompatibilityAudit,
+    RecognitionEvaluationReport,
     MonitorSnapshot,
     MonitorEnvelope,
     MonitorHistory,

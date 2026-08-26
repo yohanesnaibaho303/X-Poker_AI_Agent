@@ -288,6 +288,14 @@
   contributor is stack-exhausted; no contribution is inferred from a configured label or range.
 - Added deterministic exact-combination strategy comparison. It reports candidate-minus-baseline
   frequency, equity, and native-chip EV deltas while leaving missing paired values unavailable.
+- Added full nine-max native-chip strategy-node keys, exact and nearest geometry lookup, quantitative
+  stack/pot mismatch, board/action-tree isolation, and hash-verified authorized solver export import.
+- Added a versioned recognition evaluation runner with content-hashed datasets, per-slice accuracy,
+  rejection, confidence, and p95 latency. Calibration/regression fixtures cannot satisfy promotion.
+- Monitoring now carries per-combo strategy actions, equity, EV and EV loss plus explicit opponent-
+  range state and GTO/exploit comparison. Reference priors remain ineligible for a GTO label.
+- The state reducer now requires exact ordered SB 1 and BB 2 forced posts from the correct seats;
+  legacy blind sizes, wrong order, wrong seats, extra posts, and amount mismatches fail closed.
 - Milestone 10 now has a fail-closed compatibility audit covering the authoritative 9-max SB 1 / BB
   2 configuration, controller lockout, hash-verified reference library, complete parseable schema
   set, and production dashboard entry point. The local API exposes the inspectable audit result;
@@ -327,8 +335,7 @@
 - Add opponent-range, poker-math, exact/abstracted strategy, exploit-frequency, provenance, and
   decision-trace views as those upstream results become available.
 - Continue Milestone 6 solution import/resolution while keeping reference priors ineligible for exact-GTO results.
-- Source or independently generate configuration-matched 6-max and 9-max no-rake 2 BB solutions.
-- Add exact/nearest strategy-node lookup and quantitative mismatch reporting.
+- Source or independently generate configuration-matched nine-max, zero-rake, native SB 1 / BB 2 solutions.
 - Connect the completed exploit layer to real reconstructed observations and resolved strategy EVs
   during Milestone 8 integration.
 - Continue M3/M4 promotion evaluation from representative live standard NLH evidence, retaining

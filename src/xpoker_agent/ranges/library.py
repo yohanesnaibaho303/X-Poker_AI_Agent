@@ -24,6 +24,22 @@ from xpoker_agent.ranges.stack import STACK_BUCKETS_CHIPS, StackDepthMatch, near
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
 
 
+def validate_strategy_action_key(action: str) -> None:
+    if "@" not in action:
+        if action in {"bet", "raise"}:
+            raise ValueError("monetary action must include an exact native-chip size")
+        return
+    action_type, size_token = action.split("@", maxsplit=1)
+    if action_type not in {"bet", "raise", "all_in"} or not size_token.endswith("chips"):
+        raise ValueError("action sizing must use action@<amount>chips")
+    try:
+        size = Decimal(size_token.removesuffix("chips"))
+    except ArithmeticError as error:
+        raise ValueError("action has an invalid native-chip amount") from error
+    if not size.is_finite() or size <= 0:
+        raise ValueError("action must have a positive finite native-chip amount")
+
+
 class ObservedRangeAction(StrictModel):
     actor_position: Position
     type: Literal["fold", "check", "call", "bet", "raise", "all_in"]
@@ -145,29 +161,10 @@ class RangeArtifact(StrictModel):
             if not set(strategy.ev_chips).issubset(strategy.actions):
                 raise ValueError(f"combo {combo} has EV for an unavailable action")
             for action in set(strategy.actions) | set(strategy.ev_chips):
-                if "@" not in action:
-                    if action in {"bet", "raise"}:
-                        raise ValueError(
-                            f"combo {combo} monetary action must include an exact native-chip size"
-                        )
-                    continue
-                action_type, size_token = action.split("@", maxsplit=1)
-                if action_type not in {"bet", "raise", "all_in"} or not size_token.endswith(
-                    "chips"
-                ):
-                    raise ValueError(
-                        f"combo {combo} action sizing must use action@<amount>chips"
-                    )
                 try:
-                    size = Decimal(size_token.removesuffix("chips"))
-                except ArithmeticError as error:
-                    raise ValueError(
-                        f"combo {combo} action has an invalid native-chip amount"
-                    ) from error
-                if not size.is_finite() or size <= 0:
-                    raise ValueError(
-                        f"combo {combo} action must have a positive finite native-chip amount"
-                    )
+                    validate_strategy_action_key(action)
+                except ValueError as error:
+                    raise ValueError(f"combo {combo} {error}") from error
         return combos
 
     def to_weighted_range(self, *, player_ref: str, hand_id: UUID) -> WeightedRange:

@@ -97,11 +97,11 @@ Exit: range lookup is deterministic, poker-math tests pass completely, and posit
 
 - [x] Define provenance-bearing preflop strategy artifact import and validation format.
 - [ ] Integrate licensed/generated/authorized solution sources.
-- [ ] Implement full spot keys and exact-node lookup.
+- [x] Implement full spot keys and exact-node lookup.
 - [x] Implement preflop exact/nearest-stack resolution and quantitative mismatch metrics.
-- [ ] Expose combo actions, frequencies, EV, equity, and EV loss.
+- [x] Expose combo actions, frequencies, EV, equity, and EV loss.
 - [x] Add source, assumptions, configuration, role, and confidence to every preflop result.
-- [ ] Build reference-comparison and replay regression suites.
+- [x] Build reference-comparison and replay regression suites.
 
 Exit: replayed spots return deterministic, source-backed results and never present approximations as exact GTO.
 
@@ -123,8 +123,8 @@ Exit: synthetic profiles produce stable, explainable, regression-tested adjustme
 - [x] Remove table-size and unit selectors; enforce 9-max and native-chip display only.
 - [x] Stream schema-versioned snapshots and events over WebSockets.
 - [x] Display capture overlays, confidence, state, action history, and health.
-- [ ] Display hero/opponent ranges and GTO/exploit frequencies.
-- [ ] Display equity, EV, pot odds, abstraction mismatch, assumptions, and sources.
+- [x] Display hero/opponent-range status and GTO/exploit frequencies without relabeling priors.
+- [x] Display equity, EV, pot odds, abstraction mismatch, assumptions, and sources.
 - [x] Add replay navigation and decision/audit inspection.
 - [x] Add gap recovery, backpressure, and long-session telemetry.
 

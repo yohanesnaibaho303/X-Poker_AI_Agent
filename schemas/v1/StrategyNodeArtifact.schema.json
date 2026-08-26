@@ -1,0 +1,317 @@
+{
+  "$defs": {
+    "ComboStrategy": {
+      "additionalProperties": false,
+      "properties": {
+        "weight": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Weight",
+          "type": "number"
+        },
+        "actions": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "title": "Actions",
+          "type": "object"
+        },
+        "equity": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Equity"
+        },
+        "ev_chips": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "title": "Ev Chips",
+          "type": "object"
+        }
+      },
+      "required": [
+        "weight"
+      ],
+      "title": "ComboStrategy",
+      "type": "object"
+    },
+    "Position": {
+      "enum": [
+        "UTG",
+        "UTG+1",
+        "UTG+2",
+        "LJ",
+        "HJ",
+        "CO",
+        "BTN",
+        "SB",
+        "BB"
+      ],
+      "title": "Position",
+      "type": "string"
+    },
+    "StrategyNodeAction": {
+      "additionalProperties": false,
+      "properties": {
+        "actor_position": {
+          "$ref": "#/$defs/Position"
+        },
+        "street": {
+          "$ref": "#/$defs/Street"
+        },
+        "action": {
+          "enum": [
+            "fold",
+            "check",
+            "call",
+            "bet",
+            "raise",
+            "all_in"
+          ],
+          "title": "Action",
+          "type": "string"
+        },
+        "size_chips": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Size Chips"
+        }
+      },
+      "required": [
+        "actor_position",
+        "street",
+        "action"
+      ],
+      "title": "StrategyNodeAction",
+      "type": "object"
+    },
+    "StrategyNodeKey": {
+      "additionalProperties": false,
+      "properties": {
+        "variant": {
+          "const": "NLH",
+          "default": "NLH",
+          "title": "Variant",
+          "type": "string"
+        },
+        "format": {
+          "const": "cash",
+          "default": "cash",
+          "title": "Format",
+          "type": "string"
+        },
+        "seats": {
+          "const": 9,
+          "default": 9,
+          "title": "Seats",
+          "type": "integer"
+        },
+        "rake_percent": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "default": "0",
+          "title": "Rake Percent"
+        },
+        "native_small_blind": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "default": "1",
+          "title": "Native Small Blind"
+        },
+        "native_big_blind": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "default": "2",
+          "title": "Native Big Blind"
+        },
+        "street": {
+          "$ref": "#/$defs/Street"
+        },
+        "hero_position": {
+          "$ref": "#/$defs/Position"
+        },
+        "opponent_positions": {
+          "items": {
+            "$ref": "#/$defs/Position"
+          },
+          "title": "Opponent Positions",
+          "type": "array"
+        },
+        "players_remaining": {
+          "maximum": 9,
+          "minimum": 2,
+          "title": "Players Remaining",
+          "type": "integer"
+        },
+        "effective_stack_chips": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "title": "Effective Stack Chips"
+        },
+        "pot_chips": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "title": "Pot Chips"
+        },
+        "board": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Board",
+          "type": "array"
+        },
+        "action_sequence": {
+          "items": {
+            "$ref": "#/$defs/StrategyNodeAction"
+          },
+          "title": "Action Sequence",
+          "type": "array"
+        },
+        "available_actions": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Available Actions",
+          "type": "array"
+        }
+      },
+      "required": [
+        "street",
+        "hero_position",
+        "opponent_positions",
+        "players_remaining",
+        "effective_stack_chips",
+        "pot_chips",
+        "available_actions"
+      ],
+      "title": "StrategyNodeKey",
+      "type": "object"
+    },
+    "Street": {
+      "enum": [
+        "none",
+        "preflop",
+        "flop",
+        "turn",
+        "river",
+        "showdown"
+      ],
+      "title": "Street",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "artifact_id": {
+      "format": "uuid",
+      "title": "Artifact Id",
+      "type": "string"
+    },
+    "node": {
+      "$ref": "#/$defs/StrategyNodeKey"
+    },
+    "combos": {
+      "additionalProperties": {
+        "$ref": "#/$defs/ComboStrategy"
+      },
+      "title": "Combos",
+      "type": "object"
+    },
+    "source": {
+      "additionalProperties": true,
+      "title": "Source",
+      "type": "object"
+    },
+    "strategy_role": {
+      "const": "gto_solution",
+      "default": "gto_solution",
+      "title": "Strategy Role",
+      "type": "string"
+    },
+    "confidence": {
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Confidence",
+      "type": "number"
+    },
+    "assumptions": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Assumptions",
+      "type": "array"
+    },
+    "version": {
+      "title": "Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "artifact_id",
+    "node",
+    "combos",
+    "source",
+    "confidence",
+    "version"
+  ],
+  "title": "StrategyNodeArtifact",
+  "type": "object"
+}

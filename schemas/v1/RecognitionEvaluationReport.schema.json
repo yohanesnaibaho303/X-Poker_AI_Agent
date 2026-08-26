@@ -1,0 +1,165 @@
+{
+  "$defs": {
+    "RecognitionSliceMetrics": {
+      "additionalProperties": false,
+      "properties": {
+        "dataset_slice": {
+          "title": "Dataset Slice",
+          "type": "string"
+        },
+        "total": {
+          "minimum": 1,
+          "title": "Total",
+          "type": "integer"
+        },
+        "correct": {
+          "minimum": 0,
+          "title": "Correct",
+          "type": "integer"
+        },
+        "false_positives": {
+          "minimum": 0,
+          "title": "False Positives",
+          "type": "integer"
+        },
+        "false_negatives": {
+          "minimum": 0,
+          "title": "False Negatives",
+          "type": "integer"
+        },
+        "exact_accuracy": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Exact Accuracy",
+          "type": "number"
+        },
+        "safe_rejection_rate": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Safe Rejection Rate"
+        },
+        "mean_confidence": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Mean Confidence",
+          "type": "number"
+        },
+        "p95_latency_ms": {
+          "minimum": 0,
+          "title": "P95 Latency Ms",
+          "type": "number"
+        }
+      },
+      "required": [
+        "dataset_slice",
+        "total",
+        "correct",
+        "false_positives",
+        "false_negatives",
+        "exact_accuracy",
+        "mean_confidence",
+        "p95_latency_ms"
+      ],
+      "title": "RecognitionSliceMetrics",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "component": {
+      "enum": [
+        "card",
+        "numeric_ocr",
+        "street",
+        "seat",
+        "action_control"
+      ],
+      "title": "Component",
+      "type": "string"
+    },
+    "component_version": {
+      "title": "Component Version",
+      "type": "string"
+    },
+    "dataset_id": {
+      "title": "Dataset Id",
+      "type": "string"
+    },
+    "dataset_role": {
+      "enum": [
+        "calibration",
+        "regression",
+        "holdout"
+      ],
+      "title": "Dataset Role",
+      "type": "string"
+    },
+    "dataset_sha256": {
+      "maxLength": 64,
+      "minLength": 64,
+      "title": "Dataset Sha256",
+      "type": "string"
+    },
+    "target_accuracy": {
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Target Accuracy",
+      "type": "number"
+    },
+    "overall": {
+      "$ref": "#/$defs/RecognitionSliceMetrics"
+    },
+    "slices": {
+      "items": {
+        "$ref": "#/$defs/RecognitionSliceMetrics"
+      },
+      "title": "Slices",
+      "type": "array"
+    },
+    "promotion_eligible": {
+      "title": "Promotion Eligible",
+      "type": "boolean"
+    },
+    "gate_passed": {
+      "title": "Gate Passed",
+      "type": "boolean"
+    },
+    "limitations": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Limitations",
+      "type": "array"
+    }
+  },
+  "required": [
+    "component",
+    "component_version",
+    "dataset_id",
+    "dataset_role",
+    "dataset_sha256",
+    "target_accuracy",
+    "overall",
+    "slices",
+    "promotion_eligible",
+    "gate_passed",
+    "limitations"
+  ],
+  "title": "RecognitionEvaluationReport",
+  "type": "object"
+}
