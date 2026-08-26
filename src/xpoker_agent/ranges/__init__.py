@@ -15,14 +15,14 @@ from xpoker_agent.ranges.engine import (
     uniform_range,
 )
 from xpoker_agent.ranges.stack import (
-    STACK_BUCKETS_BB,
+    STACK_BUCKETS_CHIPS,
     interpolation_bracket,
     nearest_stack_bucket,
 )
 
 __all__ = [
     "DECK",
-    "STACK_BUCKETS_BB",
+    "STACK_BUCKETS_CHIPS",
     "all_combos",
     "all_hand_classes",
     "apply_blockers",

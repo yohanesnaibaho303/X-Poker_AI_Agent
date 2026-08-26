@@ -8,7 +8,7 @@ from xpoker_agent.models import ParticipationStatus, PotLayer, SeatState
 
 
 def total_commitment(seat: SeatState) -> Decimal:
-    return sum(seat.committed_by_street_bb.values(), start=Decimal("0"))
+    return sum(seat.committed_by_street_chips.values(), start=Decimal("0"))
 
 
 def build_pot_layers(seats: list[SeatState]) -> list[PotLayer]:
@@ -47,9 +47,9 @@ def build_pot_layers(seats: list[SeatState]) -> list[PotLayer]:
         layers.append(
             PotLayer(
                 pot_index=len(layers),
-                amount_bb=amount,
-                remaining_bb=amount,
-                cap_per_player_bb=cap,
+                amount_chips=amount,
+                remaining_chips=amount,
+                cap_per_player_chips=cap,
                 contributing_seats=contributors,
                 eligible_seats=eligible,
             )

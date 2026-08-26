@@ -22,22 +22,22 @@ HAND_ID = UUID("40000000-0000-0000-0000-000000000003")
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 
-def _spot(stack: str = "100", *, raise_size: str = "2") -> PreflopSpotKey:
+def _spot(stack: str = "200", *, raise_size: str = "4") -> PreflopSpotKey:
     return PreflopSpotKey(
-        stack_depth_bb=Decimal(stack),
+        stack_depth_chips=Decimal(stack),
         player_position=Position.UTG,
         players_remaining=9,
         action_sequence=[
             ObservedRangeAction(
                 actor_position=Position.UTG,
                 type="raise",
-                size_bb=Decimal(raise_size),
+                size_chips=Decimal(raise_size),
             )
         ],
     )
 
 
-def _artifact(stack: str = "100", *, validation_status: str = "validated") -> RangeArtifact:
+def _artifact(stack: str = "200", *, validation_status: str = "validated") -> RangeArtifact:
     return RangeArtifact(
         artifact_id=ARTIFACT_ID,
         title="Synthetic format-validation range",
@@ -45,11 +45,11 @@ def _artifact(stack: str = "100", *, validation_status: str = "validated") -> Ra
         combos={
             "AsAh": ComboStrategy(
                 weight=1.0,
-                actions={"fold": 0.25, "raise@2bb": 0.75},
+                actions={"fold": 0.25, "raise@4chips": 0.75},
             ),
             "KsKh": ComboStrategy(
                 weight=0.5,
-                actions={"fold": 0.75, "raise@2bb": 0.25},
+                actions={"fold": 0.75, "raise@4chips": 0.25},
             ),
         },
         source_id=SOURCE_ID,
@@ -67,33 +67,35 @@ def _artifact(stack: str = "100", *, validation_status: str = "validated") -> Ra
 def test_spot_key_encodes_authoritative_configuration_action_and_size() -> None:
     key = _spot().canonical_key()
 
-    assert key == "NLH|cash|9max|rake0|open2bb|UTG|remaining9|stack100bb|raise@2bb"
-    assert _spot(raise_size="2.5").canonical_key() != key
+    assert key == (
+        "NLH|cash|9max|rake0|blinds1-2chips|UTG|remaining9|stack200chips|raise@4chips"
+    )
+    assert _spot(raise_size="5").canonical_key() != key
 
 
 def test_artifact_rejects_unsupported_seat_count_rake_open_or_stack_bucket() -> None:
     with pytest.raises(ValidationError):
         PreflopSpotKey(
             seats=7,
-            stack_depth_bb=Decimal("100"),
+            stack_depth_chips=Decimal("100"),
             player_position=Position.UTG,
             players_remaining=6,
         )
     with pytest.raises(ValidationError, match="zero rake"):
         PreflopSpotKey(
             rake_percent=Decimal("0.05"),
-            stack_depth_bb=Decimal("100"),
+            stack_depth_chips=Decimal("100"),
             player_position=Position.UTG,
             players_remaining=9,
         )
-    with pytest.raises(ValidationError, match="2 BB"):
+    with pytest.raises(ValidationError, match="native blinds"):
         PreflopSpotKey(
-            default_open_size_bb=Decimal("2.5"),
-            stack_depth_bb=Decimal("100"),
+            native_big_blind=Decimal("3"),
+            stack_depth_chips=Decimal("100"),
             player_position=Position.UTG,
             players_remaining=9,
         )
-    with pytest.raises(ValidationError, match="unsupported stack bucket"):
+    with pytest.raises(ValidationError, match="unsupported native-chip stack bucket"):
         _artifact("90")
 
 
@@ -107,17 +109,17 @@ def test_unvalidated_artifacts_cannot_enter_library_or_weighted_range() -> None:
 
 
 def test_exact_and_nearest_stack_lookup_report_mismatch() -> None:
-    artifact_75 = _artifact("75").model_copy(update={"artifact_id": UUID(int=75)})
-    artifact_100 = _artifact("100").model_copy(update={"artifact_id": UUID(int=100)})
+    artifact_75 = _artifact("80").model_copy(update={"artifact_id": UUID(int=80)})
+    artifact_100 = _artifact("200").model_copy(update={"artifact_id": UUID(int=200)})
     library = RangeLibrary([artifact_75, artifact_100])
 
-    exact = library.lookup(_spot("100"))
-    nearest = library.lookup(_spot("90"))
+    exact = library.lookup(_spot("200"))
+    nearest = library.lookup(_spot("180"))
 
     assert exact.stack_match.status == "exact"
-    assert nearest.artifact.spot.stack_depth_bb == 100
+    assert nearest.artifact.spot.stack_depth_chips == 200
     assert nearest.stack_match.status == "nearest"
-    assert nearest.stack_match.absolute_mismatch_bb == 10
+    assert nearest.stack_match.absolute_mismatch_chips == 20
 
 
 def test_artifact_round_trip_and_action_sizing_conditioning(tmp_path) -> None:
@@ -133,7 +135,7 @@ def test_artifact_round_trip_and_action_sizing_conditioning(tmp_path) -> None:
         ObservedRangeAction(
             actor_position=Position.UTG,
             type="raise",
-            size_bb=Decimal("2"),
+            size_chips=Decimal("4"),
         ),
     )
 
@@ -157,38 +159,23 @@ def test_seed_manifests_publish_reference_priors_without_calling_them_gto() -> N
         "format": "cash",
         "seats": 9,
         "rake_percent": 0,
-        "default_open_size_bb": 2.0,
+        "native_small_blind": 1,
+        "native_big_blind": 2,
         "objective": "chip_ev",
-        "stack_buckets_bb": [20, 40, 50, 75, 100, 150, 200],
+        "stack_buckets_chips": [40, 80, 100, 150, 200, 300, 400],
     }
     assert manifest["status"] == "reference_priors_seeded"
     assert len(manifest["artifacts"]) == 8
     assert {entry["strategy_role"] for entry in manifest["artifacts"]} == {"reference_prior"}
 
-    six_max = json.loads(
-        (PROJECT_ROOT / "configs" / "ranges" / "library_manifest_6max.json").read_text(
-            encoding="utf-8"
-        )
-    )
-    assert six_max["configuration"]["seats"] == 6
-    assert six_max["status"] == "reference_priors_seeded"
-    assert len(six_max["artifacts"]) == 5
 
 
-def test_six_max_spot_is_supported_but_isolated_from_nine_max() -> None:
-    six_max = PreflopSpotKey(
-        seats=6,
-        stack_depth_bb=Decimal("100"),
-        player_position=Position.UTG,
-        players_remaining=6,
-    )
 
-    assert six_max.canonical_key() == "NLH|cash|6max|rake0|open2bb|UTG|remaining6|stack100bb"
-    assert six_max.canonical_key() != _spot().canonical_key()
-    with pytest.raises(ValidationError, match="invalid for the configured table size"):
+def test_six_max_spot_is_rejected() -> None:
+    with pytest.raises(ValidationError):
         PreflopSpotKey(
             seats=6,
-            stack_depth_bb=Decimal("100"),
-            player_position=Position.LJ,
+            stack_depth_chips=Decimal("200"),
+            player_position=Position.UTG,
             players_remaining=6,
         )

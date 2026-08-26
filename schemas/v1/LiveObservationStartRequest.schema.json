@@ -2,11 +2,8 @@
   "additionalProperties": false,
   "properties": {
     "table_size": {
+      "const": 9,
       "default": 9,
-      "enum": [
-        6,
-        9
-      ],
       "title": "Table Size",
       "type": "integer"
     },

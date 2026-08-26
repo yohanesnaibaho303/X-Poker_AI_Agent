@@ -10,20 +10,22 @@ The first supported configuration is:
 game:
   variant: NLH
   format: cash
-  supported_seats: [6, 9]
+  supported_seats: [9]
   rake: 0
-  default_open_size_bb: 2.0
+  native_small_blind: 1
+  native_big_blind: 2
   objective: chip_ev
   supported_hand_modes: [standard_nlh, single_board_bomb_pot]
 ```
 
-`2 BB` is treated as the default preflop open size. Effective stack depth will be detected dynamically for every hand.
+All amounts use native chips. Supported blinds are SB 1 and BB 2. The 2-chip big blind is a forced
+blind, not a preflop opening raise. Opening sizes are observed and stored as native-chip amounts.
+Effective stack depth is detected dynamically in native chips for every hand.
 
-At session setup, the user selects either 6-max or 9-max and chooses BB or native-chip display.
-Native chips remain exact internally. Values below 100,000 display as grouped numbers such as
-`10,000`; values from 100,000 to below 1,000,000 display as K, such as `200K`; values from 1,000,000
-upward display as M, such as `1M`. Native chips convert to BB only after the blind is entered or
-reliably detected.
+Session setup is fixed to 9-max and native-chip display; table-size and unit selectors are removed.
+Native chips remain exact internally and always display as exact grouped numbers, such as `10,000`,
+`200,000`, or `1,000,000`. Values are never abbreviated as K or M. No BB conversion is used for
+storage, strategy, calculation, or display.
 
 X-Poker single-board NLH Bomb Pot is supported as a separate detected hand mode. Scheduled Bomb Pot
 text does not make ordinary intervening hands unsupported. When a Bomb Pot hand is active, all
@@ -112,7 +114,7 @@ The vision system must recognize:
 - Available action buttons.
 - Bet input, slider, and preset sizing controls.
 - Sit-out, disconnected, empty-seat, and folded states.
-- Multiway and heads-up states within supported six-seat and nine-seat tables.
+- Multiway and heads-up states within the supported nine-seat table.
 - All nine canonical seat anchors in the portrait 9-max layout, with deterministic
   occupied/empty/ambiguous classification independent of player names.
 
@@ -132,12 +134,10 @@ Every recognized value will carry a confidence score and evidence reference.
 
 ### 4.1 Positions
 
-The supported position models are:
+The supported position model is:
 
 ```text
-6-max: UTG → HJ → CO → BTN → SB → BB
-
-9-max: UTG → UTG+1 → MP → LJ → HJ → CO → BTN → SB → BB
+9-max: UTG → UTG+1 → UTG+2 → LJ → HJ → CO → BTN → SB → BB
 ```
 
 The engine will derive actual position from the dealer button and occupied seats. It must correctly handle tables with temporarily empty or sitting-out seats.
@@ -147,17 +147,17 @@ The engine will derive actual position from the dealer button and occupied seats
 - Strategy objective is chip EV.
 - No tournament ICM, bounty, or payout pressure is applied.
 - Rake is zero for the initial authorized setup.
-- Default opening size is 2 BB.
-- Nonstandard opening sizes must still be detected and represented.
+- Small blind is 1 native chip and big blind is 2 native chips.
+- Opening sizes must be detected and represented in native chips; BB 2 is not an opening raise.
 - Antes, straddles, bomb pots, and special rules are disabled unless detected and explicitly supported.
 - Effective stack is calculated separately for every relevant player pair.
 
 ### 4.3 Stack-depth buckets
 
-The initial strategy index will support:
+The initial strategy index uses native-chip stack buckets equivalent to the supported 1/2 game:
 
 ```text
-20 BB, 40 BB, 50 BB, 75 BB, 100 BB, 150 BB, 200 BB
+40, 80, 100, 150, 200, 300, 400 native chips
 ```
 
 Observed depths between buckets will use a documented nearest-solution or interpolation policy. The dashboard must show when an exact solution is unavailable.
@@ -250,8 +250,8 @@ Representative structured state:
   "hero_position": "BTN",
   "hero_cards": ["As", "Kd"],
   "board": ["Qs", "Jh", "2c"],
-  "pot_bb": 9.5,
-  "effective_stack_bb": 96.0,
+  "pot_chips": 19,
+  "effective_stack_chips": 192,
   "action_history": [],
   "available_actions": ["fold", "call", "raise"],
   "confidence": {}
@@ -301,7 +301,7 @@ Example:
 
 ### 6.2 Preflop range library
 
-Separate initial libraries will cover six-max and nine-max, no-rake, 2 BB opening trees:
+Initial libraries cover 9-max, no-rake, native-chip SB 1 / BB 2 trees:
 
 Milestone 5 may bootstrap clearly labeled, low-confidence reference priors for rendering and opponent
 initialization. Such priors are not GTO solutions and cannot satisfy Milestone 6 strategy matching.
@@ -361,7 +361,7 @@ The deterministic mathematics layer will implement:
 - Range versus range equity.
 - Equity distribution.
 - Range advantage and nut advantage.
-- Bet-size normalization in pot and BB units.
+- Bet sizing represented in exact native chips and as a pot fraction where useful.
 - Side-pot accounting.
 
 This layer will have exhaustive unit and property-based tests. A language model will not perform arithmetic that deterministic code can calculate reliably.
@@ -400,11 +400,11 @@ The resolver will match the observed hand using:
 ```text
 NLH
 → cash
-→ detected 6-max or 9-max configuration
+→ validated 9-max configuration
 → no rake
 → positions and players remaining
 → effective stack
-→ 2 BB or observed opening size
+→ native SB 1 / BB 2 and observed native-chip opening size
 → complete preflop action
 → board and street
 → pot geometry
@@ -480,7 +480,7 @@ Exploit adjustment:
 
 The desktop dashboard will show:
 
-- Session controls for selecting 6-max or 9-max and choosing BB or automatically compacted native-chip display.
+- Fixed 9-max session configuration with exact grouped native-chip display.
 
 - Live captured table.
 - Recognition bounding boxes and confidence.
@@ -605,7 +605,7 @@ xpoker-agent/
 │   └── solutions/               # Licensed/generated solver data
 ├── models/                      # Versioned recognition artifacts
 ├── configs/
-│   ├── game/                    # 6-max and 9-max NLH configurations
+│   ├── game/                    # 9-max native-chip NLH configuration
 │   ├── layouts/                 # X-Poker layouts and themes
 │   └── runtime/                 # Capture and controller settings
 ├── tests/
@@ -622,7 +622,7 @@ xpoker-agent/
 ### Milestone 0 — Requirements and reproducibility
 
 - Create the repository and development environment.
-- Encode the initial 6-max and 9-max NLH, 2 BB, no-rake configurations.
+- Encode the 9-max NLH, native SB 1 / BB 2, no-rake configuration.
 - Define table-state, event, range, decision, and provenance schemas.
 - Add deterministic tests and structured logs.
 - Produce one command to start the development system.
@@ -674,7 +674,7 @@ xpoker-agent/
 - Implement the 169-class range matrix.
 - Add blocker-aware filtering and action updates.
 - Implement equity, EV, pot odds, and multiway calculations.
-- Seed separate six-max and nine-max, no-rake, 2 BB range libraries.
+- Seed a 9-max, no-rake, native SB 1 / BB 2 range library.
 
 **Exit criterion:** Range and mathematical tests pass, and the dashboard can show position-specific preflop ranges.
 
@@ -703,20 +703,21 @@ xpoker-agent/
 - Show recommendations with confidence and assumptions.
 - Record full decision traces.
 - Prioritize an automatic live-hero path: detect the local hole cards and hero seat, resolve the
-  position, normalize accepted stack/pot/call evidence to BB, and display deterministic pot odds,
+  position, use accepted native-chip stack, pot, and call evidence, and display deterministic pot odds,
   effective stack, SPR, and the matching provenance-bearing range. Full replay and complete
   opponent-history presentation are not on the MVP critical path.
 - When a compatible unopened-position reference prior exists, highlight the detected 169-class
-  cell and display its aggregated 2-BB open frequency. BB or unresolved/non-unopened nodes must
+  cell and display its aggregated 4-chip open frequency. Unresolved or non-unopened nodes must
   remain unavailable instead of showing a stale chart.
 - Resolve 3-to-9-handed positions from the actually dealt clockwise ring. A selected 9-max table
   remains 9-max range scope when temporarily short-handed; expose the seat-count mismatch rather
-  than silently substituting six-max ranges.
+  than silently substituting retired 6-max or BB-normalized ranges.
 
 **Exit criterion:** The authorized table can be monitored continuously for complete sessions without state corruption.
 
 **Current checkpoint (2026-08-24):** The local React/TypeScript dashboard and FastAPI/WebSocket
-boundary run complete deterministic 6-max and 9-max synthetic hand replays. Schema-versioned
+boundary historically ran deterministic 6-max and 9-max synthetic hand replays. This legacy
+checkpoint must be replaced by a 9-max native SB 1 / BB 2 regression. Schema-versioned
 snapshots, bounded event delivery, gap recovery, session/chip controls, reconstructed state, action
 history, replay scrubbing, health/latency, deterministic pot odds and SPR, reference-prior ranges,
 decision gates, assumptions, and fail-closed strategy/control status are inspectable. A 20-session,
@@ -779,7 +780,7 @@ card/table pixels, a canonical observation, or held-out accuracy evidence.
 
 The same privacy-scoped rule crop supplies native small/big blind candidates. Both values must parse
 with `0 < SB < BB` and repeat for three distinct frames. Until that consensus passes, native stacks,
-commitments, and pots remain unnormalized and cannot enter BB-based range, equity, or EV logic.
+commitments, and pots remain unnormalized and cannot enter native-chip range, equity, or EV logic.
 Blind-token confidence is tracked independently from Bomb-Pot/mode confidence so unrelated OCR
 damage cannot suppress a clear blind value or make an ambiguous hand mode appear supported.
 
@@ -812,7 +813,7 @@ dealer seat is exposed. The detector fails closed when the marker is absent or n
 assignment still waits for a validated hand boundary and active-seat set.
 
 Seat participation now reaches independent temporal consensus for seated, open, and Break states.
-Position naming is available only when every configured 6-max or 9-max seat is actively dealt; a
+Position naming is available only when every configured 9-max seat is actively dealt; a
 partial ring exposes its active-seat indexes but does not silently substitute a different position
 or range set. Stable stack decreases are retained as bounded native-chip candidates with hand epoch,
 street, seat, before/after values, and provenance hash. They remain outside canonical state until a
@@ -879,7 +880,7 @@ full legal reducer can reproduce the street totals and resulting pot.
 The first useful version will:
 
 1. Detect the authorized X-Poker window.
-2. Support explicitly classified six-max and nine-max NLH table layouts.
+2. Support explicitly classified 9-max NLH table layouts only.
 3. Recognize hero cards, board, seats, positions, stacks, bets, pot, and available actions.
 4. Reconstruct complete hands.
 5. Display recognition confidence and replay evidence.

@@ -1,3 +1,5 @@
+import pytest
+
 from xpoker_agent.api import (
     capture_status,
     controller_status,
@@ -26,36 +28,22 @@ def test_game_config_endpoint_uses_authoritative_values() -> None:
     result = game_config()
     assert result["variant"] == "NLH"
     assert result["seats"] == 9
-    assert result["default_open_size_bb"] == "2.0"
-
-    six_max = game_config(6)
-    assert six_max["seats"] == 6
-    assert six_max["positions"] == ["UTG", "HJ", "CO", "BTN", "SB", "BB"]
+    assert result["native_small_blind"] == "1"
+    assert result["native_big_blind"] == "2"
 
 
 def test_supported_game_configs_are_explicit_and_isolated() -> None:
     result = supported_game_configs()
 
-    assert result["supported_table_sizes"] == [6, 9]
-    assert [config["seats"] for config in result["configurations"]] == [6, 9]
+    assert result["supported_table_sizes"] == [9]
+    assert [config["seats"] for config in result["configurations"]] == [9]
 
 
-def test_session_preview_accepts_table_size_and_chip_notation() -> None:
-    result = preview_session_setup(
-        SessionSetupRequest(
-            table_size=6,
-            chip_display_mode="native",
-            stack_input="200000",
-            big_blind_native_chips="2000",
-        )
-    )
-
-    assert result["table_size"] == 6
-    assert result["stack"]["display_mode"] == "native"
-    assert result["stack"]["display_text"] == "200K"
-    assert result["stack"]["exact_native_chips"] == "200000"
-    assert result["stack"]["amount_bb"] == "100"
-    assert result["ready_for_strategy"] is True
+def test_session_preview_is_fixed_to_nine_max_native_chips() -> None:
+    result = preview_session_setup(SessionSetupRequest(stack_input="200000"))
+    assert result["table_size"] == 9
+    assert result["stack"]["display_text"] == "200,000"
+    assert result["stack"]["amount_chips"] == "200000"
 
 
 def test_simulation_endpoint_returns_full_trace() -> None:
@@ -65,12 +53,9 @@ def test_simulation_endpoint_returns_full_trace() -> None:
     assert result["states"][-1]["table_status"] == "hand_complete"
 
 
-def test_six_max_simulation_uses_six_canonical_seat_slots() -> None:
-    states, events = run_simulated_hand(6)
-
-    assert len(states[0].seats) == 6
-    assert states[-1].table_status == "hand_complete"
-    assert len(events) == 14
+def test_six_max_simulation_is_rejected() -> None:
+    with pytest.raises(ValueError, match="only 9-max"):
+        run_simulated_hand(6)
 
 
 def test_controller_endpoint_is_fail_closed() -> None:

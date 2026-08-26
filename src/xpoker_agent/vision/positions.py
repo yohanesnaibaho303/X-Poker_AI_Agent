@@ -14,7 +14,7 @@ _DEALT_POSITIONS: dict[int, list[Position]] = {
         Position.BTN, Position.SB, Position.BB,
     ],
     8: [
-        Position.UTG, Position.MP, Position.LJ, Position.HJ,
+        Position.UTG, Position.UTG_1, Position.UTG_2, Position.LJ, Position.HJ,
         Position.CO, Position.BTN, Position.SB, Position.BB,
     ],
     9: list(positions_for_table_size(9)),

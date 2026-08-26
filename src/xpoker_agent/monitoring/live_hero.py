@@ -22,14 +22,10 @@ class LiveHeroCalculation(StrictModel):
     range_seat_mismatch: int = 0
     cards: list[str]
     hand_class: str | None = None
-    big_blind_native: Decimal | None = None
-    hero_stack_native: Decimal | None = None
-    hero_stack_bb: Decimal | None = None
-    pot_native: Decimal | None = None
-    pot_bb: Decimal | None = None
-    call_amount_native: Decimal | None = None
-    call_amount_bb: Decimal | None = None
-    effective_stack_bb: Decimal | None = None
+    hero_stack_chips: Decimal | None = None
+    pot_chips: Decimal | None = None
+    call_amount_chips: Decimal | None = None
+    effective_stack_chips: Decimal | None = None
     required_equity: Decimal | None = None
     spr: Decimal | None = None
     ready: bool
@@ -72,15 +68,6 @@ def build_live_hero_calculation(status: LiveObservationStatus) -> LiveHeroCalcul
     if status.detected_hero_position is None:
         issues.append("hero_position_not_resolved")
 
-    big_blind = None
-    if status.session_blind_consensus.accepted:
-        blind_value = status.session_blind_consensus.value
-        if blind_value is not None and "/" in blind_value:
-            big_blind = _accepted_decimal(blind_value.split("/", maxsplit=1)[1])
-    if big_blind is None or big_blind <= 0:
-        big_blind = None
-        issues.append("big_blind_not_detected")
-
     stack_values = {
         item.seat: _accepted_decimal(item.consensus.value)
         for item in status.seat_stack_consensus
@@ -98,30 +85,26 @@ def build_live_hero_calculation(status: LiveObservationStatus) -> LiveHeroCalcul
         issues.append("pot_not_stable")
     call = _call_amount(status)
 
-    hero_stack_bb = hero_stack / big_blind if hero_stack is not None and big_blind else None
-    pot_bb = pot / big_blind if pot is not None and big_blind else None
-    call_bb = call / big_blind if call is not None and big_blind else None
-    opponent_stacks_bb = [
-        amount / big_blind
+    opponent_stacks_chips = [
+        amount
         for opponent, amount in stack_values.items()
-        if big_blind is not None
-        and amount is not None
+        if amount is not None
         and opponent != seat
         and opponent in status.active_seats
     ]
-    effective_bb = (
-        effective_stack(hero_stack_bb, *opponent_stacks_bb)
-        if hero_stack_bb is not None and opponent_stacks_bb
+    effective_chips = (
+        effective_stack(hero_stack, *opponent_stacks_chips)
+        if hero_stack is not None and opponent_stacks_chips
         else None
     )
     required_equity = (
-        pot_odds_required_equity(pot_bb, call_bb)
-        if pot_bb is not None and call_bb is not None and call_bb > 0
+        pot_odds_required_equity(pot, call)
+        if pot is not None and call is not None and call > 0
         else None
     )
     spr = (
-        stack_to_pot_ratio(effective_bb, pot_bb)
-        if effective_bb is not None and pot_bb is not None and pot_bb > 0
+        stack_to_pot_ratio(effective_chips, pot)
+        if effective_chips is not None and pot is not None and pot > 0
         else None
     )
     return LiveHeroCalculation(
@@ -132,14 +115,10 @@ def build_live_hero_calculation(status: LiveObservationStatus) -> LiveHeroCalcul
         range_seat_mismatch=max(0, status.table_size - len(status.active_seats)),
         cards=cards,
         hand_class=hand_class,
-        big_blind_native=big_blind,
-        hero_stack_native=hero_stack,
-        hero_stack_bb=hero_stack_bb,
-        pot_native=pot,
-        pot_bb=pot_bb,
-        call_amount_native=call,
-        call_amount_bb=call_bb,
-        effective_stack_bb=effective_bb,
+        hero_stack_chips=hero_stack,
+        pot_chips=pot,
+        call_amount_chips=call,
+        effective_stack_chips=effective_chips,
         required_equity=required_equity,
         spr=spr,
         ready=not issues,

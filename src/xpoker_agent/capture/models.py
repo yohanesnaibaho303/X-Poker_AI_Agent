@@ -137,7 +137,7 @@ class LayoutProfile(StrictModel):
     schema_version: Literal["1.0"] = "1.0"
     layout_id: str
     runtime_target: Literal["X-Poker"] = "X-Poker"
-    table_size: Literal[6, 9]
+    table_size: Literal[9]
     app_version_label: str
     orientation: Literal["portrait"] = "portrait"
     canonical_width: int = Field(gt=0)

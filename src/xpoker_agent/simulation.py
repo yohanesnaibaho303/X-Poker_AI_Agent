@@ -19,7 +19,6 @@ from xpoker_agent.models import (
 from xpoker_agent.state import HandStateReducer, create_initial_state
 
 SIMULATED_HAND_ID = UUID("00000000-0000-0000-0000-000000000001")
-SIMULATED_6MAX_HAND_ID = UUID("00000000-0000-0000-0000-000000000006")
 SIMULATED_CONFIDENCE = Confidence(
     score=1.0, calibration_id="deterministic-simulation-v1", stable_frames=1
 )
@@ -45,9 +44,9 @@ def _event(
 
 
 def simulated_events(table_size: int = 9) -> list[HandEvent]:
-    if table_size not in {6, 9}:
-        raise ValueError("table_size must be 6 or 9")
-    hand_id = SIMULATED_6MAX_HAND_ID if table_size == 6 else SIMULATED_HAND_ID
+    if table_size != 9:
+        raise ValueError("only 9-max is supported")
+    hand_id = SIMULATED_HAND_ID
     hero, small_blind, big_blind = table_size - 3, table_size - 2, table_size - 1
     return [
         _event(table_size, hand_id, 1, EventCategory.LIFECYCLE, "hand_started"),
@@ -67,7 +66,7 @@ def simulated_events(table_size: int = 9) -> list[HandEvent]:
             "blind_posted",
             actor_seat=small_blind,
             street=Street.PREFLOP,
-            amount=EventAmount(to_bb=Decimal("0.5"), added_bb=Decimal("0.5")),
+            amount=EventAmount(to_chips=Decimal("1"), added_chips=Decimal("1")),
         ),
         _event(
             table_size,
@@ -77,7 +76,7 @@ def simulated_events(table_size: int = 9) -> list[HandEvent]:
             "blind_posted",
             actor_seat=big_blind,
             street=Street.PREFLOP,
-            amount=EventAmount(to_bb=Decimal("1"), added_bb=Decimal("1")),
+            amount=EventAmount(to_chips=Decimal("2"), added_chips=Decimal("2")),
         ),
         _event(
             table_size,
@@ -97,7 +96,7 @@ def simulated_events(table_size: int = 9) -> list[HandEvent]:
             "raise",
             actor_seat=hero,
             street=Street.PREFLOP,
-            amount=EventAmount(to_bb=Decimal("2"), added_bb=Decimal("2")),
+            amount=EventAmount(to_chips=Decimal("4"), added_chips=Decimal("4")),
         ),
         _event(
             table_size,
@@ -116,7 +115,7 @@ def simulated_events(table_size: int = 9) -> list[HandEvent]:
             "call",
             actor_seat=big_blind,
             street=Street.PREFLOP,
-            amount=EventAmount(to_bb=Decimal("2"), added_bb=Decimal("1")),
+            amount=EventAmount(to_chips=Decimal("4"), added_chips=Decimal("2")),
         ),
         _event(
             table_size,
@@ -144,7 +143,7 @@ def simulated_events(table_size: int = 9) -> list[HandEvent]:
             "bet",
             actor_seat=hero,
             street=Street.FLOP,
-            amount=EventAmount(to_bb=Decimal("2.5"), added_bb=Decimal("2.5")),
+            amount=EventAmount(to_chips=Decimal("5"), added_chips=Decimal("5")),
         ),
         _event(
             table_size,
@@ -164,7 +163,7 @@ def simulated_events(table_size: int = 9) -> list[HandEvent]:
             winner_seat=hero,
             pot_index=0,
             street=Street.FLOP,
-            amount=EventAmount(added_bb=Decimal("7")),
+            amount=EventAmount(added_chips=Decimal("14")),
         ),
         _event(
             table_size,
@@ -179,16 +178,16 @@ def simulated_events(table_size: int = 9) -> list[HandEvent]:
 
 def run_simulated_hand(table_size: int = 9) -> tuple[list[HandState], list[HandEvent]]:
     config = load_game_config(table_size=table_size)
-    hand_id = SIMULATED_6MAX_HAND_ID if table_size == 6 else SIMULATED_HAND_ID
+    hand_id = SIMULATED_HAND_ID
     hero, small_blind, big_blind = table_size - 3, table_size - 2, table_size - 1
     state = create_initial_state(
         hand_id=hand_id,
         config_version=config.config_id,
         hero_seat=hero,
-        occupied_stacks_bb={
-            hero: Decimal("100"),
-            small_blind: Decimal("100"),
-            big_blind: Decimal("100"),
+        occupied_stacks_chips={
+            hero: Decimal("200"),
+            small_blind: Decimal("200"),
+            big_blind: Decimal("200"),
         },
         positions={hero: Position.BTN, small_blind: Position.SB, big_blind: Position.BB},
         table_size=table_size,

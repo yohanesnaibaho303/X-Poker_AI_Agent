@@ -11,7 +11,8 @@ Goal: establish a lightweight, deterministic foundation that can represent a sim
 - [x] Record architecture and licensing decisions.
 - [x] Create Python 3.12 project metadata and locked development dependencies.
 - [x] Create the initial module/package boundaries.
-- [x] Encode authoritative 6-max and 9-max cash NLH, zero-rake, 2 BB, chip-EV configurations.
+- [ ] Replace legacy configuration with authoritative 9-max-only cash NLH, zero-rake, native
+  SB 1 / BB 2, chip-EV configuration.
 - [x] Implement typed, versioned models for provenance, observations, events, hand state, ranges, strategy matches, decisions, and controller audits.
 - [x] Generate or publish JSON Schemas for persisted and API-facing records.
 - [x] Implement configuration loading and validation with local ignored overrides.
@@ -71,7 +72,7 @@ Exit: supported-layout recognition meets the per-component targets in `docs/QUAL
 - [x] Implement the NLH state reducer and street/action ordering.
 - [x] Validate unique cards, blinds, calls, raises, all-ins, and side pots.
 - [x] Reconcile stack, bet, pot, and award accounting.
-- [x] Handle heads-up and multiway play within six-seat and nine-seat state models.
+- [ ] Retire six-seat paths; retain heads-up and multiway play within the nine-seat state model.
 - [x] Detect hand boundaries and dealer/blind movement.
 - [x] Quarantine ambiguous or impossible hands with evidence.
 - [x] Export canonical hand histories and build replay inspection.
@@ -87,8 +88,8 @@ Exit: at least 98% of supported recorded hands reconstruct correctly, with unsup
 - [x] Implement exact and seeded Monte Carlo equity, including multiway.
 - [x] Implement pot odds, EV, fold equity, SPR, MDF, and side-pot calculations.
 - [x] Define stack-bucket matching/interpolation policy.
-- [x] Seed validated, versioned 6-max and 9-max no-rake 2 BB reference-prior libraries, with
-  configuration mismatches explicit and GTO integration reserved for Milestone 6.
+- [x] Retire 6-max libraries and migrate 9-max strategy keys from BB normalization to native
+  SB 1 / BB 2 amounts, with mismatches explicit and GTO integration reserved for Milestone 6.
 
 Exit: range lookup is deterministic, poker-math tests pass completely, and position-specific ranges render correctly.
 
@@ -119,7 +120,7 @@ Exit: synthetic profiles produce stable, explainable, regression-tested adjustme
 ## Milestone 8 — Live monitoring application (in progress)
 
 - [x] Build the React/TypeScript shell and component design system.
-- [x] Add 6-max/9-max session selection and BB/native chip display controls.
+- [x] Remove table-size and unit selectors; enforce 9-max and native-chip display only.
 - [x] Stream schema-versioned snapshots and events over WebSockets.
 - [x] Display capture overlays, confidence, state, action history, and health.
 - [ ] Display hero/opponent ranges and GTO/exploit frequencies.
@@ -127,7 +128,9 @@ Exit: synthetic profiles produce stable, explainable, regression-tested adjustme
 - [x] Add replay navigation and decision/audit inspection.
 - [x] Add gap recovery, backpressure, and long-session telemetry.
 
-Checkpoint: synthetic 6-max and 9-max replays stream complete legal traces into the dashboard.
+Checkpoint: legacy synthetic 6-max and 9-max replays stream complete legal traces into the dashboard.
+This predates the 9-max/native-only requirement and must be replaced by a 9-max native SB 1 / BB 2
+regression before Milestone 8 exits.
 State, action history, confidence, health/latency, deterministic pot odds and SPR, the hero
 reference-prior matrix, explicit unavailable-GTO status, source assumptions, decision gates, and
 control lockout are visible. Scrubbing, snapshot recovery, bounded delivery, and a 20-session

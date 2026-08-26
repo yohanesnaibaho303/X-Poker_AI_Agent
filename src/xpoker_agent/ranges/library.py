@@ -19,7 +19,7 @@ from xpoker_agent.models import (
     positions_for_table_size,
 )
 from xpoker_agent.ranges.cards import split_combo
-from xpoker_agent.ranges.stack import STACK_BUCKETS_BB, StackDepthMatch, nearest_stack_bucket
+from xpoker_agent.ranges.stack import STACK_BUCKETS_CHIPS, StackDepthMatch, nearest_stack_bucket
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
 
@@ -27,31 +27,32 @@ PROJECT_ROOT = Path(__file__).resolve().parents[3]
 class ObservedRangeAction(StrictModel):
     actor_position: Position
     type: Literal["fold", "check", "call", "bet", "raise", "all_in"]
-    size_bb: Decimal | None = Field(default=None, gt=0)
+    size_chips: Decimal | None = Field(default=None, gt=0)
 
     @model_validator(mode="after")
     def validate_size(self) -> ObservedRangeAction:
         sized = self.type in {"bet", "raise", "all_in"}
-        if sized != (self.size_bb is not None):
+        if sized != (self.size_chips is not None):
             raise ValueError(
-                "bet, raise, and all_in actions require size_bb; other actions forbid it"
+                "bet, raise, and all_in actions require size_chips; other actions forbid it"
             )
         return self
 
     def key(self) -> str:
-        if self.size_bb is None:
+        if self.size_chips is None:
             return self.type
-        size = format(self.size_bb.normalize(), "f")
-        return f"{self.type}@{size}bb"
+        size = format(self.size_chips.normalize(), "f")
+        return f"{self.type}@{size}chips"
 
 
 class PreflopSpotKey(StrictModel):
     variant: Literal["NLH"] = "NLH"
     format: Literal["cash"] = "cash"
-    seats: Literal[6, 9] = 9
+    seats: Literal[9] = 9
     rake_percent: Decimal = Decimal("0")
-    default_open_size_bb: Decimal = Decimal("2")
-    stack_depth_bb: Decimal
+    native_small_blind: Decimal = Decimal("1")
+    native_big_blind: Decimal = Decimal("2")
+    stack_depth_chips: Decimal
     player_position: Position
     players_remaining: int = Field(ge=2, le=9)
     action_sequence: list[ObservedRangeAction] = Field(default_factory=list)
@@ -60,9 +61,9 @@ class PreflopSpotKey(StrictModel):
     def validate_authoritative_configuration(self) -> PreflopSpotKey:
         if self.rake_percent != 0:
             raise ValueError("initial range artifacts require zero rake")
-        if self.default_open_size_bb != 2:
-            raise ValueError("initial range artifacts require the 2 BB default open size")
-        if self.stack_depth_bb <= 0:
+        if self.native_small_blind != 1 or self.native_big_blind != 2:
+            raise ValueError("range artifacts require native blinds SB 1 and BB 2")
+        if self.stack_depth_chips <= 0:
             raise ValueError("stack depth must be positive")
         if self.player_position not in positions_for_table_size(self.seats):
             raise ValueError("player position is invalid for the configured table size")
@@ -81,12 +82,12 @@ class PreflopSpotKey(StrictModel):
             self.format,
             f"{self.seats}max",
             "rake0",
-            "open2bb",
+            "blinds1-2chips",
             self.player_position.value,
             f"remaining{self.players_remaining}",
         ]
         if include_stack:
-            parts.append(f"stack{format(self.stack_depth_bb.normalize(), 'f')}bb")
+            parts.append(f"stack{format(self.stack_depth_chips.normalize(), 'f')}chips")
         parts.extend(action.key() for action in self.action_sequence)
         return "|".join(parts)
 
@@ -111,9 +112,9 @@ class RangeArtifact(StrictModel):
 
     @model_validator(mode="after")
     def validate_artifact_stack_bucket(self) -> RangeArtifact:
-        if self.spot.stack_depth_bb not in STACK_BUCKETS_BB:
+        if self.spot.stack_depth_chips not in STACK_BUCKETS_CHIPS:
             raise ValueError(
-                f"artifact uses unsupported stack bucket: {self.spot.stack_depth_bb} BB"
+                f"artifact uses unsupported native-chip stack bucket: {self.spot.stack_depth_chips}"
             )
         if self.strategy_role == "gto_solution" and self.fact_class != "solver_derived":
             raise ValueError("GTO solution artifacts must be solver-derived")
@@ -205,7 +206,7 @@ class RangeLibrary:
         if exact is not None:
             return RangeLookup(
                 artifact=exact,
-                stack_match=nearest_stack_bucket(requested.stack_depth_bb),
+                stack_match=nearest_stack_bucket(requested.stack_depth_chips),
             )
         compatible = [
             artifact
@@ -218,17 +219,17 @@ class RangeLibrary:
         selected = min(
             compatible,
             key=lambda artifact: (
-                abs(artifact.spot.stack_depth_bb - requested.stack_depth_bb),
-                artifact.spot.stack_depth_bb,
+                abs(artifact.spot.stack_depth_chips - requested.stack_depth_chips),
+                artifact.spot.stack_depth_chips,
             ),
         )
-        mismatch = abs(selected.spot.stack_depth_bb - requested.stack_depth_bb)
+        mismatch = abs(selected.spot.stack_depth_chips - requested.stack_depth_chips)
         stack_match = StackDepthMatch(
-            requested_bb=requested.stack_depth_bb,
+            requested_chips=requested.stack_depth_chips,
             status="nearest",
-            matched_bb=selected.spot.stack_depth_bb,
-            absolute_mismatch_bb=mismatch,
-            relative_mismatch=mismatch / requested.stack_depth_bb,
+            matched_chips=selected.spot.stack_depth_chips,
+            absolute_mismatch_chips=mismatch,
+            relative_mismatch=mismatch / requested.stack_depth_chips,
         )
         return RangeLookup(artifact=selected, stack_match=stack_match)
 
@@ -239,10 +240,10 @@ def write_artifact(artifact: RangeArtifact, path: Path) -> None:
     path.write_text(payload, encoding="utf-8")
 
 
-def load_seeded_reference_library(table_size: Literal[6, 9]) -> RangeLibrary:
-    """Load and hash-verify the isolated low-confidence reference prior library."""
-    manifest_name = "library_manifest_6max.json" if table_size == 6 else "library_manifest.json"
-    manifest_path = PROJECT_ROOT / "configs" / "ranges" / manifest_name
+def load_seeded_reference_library() -> RangeLibrary:
+    """Load and hash-verify the 9-max native-chip reference prior library."""
+    table_size = 9
+    manifest_path = PROJECT_ROOT / "configs" / "ranges" / "library_manifest.json"
     manifest = RangeLibraryManifest.model_validate_json(manifest_path.read_text(encoding="utf-8"))
     if manifest.configuration.get("seats") != table_size:
         raise ValueError("range manifest table size does not match the requested library")

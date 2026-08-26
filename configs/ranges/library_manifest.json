@@ -1,21 +1,22 @@
 {
   "schema_version": "1.0",
-  "library_id": "xpoker-9max-nlh-no-rake-2bb-v1",
+  "library_id": "xpoker-9max-nlh-no-rake-native-1-2-v1",
   "configuration": {
     "variant": "NLH",
     "format": "cash",
     "seats": 9,
     "rake_percent": 0,
-    "default_open_size_bb": 2.0,
     "objective": "chip_ev",
-    "stack_buckets_bb": [
-      20,
+    "native_small_blind": 1,
+    "native_big_blind": 2,
+    "stack_buckets_chips": [
       40,
-      50,
-      75,
+      80,
       100,
       150,
-      200
+      200,
+      300,
+      400
     ]
   },
   "status": "reference_priors_seeded",
@@ -25,64 +26,64 @@
   "artifacts": [
     {
       "artifact_id": "773e29d7-7fa9-5d67-bd70-ae3446eb395f",
-      "path": "data/ranges/preflopr_reference/9max/rfi_utg_100bb.json",
-      "content_sha256": "0c76366bbde239dff9897663e7e41d46b400fbbce402ec3d4843fe5e357a742b",
+      "path": "data/ranges/preflopr_reference/9max/rfi_utg_200chips.json",
+      "content_sha256": "57756299299dc65f82cd7259d41ed2de00931c03035d451b5e3f6c0f141ac4bb",
       "position": "UTG",
       "strategy_role": "reference_prior",
       "confidence": 0.55
     },
     {
       "artifact_id": "658e26f3-fac4-5fdd-ba44-b33d1fa0742d",
-      "path": "data/ranges/preflopr_reference/9max/rfi_utgplus1_100bb.json",
-      "content_sha256": "573ce10c8042190f4b1506303d47ad96750b62ef4889b8d78318eab86ceb3f1f",
+      "path": "data/ranges/preflopr_reference/9max/rfi_utgplus1_200chips.json",
+      "content_sha256": "f27793b7b1299c61ce1125f2ecac3af1b4a7127ccbadb895dbe25c57ba0b9f7a",
       "position": "UTG+1",
       "strategy_role": "reference_prior",
       "confidence": 0.55
     },
     {
       "artifact_id": "2938c2ed-500b-5d8a-a149-c009cd4991da",
-      "path": "data/ranges/preflopr_reference/9max/rfi_mp_100bb.json",
-      "content_sha256": "c0b88c352bc66b3d6ae698e6d4ac9d89a1da9f08b65c281a88f4f6dc01d68a70",
-      "position": "MP",
+      "path": "data/ranges/preflopr_reference/9max/rfi_utgplus2_200chips.json",
+      "content_sha256": "853bb0dde486331ec109e7c20cde4481d3df3a45456d4fd51943fd26f9379611",
+      "position": "UTG+2",
       "strategy_role": "reference_prior",
       "confidence": 0.55
     },
     {
       "artifact_id": "1972430e-4bc1-5ad5-a9f1-099a9a261a3d",
-      "path": "data/ranges/preflopr_reference/9max/rfi_lj_100bb.json",
-      "content_sha256": "63cd28c08b3d52141372891f149d697de40f236505f9d4719e657fd4921a19f3",
+      "path": "data/ranges/preflopr_reference/9max/rfi_lj_200chips.json",
+      "content_sha256": "acfcd8ecfd7e46cb8aac4869eec85a1fd3522ba5cc4971cdc371307b39e3d856",
       "position": "LJ",
       "strategy_role": "reference_prior",
       "confidence": 0.55
     },
     {
       "artifact_id": "4e5bb973-a611-57e6-8f61-0be4b761a297",
-      "path": "data/ranges/preflopr_reference/9max/rfi_hj_100bb.json",
-      "content_sha256": "a5a20ef096e375d2ecf61e9795c2cebe1c4d2ee79a81f29b136abdc67134be64",
+      "path": "data/ranges/preflopr_reference/9max/rfi_hj_200chips.json",
+      "content_sha256": "6fd014896b525792380ca1de311b81eda8e243e4160571fc93f376a92837b5f3",
       "position": "HJ",
       "strategy_role": "reference_prior",
       "confidence": 0.55
     },
     {
       "artifact_id": "3172bd06-12b0-51b7-8498-b51675413d8d",
-      "path": "data/ranges/preflopr_reference/9max/rfi_co_100bb.json",
-      "content_sha256": "9eaf733ceb915cb1a678a98f53da18aa47a855d3aaf15e7f25295d43373773a4",
+      "path": "data/ranges/preflopr_reference/9max/rfi_co_200chips.json",
+      "content_sha256": "33f23b5782e896e90d6bd3e51a132be1c2969ee9525049d5ad011c3fcaaf2bde",
       "position": "CO",
       "strategy_role": "reference_prior",
       "confidence": 0.55
     },
     {
       "artifact_id": "50c3eac4-e827-5b2d-9ae5-406f5a21a5bc",
-      "path": "data/ranges/preflopr_reference/9max/rfi_btn_100bb.json",
-      "content_sha256": "44618ed83b7bd7d0253eb9d0d7afd85c745e81cc4167d342c13caa4e6dafcc77",
+      "path": "data/ranges/preflopr_reference/9max/rfi_btn_200chips.json",
+      "content_sha256": "b3ed1a4f4487e4a47516625200b3d07f02558e903a2c99be651732a98ff18bdc",
       "position": "BTN",
       "strategy_role": "reference_prior",
       "confidence": 0.55
     },
     {
       "artifact_id": "a49121ce-9289-50a2-891d-ecdbaa3790b6",
-      "path": "data/ranges/preflopr_reference/9max/rfi_sb_100bb.json",
-      "content_sha256": "9f140909ec2bc569432939b799e8b79c51020ea27201f04b9f802a1d0031773c",
+      "path": "data/ranges/preflopr_reference/9max/rfi_sb_200chips.json",
+      "content_sha256": "e1ab49115ffe8bcd93e2ef623e5a5ac02c8d6bcfb86418cf26a67f5074688306",
       "position": "SB",
       "strategy_role": "reference_prior",
       "confidence": 0.55

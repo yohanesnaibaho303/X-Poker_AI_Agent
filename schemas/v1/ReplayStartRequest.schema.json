@@ -2,10 +2,8 @@
   "additionalProperties": false,
   "properties": {
     "table_size": {
-      "enum": [
-        6,
-        9
-      ],
+      "const": 9,
+      "default": 9,
       "title": "Table Size",
       "type": "integer"
     },
@@ -17,9 +15,6 @@
       "type": "integer"
     }
   },
-  "required": [
-    "table_size"
-  ],
   "title": "ReplayStartRequest",
   "type": "object"
 }

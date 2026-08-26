@@ -30,11 +30,11 @@
           "default": null,
           "title": "Equity"
         },
-        "ev_bb": {
+        "ev_chips": {
           "additionalProperties": {
             "type": "number"
           },
-          "title": "Ev Bb",
+          "title": "Ev Chips",
           "type": "object"
         }
       },
@@ -62,7 +62,7 @@
           "title": "Type",
           "type": "string"
         },
-        "size_bb": {
+        "size_chips": {
           "anyOf": [
             {
               "exclusiveMinimum": 0.0,
@@ -76,7 +76,7 @@
             }
           ],
           "default": null,
-          "title": "Size Bb"
+          "title": "Size Chips"
         }
       },
       "required": [
@@ -90,7 +90,7 @@
       "enum": [
         "UTG",
         "UTG+1",
-        "MP",
+        "UTG+2",
         "LJ",
         "HJ",
         "CO",
@@ -117,11 +117,8 @@
           "type": "string"
         },
         "seats": {
+          "const": 9,
           "default": 9,
-          "enum": [
-            6,
-            9
-          ],
           "title": "Seats",
           "type": "integer"
         },
@@ -137,7 +134,19 @@
           "default": "0",
           "title": "Rake Percent"
         },
-        "default_open_size_bb": {
+        "native_small_blind": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "default": "1",
+          "title": "Native Small Blind"
+        },
+        "native_big_blind": {
           "anyOf": [
             {
               "type": "number"
@@ -147,9 +156,9 @@
             }
           ],
           "default": "2",
-          "title": "Default Open Size Bb"
+          "title": "Native Big Blind"
         },
-        "stack_depth_bb": {
+        "stack_depth_chips": {
           "anyOf": [
             {
               "type": "number"
@@ -158,7 +167,7 @@
               "type": "string"
             }
           ],
-          "title": "Stack Depth Bb"
+          "title": "Stack Depth Chips"
         },
         "player_position": {
           "$ref": "#/$defs/Position"
@@ -178,7 +187,7 @@
         }
       },
       "required": [
-        "stack_depth_bb",
+        "stack_depth_chips",
         "player_position",
         "players_remaining"
       ],

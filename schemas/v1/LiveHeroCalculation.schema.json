@@ -4,7 +4,7 @@
       "enum": [
         "UTG",
         "UTG+1",
-        "MP",
+        "UTG+2",
         "LJ",
         "HJ",
         "CO",
@@ -75,7 +75,7 @@
       "default": null,
       "title": "Hand Class"
     },
-    "big_blind_native": {
+    "hero_stack_chips": {
       "anyOf": [
         {
           "type": "number"
@@ -88,9 +88,9 @@
         }
       ],
       "default": null,
-      "title": "Big Blind Native"
+      "title": "Hero Stack Chips"
     },
-    "hero_stack_native": {
+    "pot_chips": {
       "anyOf": [
         {
           "type": "number"
@@ -103,9 +103,9 @@
         }
       ],
       "default": null,
-      "title": "Hero Stack Native"
+      "title": "Pot Chips"
     },
-    "hero_stack_bb": {
+    "call_amount_chips": {
       "anyOf": [
         {
           "type": "number"
@@ -118,9 +118,9 @@
         }
       ],
       "default": null,
-      "title": "Hero Stack Bb"
+      "title": "Call Amount Chips"
     },
-    "pot_native": {
+    "effective_stack_chips": {
       "anyOf": [
         {
           "type": "number"
@@ -133,67 +133,7 @@
         }
       ],
       "default": null,
-      "title": "Pot Native"
-    },
-    "pot_bb": {
-      "anyOf": [
-        {
-          "type": "number"
-        },
-        {
-          "type": "string"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "default": null,
-      "title": "Pot Bb"
-    },
-    "call_amount_native": {
-      "anyOf": [
-        {
-          "type": "number"
-        },
-        {
-          "type": "string"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "default": null,
-      "title": "Call Amount Native"
-    },
-    "call_amount_bb": {
-      "anyOf": [
-        {
-          "type": "number"
-        },
-        {
-          "type": "string"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "default": null,
-      "title": "Call Amount Bb"
-    },
-    "effective_stack_bb": {
-      "anyOf": [
-        {
-          "type": "number"
-        },
-        {
-          "type": "string"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "default": null,
-      "title": "Effective Stack Bb"
+      "title": "Effective Stack Chips"
     },
     "required_equity": {
       "anyOf": [

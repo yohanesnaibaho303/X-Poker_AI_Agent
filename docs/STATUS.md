@@ -1,11 +1,22 @@
 # Build Status
 
-- Last updated: 2026-08-24 (Asia/Jakarta)
-- Current milestone: Milestone 8 — live monitoring application
-- Overall project: 5 of 11 milestones complete
+- Last updated: 2026-08-26 (Asia/Jakarta)
+- Current milestone: Milestone 8 — live monitoring application plus 9-max/native-only migration
+- Overall project against revised scope: 3 of 11 milestones complete
 - Current state: Milestone 8 live-observation dashboard integration in progress; live-session exit gate,
   Milestone 6 source-data integration, and M3/M4 promotion gates remain pending
 - Live control: Disabled
+
+## Requirement revision — 2026-08-26
+
+- Supported table size is now 9-max only. Prior 6-max code, profiles, ranges, fixtures, dashboard
+  controls, and documentation are legacy removal/migration work, not supported product behavior.
+- Storage, calculation, strategy, and display now use exact native chips only; display uses grouped
+  numbers and never K/M abbreviations.
+- Authoritative blinds are SB 1 and BB 2 native chips. BB 2 is a forced blind, not a default opening
+  raise; opening actions must be observed as native-chip amounts.
+- Existing milestone completion counts predate this revision. Milestones 0, 5, and 8 require
+  migration and regression updates before the revised baseline can be declared complete.
 
 ## Latest checkpoint
 
@@ -246,6 +257,13 @@
   live hand can be enrolled before the frame changes. It retains no raw pixels or player identity
   and remains calibration-only evidence outside canonical state.
 
+## Scope migration completed (2026-08-26)
+
+- Product runtime, schemas, APIs, dashboard, simulations, fixtures, and range artifacts now support 9-max only.
+- All canonical monetary fields use exact native-chip amounts. BB conversion/display and K/M abbreviations are removed.
+- Fixed blinds are SB 1 and BB 2 native chips. The seeded reference-prior open size is 4 native chips.
+- Retired 6-max configurations, layouts, manifests, and range artifacts were removed.
+- Historical notes below describe earlier checkpoints and are retained only as legacy evidence; they are not supported behavior.
 ## Completed project checkpoints
 
 - Milestone 0 — reproducible schemas, configuration, logging, and deterministic simulated hand.

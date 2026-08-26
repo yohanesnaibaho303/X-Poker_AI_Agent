@@ -8,11 +8,11 @@
       "title": "Baseline Actions",
       "type": "object"
     },
-    "ev_bb": {
+    "ev_chips": {
       "additionalProperties": {
         "type": "number"
       },
-      "title": "Ev Bb",
+      "title": "Ev Chips",
       "type": "object"
     },
     "best_actions": {
@@ -29,17 +29,17 @@
       "title": "Best Response Actions",
       "type": "object"
     },
-    "baseline_ev_bb": {
-      "title": "Baseline Ev Bb",
+    "baseline_ev_chips": {
+      "title": "Baseline Ev Chips",
       "type": "number"
     },
-    "best_response_ev_bb": {
-      "title": "Best Response Ev Bb",
+    "best_response_ev_chips": {
+      "title": "Best Response Ev Chips",
       "type": "number"
     },
-    "improvement_bb": {
+    "improvement_chips": {
       "minimum": 0,
-      "title": "Improvement Bb",
+      "title": "Improvement Chips",
       "type": "number"
     },
     "assumptions": {
@@ -52,12 +52,12 @@
   },
   "required": [
     "baseline_actions",
-    "ev_bb",
+    "ev_chips",
     "best_actions",
     "best_response_actions",
-    "baseline_ev_bb",
-    "best_response_ev_bb",
-    "improvement_bb",
+    "baseline_ev_chips",
+    "best_response_ev_chips",
+    "improvement_chips",
     "assumptions"
   ],
   "title": "BestResponseAnalysis",

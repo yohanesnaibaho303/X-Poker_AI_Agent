@@ -15,14 +15,17 @@ Treat the following configuration as authoritative unless the user explicitly ch
 ```yaml
 variant: NLH
 format: cash
-supported_seats: [6, 9]
+supported_seats: [9]
 rake: 0
-default_open_size_bb: 2.0
+native_small_blind: 1
+native_big_blind: 2
 objective: chip_ev
 supported_hand_modes: [standard_nlh, single_board_bomb_pot]
 ```
 
-`2 BB` means the default preflop open size. Detect effective stack depth dynamically.
+All amounts are represented and displayed in native chips. Authoritative blinds are SB 1 and BB 2.
+The 2-chip big blind is a forced blind, not a preflop opening raise. Detect effective stack depth
+dynamically in native chips.
 
 Single-board X-Poker NLH Bomb Pot is supported as a distinct per-hand mode. Detect scheduled versus
 active Bomb Pot state visually. In an active Bomb Pot hand, every participating player makes an
@@ -31,19 +34,19 @@ Never infer the contribution from a table-label range: reconstruct it from obser
 stack deltas, and pot accounting. Double-board, Omaha, ambiguous board count, or uncertain forced
 contributions remain unsupported and fail closed.
 
-Use these position orders:
+Use this position order:
 
 ```text
-6-max: UTG, HJ, CO, BTN, SB, BB
-9-max: UTG, UTG+1, MP, LJ, HJ, CO, BTN, SB, BB
+9-max: UTG, UTG+1, UTG+2, LJ, HJ, CO, BTN, SB, BB
 ```
 
-Keep 6-max and 9-max calibration profiles and strategy artifacts explicitly separated.
+Nine-max is the only supported table size. Retired 6-max profiles, fixtures, ranges, controls, and
+documentation must not be loaded or presented as supported behavior.
 
-The final session setup must let the user select 6-max or 9-max and choose BB or native-chip display.
-Native chips remain exact internally and display below 100,000 as a grouped number (for example
-`10,000`), from 100,000 to below 1,000,000 as K (for example `200K`), and from 1,000,000 upward as M
-(for example `1M`). Never convert native chips to BB without an entered or reliably detected blind.
+The final session setup has no table-size or unit selector: it uses 9-max and native chips only.
+Native chips remain exact internally and always display as exact grouped numbers (for example
+`10,000`, `200,000`, or `1,000,000`). Never abbreviate values as K or M. Never convert native chips
+to BB for storage, strategy, calculation, or display.
 
 ## Working Principles
 
@@ -105,7 +108,8 @@ Do not skip directly to automated control before perception and state reconstruc
 - Keep solver/range configuration versioned and reproducible.
 - Use seeded randomness for mixed strategies during tests.
 - Log every proposed and executed action with its state, confidence, strategy source, random seed, target, and verification result.
-- Never silently substitute six-max, tournament, raked, or non-2-BB ranges for the initial configuration.
+- Never silently substitute six-max, tournament, raked, BB-normalized, or wrong-blind ranges for
+  the initial 9-max, native-chip, 1/2 configuration.
 - When an exact strategy solution is unavailable, report the nearest abstraction and quantify the mismatch.
 - Preserve unrelated user changes in the worktree.
 

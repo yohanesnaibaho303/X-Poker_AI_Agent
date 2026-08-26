@@ -13,11 +13,11 @@ from xpoker_agent.ranges.library import (
 from xpoker_agent.ranges.matrix import project_range_matrix
 
 
-@pytest.mark.parametrize(("table_size", "artifact_count"), [(6, 5), (9, 8)])
+@pytest.mark.parametrize(("table_size", "artifact_count"), [(9, 8)])
 def test_seeded_reference_libraries_are_isolated_and_complete_without_bb(
     table_size: int, artifact_count: int
 ) -> None:
-    library = load_seeded_reference_library(table_size)
+    library = load_seeded_reference_library()
 
     assert len(library.artifacts) == artifact_count
     assert {artifact.spot.seats for artifact in library.artifacts} == {table_size}
@@ -26,16 +26,23 @@ def test_seeded_reference_libraries_are_isolated_and_complete_without_bb(
     assert Position.BB not in {artifact.spot.player_position for artifact in library.artifacts}
 
 
-def test_six_max_button_prior_expands_to_all_exact_combos_and_renders_actions() -> None:
-    library = load_seeded_reference_library(6)
+def test_nine_max_button_prior_expands_to_all_exact_combos_and_renders_actions() -> None:
+    library = load_seeded_reference_library()
     spot = PreflopSpotKey(
-        seats=6,
-        stack_depth_bb=Decimal("100"),
+        seats=9,
+        stack_depth_chips=Decimal("200"),
         player_position=Position.BTN,
         players_remaining=3,
         action_sequence=[
             ObservedRangeAction(actor_position=position, type="fold")
-            for position in (Position.UTG, Position.HJ, Position.CO)
+            for position in (
+                Position.UTG,
+                Position.UTG_1,
+                Position.UTG_2,
+                Position.LJ,
+                Position.HJ,
+                Position.CO,
+            )
         ],
     )
 
@@ -47,7 +54,7 @@ def test_six_max_button_prior_expands_to_all_exact_combos_and_renders_actions() 
     matrix = project_range_matrix(weighted)
 
     assert len(artifact.combos) == 1326
-    assert artifact.combos["AsAh"].actions == {"raise@2bb": 1.0}
+    assert artifact.combos["AsAh"].actions == {"raise@4chips": 1.0}
     assert artifact.combos[expand_hand_class("72o")[0]].actions == {"fold": 1.0}
     assert len(matrix.cells) == 169
     assert matrix.confidence == 0.55
@@ -55,9 +62,11 @@ def test_six_max_button_prior_expands_to_all_exact_combos_and_renders_actions() 
 
 
 def test_nine_max_position_translation_and_prior_folds_are_explicit() -> None:
-    library = load_seeded_reference_library(9)
+    library = load_seeded_reference_library()
     middle = next(
-        artifact for artifact in library.artifacts if artifact.spot.player_position is Position.MP
+        artifact
+        for artifact in library.artifacts
+        if artifact.spot.player_position is Position.UTG_2
     )
     lojack = next(
         artifact for artifact in library.artifacts if artifact.spot.player_position is Position.LJ
@@ -68,6 +77,6 @@ def test_nine_max_position_translation_and_prior_folds_are_explicit() -> None:
     assert [action.actor_position for action in lojack.spot.action_sequence] == [
         Position.UTG,
         Position.UTG_1,
-        Position.MP,
+        Position.UTG_2,
     ]
     assert lojack.spot.players_remaining == 6

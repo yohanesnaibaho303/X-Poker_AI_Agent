@@ -374,7 +374,7 @@ class LiveCaptureDiagnostic(StrictModel):
     frame_sequence: int = Field(ge=0)
     content_sha256: str = Field(min_length=64, max_length=64)
     layout_id: str
-    table_size: Literal[6, 9]
+    table_size: Literal[9]
     frame_width: int = Field(gt=0)
     frame_height: int = Field(gt=0)
     target_hwnd: int = Field(ge=1)
@@ -417,14 +417,14 @@ class LiveCaptureDiagnostic(StrictModel):
 
 
 class LiveObservationStartRequest(StrictModel):
-    table_size: Literal[6, 9] = 9
+    table_size: Literal[9] = 9
     interval_ms: int = Field(default=500, ge=200, le=5000)
 
 
 class LiveObservationStatus(StrictModel):
     schema_version: Literal["1.0"] = "1.0"
     running: bool
-    table_size: Literal[6, 9]
+    table_size: Literal[9]
     interval_ms: int = Field(ge=1)
     started_at: datetime | None = None
     stopped_at: datetime | None = None

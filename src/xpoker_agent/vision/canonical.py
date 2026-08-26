@@ -65,15 +65,12 @@ def build_standard_live_hand_prefix(
         NAMESPACE_URL,
         f"xpoker-agent:{target_fingerprint}:live-hand:{hand_epoch}",
     )
-    stacks_bb = {
-        seat: amount / big_blind_native
-        for seat, amount in starting_stacks_native.items()
-    }
+    stacks_chips = dict(starting_stacks_native)
     state = create_initial_state(
         hand_id=hand_id,
         config_version=f"game-{table_size}max-nlh-v1",
         hero_seat=hero_seat,
-        occupied_stacks_bb=stacks_bb,
+        occupied_stacks_chips=stacks_chips,
         positions={},
         table_size=table_size,
     )
@@ -120,13 +117,13 @@ def build_standard_live_hand_prefix(
         post = posts_by_kind.get(kind)
         if post is None or post.status != "matched":
             raise ValueError(f"{kind} post is not uniquely reconciled")
-        amount_bb = post.amount_native / big_blind_native
+        amount_chips = post.amount_native
         append_event(
             category=EventCategory.FORCED_WAGER,
             event_type="blind_posted",
             actor_seat=post.seat,
             street=Street.PREFLOP,
-            amount=EventAmount(to_bb=amount_bb, added_bb=amount_bb),
+            amount=EventAmount(to_chips=amount_chips, added_chips=amount_chips),
             calibration_id="live-blind-post-reconciliation-v1",
         )
     append_event(
@@ -161,11 +158,11 @@ def build_standard_live_hand_prefix(
             if action.action in {"call", "bet", "raise", "all_in"}:
                 if reconciliation.amount_native is None:
                     raise ValueError(f"action amount is missing: {action.event_id}")
-                added_bb = reconciliation.amount_native / big_blind_native
-                committed = state.seats[action.seat].committed_by_street_bb.get(
+                added_chips = reconciliation.amount_native
+                committed = state.seats[action.seat].committed_by_street_chips.get(
                     street, Decimal("0")
                 )
-                amount = EventAmount(to_bb=committed + added_bb, added_bb=added_bb)
+                amount = EventAmount(to_chips=committed + added_chips, added_chips=added_chips)
             append_event(
                 category=EventCategory.BETTING_ACTION,
                 event_type=action.action,
@@ -207,9 +204,9 @@ def build_standard_live_hand_prefix(
         append_actions("river", Street.RIVER)
 
     for seat, observed_native in current_stacks_native.items():
-        if state.seats[seat].stack_bb != observed_native / big_blind_native:
+        if state.seats[seat].stack_chips != observed_native:
             raise ValueError(f"reducer stack does not match live seat {seat}")
-    if state.pot_main_bb != current_pot_native / big_blind_native:
+    if state.pot_main_chips != current_pot_native:
         raise ValueError("reducer pot does not match the stable live pot")
     return LiveCanonicalHandPrefix(
         hand_epoch=hand_epoch,

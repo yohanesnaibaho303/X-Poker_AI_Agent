@@ -7,10 +7,11 @@
   "rake": {
     "kind": "none",
     "percent": "0",
-    "cap_bb": "0"
+    "cap_chips": "0"
   },
-  "default_open_size_bb": "2.0",
+  "native_small_blind": "1",
+  "native_big_blind": "2",
   "objective": "chip_ev",
-  "positions": ["UTG", "UTG+1", "MP", "LJ", "HJ", "CO", "BTN", "SB", "BB"],
+  "positions": ["UTG", "UTG+1", "UTG+2", "LJ", "HJ", "CO", "BTN", "SB", "BB"],
   "enabled_special_rules": ["single_board_bomb_pot"]
 }

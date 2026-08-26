@@ -25,7 +25,7 @@
       "enum": [
         "UTG",
         "UTG+1",
-        "MP",
+        "UTG+2",
         "LJ",
         "HJ",
         "CO",
@@ -57,7 +57,7 @@
           "default": "0",
           "title": "Percent"
         },
-        "cap_bb": {
+        "cap_chips": {
           "anyOf": [
             {
               "type": "number"
@@ -67,7 +67,7 @@
             }
           ],
           "default": "0",
-          "title": "Cap Bb"
+          "title": "Cap Chips"
         }
       },
       "title": "RakeConfig",
@@ -95,18 +95,15 @@
       "default": "cash"
     },
     "seats": {
+      "const": 9,
       "default": 9,
-      "enum": [
-        6,
-        9
-      ],
       "title": "Seats",
       "type": "integer"
     },
     "rake": {
       "$ref": "#/$defs/RakeConfig"
     },
-    "default_open_size_bb": {
+    "native_small_blind": {
       "anyOf": [
         {
           "type": "number"
@@ -115,8 +112,20 @@
           "type": "string"
         }
       ],
-      "default": "2.0",
-      "title": "Default Open Size Bb"
+      "default": "1",
+      "title": "Native Small Blind"
+    },
+    "native_big_blind": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "default": "2",
+      "title": "Native Big Blind"
     },
     "objective": {
       "$ref": "#/$defs/Objective",

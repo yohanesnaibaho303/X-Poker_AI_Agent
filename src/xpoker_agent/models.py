@@ -33,15 +33,10 @@ class Objective(StrEnum):
     CHIP_EV = "chip_ev"
 
 
-class ChipDisplayMode(StrEnum):
-    BB = "BB"
-    NATIVE = "native"
-
-
 class Position(StrEnum):
     UTG = "UTG"
     UTG_1 = "UTG+1"
-    MP = "MP"
+    UTG_2 = "UTG+2"
     LJ = "LJ"
     HJ = "HJ"
     CO = "CO"
@@ -50,20 +45,10 @@ class Position(StrEnum):
     BB = "BB"
 
 
-SIX_MAX_POSITIONS = [
-    Position.UTG,
-    Position.HJ,
-    Position.CO,
-    Position.BTN,
-    Position.SB,
-    Position.BB,
-]
 NINE_MAX_POSITIONS = list(Position)
 
 
 def positions_for_table_size(seats: int) -> list[Position]:
-    if seats == 6:
-        return list(SIX_MAX_POSITIONS)
     if seats == 9:
         return list(NINE_MAX_POSITIONS)
     raise ValueError(f"unsupported table size: {seats}")
@@ -133,11 +118,11 @@ EVENT_TYPES: dict[EventCategory, set[str]] = {
 class RakeConfig(StrictModel):
     kind: Literal["none"] = "none"
     percent: Decimal = Decimal("0")
-    cap_bb: Decimal = Decimal("0")
+    cap_chips: Decimal = Decimal("0")
 
     @model_validator(mode="after")
     def require_zero_rake(self) -> RakeConfig:
-        if self.percent != 0 or self.cap_bb != 0:
+        if self.percent != 0 or self.cap_chips != 0:
             raise ValueError("initial configuration requires zero rake")
         return self
 
@@ -147,9 +132,10 @@ class GameConfig(StrictModel):
     config_id: str
     variant: GameVariant = GameVariant.NLH
     format: GameFormat = GameFormat.CASH
-    seats: Literal[6, 9] = 9
+    seats: Literal[9] = 9
     rake: RakeConfig = Field(default_factory=RakeConfig)
-    default_open_size_bb: Decimal = Decimal("2.0")
+    native_small_blind: Decimal = Decimal("1")
+    native_big_blind: Decimal = Decimal("2")
     objective: Objective = Objective.CHIP_EV
     positions: list[Position]
     enabled_special_rules: list[str] = Field(default_factory=list)
@@ -161,8 +147,8 @@ class GameConfig(StrictModel):
             raise ValueError("config_id must identify its table size")
         if self.positions != expected:
             raise ValueError(f"positions must be in authoritative order: {expected}")
-        if self.default_open_size_bb != Decimal("2.0"):
-            raise ValueError("initial default open size must be 2.0 BB")
+        if self.native_small_blind != 1 or self.native_big_blind != 2:
+            raise ValueError("authoritative blinds must be SB 1 and BB 2 native chips")
         if self.enabled_special_rules != [HandMode.SINGLE_BOARD_BOMB_POT.value]:
             raise ValueError(
                 "only single_board_bomb_pot must be enabled for the initial configuration"
@@ -190,52 +176,25 @@ class RuntimeConfig(StrictModel):
 
 
 class ChipValue(StrictModel):
-    """A lossless user-entered chip value and its optional BB conversion."""
+    """A lossless native-chip value."""
 
     raw_input: str
-    display_mode: ChipDisplayMode
     display_text: str
-    amount_bb: Decimal | None = Field(default=None, gt=0)
-    exact_native_chips: Decimal | None = Field(default=None, gt=0)
-
-    @model_validator(mode="after")
-    def require_native_or_bb_value(self) -> ChipValue:
-        if self.amount_bb is None and self.exact_native_chips is None:
-            raise ValueError("chip value requires a BB or native-chip amount")
-        if self.display_mode is ChipDisplayMode.BB and self.amount_bb is None:
-            raise ValueError("BB display mode requires amount_bb")
-        if self.display_mode is ChipDisplayMode.NATIVE and self.exact_native_chips is None:
-            raise ValueError("native display mode requires exact_native_chips")
-        return self
+    amount_chips: Decimal = Field(gt=0)
 
 
 class SessionSetupRequest(StrictModel):
-    table_size: Literal[6, 9]
-    chip_display_mode: ChipDisplayMode
     stack_input: str = Field(min_length=1)
-    big_blind_native_chips: Decimal | None = Field(default=None, gt=0)
 
 
 class SessionSetup(StrictModel):
     """User-selectable table size and stack denomination for one X-Poker session."""
 
-    table_size: Literal[6, 9]
+    table_size: Literal[9] = 9
     game_config_id: str
     stack: ChipValue
-    big_blind_native_chips: Decimal | None = Field(default=None, gt=0)
-    ready_for_strategy: bool
-    blocking_reason: str | None = None
-
-    @model_validator(mode="after")
-    def validate_strategy_readiness(self) -> SessionSetup:
-        expected_ready = self.stack.amount_bb is not None
-        if self.ready_for_strategy != expected_ready:
-            raise ValueError("ready_for_strategy must reflect whether amount_bb is available")
-        if expected_ready and self.blocking_reason is not None:
-            raise ValueError("a strategy-ready setup cannot have a blocking reason")
-        if not expected_ready and not self.blocking_reason:
-            raise ValueError("a non-ready setup requires a blocking reason")
-        return self
+    native_small_blind: Decimal = Field(default=Decimal("1"), frozen=True)
+    native_big_blind: Decimal = Field(default=Decimal("2"), frozen=True)
 
 
 class Alternative(StrictModel):
@@ -321,8 +280,8 @@ class ObservationBatch(StrictModel):
 
 
 class EventAmount(StrictModel):
-    to_bb: Decimal | None = Field(default=None, ge=0)
-    added_bb: Decimal = Field(default=Decimal("0"), ge=0)
+    to_chips: Decimal | None = Field(default=None, ge=0)
+    added_chips: Decimal = Field(default=Decimal("0"), ge=0)
 
 
 class HandEvent(StrictModel):
@@ -374,7 +333,7 @@ class HandEvent(StrictModel):
             raise ValueError("pot_awarded requires winner_seat, pot_index, and amount")
         if self.type != "pot_awarded" and self.pot_index is not None:
             raise ValueError("pot_index is valid only for pot_awarded")
-        if self.type == "pot_awarded" and self.amount is not None and self.amount.added_bb <= 0:
+        if self.type == "pot_awarded" and self.amount is not None and self.amount.added_chips <= 0:
             raise ValueError("pot_awarded requires a positive award amount")
         if self.type in {
             "call",
@@ -384,7 +343,7 @@ class HandEvent(StrictModel):
             "blind_posted",
             "bomb_ante_posted",
         } and (
-            self.amount is None or self.amount.added_bb <= 0
+            self.amount is None or self.amount.added_chips <= 0
         ):
             raise ValueError(f"{self.type} requires a positive added amount")
         return self
@@ -394,9 +353,9 @@ class SeatState(StrictModel):
     seat: int = Field(ge=0, le=8)
     position: Position | None = None
     participation: ParticipationStatus
-    starting_stack_bb: Decimal = Field(ge=0)
-    stack_bb: Decimal = Field(ge=0)
-    committed_by_street_bb: dict[Street, Decimal] = Field(default_factory=dict)
+    starting_stack_chips: Decimal = Field(ge=0)
+    stack_chips: Decimal = Field(ge=0)
+    committed_by_street_chips: dict[Street, Decimal] = Field(default_factory=dict)
     cards: list[str] = Field(default_factory=list)
 
     @field_validator("cards")
@@ -414,15 +373,15 @@ class ValidationState(StrictModel):
 
 class PotLayer(StrictModel):
     pot_index: int = Field(ge=0)
-    amount_bb: Decimal = Field(gt=0)
-    remaining_bb: Decimal = Field(ge=0)
-    cap_per_player_bb: Decimal = Field(gt=0)
+    amount_chips: Decimal = Field(gt=0)
+    remaining_chips: Decimal = Field(ge=0)
+    cap_per_player_chips: Decimal = Field(gt=0)
     contributing_seats: list[int]
     eligible_seats: list[int]
 
     @model_validator(mode="after")
     def validate_layer(self) -> PotLayer:
-        if self.remaining_bb > self.amount_bb:
+        if self.remaining_chips > self.amount_chips:
             raise ValueError("pot-layer remainder cannot exceed its original amount")
         if len(self.contributing_seats) != len(set(self.contributing_seats)):
             raise ValueError("pot-layer contributors must be unique")
@@ -440,7 +399,7 @@ class HandState(StrictModel):
     revision: int = Field(default=0, ge=0)
     last_event_sequence: int = Field(default=0, ge=0)
     config_version: str
-    table_size: Literal[6, 9]
+    table_size: Literal[9]
     hand_mode: HandMode = HandMode.STANDARD_NLH
     table_status: TableStatus = TableStatus.WAITING_FOR_HAND
     street: Street = Street.NONE
@@ -450,15 +409,15 @@ class HandState(StrictModel):
     hero_cards: list[str] = Field(default_factory=list)
     board: list[str] = Field(default_factory=list)
     seats: list[SeatState]
-    pot_main_bb: Decimal = Field(default=Decimal("0"), ge=0)
+    pot_main_chips: Decimal = Field(default=Decimal("0"), ge=0)
     pot_layers: list[PotLayer] = Field(default_factory=list)
-    current_bet_bb: Decimal = Field(default=Decimal("0"), ge=0)
-    minimum_raise_increment_bb: Decimal = Field(default=Decimal("0"), ge=0)
+    current_bet_chips: Decimal = Field(default=Decimal("0"), ge=0)
+    minimum_raise_increment_chips: Decimal = Field(default=Decimal("0"), ge=0)
     last_aggressor_seat: int | None = Field(default=None, ge=0, le=8)
     next_to_act_seat: int | None = Field(default=None, ge=0, le=8)
     acted_seats: list[int] = Field(default_factory=list)
     raise_locked_seats: list[int] = Field(default_factory=list)
-    initial_total_chips_bb: Decimal = Field(default=Decimal("0"), ge=0)
+    initial_total_chips: Decimal = Field(default=Decimal("0"), ge=0)
     available_actions: list[str] = Field(default_factory=list)
     event_ids: list[UUID] = Field(default_factory=list)
     validation: ValidationState = Field(default_factory=ValidationState)
@@ -468,8 +427,8 @@ class HandState(StrictModel):
         table_size = len(self.seats)
         if self.table_size != table_size:
             raise ValueError("table_size must equal the number of canonical seat slots")
-        if table_size not in {6, 9} or {seat.seat for seat in self.seats} != set(range(table_size)):
-            raise ValueError("hand state must contain contiguous seats for a 6-max or 9-max table")
+        if table_size != 9 or {seat.seat for seat in self.seats} != set(range(9)):
+            raise ValueError("hand state must contain nine contiguous seat slots")
         seat_numbers = set(range(table_size))
         referenced_seats = {
             seat
@@ -503,18 +462,18 @@ class HandState(StrictModel):
         if self.street in expected_board and len(self.board) != expected_board[self.street]:
             expected = expected_board[self.street]
             raise ValueError(f"street {self.street} requires {expected} board cards")
-        if self.initial_total_chips_bb:
-            reconstructed_total = self.pot_main_bb + sum(
-                (seat.stack_bb for seat in self.seats), start=Decimal("0")
+        if self.initial_total_chips:
+            reconstructed_total = self.pot_main_chips + sum(
+                (seat.stack_chips for seat in self.seats), start=Decimal("0")
             )
-            if reconstructed_total != self.initial_total_chips_bb:
+            if reconstructed_total != self.initial_total_chips:
                 raise ValueError(
                     "chip conservation failed: stacks plus pot do not equal the initial total"
                 )
         if [layer.pot_index for layer in self.pot_layers] != list(range(len(self.pot_layers))):
             raise ValueError("pot layers must use contiguous zero-based indices")
-        if sum((layer.remaining_bb for layer in self.pot_layers), start=Decimal("0")) != (
-            self.pot_main_bb
+        if sum((layer.remaining_chips for layer in self.pot_layers), start=Decimal("0")) != (
+            self.pot_main_chips
         ):
             raise ValueError("pot-layer remainders must equal the reconstructed pot")
         if len(self.acted_seats) != len(set(self.acted_seats)):
@@ -528,7 +487,7 @@ class ComboStrategy(StrictModel):
     weight: float = Field(ge=0, le=1)
     actions: dict[str, float] = Field(default_factory=dict)
     equity: float | None = Field(default=None, ge=0, le=1)
-    ev_bb: dict[str, float] = Field(default_factory=dict)
+    ev_chips: dict[str, float] = Field(default_factory=dict)
 
     @field_validator("actions")
     @classmethod
@@ -583,7 +542,7 @@ class StrategyMatch(StrictModel):
 
 class SelectedAction(StrictModel):
     type: Literal["fold", "check", "call", "bet", "raise", "all_in"]
-    size_bb: Decimal | None = Field(default=None, ge=0)
+    size_chips: Decimal | None = Field(default=None, ge=0)
 
 
 class DecisionConfidence(StrictModel):

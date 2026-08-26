@@ -28,7 +28,7 @@ def make_initial_state():
         hand_id=TEST_HAND_ID,
         config_version="game-9max-nlh-v1",
         hero_seat=6,
-        occupied_stacks_bb={
+        occupied_stacks_chips={
             6: Decimal("100"),
             7: Decimal("100"),
             8: Decimal("100"),

@@ -18,15 +18,15 @@ def _range() -> WeightedRange:
         combos={
             "AsAh": ComboStrategy(
                 weight=1.0,
-                actions={"fold": 0.25, "raise@2bb": 0.75},
+                actions={"fold": 0.25, "raise@4chips": 0.75},
                 equity=0.8,
-                ev_bb={"fold": 0.0, "raise@2bb": 4.0},
+                ev_chips={"fold": 0.0, "raise@4chips": 4.0},
             ),
             "AdAc": ComboStrategy(
                 weight=0.5,
-                actions={"fold": 0.5, "raise@2bb": 0.5},
+                actions={"fold": 0.5, "raise@4chips": 0.5},
                 equity=0.6,
-                ev_bb={"fold": 0.0, "raise@2bb": 2.0},
+                ev_chips={"fold": 0.0, "raise@4chips": 2.0},
             ),
             "AsKs": ComboStrategy(weight=1.0, actions={}),
         },
@@ -57,10 +57,10 @@ def test_projection_preserves_combo_mass_mixes_equity_ev_and_empty_actions() -> 
     assert aces.included_combos == 2
     assert aces.combo_weight == 1.5
     assert aces.inclusion_frequency == 0.25
-    assert aces.action_mix == pytest.approx({"fold": 1.0 / 3.0, "raise@2bb": 2.0 / 3.0})
+    assert aces.action_mix == pytest.approx({"fold": 1.0 / 3.0, "raise@4chips": 2.0 / 3.0})
     assert aces.unassigned_action_frequency == 0.0
     assert aces.equity == pytest.approx(11.0 / 15.0)
-    assert aces.ev_bb["raise@2bb"] == pytest.approx(10.0 / 3.0)
+    assert aces.ev_chips["raise@4chips"] == pytest.approx(10.0 / 3.0)
     assert cells["AKs"].possible_combos == 3
     assert cells["AKs"].unassigned_action_frequency == 1.0
 

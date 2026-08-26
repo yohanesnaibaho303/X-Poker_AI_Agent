@@ -15,7 +15,7 @@ The system is an inspectable Windows agent for an explicitly authorized private 
 - Attach configuration, confidence, assumptions, provenance, and evidence references to derived results.
 - Preserve raw or replayable evidence for recognition and reconstruction failures.
 - Fail closed when cards, amounts, actions, configuration, window identity, or state are ambiguous.
-- Never silently substitute six-max, tournament, raked, or non-2-BB strategy data.
+- Never silently substitute six-max, tournament, raked, or wrong-blind or BB-normalized strategy data.
 
 ## 3. Logical modules
 

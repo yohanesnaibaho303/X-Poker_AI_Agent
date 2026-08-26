@@ -336,7 +336,7 @@ def test_live_capture_diagnostic_supports_countdown_hand_and_exposes_schedule() 
     diagnostic = build_live_capture_diagnostic(
         frame=frame,
         record=record,
-        layout=load_layout_profile(table_size=6),
+        layout=load_layout_profile(),
         rule_ocr=WindowsOcrResult(
             text="Bomb Pot: After 2 hands (1,000-3,000) Blinds: 500/1,000",
             lines=["Bomb Pot: After 2 hands", "Blinds: 500/1,000"],
@@ -352,7 +352,7 @@ def test_live_capture_diagnostic_supports_countdown_hand_and_exposes_schedule() 
     )
 
     assert diagnostic.current_hand_supported is True
-    assert diagnostic.table_size == 6
+    assert diagnostic.table_size == 9
     assert diagnostic.current_hand_mode == "standard_nlh"
     assert diagnostic.standard_nlh_supported is True
     assert diagnostic.single_board_bomb_pot_supported is False
@@ -365,11 +365,12 @@ def test_live_capture_diagnostic_supports_countdown_hand_and_exposes_schedule() 
     assert diagnostic.board_card_slots == 0
     assert diagnostic.board_geometry_supported is True
     assert diagnostic.ocr_latency_ms == 5
-    assert set(diagnostic.regions) == {
+    assert {
         "board",
         "hero_cards",
         "pot",
         "rule_label",
         "seat_ring",
         "actions",
-    }
+    }.issubset(diagnostic.regions)
+    assert all(f"seat_{seat}_anchor" in diagnostic.regions for seat in range(9))

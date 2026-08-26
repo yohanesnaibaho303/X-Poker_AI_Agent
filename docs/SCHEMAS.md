@@ -4,9 +4,9 @@
 
 - Schemas are versioned and validated at every module boundary.
 - IDs use UUIDs; timestamps use UTC RFC 3339; frame ordering uses monotonic sequence numbers.
-- Monetary values are stored as exact decimal strings plus normalized BB values where appropriate, never binary floats for accounting.
+- Monetary values are stored as exact decimal strings plus normalized native-chip values where appropriate, never binary floats for accounting.
 - Cards use rank plus lowercase suit: `As`, `Td`, `7h`, `2c`.
-- Six-max positions are `UTG`, `HJ`, `CO`, `BTN`, `SB`, `BB`; nine-max adds `UTG+1`, `MP`, and `LJ` in the authoritative order.
+- Nine-max positions are `UTG`, `UTG+1`, `UTG+2`, `LJ`, `HJ`, `CO`, `BTN`, `SB`, `BB` in authoritative order.
 - Confidence is in `[0, 1]` and includes a method or calibration version.
 - Every derived record identifies input IDs, configuration versions, and producer version.
 - Examples are illustrative; implementation should use typed models and generated JSON Schema.
@@ -72,10 +72,10 @@ The `seats` discriminator is either `6` or `9`; the positions array must match t
   "variant": "NLH",
   "format": "cash",
   "seats": 9,
-  "rake": {"kind": "none", "percent": "0", "cap_bb": "0"},
-  "default_open_size_bb": "2.0",
+  "rake": {"kind": "none", "percent": "0", "cap_chips": "0"},
+  "native_small_blind": "1", "native_big_blind": "2",
   "objective": "chip_ev",
-  "positions": ["UTG", "UTG+1", "MP", "LJ", "HJ", "CO", "BTN", "SB", "BB"],
+  "positions": ["UTG", "UTG+1", "UTG+2", "LJ", "HJ", "CO", "BTN", "SB", "BB"],
   "enabled_special_rules": ["single_board_bomb_pot"]
 }
 ```
@@ -127,7 +127,7 @@ Groups observations from a frame sequence and carries target identity, capture m
   "type": "raise",
   "actor_seat": 6,
   "street": "preflop",
-  "amount": {"to_bb": "6.0", "added_bb": "4.0"},
+  "amount": {"to_chips": "6.0", "added_chips": "4.0"},
   "input_observations": ["uuid"],
   "confidence": {"score": 0.998, "calibration_id": "state-v1", "stable_frames": 3},
   "assumptions": []
@@ -168,8 +168,8 @@ Participation status is one of `empty`, `seated`, `active`, `folded`, `all_in`, 
   "hero_cards": ["As", "Kd"],
   "board": ["Qs", "Jh", "2c"],
   "seats": [],
-  "pot": {"main_bb": "9.5", "side_pots": [], "accounting_delta_bb": "0"},
-  "effective_stacks_bb": {"3:7": "96.0"},
+  "pot": {"main_chips": "9.5", "side_pots": [], "accounting_delta_chips": "0"},
+  "effective_stacks_chips": {"3:7": "96.0"},
   "available_actions": ["fold", "call", "raise"],
   "event_ids": [],
   "validation": {"legal": true, "issues": []},
@@ -206,7 +206,7 @@ and supplied-EV limitations.
       "weight": 1.0,
       "actions": {"check": 0.28, "bet_33": 0.72},
       "equity": 0.61,
-      "ev_bb": {"check": 8.12, "bet_33": 8.26}
+      "ev_chips": {"check": 8.12, "bet_33": 8.26}
     }
   },
   "blocked_cards": ["Qs", "Jh", "2c"],
@@ -235,8 +235,8 @@ Records calculation kind, exact inputs, result, algorithm (`exact` or `monte_car
   "requested_spot": {},
   "matched_spot": {},
   "distance": {
-    "stack_bb": 4.0,
-    "open_size_bb": 0.0,
+    "stack_chips": 4.0,
+    "open_size_chips": 0.0,
     "pot_geometry": 0.03,
     "unsupported_dimensions": []
   },
@@ -260,7 +260,7 @@ Records calculation kind, exact inputs, result, algorithm (`exact` or `monte_car
   "hero_combo": "AsKd",
   "baseline_actions": {"fold": 0.0, "call": 0.35, "raise_75": 0.65},
   "adjusted_actions": {"fold": 0.0, "call": 0.25, "raise_75": 0.75},
-  "selected_action": {"type": "raise", "size_bb": "12.5"},
+  "selected_action": {"type": "raise", "size_chips": "12.5"},
   "randomization": {"seed": 77123, "draw": 0.61},
   "strategy_match_id": "uuid",
   "calculations": ["uuid"],

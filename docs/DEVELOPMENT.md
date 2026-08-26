@@ -69,7 +69,7 @@ GTO solutions.
 
 ## Supported functionality
 
-- Authoritative 6-max and 9-max cash NLH configuration validation.
+- Authoritative 9-max cash NLH native-chip configuration validation.
 - Separate table lifecycle, street, seat participation, betting action, and internal event models.
 - Exact-decimal stack and pot accounting for the simulated path.
 - Deterministic event reduction and replay identifiers.
@@ -80,8 +80,8 @@ GTO solutions.
 - First supported X-Poker 10.0 portrait capture layout at 445×800 and 96 canonical DPI.
 - Canonical 1,326-combo ranges, 169-class projection, blockers, action conditioning, and matrices.
 - Exact/seeded equity, exhaustive hand evaluation, and deterministic chip-EV metrics.
-- Hash-verified, isolated 6-max and 9-max reference-prior RFI libraries.
-- Synthetic 6-max/9-max monitoring replay with bounded WebSocket delivery, gap recovery, health,
+- Hash-verified 9-max native-chip reference-prior RFI library.
+- Synthetic 9-max native-chip monitoring replay with bounded WebSocket delivery, gap recovery, health,
   action history, replay scrubbing, deterministic pot odds/SPR, decision-gate inspection, range
   matrix inspection, latency/drop telemetry, synthetic soak coverage, and explicit control lockout.
 - One-shot authorized X-Poker capture diagnostics with in-memory/no-store frame delivery,

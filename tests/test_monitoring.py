@@ -11,7 +11,7 @@ from xpoker_agent.monitoring.replay import ReplayController, build_replay_snapsh
 from xpoker_agent.simulation import run_simulated_hand
 
 
-@pytest.mark.parametrize("table_size", [6, 9])
+@pytest.mark.parametrize("table_size", [9])
 def test_simulated_monitor_replay_supports_both_table_sizes(table_size: int) -> None:
     states, events = run_simulated_hand(table_size)
     snapshot = build_replay_snapshot(table_size, len(events))
@@ -28,20 +28,20 @@ def test_simulated_monitor_replay_supports_both_table_sizes(table_size: int) -> 
 
 
 def test_replay_math_exposes_exact_preflop_pot_odds_without_inventing_equity() -> None:
-    snapshot = build_replay_snapshot(6, 5)
+    snapshot = build_replay_snapshot(9, 5)
 
     assert snapshot.state.next_to_act_seat == snapshot.state.hero_seat
-    assert snapshot.poker_math["call_amount_bb"] == 1
+    assert snapshot.poker_math["call_amount_chips"] == 2
     assert snapshot.poker_math["pot_odds_required_equity"] == Decimal("0.4")
     assert snapshot.poker_math["equity"] is None
-    assert snapshot.poker_math["call_ev_bb"] is None
+    assert snapshot.poker_math["call_ev_chips"] is None
 
 
 def test_monitor_api_exposes_selected_table_and_reference_matrix() -> None:
-    snapshot = monitor_snapshot(6)
-    matrix = reference_range(6, Position.BTN)
+    snapshot = monitor_snapshot(9)
+    matrix = reference_range(Position.BTN, 9)
 
-    assert snapshot["table_size"] == 6
+    assert snapshot["table_size"] == 9
     assert snapshot["source_mode"] == "synthetic_replay"
     assert matrix["source"]["strategy_role"] == "reference_prior"
     assert len(matrix["cells"]) == 169
@@ -49,7 +49,7 @@ def test_monitor_api_exposes_selected_table_and_reference_matrix() -> None:
 
 def test_reference_api_rejects_bb_rfi() -> None:
     with pytest.raises(HTTPException, match="no unopened reference prior"):
-        reference_range(9, Position.BB)
+        reference_range(Position.BB, 9)
 
 
 def test_monitor_hub_retains_history_and_signals_old_cursor_gap() -> None:
@@ -88,8 +88,8 @@ def test_monitor_envelope_exposes_current_sequence_and_backpressure_metrics() ->
     async def scenario() -> None:
         hub = MonitorHub(subscriber_queue_size=1)
         queue = await hub.subscribe()
-        await hub.publish_snapshot(build_replay_snapshot(6))
-        envelope = await hub.publish_snapshot(build_replay_snapshot(6))
+        await hub.publish_snapshot(build_replay_snapshot(9))
+        envelope = await hub.publish_snapshot(build_replay_snapshot(9))
 
         assert envelope.payload["sequence"] == 2
         assert envelope.payload["metrics"]["stream_sequence"] == 2
@@ -105,13 +105,13 @@ def test_replay_controller_publishes_complete_ordered_session() -> None:
     async def scenario() -> None:
         hub = MonitorHub(history_limit=32)
         controller = ReplayController(hub)
-        await controller.start(table_size=6, interval_ms=25)
+        await controller.start(table_size=9, interval_ms=25)
         assert controller._task is not None  # internal task is awaited only in this regression test
         await asyncio.wait_for(controller._task, timeout=2)
 
         snapshot = hub.snapshot
         assert snapshot is not None
-        assert snapshot.table_size == 6
+        assert snapshot.table_size == 9
         assert snapshot.replay.index == 14
         assert snapshot.replay.active is False
         assert hub.latest_sequence == 15
@@ -139,8 +139,8 @@ def test_monitor_hub_survives_repeated_complete_session_prefixes() -> None:
     async def scenario() -> None:
         hub = MonitorHub(history_limit=64, subscriber_queue_size=4)
         queue = await hub.subscribe()
-        for session in range(20):
-            table_size = 6 if session % 2 == 0 else 9
+        for _session in range(20):
+            table_size = 9
             for index in range(15):
                 await hub.publish_snapshot(build_replay_snapshot(table_size, index))
 

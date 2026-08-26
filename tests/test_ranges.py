@@ -41,7 +41,7 @@ def _range(combos: dict[str, ComboStrategy]) -> WeightedRange:
             "format": "cash",
             "seats": 9,
             "rake": 0,
-            "open_size_bb": 2.0,
+            "open_size_chips": 2.0,
             "kind": "test_fixture",
         },
         confidence=1.0,
@@ -220,25 +220,25 @@ def test_stack_bucket_exact_nearest_and_tie_policy_are_explicit() -> None:
     tie = nearest_stack_bucket(Decimal("45"))
 
     assert exact.status == "exact"
-    assert exact.matched_bb == 100
+    assert exact.matched_chips == 100
     assert nearest.status == "nearest"
-    assert nearest.matched_bb == 100
-    assert nearest.absolute_mismatch_bb == 10
-    assert tie.matched_bb == 40
+    assert nearest.matched_chips == 80
+    assert nearest.absolute_mismatch_chips == 10
+    assert tie.matched_chips == 40
 
 
 def test_stack_interpolation_reports_both_buckets_and_weight() -> None:
     match = interpolation_bracket(Decimal("90"))
 
     assert match.status == "interpolated"
-    assert match.lower_bb == 75
-    assert match.upper_bb == 100
-    assert match.upper_weight == Decimal("0.6")
+    assert match.lower_chips == 80
+    assert match.upper_chips == 100
+    assert match.upper_weight == Decimal("0.5")
 
 
 def test_stack_interpolation_falls_back_at_unsupported_edges() -> None:
     shallow = interpolation_bracket(Decimal("10"))
     deep = interpolation_bracket(Decimal("250"))
 
-    assert shallow.status == "nearest" and shallow.matched_bb == 20
-    assert deep.status == "nearest" and deep.matched_bb == 200
+    assert shallow.status == "nearest" and shallow.matched_chips == 40
+    assert deep.status == "interpolated"

@@ -30,11 +30,11 @@
           "default": null,
           "title": "Equity"
         },
-        "ev_bb": {
+        "ev_chips": {
           "additionalProperties": {
             "type": "number"
           },
-          "title": "Ev Bb",
+          "title": "Ev Chips",
           "type": "object"
         }
       },

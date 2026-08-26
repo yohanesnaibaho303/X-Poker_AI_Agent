@@ -71,7 +71,7 @@ def test_builds_a_deterministic_reducer_validated_live_prefix() -> None:
         "hole_cards_observed",
     ]
     assert first.state.next_to_act_seat == 0
-    assert first.state.pot_main_bb == Decimal("1.5")
+    assert first.state.pot_main_chips == Decimal("3")
     assert first.state.hero_cards == ["As", "Kd"]
     assert not first.complete
 

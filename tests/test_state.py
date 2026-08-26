@@ -43,7 +43,7 @@ def build_bomb_pot_flop_state():
                 "bomb_ante_posted",
                 actor_seat=seat,
                 street=Street.PREFLOP,
-                amount=EventAmount(to_bb=Decimal("2"), added_bb=Decimal("2")),
+                amount=EventAmount(to_chips=Decimal("2"), added_chips=Decimal("2")),
             ),
         )
     state = reducer.apply(
@@ -70,10 +70,10 @@ def test_simulated_hand_reconstructs_end_to_end() -> None:
     assert final.street is Street.FLOP
     assert final.board == ["Qs", "Jh", "2c"]
     assert final.hero_cards == ["As", "Kd"]
-    assert final.pot_main_bb == 0
-    assert final.seats[6].stack_bb == Decimal("102.5")
-    assert final.seats[7].stack_bb == Decimal("99.5")
-    assert final.seats[8].stack_bb == Decimal("98")
+    assert final.pot_main_chips == 0
+    assert final.seats[6].stack_chips == Decimal("205")
+    assert final.seats[7].stack_chips == Decimal("199")
+    assert final.seats[8].stack_chips == Decimal("196")
     assert final.seats[7].participation is ParticipationStatus.FOLDED
     assert final.seats[8].participation is ParticipationStatus.FOLDED
 
@@ -95,8 +95,8 @@ def test_single_board_bomb_pot_skips_preflop_and_begins_action_on_flop() -> None
 
     assert state.hand_mode is HandMode.SINGLE_BOARD_BOMB_POT
     assert state.street is Street.FLOP
-    assert state.pot_main_bb == Decimal("6")
-    assert state.current_bet_bb == 0
+    assert state.pot_main_chips == Decimal("6")
+    assert state.current_bet_chips == 0
     assert state.next_to_act_seat == 7
 
     state = reducer.apply(
@@ -136,7 +136,7 @@ def test_bomb_pot_rejects_preflop_betting_and_blinds() -> None:
                 "blind_posted",
                 actor_seat=7,
                 street=Street.PREFLOP,
-                amount=EventAmount(to_bb=Decimal("1"), added_bb=Decimal("1")),
+                amount=EventAmount(to_chips=Decimal("1"), added_chips=Decimal("1")),
             ),
         )
 
@@ -148,7 +148,7 @@ def test_bomb_pot_rejects_preflop_betting_and_blinds() -> None:
             "bomb_ante_posted",
             actor_seat=6,
             street=Street.PREFLOP,
-            amount=EventAmount(to_bb=Decimal("2"), added_bb=Decimal("2")),
+            amount=EventAmount(to_chips=Decimal("2"), added_chips=Decimal("2")),
         ),
     )
     with pytest.raises(StateTransitionError, match="no preflop betting"):
@@ -187,7 +187,7 @@ def test_bomb_pot_flop_requires_observed_contribution_from_every_participant() -
                 "bomb_ante_posted",
                 actor_seat=seat,
                 street=Street.PREFLOP,
-                amount=EventAmount(to_bb=Decimal("2"), added_bb=Decimal("2")),
+                amount=EventAmount(to_chips=Decimal("2"), added_chips=Decimal("2")),
             ),
         )
 
@@ -242,7 +242,7 @@ def test_hand_cannot_complete_with_unawarded_pot(initial_state) -> None:
             "blind_posted",
             actor_seat=8,
             street=Street.PREFLOP,
-            amount=EventAmount(to_bb=Decimal("1"), added_bb=Decimal("1")),
+            amount=EventAmount(to_chips=Decimal("1"), added_chips=Decimal("1")),
         ),
     )
 
@@ -254,9 +254,9 @@ def test_hand_cannot_complete_with_unawarded_pot(initial_state) -> None:
 def test_posted_blind_conserves_chips(units: int) -> None:
     initial_state = make_initial_state()
     amount = Decimal(units) / Decimal("100")
-    initial_state.seats[8].stack_bb = amount
-    initial_state.seats[8].starting_stack_bb = amount
-    initial_state.initial_total_chips_bb = amount + Decimal("200")
+    initial_state.seats[8].stack_chips = amount
+    initial_state.seats[8].starting_stack_chips = amount
+    initial_state.initial_total_chips = amount + Decimal("200")
     reducer = HandStateReducer()
     state = reducer.apply(initial_state, make_event(1, EventCategory.LIFECYCLE, "hand_started"))
     state = reducer.apply(
@@ -276,13 +276,13 @@ def test_posted_blind_conserves_chips(units: int) -> None:
             "blind_posted",
             actor_seat=8,
             street=Street.PREFLOP,
-            amount=EventAmount(to_bb=amount, added_bb=amount),
+            amount=EventAmount(to_chips=amount, added_chips=amount),
         ),
     )
 
-    assert state.seats[8].stack_bb == 0
-    assert state.pot_main_bb == amount
-    assert state.seats[8].stack_bb + state.pot_main_bb == amount
+    assert state.seats[8].stack_chips == 0
+    assert state.pot_main_chips == amount
+    assert state.seats[8].stack_chips + state.pot_main_chips == amount
 
 
 def test_known_card_cannot_reappear_on_board(initial_state) -> None:
@@ -313,49 +313,13 @@ def test_known_card_cannot_reappear_on_board(initial_state) -> None:
         )
 
 
-def test_six_max_state_uses_six_slots_and_wraps_action_clockwise() -> None:
-    state = create_initial_state(
-        hand_id=make_event(1, EventCategory.LIFECYCLE, "hand_started").hand_id,
-        config_version="game-6max-nlh-v1",
-        hero_seat=3,
-        occupied_stacks_bb={
-            3: Decimal("100"),
-            4: Decimal("100"),
-            5: Decimal("100"),
-        },
-        positions={3: Position.BTN, 4: Position.SB, 5: Position.BB},
-        table_size=6,
-    )
-    reducer = HandStateReducer()
-    state = reducer.apply(state, make_event(1, EventCategory.LIFECYCLE, "hand_started"))
-    state = reducer.apply(
-        state,
-        make_event(2, EventCategory.DEALING, "dealer_assigned", dealer_seat=3),
-    )
-    state = reducer.apply(
-        state,
-        make_event(
-            3,
-            EventCategory.FORCED_WAGER,
-            "blind_posted",
-            actor_seat=5,
-            street=Street.PREFLOP,
-            amount=EventAmount(to_bb=Decimal("1"), added_bb=Decimal("1")),
-        ),
-    )
-
-    assert state.table_size == 6
-    assert len(state.seats) == 6
-    assert state.next_to_act_seat == 3
-
-
-def test_six_max_state_rejects_nine_max_only_position() -> None:
-    with pytest.raises(ValueError, match="invalid for the configured table size"):
+def test_six_max_state_is_rejected() -> None:
+    with pytest.raises(ValueError, match="only 9-max"):
         create_initial_state(
             hand_id=make_event(1, EventCategory.LIFECYCLE, "hand_started").hand_id,
             config_version="game-6max-nlh-v1",
             hero_seat=0,
-            occupied_stacks_bb={0: Decimal("100")},
-            positions={0: Position.LJ},
+            occupied_stacks_chips={0: Decimal("100")},
+            positions={0: Position.BTN},
             table_size=6,
         )

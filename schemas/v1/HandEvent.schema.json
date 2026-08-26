@@ -58,7 +58,7 @@
     "EventAmount": {
       "additionalProperties": false,
       "properties": {
-        "to_bb": {
+        "to_chips": {
           "anyOf": [
             {
               "minimum": 0.0,
@@ -72,9 +72,9 @@
             }
           ],
           "default": null,
-          "title": "To Bb"
+          "title": "To Chips"
         },
-        "added_bb": {
+        "added_chips": {
           "anyOf": [
             {
               "minimum": 0.0,
@@ -85,7 +85,7 @@
             }
           ],
           "default": "0",
-          "title": "Added Bb"
+          "title": "Added Chips"
         }
       },
       "title": "EventAmount",

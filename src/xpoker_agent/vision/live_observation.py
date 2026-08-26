@@ -88,7 +88,7 @@ class LiveObservationService:
         self._capture_lock = asyncio.Lock()
         self._stop_event = asyncio.Event()
         self._task: asyncio.Task[None] | None = None
-        self._table_size: Literal[6, 9] = 9
+        self._table_size: Literal[9] = 9
         self._interval_ms = 500
         self._started_at: datetime | None = None
         self._stopped_at: datetime | None = None
@@ -182,7 +182,7 @@ class LiveObservationService:
     def running(self) -> bool:
         return self._task is not None and not self._task.done()
 
-    async def start(self, *, table_size: Literal[6, 9], interval_ms: int) -> bool:
+    async def start(self, *, table_size: Literal[9], interval_ms: int) -> bool:
         if interval_ms < 1:
             raise ValueError("capture interval must be positive")
         if self.running:
@@ -302,7 +302,7 @@ class LiveObservationService:
         return True
 
     async def inspect_once(
-        self, *, table_size: Literal[6, 9]
+        self, *, table_size: Literal[9]
     ) -> LiveCaptureDiagnostic:
         async with self._capture_lock:
             sequence = self._latest_sequence + 1

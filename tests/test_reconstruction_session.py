@@ -27,7 +27,7 @@ def _started_hand(hand_id: UUID, dealer_seat: int):
         hand_id=hand_id,
         config_version="game-9max-nlh-v1",
         hero_seat=6,
-        occupied_stacks_bb={6: Decimal("100"), 7: Decimal("100"), 8: Decimal("100")},
+        occupied_stacks_chips={6: Decimal("100"), 7: Decimal("100"), 8: Decimal("100")},
         positions={6: Position.BTN, 7: Position.SB, 8: Position.BB},
     )
     reducer = HandStateReducer()
@@ -57,7 +57,7 @@ def test_next_hand_dealer_moves_clockwise_to_next_dealt_seat() -> None:
 def test_wrong_dealer_or_changed_seat_set_fails_closed() -> None:
     states, _ = run_simulated_hand()
     current = _started_hand(UUID("20000000-0000-0000-0000-000000000003"), dealer_seat=7)
-    current.seats[7].starting_stack_bb = 0
+    current.seats[7].starting_stack_chips = 0
 
     result = validate_hand_boundary(states[-1], current)
 
@@ -72,7 +72,7 @@ def test_heads_up_action_order_is_button_first_preflop_and_other_seat_postflop()
         hand_id=hand_id,
         config_version="game-9max-nlh-v1",
         hero_seat=6,
-        occupied_stacks_bb={6: Decimal("100"), 8: Decimal("100")},
+        occupied_stacks_chips={6: Decimal("100"), 8: Decimal("100")},
         positions={6: Position.BTN, 8: Position.BB},
     )
     events = [
@@ -85,7 +85,7 @@ def test_heads_up_action_order_is_button_first_preflop_and_other_seat_postflop()
             "blind_posted",
             actor_seat=6,
             street=Street.PREFLOP,
-            amount=EventAmount(to_bb=Decimal("0.5"), added_bb=Decimal("0.5")),
+            amount=EventAmount(to_chips=Decimal("0.5"), added_chips=Decimal("0.5")),
         ),
         _event(
             hand_id,
@@ -94,7 +94,7 @@ def test_heads_up_action_order_is_button_first_preflop_and_other_seat_postflop()
             "blind_posted",
             actor_seat=8,
             street=Street.PREFLOP,
-            amount=EventAmount(to_bb=Decimal("1"), added_bb=Decimal("1")),
+            amount=EventAmount(to_chips=Decimal("1"), added_chips=Decimal("1")),
         ),
     ]
     result = replay_events(state, events)
@@ -111,7 +111,7 @@ def test_heads_up_action_order_is_button_first_preflop_and_other_seat_postflop()
             "call",
             actor_seat=6,
             street=Street.PREFLOP,
-            amount=EventAmount(to_bb=Decimal("1"), added_bb=Decimal("0.5")),
+            amount=EventAmount(to_chips=Decimal("1"), added_chips=Decimal("0.5")),
         ),
     )
     state = reducer.apply(
@@ -146,7 +146,7 @@ def test_failed_replay_persists_idempotent_quarantine_evidence(tmp_path) -> None
         hand_id=hand_id,
         config_version="game-9max-nlh-v1",
         hero_seat=6,
-        occupied_stacks_bb={6: Decimal("100"), 8: Decimal("100")},
+        occupied_stacks_chips={6: Decimal("100"), 8: Decimal("100")},
         positions={6: Position.BTN, 8: Position.BB},
     )
     result = replay_events(

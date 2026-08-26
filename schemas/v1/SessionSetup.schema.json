@@ -1,29 +1,18 @@
 {
   "$defs": {
-    "ChipDisplayMode": {
-      "enum": [
-        "BB",
-        "native"
-      ],
-      "title": "ChipDisplayMode",
-      "type": "string"
-    },
     "ChipValue": {
       "additionalProperties": false,
-      "description": "A lossless user-entered chip value and its optional BB conversion.",
+      "description": "A lossless native-chip value.",
       "properties": {
         "raw_input": {
           "title": "Raw Input",
           "type": "string"
         },
-        "display_mode": {
-          "$ref": "#/$defs/ChipDisplayMode"
-        },
         "display_text": {
           "title": "Display Text",
           "type": "string"
         },
-        "amount_bb": {
+        "amount_chips": {
           "anyOf": [
             {
               "exclusiveMinimum": 0.0,
@@ -31,35 +20,15 @@
             },
             {
               "type": "string"
-            },
-            {
-              "type": "null"
             }
           ],
-          "default": null,
-          "title": "Amount Bb"
-        },
-        "exact_native_chips": {
-          "anyOf": [
-            {
-              "exclusiveMinimum": 0.0,
-              "type": "number"
-            },
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Exact Native Chips"
+          "title": "Amount Chips"
         }
       },
       "required": [
         "raw_input",
-        "display_mode",
-        "display_text"
+        "display_text",
+        "amount_chips"
       ],
       "title": "ChipValue",
       "type": "object"
@@ -69,10 +38,8 @@
   "description": "User-selectable table size and stack denomination for one X-Poker session.",
   "properties": {
     "table_size": {
-      "enum": [
-        6,
-        9
-      ],
+      "const": 9,
+      "default": 9,
       "title": "Table Size",
       "type": "integer"
     },
@@ -83,44 +50,34 @@
     "stack": {
       "$ref": "#/$defs/ChipValue"
     },
-    "big_blind_native_chips": {
+    "native_small_blind": {
       "anyOf": [
         {
-          "exclusiveMinimum": 0.0,
           "type": "number"
         },
         {
           "type": "string"
-        },
-        {
-          "type": "null"
         }
       ],
-      "default": null,
-      "title": "Big Blind Native Chips"
+      "default": "1",
+      "title": "Native Small Blind"
     },
-    "ready_for_strategy": {
-      "title": "Ready For Strategy",
-      "type": "boolean"
-    },
-    "blocking_reason": {
+    "native_big_blind": {
       "anyOf": [
         {
-          "type": "string"
+          "type": "number"
         },
         {
-          "type": "null"
+          "type": "string"
         }
       ],
-      "default": null,
-      "title": "Blocking Reason"
+      "default": "2",
+      "title": "Native Big Blind"
     }
   },
   "required": [
-    "table_size",
     "game_config_id",
-    "stack",
-    "ready_for_strategy"
+    "stack"
   ],
   "title": "SessionSetup",
   "type": "object"

@@ -1,5 +1,4 @@
-export type TableSize = 6 | 9;
-export type ChipMode = "BB" | "native";
+export type TableSize = 9;
 
 export interface LiveHeroCalculation {
   hero_seat: number | null;
@@ -9,14 +8,10 @@ export interface LiveHeroCalculation {
   range_seat_mismatch: number;
   cards: string[];
   hand_class: string | null;
-  big_blind_native: string | null;
-  hero_stack_native: string | null;
-  hero_stack_bb: string | null;
-  pot_native: string | null;
-  pot_bb: string | null;
-  call_amount_native: string | null;
-  call_amount_bb: string | null;
-  effective_stack_bb: string | null;
+  hero_stack_chips: string | null;
+  pot_chips: string | null;
+  call_amount_chips: string | null;
+  effective_stack_chips: string | null;
   required_equity: string | null;
   spr: string | null;
   ready: boolean;
@@ -28,9 +23,9 @@ export interface SeatState {
   seat: number;
   position: string | null;
   participation: string;
-  starting_stack_bb: string;
-  stack_bb: string;
-  committed_by_street_bb: Record<string, string>;
+  starting_stack_chips: string;
+  stack_chips: string;
+  committed_by_street_chips: Record<string, string>;
   cards: string[];
 }
 
@@ -47,8 +42,8 @@ export interface HandState {
   hero_cards: string[];
   board: string[];
   seats: SeatState[];
-  pot_main_bb: string;
-  current_bet_bb: string;
+  pot_main_chips: string;
+  current_bet_chips: string;
   next_to_act_seat: number | null;
   available_actions: string[];
   validation: { legal: boolean; issues: string[] };
@@ -61,7 +56,7 @@ export interface HandEvent {
   type: string;
   actor_seat: number | null;
   street: string;
-  amount: { to_bb: string | null; added_bb: string } | null;
+  amount: { to_chips: string | null; added_chips: string } | null;
   cards: string[];
   confidence: { score: number; calibration_id: string; stable_frames: number };
 }
@@ -92,12 +87,12 @@ export interface MonitorSnapshot {
   };
   replay: { active: boolean; index: number; total: number; interval_ms: number };
   poker_math: {
-    effective_stack_bb: string | null;
-    call_amount_bb: string;
+    effective_stack_chips: string | null;
+    call_amount_chips: string;
     pot_odds_required_equity: string | null;
     spr: string | null;
     equity: number | null;
-    call_ev_bb: string | null;
+    call_ev_chips: string | null;
     status: string;
     assumptions: string[];
   };
@@ -134,13 +129,11 @@ export interface SessionPreview {
   table_size: TableSize;
   game_config_id: string;
   stack: {
-    display_mode: ChipMode;
     display_text: string;
-    amount_bb: string | null;
-    exact_native_chips: string | null;
+    amount_chips: string;
   };
-  ready_for_strategy: boolean;
-  blocking_reason: string | null;
+  native_small_blind: "1";
+  native_big_blind: "2";
 }
 
 export interface LiveCaptureDiagnostic {

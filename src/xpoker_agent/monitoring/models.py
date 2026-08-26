@@ -39,7 +39,7 @@ class MonitorSnapshot(StrictModel):
     schema_version: Literal["1.0"] = "1.0"
     sequence: int = Field(default=0, ge=0)
     generated_at: datetime
-    table_size: Literal[6, 9]
+    table_size: Literal[9]
     source_mode: Literal["synthetic_replay", "recorded_replay", "authorized_live"]
     state: HandState
     action_history: list[HandEvent]
@@ -80,11 +80,11 @@ class MonitorHistory(StrictModel):
 
 
 class ReplayStartRequest(StrictModel):
-    table_size: Literal[6, 9]
+    table_size: Literal[9] = 9
     interval_ms: int = Field(default=250, ge=25, le=5000)
 
 
 class ReplaySeekRequest(StrictModel):
-    table_size: Literal[6, 9]
+    table_size: Literal[9] = 9
     index: int = Field(ge=0, le=14)
     interval_ms: int = Field(default=250, ge=25, le=5000)

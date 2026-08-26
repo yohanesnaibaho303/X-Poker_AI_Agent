@@ -24,7 +24,7 @@ class RangeMatrixCell(StrictModel):
     action_mix: dict[str, float] = Field(default_factory=dict)
     unassigned_action_frequency: float = Field(ge=0.0, le=1.0)
     equity: float | None = Field(default=None, ge=0.0, le=1.0)
-    ev_bb: dict[str, float] = Field(default_factory=dict)
+    ev_chips: dict[str, float] = Field(default_factory=dict)
 
     @model_validator(mode="after")
     def validate_projection(self) -> RangeMatrixCell:
@@ -89,14 +89,14 @@ def project_range_matrix(weighted_range: WeightedRange) -> RangeMatrix:
             equity_weight = sum(
                 strategy.weight for strategy in strategies if strategy.equity is not None
             )
-            ev_actions = sorted({action for strategy in strategies for action in strategy.ev_bb})
-            ev_bb = {
+            ev_actions = sorted({action for strategy in strategies for action in strategy.ev_chips})
+            ev_chips = {
                 action: sum(
-                    strategy.weight * strategy.ev_bb[action]
+                    strategy.weight * strategy.ev_chips[action]
                     for strategy in strategies
-                    if action in strategy.ev_bb
+                    if action in strategy.ev_chips
                 )
-                / sum(strategy.weight for strategy in strategies if action in strategy.ev_bb)
+                / sum(strategy.weight for strategy in strategies if action in strategy.ev_chips)
                 for action in ev_actions
             }
             cells.append(
@@ -111,7 +111,7 @@ def project_range_matrix(weighted_range: WeightedRange) -> RangeMatrix:
                     action_mix=action_mix,
                     unassigned_action_frequency=(1.0 - assigned if combo_weight else 0.0),
                     equity=(equity_mass / equity_weight if equity_weight else None),
-                    ev_bb=ev_bb,
+                    ev_chips=ev_chips,
                 )
             )
     return RangeMatrix(

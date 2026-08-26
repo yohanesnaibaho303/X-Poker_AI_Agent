@@ -9,53 +9,55 @@ from pydantic import Field
 
 from xpoker_agent.models import StrictModel
 
-STACK_BUCKETS_BB = tuple(Decimal(value) for value in ("20", "40", "50", "75", "100", "150", "200"))
+STACK_BUCKETS_CHIPS = tuple(
+    Decimal(value) for value in ("40", "80", "100", "150", "200", "300", "400")
+)
 
 
 class StackDepthMatch(StrictModel):
-    requested_bb: Decimal = Field(gt=0)
+    requested_chips: Decimal = Field(gt=0)
     status: Literal["exact", "nearest", "interpolated"]
-    matched_bb: Decimal | None = Field(default=None, gt=0)
-    lower_bb: Decimal | None = Field(default=None, gt=0)
-    upper_bb: Decimal | None = Field(default=None, gt=0)
+    matched_chips: Decimal | None = Field(default=None, gt=0)
+    lower_chips: Decimal | None = Field(default=None, gt=0)
+    upper_chips: Decimal | None = Field(default=None, gt=0)
     upper_weight: Decimal | None = Field(default=None, ge=0, le=1)
-    absolute_mismatch_bb: Decimal = Field(ge=0)
+    absolute_mismatch_chips: Decimal = Field(ge=0)
     relative_mismatch: Decimal = Field(ge=0)
-    policy_id: Literal["stack-buckets-v1"] = "stack-buckets-v1"
+    policy_id: Literal["native-stack-buckets-v1"] = "native-stack-buckets-v1"
 
 
-def nearest_stack_bucket(requested_bb: Decimal) -> StackDepthMatch:
-    if requested_bb <= 0:
+def nearest_stack_bucket(requested_chips: Decimal) -> StackDepthMatch:
+    if requested_chips <= 0:
         raise ValueError("requested stack depth must be positive")
-    matched = min(STACK_BUCKETS_BB, key=lambda bucket: (abs(bucket - requested_bb), bucket))
-    mismatch = abs(matched - requested_bb)
+    matched = min(STACK_BUCKETS_CHIPS, key=lambda bucket: (abs(bucket - requested_chips), bucket))
+    mismatch = abs(matched - requested_chips)
     return StackDepthMatch(
-        requested_bb=requested_bb,
+        requested_chips=requested_chips,
         status="exact" if mismatch == 0 else "nearest",
-        matched_bb=matched,
-        absolute_mismatch_bb=mismatch,
-        relative_mismatch=mismatch / requested_bb,
+        matched_chips=matched,
+        absolute_mismatch_chips=mismatch,
+        relative_mismatch=mismatch / requested_chips,
     )
 
 
-def interpolation_bracket(requested_bb: Decimal) -> StackDepthMatch:
-    if requested_bb <= 0:
+def interpolation_bracket(requested_chips: Decimal) -> StackDepthMatch:
+    if requested_chips <= 0:
         raise ValueError("requested stack depth must be positive")
-    if requested_bb in STACK_BUCKETS_BB:
-        return nearest_stack_bucket(requested_bb)
-    lower = [bucket for bucket in STACK_BUCKETS_BB if bucket < requested_bb]
-    upper = [bucket for bucket in STACK_BUCKETS_BB if bucket > requested_bb]
+    if requested_chips in STACK_BUCKETS_CHIPS:
+        return nearest_stack_bucket(requested_chips)
+    lower = [bucket for bucket in STACK_BUCKETS_CHIPS if bucket < requested_chips]
+    upper = [bucket for bucket in STACK_BUCKETS_CHIPS if bucket > requested_chips]
     if not lower or not upper:
-        return nearest_stack_bucket(requested_bb)
-    lower_bb, upper_bb = max(lower), min(upper)
-    upper_weight = (requested_bb - lower_bb) / (upper_bb - lower_bb)
-    nearest_mismatch = min(requested_bb - lower_bb, upper_bb - requested_bb)
+        return nearest_stack_bucket(requested_chips)
+    lower_chips, upper_chips = max(lower), min(upper)
+    upper_weight = (requested_chips - lower_chips) / (upper_chips - lower_chips)
+    nearest_mismatch = min(requested_chips - lower_chips, upper_chips - requested_chips)
     return StackDepthMatch(
-        requested_bb=requested_bb,
+        requested_chips=requested_chips,
         status="interpolated",
-        lower_bb=lower_bb,
-        upper_bb=upper_bb,
+        lower_chips=lower_chips,
+        upper_chips=upper_chips,
         upper_weight=upper_weight,
-        absolute_mismatch_bb=nearest_mismatch,
-        relative_mismatch=nearest_mismatch / requested_bb,
+        absolute_mismatch_chips=nearest_mismatch,
+        relative_mismatch=nearest_mismatch / requested_chips,
     )

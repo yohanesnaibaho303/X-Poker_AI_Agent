@@ -85,8 +85,8 @@ class PreflopStrategyResolver:
             confidence *= max(0.0, 1.0 - relative)
             distance = lookup.stack_match.model_dump(mode="json")
             assumptions.append(
-                f"Used {lookup.stack_match.matched_bb} BB solution for "
-                f"{lookup.stack_match.requested_bb} BB request."
+                f"Used {lookup.stack_match.matched_chips} BB solution for "
+                f"{lookup.stack_match.requested_chips} BB request."
             )
         strategy = artifact.to_weighted_range(player_ref=player_ref, hand_id=hand_id)
         return StrategyResolution(
@@ -121,8 +121,8 @@ class PreflopStrategyResolver:
         prior = lookup.artifact.to_weighted_range(player_ref=player_ref, hand_id=hand_id)
         if lookup.stack_match.status != "exact":
             prior.assumptions.append(
-                f"Reference prior indexed at {lookup.stack_match.matched_bb} BB for "
-                f"{lookup.stack_match.requested_bb} BB request."
+                f"Reference prior indexed at {lookup.stack_match.matched_chips} BB for "
+                f"{lookup.stack_match.requested_chips} BB request."
             )
             prior.confidence *= max(0.0, 1.0 - float(lookup.stack_match.relative_mismatch))
         return prior

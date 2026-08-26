@@ -16,7 +16,7 @@ def _accepted(value: str, confidence: float = 0.95) -> TemporalConsensus:
     )
 
 
-def test_builds_bb_normalized_live_hero_calculation() -> None:
+def test_builds_native_chip_live_hero_calculation() -> None:
     status = LiveObservationService().status().model_copy(
         update={
             "active_seats": [0, 1],
@@ -45,10 +45,10 @@ def test_builds_bb_normalized_live_hero_calculation() -> None:
     assert result.hand_class == "AKo"
     assert result.dealt_player_count == 2
     assert result.range_seat_mismatch == 7
-    assert result.hero_stack_bb == Decimal("50")
-    assert result.pot_bb == Decimal("3")
-    assert result.call_amount_bb == Decimal("1")
-    assert result.effective_stack_bb == Decimal("40")
+    assert result.hero_stack_chips == Decimal("100")
+    assert result.pot_chips == Decimal("6")
+    assert result.call_amount_chips == Decimal("2")
+    assert result.effective_stack_chips == Decimal("80")
     assert result.required_equity == Decimal("0.25")
     assert result.spr == Decimal("40") / Decimal("3")
 

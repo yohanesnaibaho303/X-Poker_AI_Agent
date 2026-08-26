@@ -26,7 +26,7 @@
       "enum": [
         "UTG",
         "UTG+1",
-        "MP",
+        "UTG+2",
         "LJ",
         "HJ",
         "CO",
@@ -45,7 +45,7 @@
           "title": "Pot Index",
           "type": "integer"
         },
-        "amount_bb": {
+        "amount_chips": {
           "anyOf": [
             {
               "exclusiveMinimum": 0.0,
@@ -55,9 +55,9 @@
               "type": "string"
             }
           ],
-          "title": "Amount Bb"
+          "title": "Amount Chips"
         },
-        "remaining_bb": {
+        "remaining_chips": {
           "anyOf": [
             {
               "minimum": 0.0,
@@ -67,9 +67,9 @@
               "type": "string"
             }
           ],
-          "title": "Remaining Bb"
+          "title": "Remaining Chips"
         },
-        "cap_per_player_bb": {
+        "cap_per_player_chips": {
           "anyOf": [
             {
               "exclusiveMinimum": 0.0,
@@ -79,7 +79,7 @@
               "type": "string"
             }
           ],
-          "title": "Cap Per Player Bb"
+          "title": "Cap Per Player Chips"
         },
         "contributing_seats": {
           "items": {
@@ -98,9 +98,9 @@
       },
       "required": [
         "pot_index",
-        "amount_bb",
-        "remaining_bb",
-        "cap_per_player_bb",
+        "amount_chips",
+        "remaining_chips",
+        "cap_per_player_chips",
         "contributing_seats",
         "eligible_seats"
       ],
@@ -130,7 +130,7 @@
         "participation": {
           "$ref": "#/$defs/ParticipationStatus"
         },
-        "starting_stack_bb": {
+        "starting_stack_chips": {
           "anyOf": [
             {
               "minimum": 0.0,
@@ -140,9 +140,9 @@
               "type": "string"
             }
           ],
-          "title": "Starting Stack Bb"
+          "title": "Starting Stack Chips"
         },
-        "stack_bb": {
+        "stack_chips": {
           "anyOf": [
             {
               "minimum": 0.0,
@@ -152,9 +152,9 @@
               "type": "string"
             }
           ],
-          "title": "Stack Bb"
+          "title": "Stack Chips"
         },
-        "committed_by_street_bb": {
+        "committed_by_street_chips": {
           "additionalProperties": {
             "anyOf": [
               {
@@ -168,7 +168,7 @@
           "propertyNames": {
             "$ref": "#/$defs/Street"
           },
-          "title": "Committed By Street Bb",
+          "title": "Committed By Street Chips",
           "type": "object"
         },
         "cards": {
@@ -182,8 +182,8 @@
       "required": [
         "seat",
         "participation",
-        "starting_stack_bb",
-        "stack_bb"
+        "starting_stack_chips",
+        "stack_chips"
       ],
       "title": "SeatState",
       "type": "object"
@@ -266,10 +266,7 @@
       "type": "string"
     },
     "table_size": {
-      "enum": [
-        6,
-        9
-      ],
+      "const": 9,
       "title": "Table Size",
       "type": "integer"
     },
@@ -337,7 +334,7 @@
       "title": "Seats",
       "type": "array"
     },
-    "pot_main_bb": {
+    "pot_main_chips": {
       "anyOf": [
         {
           "minimum": 0.0,
@@ -348,7 +345,7 @@
         }
       ],
       "default": "0",
-      "title": "Pot Main Bb"
+      "title": "Pot Main Chips"
     },
     "pot_layers": {
       "items": {
@@ -357,7 +354,7 @@
       "title": "Pot Layers",
       "type": "array"
     },
-    "current_bet_bb": {
+    "current_bet_chips": {
       "anyOf": [
         {
           "minimum": 0.0,
@@ -368,9 +365,9 @@
         }
       ],
       "default": "0",
-      "title": "Current Bet Bb"
+      "title": "Current Bet Chips"
     },
-    "minimum_raise_increment_bb": {
+    "minimum_raise_increment_chips": {
       "anyOf": [
         {
           "minimum": 0.0,
@@ -381,7 +378,7 @@
         }
       ],
       "default": "0",
-      "title": "Minimum Raise Increment Bb"
+      "title": "Minimum Raise Increment Chips"
     },
     "last_aggressor_seat": {
       "anyOf": [
@@ -425,7 +422,7 @@
       "title": "Raise Locked Seats",
       "type": "array"
     },
-    "initial_total_chips_bb": {
+    "initial_total_chips": {
       "anyOf": [
         {
           "minimum": 0.0,
@@ -436,7 +433,7 @@
         }
       ],
       "default": "0",
-      "title": "Initial Total Chips Bb"
+      "title": "Initial Total Chips"
     },
     "available_actions": {
       "items": {

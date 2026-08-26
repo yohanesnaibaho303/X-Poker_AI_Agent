@@ -1,5 +1,4 @@
 import type {
-  ChipMode,
   LiveCaptureDiagnostic,
   LiveHeroCalculation,
   LiveObservationStatus,
@@ -35,18 +34,12 @@ export function fetchReferenceRange(
 }
 
 export function previewSession(input: {
-  tableSize: TableSize;
-  chipMode: ChipMode;
   stackInput: string;
-  bigBlindNative: number | null;
 }): Promise<SessionPreview> {
   return requestJson("/v1/session/setup/preview", {
     method: "POST",
     body: JSON.stringify({
-      table_size: input.tableSize,
-      chip_display_mode: input.chipMode,
       stack_input: input.stackInput,
-      big_blind_native_chips: input.bigBlindNative,
     }),
   });
 }

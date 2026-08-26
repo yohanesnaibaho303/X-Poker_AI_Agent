@@ -32,7 +32,7 @@ def test_amount_action_requires_actor_and_positive_amount() -> None:
             sequence=1,
             category=EventCategory.BETTING_ACTION,
             type="raise",
-            amount=EventAmount(added_bb=Decimal("0")),
+            amount=EventAmount(added_chips=Decimal("0")),
             confidence=CONFIDENCE,
         )
 

@@ -10,7 +10,6 @@ from xpoker_agent.models import (
     OperatingMode,
     Position,
     RuntimeConfig,
-    positions_for_table_size,
 )
 
 
@@ -21,7 +20,8 @@ def test_authoritative_game_configuration_loads() -> None:
     assert config.format == "cash"
     assert config.seats == 9
     assert config.rake.percent == 0
-    assert config.default_open_size_bb == Decimal("2.0")
+    assert config.native_small_blind == Decimal("1")
+    assert config.native_big_blind == Decimal("2")
     assert config.objective == "chip_ev"
     assert config.positions == list(Position)
     assert config.enabled_special_rules == ["single_board_bomb_pot"]
@@ -34,29 +34,21 @@ def test_runtime_is_observe_only_and_controller_disabled() -> None:
     assert runtime.controller_enabled is False
 
 
-def test_six_max_configuration_loads_with_its_own_position_order() -> None:
-    config = load_game_config(table_size=6)
+def test_configuration_rejects_retired_table_size_or_wrong_positions() -> None:
+    with pytest.raises(ValueError, match="only 9-max"):
+        load_game_config(table_size=6)
 
-    assert config.config_id == "game-6max-nlh-v1"
-    assert config.seats == 6
-    assert config.positions == positions_for_table_size(6)
-
-
-def test_configuration_rejects_unsupported_table_size_or_cross_size_positions() -> None:
-    with pytest.raises(ValueError, match="6 or 9"):
-        load_game_config(table_size=7)
-
-    payload = load_game_config(table_size=6).model_dump(mode="json")
-    payload["positions"] = [position.value for position in Position]
+    payload = load_game_config().model_dump(mode="json")
+    payload["positions"] = list(reversed([position.value for position in Position]))
     with pytest.raises(ValidationError, match="authoritative order"):
         GameConfig.model_validate(payload)
 
 
-def test_non_two_bb_default_is_rejected() -> None:
+def test_non_one_two_native_blinds_are_rejected() -> None:
     payload = load_game_config().model_dump(mode="json")
-    payload["default_open_size_bb"] = "2.5"
+    payload["native_big_blind"] = "3"
 
-    with pytest.raises(ValidationError, match="2.0 BB"):
+    with pytest.raises(ValidationError, match="SB 1 and BB 2 native chips"):
         GameConfig.model_validate(payload)
 
 

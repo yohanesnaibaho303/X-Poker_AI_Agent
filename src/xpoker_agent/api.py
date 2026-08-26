@@ -6,7 +6,7 @@ import asyncio
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 from pathlib import Path
-from typing import Literal, cast
+from typing import Literal
 from uuid import UUID
 
 from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
@@ -41,10 +41,10 @@ replay_controller = ReplayController(monitor_hub)
 live_observation = LiveObservationService()
 
 
-def require_table_size(value: int) -> Literal[6, 9]:
-    if value not in (6, 9):
-        raise HTTPException(status_code=422, detail="table_size must be 6 or 9")
-    return cast(Literal[6, 9], value)
+def require_table_size(value: int) -> Literal[9]:
+    if value != 9:
+        raise HTTPException(status_code=422, detail="only 9-max is supported")
+    return 9
 
 
 @asynccontextmanager
@@ -83,9 +83,9 @@ def game_config(table_size: int = 9) -> dict[str, object]:
 
 @app.get("/v1/config/games")
 def supported_game_configs() -> dict[str, object]:
-    configurations = [load_game_config(table_size=size) for size in (6, 9)]
+    configurations = [load_game_config()]
     return {
-        "supported_table_sizes": [6, 9],
+        "supported_table_sizes": [9],
         "configurations": [config.model_dump(mode="json") for config in configurations],
     }
 
@@ -93,10 +93,7 @@ def supported_game_configs() -> dict[str, object]:
 @app.post("/v1/session/setup/preview")
 def preview_session_setup(request: SessionSetupRequest) -> dict[str, object]:
     setup = create_session_setup(
-        table_size=request.table_size,
-        chip_display_mode=request.chip_display_mode,
         stack_input=request.stack_input,
-        big_blind_native_chips=request.big_blind_native_chips,
     )
     return setup.model_dump(mode="json")
 
@@ -228,7 +225,7 @@ def latest_capture_frame() -> Response:
 
 
 @app.get("/v1/ranges/reference")
-def reference_range(table_size: int, position: Position) -> dict[str, object]:
+def reference_range(position: Position, table_size: int = 9) -> dict[str, object]:
     table_size = require_table_size(table_size)
     positions = positions_for_table_size(table_size)
     if position is Position.BB or position not in positions:
@@ -237,14 +234,14 @@ def reference_range(table_size: int, position: Position) -> dict[str, object]:
     prior_positions = [item for item in positions[:position_index] if item is not Position.BB]
     spot = PreflopSpotKey(
         seats=table_size,
-        stack_depth_bb=100,
+        stack_depth_chips=200,
         player_position=position,
         players_remaining=table_size - position_index,
         action_sequence=[
             ObservedRangeAction(actor_position=item, type="fold") for item in prior_positions
         ],
     )
-    artifact = load_seeded_reference_library(table_size).lookup(spot).artifact
+    artifact = load_seeded_reference_library().lookup(spot).artifact
     weighted = artifact.to_weighted_range(
         player_ref="monitor-reference",
         hand_id=UUID("80000000-0000-0000-0000-000000000001"),

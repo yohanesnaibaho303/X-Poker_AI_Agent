@@ -26,7 +26,7 @@ def _dealt_seats(state: HandState) -> set[int]:
     return {
         seat.seat
         for seat in state.seats
-        if seat.starting_stack_bb > 0 and seat.participation in _DEALT_STATUSES
+        if seat.starting_stack_chips > 0 and seat.participation in _DEALT_STATUSES
     }
 
 

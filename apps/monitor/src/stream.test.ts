@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { applyEnvelope, type StreamState } from "./stream";
 import type { MonitorEnvelope, MonitorSnapshot } from "./types";
 
-const snapshot = { sequence: 0, table_size: 6 } as MonitorSnapshot;
+const snapshot = { sequence: 0, table_size: 9 } as MonitorSnapshot;
 
 function envelope(sequence: number): MonitorEnvelope {
   return {

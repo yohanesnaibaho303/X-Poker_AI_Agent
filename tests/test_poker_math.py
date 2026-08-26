@@ -5,9 +5,9 @@ import pytest
 from xpoker_agent.poker_math.evaluator import evaluate_best, evaluate_five
 from xpoker_agent.poker_math.metrics import (
     break_even_bluff_fold_frequency,
-    call_ev_bb,
+    call_ev_chips,
     effective_stack,
-    heads_up_bet_ev_bb,
+    heads_up_bet_ev_chips,
     minimum_defence_frequency,
     pot_odds_required_equity,
     stack_to_pot_ratio,
@@ -65,18 +65,18 @@ def test_evaluator_rejects_duplicate_or_wrong_card_count() -> None:
 def test_exact_chip_ev_metrics() -> None:
     assert effective_stack(Decimal("100"), Decimal("75"), Decimal("200")) == Decimal("75")
     assert pot_odds_required_equity(Decimal("3"), Decimal("1")) == Decimal("0.25")
-    assert call_ev_bb(Decimal("0.25"), Decimal("3"), Decimal("1")) == 0
+    assert call_ev_chips(Decimal("0.25"), Decimal("3"), Decimal("1")) == 0
     assert stack_to_pot_ratio(Decimal("90"), Decimal("10")) == 9
     assert minimum_defence_frequency(Decimal("10"), Decimal("5")) == Decimal(2) / Decimal(3)
     assert break_even_bluff_fold_frequency(Decimal("10"), Decimal("5")) == Decimal(1) / Decimal(3)
 
 
 def test_heads_up_bet_ev_includes_fold_and_called_branches() -> None:
-    result = heads_up_bet_ev_bb(
+    result = heads_up_bet_ev_chips(
         fold_probability=Decimal("0.5"),
         called_equity=Decimal("0.25"),
-        pot_before_bet_bb=Decimal("10"),
-        bet_bb=Decimal("5"),
+        pot_before_bet_chips=Decimal("10"),
+        bet_chips=Decimal("5"),
     )
 
     assert result == Decimal("5")
@@ -88,7 +88,7 @@ def test_heads_up_bet_ev_includes_fold_and_called_branches() -> None:
         (pot_odds_required_equity, (Decimal("0"), Decimal("0"))),
         (stack_to_pot_ratio, (Decimal("10"), Decimal("0"))),
         (minimum_defence_frequency, (Decimal("10"), Decimal("0"))),
-        (call_ev_bb, (Decimal("1.1"), Decimal("10"), Decimal("1"))),
+        (call_ev_chips, (Decimal("1.1"), Decimal("10"), Decimal("1"))),
     ],
 )
 def test_metrics_reject_invalid_domains(function, args) -> None:

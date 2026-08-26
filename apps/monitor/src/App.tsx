@@ -14,7 +14,6 @@ import {
 } from "./api";
 import { formatPercent, formatStack } from "./format";
 import type {
-  ChipMode,
   HandEvent,
   HandState,
   LiveCaptureDiagnostic,
@@ -27,8 +26,7 @@ import type {
 import { useMonitor } from "./useMonitor";
 
 const POSITIONS: Record<TableSize, string[]> = {
-  6: ["UTG", "HJ", "CO", "BTN", "SB"],
-  9: ["UTG", "UTG+1", "MP", "LJ", "HJ", "CO", "BTN", "SB"],
+  9: ["UTG", "UTG+1", "UTG+2", "LJ", "HJ", "CO", "BTN", "SB"],
 };
 
 function Card({ value }: { value: string }) {
@@ -45,15 +43,7 @@ function StatusPill({ tone, children }: { tone: string; children: ReactNode }) {
   return <span className={`status-pill ${tone}`}>{children}</span>;
 }
 
-function TableCanvas({
-  state,
-  chipMode,
-  bigBlindNative,
-}: {
-  state: HandState;
-  chipMode: ChipMode;
-  bigBlindNative: number | null;
-}) {
+function TableCanvas({ state }: { state: HandState }) {
   return (
     <section className="table-stage panel">
       <div className="panel-heading">
@@ -68,7 +58,7 @@ function TableCanvas({
       <div className={`poker-table seats-${state.table_size}`}>
         <div className="felt-rim" />
         <div className="board-zone">
-          <span className="pot-label">Pot {formatStack(state.pot_main_bb, chipMode, bigBlindNative)}</span>
+          <span className="pot-label">Pot {formatStack(state.pot_main_chips)}</span>
           <div className="board-cards">
             {state.board.length ? state.board.map((card) => <Card key={card} value={card} />) : <em>Board waiting</em>}
           </div>
@@ -91,7 +81,7 @@ function TableCanvas({
                 {state.dealer_seat === seat.seat && <b className="dealer">D</b>}
               </div>
               <strong>{isHero ? "Hero" : seat.participation.replaceAll("_", " ")}</strong>
-              <small>{formatStack(seat.stack_bb, chipMode, bigBlindNative)}</small>
+              <small>{formatStack(seat.stack_chips)}</small>
               {isHero && state.hero_cards.length > 0 && (
                 <div className="mini-cards">{state.hero_cards.join(" ")}</div>
               )}
@@ -156,7 +146,7 @@ function RangeGrid({
         <>
           <div className="range-grid" aria-label="13 by 13 reference range matrix">
             {matrix.cells.map((cell) => {
-              const raise = cell.action_mix["raise@2bb"] ?? 0;
+              const raise = cell.action_mix["raise@4chips"] ?? 0;
               return (
                 <div
                   className={`range-cell ${cell.hand_class === heroHandClass ? "hero-hand" : ""}`}
@@ -236,10 +226,8 @@ function CapturePreview({ diagnostic, nonce }: { diagnostic: LiveCaptureDiagnost
 }
 
 export default function App() {
-  const [tableSize, setTableSize] = useState<TableSize>(6);
-  const [chipMode, setChipMode] = useState<ChipMode>("BB");
+  const tableSize: TableSize = 9;
   const [stackInput, setStackInput] = useState("100");
-  const [bigBlindText, setBigBlindText] = useState("2000");
   const [position, setPosition] = useState("BTN");
   const [session, setSession] = useState<SessionPreview | null>(null);
   const [sessionError, setSessionError] = useState<string | null>(null);
@@ -252,10 +240,6 @@ export default function App() {
   const [captureNonce, setCaptureNonce] = useState(0);
   const { snapshot, connection, error, refresh } = useMonitor(tableSize);
 
-  const bigBlindNative = useMemo(() => {
-    const parsed = Number(bigBlindText.replaceAll(",", ""));
-    return Number.isFinite(parsed) && parsed > 0 ? parsed : null;
-  }, [bigBlindText]);
 
   const rangePosition = liveObservation?.running
     ? liveObservation.detected_hero_position
@@ -312,7 +296,6 @@ export default function App() {
   useEffect(() => {
     if (!liveObservation?.running) return;
     if (liveObservation.table_size !== tableSize) {
-      setTableSize(liveObservation.table_size);
     }
     const detected = liveObservation.detected_hero_position;
     if (detected && POSITIONS[liveObservation.table_size].includes(detected)) {
@@ -323,10 +306,7 @@ export default function App() {
   const validateSession = async () => {
     try {
       const result = await previewSession({
-        tableSize,
-        chipMode,
         stackInput,
-        bigBlindNative: chipMode === "native" ? bigBlindNative : null,
       });
       setSession(result);
       setSessionError(null);
@@ -394,36 +374,15 @@ export default function App() {
           <section className="panel setup-panel">
             <p className="eyebrow">Session setup</p>
             <h3>Table configuration</h3>
-            <label>Players</label>
-            <div className="segmented">
-              {([6, 9] as const).map((size) => (
-                <button className={tableSize === size ? "selected" : ""} key={size} onClick={() => setTableSize(size)}>
-                  {size}-max
-                </button>
-              ))}
-            </div>
-            <label>Chip display</label>
-            <div className="segmented">
-              {(["BB", "native"] as const).map((mode) => (
-                <button className={chipMode === mode ? "selected" : ""} key={mode} onClick={() => setChipMode(mode)}>
-                  {mode === "BB" ? "Big blinds" : "Native chips"}
-                </button>
-              ))}
-            </div>
+            <p>9-max NLH · native chips · blinds 1 / 2</p>
             <label htmlFor="stack">Starting stack</label>
             <input id="stack" value={stackInput} onChange={(event) => setStackInput(event.target.value)} />
-            {chipMode === "native" && (
-              <>
-                <label htmlFor="blind">Big blind in native chips</label>
-                <input id="blind" value={bigBlindText} onChange={(event) => setBigBlindText(event.target.value)} />
-              </>
-            )}
             <button className="primary-button" onClick={() => void validateSession()}>Validate session</button>
             {session && (
               <div className="validation-card">
                 <strong>{session.game_config_id}</strong>
                 <span>{session.stack.display_text}</span>
-                <small>{session.ready_for_strategy ? "BB normalization ready" : session.blocking_reason}</small>
+                <small>Exact native-chip session</small>
               </div>
             )}
             {sessionError && <p className="error-copy">{sessionError}</p>}
@@ -484,7 +443,7 @@ export default function App() {
         </aside>
 
         <div className="main-column">
-          {state ? <TableCanvas state={state} chipMode={chipMode} bigBlindNative={bigBlindNative} /> : <section className="panel loading-panel">Loading replay state…</section>}
+          {state ? <TableCanvas state={state} /> : <section className="panel loading-panel">Loading replay state…</section>}
           <section className="panel replay-bar">
             <div>
               <p className="eyebrow">Replay transport</p>
@@ -518,7 +477,7 @@ export default function App() {
                 <small>{liveHero?.hero_seat != null ? `Seat ${liveHero.hero_seat + 1} · ${liveHero.hero_position ?? "position pending"}` : "Waiting for local hero evidence."}</small>
               </div>
               <div className="strategy-block">
-                <span>Detected range action</span><strong>{heroRangeCell ? `Open 2 BB ${formatPercent(heroRangeCell.action_mix["raise@2bb"] ?? 0)}` : "Unavailable"}</strong>
+                <span>Detected range action</span><strong>{heroRangeCell ? `Open 4 chips ${formatPercent(heroRangeCell.action_mix["raise@4chips"] ?? 0)}` : "Unavailable"}</strong>
                 <small>{liveHero?.hero_position ? `${liveHero.hand_class ?? "Hand pending"} at ${liveHero.hero_position} selected automatically · ${liveHero.dealt_player_count}-handed · range mismatch ${liveHero.range_seat_mismatch} seat(s). Reference prior, not exact GTO.` : "Waiting for a resolved dealt position."}</small>
               </div>
               <div className="strategy-block">
@@ -526,11 +485,11 @@ export default function App() {
                 <small>{liveHero?.issues.join(", ") || "Accepted live inputs are internally consistent."}</small>
               </div>
               <div className="math-grid">
-                <div><span>Hero stack</span><strong>{liveHero?.hero_stack_bb ? `${Number(liveHero.hero_stack_bb).toFixed(2)}BB` : "—"}</strong></div>
-                <div><span>Effective</span><strong>{liveHero?.effective_stack_bb ? `${Number(liveHero.effective_stack_bb).toFixed(2)}BB` : "—"}</strong></div>
-                <div><span>Pot</span><strong>{liveHero?.pot_bb ? `${Number(liveHero.pot_bb).toFixed(2)}BB` : "—"}</strong></div>
+                <div><span>Hero stack</span><strong>{liveHero?.hero_stack_chips ? formatStack(liveHero.hero_stack_chips) : "—"}</strong></div>
+                <div><span>Effective</span><strong>{liveHero?.effective_stack_chips ? formatStack(liveHero.effective_stack_chips) : "—"}</strong></div>
+                <div><span>Pot</span><strong>{liveHero?.pot_chips ? formatStack(liveHero.pot_chips) : "—"}</strong></div>
                 <div><span>SPR</span><strong>{liveHero?.spr ? Number(liveHero.spr).toFixed(2) : "—"}</strong></div>
-                <div><span>Call</span><strong>{liveHero?.call_amount_bb != null ? `${Number(liveHero.call_amount_bb).toFixed(2)}BB` : "—"}</strong></div>
+                <div><span>Call</span><strong>{liveHero?.call_amount_chips != null ? formatStack(liveHero.call_amount_chips) : "—"}</strong></div>
                 <div><span>Required equity</span><strong>{liveHero?.required_equity ? formatPercent(Number(liveHero.required_equity)) : "—"}</strong></div>
               </div>
               <label htmlFor="position">Range position</label>

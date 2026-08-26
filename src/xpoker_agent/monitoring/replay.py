@@ -28,29 +28,31 @@ def _replay_math(state: HandState) -> dict[str, object]:
         if seat.seat != state.hero_seat
         and seat.participation in {ParticipationStatus.ACTIVE, ParticipationStatus.ALL_IN}
     ]
-    effective_stack_bb: Decimal | None = None
+    effective_stack_chips: Decimal | None = None
     if opponents:
-        effective_stack_bb = effective_stack(hero.stack_bb, *(seat.stack_bb for seat in opponents))
+        effective_stack_chips = effective_stack(
+            hero.stack_chips, *(seat.stack_chips for seat in opponents)
+        )
 
-    call_bb = Decimal("0")
+    call_chips = Decimal("0")
     required_equity: Decimal | None = None
     if state.next_to_act_seat == state.hero_seat and state.street.value != "none":
-        hero_committed = hero.committed_by_street_bb.get(state.street, Decimal("0"))
-        call_bb = max(Decimal("0"), state.current_bet_bb - hero_committed)
-        if call_bb > 0:
-            required_equity = pot_odds_required_equity(state.pot_main_bb, call_bb)
+        hero_committed = hero.committed_by_street_chips.get(state.street, Decimal("0"))
+        call_chips = max(Decimal("0"), state.current_bet_chips - hero_committed)
+        if call_chips > 0:
+            required_equity = pot_odds_required_equity(state.pot_main_chips, call_chips)
 
     spr: Decimal | None = None
-    if effective_stack_bb is not None and state.pot_main_bb > 0:
-        spr = stack_to_pot_ratio(effective_stack_bb, state.pot_main_bb)
+    if effective_stack_chips is not None and state.pot_main_chips > 0:
+        spr = stack_to_pot_ratio(effective_stack_chips, state.pot_main_chips)
 
     return {
-        "effective_stack_bb": effective_stack_bb,
-        "call_amount_bb": call_bb,
+        "effective_stack_chips": effective_stack_chips,
+        "call_amount_chips": call_chips,
         "pot_odds_required_equity": required_equity,
         "spr": spr,
         "equity": None,
-        "call_ev_bb": None,
+        "call_ev_chips": None,
         "status": "partial",
         "assumptions": [
             "Pot odds and SPR are deterministic from the reconstructed state.",

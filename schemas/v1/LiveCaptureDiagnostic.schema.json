@@ -588,10 +588,7 @@
       "type": "string"
     },
     "table_size": {
-      "enum": [
-        6,
-        9
-      ],
+      "const": 9,
       "title": "Table Size",
       "type": "integer"
     },
