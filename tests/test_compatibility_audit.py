@@ -14,6 +14,7 @@ def test_repository_compatibility_audit_passes_with_control_disabled() -> None:
         "dashboard_build",
         "published_schemas",
         "reference_range_library",
+        "model_abstracted_gto_library",
         "retired_runtime_absent",
     }
     assert all(check.passed for check in audit.checks)

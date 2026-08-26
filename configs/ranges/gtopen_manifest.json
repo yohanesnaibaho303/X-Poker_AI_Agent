@@ -1,0 +1,91 @@
+{
+  "schema_version": "1.0",
+  "library_id": "gtopen-owner-authorized-9max-native-rfi-v1",
+  "configuration": {
+    "variant": "NLH",
+    "format": "cash",
+    "seats": 9,
+    "rake_percent": 0,
+    "native_small_blind": 1,
+    "native_big_blind": 2,
+    "stack_depth_chips": 200,
+    "pot_chips": 3,
+    "open_raise_chips": 4,
+    "model_abstraction": "GTOpen raw preflop terminal model"
+  },
+  "status": "gto_solutions_seeded",
+  "source_id": "0967148b-99a4-551a-8c44-998739d5d4d0",
+  "source_commit": "4aee435bdeb155b25f0c8140e707a8342ce4356f",
+  "source_content_sha256": "d976846274c2449be4ac4058a940d3b6eff195e9d44a486af64b92071f645ac0",
+  "artifacts": [
+    {
+      "artifact_id": "de9c9eb6-f3c2-529b-9e29-d257d82e5a4e",
+      "path": "data/ranges/gtopen/9max/native_200chips/rfi_utg.json",
+      "content_sha256": "539a84b83512f448daedfde0e985870d0fdafdb0c9ce09c79f90689d4016e774",
+      "position": "UTG",
+      "strategy_role": "gto_solution",
+      "confidence": 0.35
+    },
+    {
+      "artifact_id": "4d224995-548c-5f7c-a83d-bd3bacc9eb25",
+      "path": "data/ranges/gtopen/9max/native_200chips/rfi_utg_1.json",
+      "content_sha256": "fee05d85f37eadb4e69a9ec09f21772678cb0ae0c89b0ee5ca82e720dfc959be",
+      "position": "UTG+1",
+      "strategy_role": "gto_solution",
+      "confidence": 0.35
+    },
+    {
+      "artifact_id": "5f5d74f2-5586-5a16-9a78-3431bb763b44",
+      "path": "data/ranges/gtopen/9max/native_200chips/rfi_utg_2.json",
+      "content_sha256": "9237a6bf483b970129b42f469dad9816ea75b2242b87ef06910fbcfe190120ee",
+      "position": "UTG+2",
+      "strategy_role": "gto_solution",
+      "confidence": 0.35
+    },
+    {
+      "artifact_id": "87bd48e7-e16c-5b2a-b8de-52babdec507b",
+      "path": "data/ranges/gtopen/9max/native_200chips/rfi_lj.json",
+      "content_sha256": "664d35394a5c7665cd84e3b6b7a64829e38590dd2ffbf6e18dea3994af1edb5c",
+      "position": "LJ",
+      "strategy_role": "gto_solution",
+      "confidence": 0.35
+    },
+    {
+      "artifact_id": "f7d481db-dabb-5d98-bf61-1cf3370cef1a",
+      "path": "data/ranges/gtopen/9max/native_200chips/rfi_hj.json",
+      "content_sha256": "d93753242781a9cc2d5f0e333ee864eb3dcabf89f91ed55bed706725d9361368",
+      "position": "HJ",
+      "strategy_role": "gto_solution",
+      "confidence": 0.35
+    },
+    {
+      "artifact_id": "f3d65a33-b188-5a9c-a2ea-acdca56b0c6d",
+      "path": "data/ranges/gtopen/9max/native_200chips/rfi_co.json",
+      "content_sha256": "721a9014121dca331cf48325d26f64618c1ca2c7813f9901c91d1c6b005607f4",
+      "position": "CO",
+      "strategy_role": "gto_solution",
+      "confidence": 0.35
+    },
+    {
+      "artifact_id": "80c8c238-1c59-543b-a274-b94386b6c7ef",
+      "path": "data/ranges/gtopen/9max/native_200chips/rfi_btn.json",
+      "content_sha256": "734b7e94bdcdf2fc9ea93707db26d2d4bbbbf4d9782ea30f780743c01154b7eb",
+      "position": "BTN",
+      "strategy_role": "gto_solution",
+      "confidence": 0.35
+    },
+    {
+      "artifact_id": "e8b20c33-57e6-5c3f-b376-00693cec6d3e",
+      "path": "data/ranges/gtopen/9max/native_200chips/rfi_sb.json",
+      "content_sha256": "d6169560330970cd72d7177883bad68a7e4ab1e484670e8f8d30c96d7091aab6",
+      "position": "SB",
+      "strategy_role": "gto_solution",
+      "confidence": 0.35
+    }
+  ],
+  "notes": [
+    "User attested direct authorization from GTOpen owner Matthew PDingle for private educational use on 2026-08-26.",
+    "Every artifact is model-abstracted and must never display as exact GTO.",
+    "BB has no unopened RFI decision."
+  ]
+}

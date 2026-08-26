@@ -135,6 +135,7 @@ class RangeArtifact(StrictModel):
     fact_class: Literal["solver_derived", "validated_manual_chart"]
     strategy_role: Literal["reference_prior", "gto_solution"]
     validation_status: Literal["validated", "unvalidated"]
+    model_abstraction: str | None = None
     confidence: float = Field(ge=0, le=1)
     source_commit: str | None = None
     source_content_sha256: str | None = Field(default=None, min_length=64, max_length=64)
@@ -185,6 +186,7 @@ class RangeArtifact(StrictModel):
                 "license": self.source_license,
                 "fact_class": self.fact_class,
                 "strategy_role": self.strategy_role,
+                "model_abstraction": self.model_abstraction,
                 "source_commit": self.source_commit,
                 "source_content_sha256": self.source_content_sha256,
                 "configuration": self.spot.model_dump(mode="json"),
@@ -311,4 +313,33 @@ def load_seeded_reference_library() -> RangeLibrary:
         raise ValueError(
             "reference library must contain every non-BB unopened position exactly once"
         )
+    return RangeLibrary(artifacts)
+
+
+def load_seeded_gto_library() -> RangeLibrary:
+    """Load hash-verified, model-abstracted owner-authorized GTOpen artifacts."""
+    manifest_path = PROJECT_ROOT / "configs" / "ranges" / "gtopen_manifest.json"
+    manifest = RangeLibraryManifest.model_validate_json(manifest_path.read_text(encoding="utf-8"))
+    if manifest.status != "gto_solutions_seeded" or manifest.configuration.get("seats") != 9:
+        raise ValueError("GTO range manifest has incompatible scope")
+    artifacts: list[RangeArtifact] = []
+    for entry in manifest.artifacts:
+        path = (PROJECT_ROOT / entry.path).resolve()
+        if not path.is_relative_to(PROJECT_ROOT):
+            raise ValueError("GTO range artifact path escapes the project root")
+        content = path.read_bytes()
+        if hashlib.sha256(content).hexdigest() != entry.content_sha256:
+            raise ValueError(f"GTO range artifact hash mismatch: {entry.path}")
+        artifact = RangeArtifact.model_validate_json(content)
+        if (
+            artifact.artifact_id != entry.artifact_id
+            or artifact.strategy_role != "gto_solution"
+            or artifact.model_abstraction is None
+            or artifact.spot.player_position != entry.position
+        ):
+            raise ValueError(f"GTO range artifact has incompatible metadata: {entry.path}")
+        artifacts.append(artifact)
+    expected = set(positions_for_table_size(9)) - {Position.BB}
+    if {artifact.spot.player_position for artifact in artifacts} != expected:
+        raise ValueError("GTO range library must contain every non-BB RFI position")
     return RangeLibrary(artifacts)

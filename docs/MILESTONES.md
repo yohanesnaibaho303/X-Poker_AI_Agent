@@ -93,10 +93,10 @@ Exit: at least 98% of supported recorded hands reconstruct correctly, with unsup
 
 Exit: range lookup is deterministic, poker-math tests pass completely, and position-specific ranges render correctly.
 
-## Milestone 6 — GTO strategy integration
+## Milestone 6 — GTO strategy integration (complete)
 
 - [x] Define provenance-bearing preflop strategy artifact import and validation format.
-- [ ] Integrate licensed/generated/authorized solution sources.
+- [x] Integrate licensed/generated/authorized solution sources.
 - [x] Implement full spot keys and exact-node lookup.
 - [x] Implement preflop exact/nearest-stack resolution and quantitative mismatch metrics.
 - [x] Expose combo actions, frequencies, EV, equity, and EV loss.
@@ -131,7 +131,7 @@ Exit: synthetic profiles produce stable, explainable, regression-tested adjustme
 Checkpoint: the 9-max native SB 1 / BB 2 synthetic replay streams a complete legal trace into the
 dashboard. Retired table-size request fields are rejected rather than selected at runtime.
 State, action history, confidence, health/latency, deterministic pot odds and SPR, the hero
-reference-prior matrix, explicit unavailable-GTO status, source assumptions, decision gates, and
+reference-prior matrix, model-abstracted GTO status, source assumptions, decision gates, and
 control lockout are visible. Scrubbing, snapshot recovery, bounded delivery, and a 20-session
 synthetic soak regression are implemented. The live diagnostic adds in-memory authorized capture,
 declared-region overlays, table-role confidence, and scoped OCR. The unchecked items require

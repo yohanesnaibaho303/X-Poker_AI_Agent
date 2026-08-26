@@ -259,6 +259,18 @@
       "title": "Validation Status",
       "type": "string"
     },
+    "model_abstraction": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Model Abstraction"
+    },
     "confidence": {
       "maximum": 1,
       "minimum": 0,

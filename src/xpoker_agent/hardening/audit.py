@@ -10,7 +10,7 @@ from pydantic import Field, model_validator
 
 from xpoker_agent.config import load_game_config, load_runtime_config
 from xpoker_agent.models import StrictModel
-from xpoker_agent.ranges.library import load_seeded_reference_library
+from xpoker_agent.ranges.library import load_seeded_gto_library, load_seeded_reference_library
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
 
@@ -128,6 +128,29 @@ def run_compatibility_audit(
                 check="reference_range_library",
                 passed=False,
                 detail=f"Reference range library failed validation: {error}",
+            )
+        )
+
+    try:
+        library = load_seeded_gto_library()
+        manifest_path = PROJECT_ROOT / "configs" / "ranges" / "gtopen_manifest.json"
+        checks.append(
+            CompatibilityCheck(
+                check="model_abstracted_gto_library",
+                passed=len(library.artifacts) == 8,
+                detail=(
+                    "Eight owner-authorized GTOpen RFI artifacts passed hash validation; "
+                    "all remain explicitly model-abstracted."
+                ),
+                content_sha256=_hash_file(manifest_path),
+            )
+        )
+    except (OSError, ValueError) as error:
+        checks.append(
+            CompatibilityCheck(
+                check="model_abstracted_gto_library",
+                passed=False,
+                detail=f"GTOpen range library failed validation: {error}",
             )
         )
 

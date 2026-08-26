@@ -6,9 +6,10 @@ import asyncio
 from contextlib import suppress
 from datetime import UTC, datetime
 from decimal import Decimal
+from functools import lru_cache
 from time import perf_counter_ns
 
-from xpoker_agent.models import HandState, ParticipationStatus, Position
+from xpoker_agent.models import HandState, ParticipationStatus, Position, Street
 from xpoker_agent.monitoring.hub import MonitorHub
 from xpoker_agent.monitoring.models import (
     ExploitSnapshot,
@@ -25,9 +26,19 @@ from xpoker_agent.ranges.cards import canonical_combo
 from xpoker_agent.ranges.library import (
     ObservedRangeAction,
     PreflopSpotKey,
+    load_seeded_gto_library,
     load_seeded_reference_library,
 )
 from xpoker_agent.simulation import run_simulated_hand
+from xpoker_agent.strategy.resolver import PreflopStrategyResolver
+
+
+@lru_cache(maxsize=1)
+def _strategy_resolver() -> PreflopStrategyResolver:
+    return PreflopStrategyResolver(
+        gto_library=load_seeded_gto_library(),
+        reference_library=load_seeded_reference_library(),
+    )
 
 
 def _replay_math(state: HandState) -> PokerMathSnapshot:
@@ -72,7 +83,12 @@ def _replay_math(state: HandState) -> PokerMathSnapshot:
 
 
 def _replay_strategy(state: HandState) -> StrategySnapshot:
-    if state.hero_position is not Position.BTN or len(state.hero_cards) != 2:
+    if (
+        state.hero_position is not Position.BTN
+        or len(state.hero_cards) != 2
+        or state.street is not Street.PREFLOP
+        or state.next_to_act_seat != state.hero_seat
+    ):
         return StrategySnapshot(
             status="unavailable",
             role="reference_prior",
@@ -98,36 +114,38 @@ def _replay_strategy(state: HandState) -> StrategySnapshot:
             for position in positions
         ],
     )
-    lookup = load_seeded_reference_library().lookup(spot)
     combo = canonical_combo(*state.hero_cards)
-    combo_strategy = lookup.artifact.combos.get(combo)
-    if combo_strategy is None:
+    resolution = _strategy_resolver().resolve(
+        spot, player_ref="hero", hand_id=state.hand_id
+    )
+    try:
+        result = _strategy_resolver().summarize_combo(resolution, combo)
+    except KeyError:
         return StrategySnapshot(
             status="unavailable",
-            role="reference_prior",
+            role="none",
             confidence=0.0,
             hero_combo=combo,
-            assumptions=["Hero combination is absent from the reference prior."],
+            assumptions=["Hero combination is absent from available strategy artifacts."],
         )
     return StrategySnapshot(
-        status="unavailable",
-        role="reference_prior",
-        confidence=lookup.artifact.confidence,
-        source_artifact_id=str(lookup.artifact.artifact_id),
+        status=result.match_status,
+        role=result.strategy_role,
+        confidence=result.confidence,
+        source_artifact_id=result.source_artifact_id,
         hero_combo=combo,
-        equity=combo_strategy.equity,
+        equity=result.equity,
         action_frequencies=[
             StrategyActionSnapshot(
-                action=action,
-                frequency=frequency,
-                ev_chips=combo_strategy.ev_chips.get(action),
+                action=action.action,
+                frequency=action.frequency,
+                ev_chips=action.ev_chips,
+                ev_loss_chips=action.ev_loss_chips,
             )
-            for action, frequency in sorted(combo_strategy.actions.items())
+            for action in result.actions
         ],
-        assumptions=[
-            *lookup.artifact.assumptions,
-            "Reference prior is displayed separately and is not a GTO solution.",
-        ],
+        mismatch=resolution.match.distance,
+        assumptions=result.assumptions,
     )
 
 
@@ -143,9 +161,10 @@ def build_replay_snapshot(
         raise ValueError("replay index is outside the simulated hand")
     state = states[index]
     history = events[:index]
+    strategy = _replay_strategy(state)
     warnings = [
         "Synthetic replay only; no authorized live table is connected.",
-        "Configuration-matched GTO strategy is unavailable.",
+        "GTO strategy is model-abstracted and limited to supported unopened preflop spots.",
         "Table control is disabled.",
     ]
     snapshot = MonitorSnapshot(
@@ -154,7 +173,9 @@ def build_replay_snapshot(
         source_mode="synthetic_replay",
         state=state,
         action_history=history,
-        health=MonitorHealth(status="degraded", warnings=warnings),
+        health=MonitorHealth(
+            status="degraded", strategy_status=strategy.status, warnings=warnings
+        ),
         metrics=MonitorMetrics(
             state_revision=state.revision,
             event_count=len(history),
@@ -167,7 +188,7 @@ def build_replay_snapshot(
             interval_ms=interval_ms,
         ),
         poker_math=_replay_math(state),
-        strategy=_replay_strategy(state),
+        strategy=strategy,
         exploit=ExploitSnapshot(
             status="synthetic_only",
             confidence=0.0,
@@ -184,8 +205,12 @@ def build_replay_snapshot(
             },
             {
                 "check": "strategy_source",
-                "status": "blocked",
-                "detail": "No configuration-matched GTO artifact is installed.",
+                "status": "passed" if strategy.status == "abstracted" else "blocked",
+                "detail": (
+                    "Configuration-matched model-abstracted GTO artifact resolved."
+                    if strategy.status == "abstracted"
+                    else "No supported GTO artifact resolved for this replay state."
+                ),
                 "source": "strategy resolver",
             },
             {

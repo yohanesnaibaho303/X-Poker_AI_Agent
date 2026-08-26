@@ -3,8 +3,8 @@
 - Last updated: 2026-08-26 (Asia/Jakarta)
 - Current milestone: Milestone 8 — live monitoring application plus 9-max/native-only migration
 - Overall project against revised scope: 3 of 11 milestones complete
-- Current state: Milestone 8 live-observation dashboard integration in progress; live-session exit gate,
-  Milestone 6 source-data integration, and M3/M4 promotion gates remain pending
+- Current state: Milestone 6 is complete. Milestone 8 live-observation dashboard integration is in
+  progress; its live-session exit gate and M3/M4 promotion gates remain pending.
 - Live control: Disabled
 
 ## Requirement revision — 2026-08-26
@@ -19,6 +19,15 @@
   migration and regression updates before the revised baseline can be declared complete.
 
 ## Latest checkpoint
+
+- Integrated owner-authorized GTOpen as an external preflop generator pinned at commit
+  `4aee435bdeb155b25f0c8140e707a8342ce4356f`. Eight 200-chip RFI artifacts cover UTG through SB,
+  use native SB 1 / BB 2 and raise-to 4 inputs, expand 169 classes deterministically to all 1,326
+  physical combinations, and pass manifest hash validation. Owner authorization permits code and
+  binary reuse; current integration keeps the solver external because vendoring adds no benefit.
+- GTOpen's multiway terminal model is explicitly recorded on every artifact. Resolver results from
+  this library are always `abstracted`, never `exact`; confidence is capped at 0.35 and unavailable
+  per-action EV/equity remains unavailable rather than inferred.
 
 - Added the canonical 52-card, 1,326-combo, and 169-class NLH range universe with strict physical
   combo keys and a stable SHA-256 fingerprint.
@@ -53,8 +62,6 @@
   best-response analysis with explicit non-solver assumptions.
 - Added user-selectable 6-max/9-max session setup and BB/native-chip display modes. Exact native
   values format as grouped numbers, K, or M by threshold and remain unnormalized until a blind exists.
-- Audited public solver candidates; current configuration-matched GTO artifacts remain unavailable.
-  Approximate reference priors are never promoted to GTO. Control remains disabled.
 - Added the local React/TypeScript monitoring dashboard with 6-max/9-max selection, BB/native-chip
   controls, reconstructed table state, legal action history, health, replay transport, and a
   position-specific 169-class reference-prior matrix.
@@ -353,8 +360,6 @@
   stack/bet crop, dealer marker, and clockwise action transition.
 - Add opponent-range, poker-math, exact/abstracted strategy, exploit-frequency, provenance, and
   decision-trace views as those upstream results become available.
-- Continue Milestone 6 solution import/resolution while keeping reference priors ineligible for exact-GTO results.
-- Source or independently generate configuration-matched nine-max, zero-rake, native SB 1 / BB 2 solutions.
 - Connect the completed exploit layer to real reconstructed observations and resolved strategy EVs
   during Milestone 8 integration.
 - Continue M3/M4 promotion evaluation from representative live standard NLH evidence, retaining

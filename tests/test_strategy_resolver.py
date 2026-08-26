@@ -98,6 +98,18 @@ def test_exact_gto_artifact_returns_exact_source_backed_strategy() -> None:
     assert str(result.match.source_artifact_id) == result.strategy.source["artifact_id"]
 
 
+def test_model_abstracted_solution_never_reports_exact() -> None:
+    artifact = _gto_artifact().model_copy(
+        update={"model_abstraction": "169-class approximate terminal model"}
+    )
+    resolver = PreflopStrategyResolver(gto_library=RangeLibrary([artifact]))
+
+    result = resolver.resolve(_button_spot(), player_ref="hero", hand_id=HAND_ID)
+
+    assert result.match.status == "abstracted"
+    assert result.match.distance["model_abstraction"] == artifact.model_abstraction
+
+
 def test_nearest_stack_solution_quantifies_mismatch_and_reduces_confidence() -> None:
     resolver = PreflopStrategyResolver(gto_library=RangeLibrary([_gto_artifact()]))
 

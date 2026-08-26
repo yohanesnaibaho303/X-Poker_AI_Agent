@@ -160,17 +160,22 @@ class PreflopStrategyResolver:
             )
 
         artifact = lookup.artifact
-        exact = lookup.stack_match.status == "exact"
+        exact = lookup.stack_match.status == "exact" and artifact.model_abstraction is None
         confidence = artifact.confidence
         assumptions = list(artifact.assumptions)
         distance: dict[str, object] = {}
-        if not exact:
+        if lookup.stack_match.status != "exact":
             relative = float(lookup.stack_match.relative_mismatch)
             confidence *= max(0.0, 1.0 - relative)
             distance = lookup.stack_match.model_dump(mode="json")
             assumptions.append(
                 f"Used {lookup.stack_match.matched_chips} native-chip solution for "
                 f"{lookup.stack_match.requested_chips} native-chip request."
+            )
+        if artifact.model_abstraction is not None:
+            distance["model_abstraction"] = artifact.model_abstraction
+            assumptions.append(
+                "Strategy is configuration-matched but abstracted by its source solver model."
             )
         strategy = artifact.to_weighted_range(player_ref=player_ref, hand_id=hand_id)
         return StrategyResolution(
