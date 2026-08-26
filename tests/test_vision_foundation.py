@@ -224,9 +224,7 @@ def test_temporal_consensus_does_not_count_duplicate_frames() -> None:
     [
         ("0", Decimal("0"), "integer"),
         ("81,500", Decimal("81500"), "grouped"),
-        ("2.5K", Decimal("2500.0"), "compact"),
         ("1.25", Decimal("1.25"), "decimal"),
-        ("199K", Decimal("199000"), "compact"),
     ],
 )
 def test_chip_amount_parser_accepts_supported_formats(
@@ -238,7 +236,9 @@ def test_chip_amount_parser_accepts_supported_formats(
     assert result.format_id == format_id
 
 
-@pytest.mark.parametrize("text", ["-1", "1,00", "1 000", "1.2.3", "", "12BB", "1,5K"])
+@pytest.mark.parametrize(
+    "text", ["-1", "1,00", "1 000", "1.2.3", "", "12BB", "1,5K", "2.5K", "1M"]
+)
 def test_chip_amount_parser_rejects_ambiguous_or_unsupported_formats(text: str) -> None:
     with pytest.raises(ValueError, match="chip amount"):
         parse_chip_amount(text, confidence=0.5)
@@ -312,6 +312,14 @@ def test_unknown_rule_label_never_establishes_supported_nlh() -> None:
     assert result.special_rule is None
 
 
+def test_compact_rule_amounts_are_never_calculated() -> None:
+    result = classify_rule_label("Bomb Pot(4K) Blinds: 1K/2K")
+
+    assert result.bomb_pot_forced_contribution_native is None
+    assert result.small_blind_native is None
+    assert result.big_blind_native is None
+
+
 def test_live_capture_diagnostic_supports_countdown_hand_and_exposes_schedule() -> None:
     frame = CapturedFrame(10, 20, b"\x00" * 10 * 20 * 4)
     record = CaptureFrameRecord(
@@ -338,8 +346,8 @@ def test_live_capture_diagnostic_supports_countdown_hand_and_exposes_schedule() 
         record=record,
         layout=load_layout_profile(),
         rule_ocr=WindowsOcrResult(
-            text="Bomb Pot: After 2 hands (1,000-3,000) Blinds: 500/1,000",
-            lines=["Bomb Pot: After 2 hands", "Blinds: 500/1,000"],
+            text="Bomb Pot: After 2 hands (1,000-3,000) Blinds: 1/2",
+            lines=["Bomb Pot: After 2 hands", "Blinds: 1/2"],
             processing_latency_ms=3,
             language_tag="en-US",
         ),

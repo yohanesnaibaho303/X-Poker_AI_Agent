@@ -51,9 +51,17 @@ def parse_hero_action_controls(text: str | None) -> HeroActionControlsObservatio
             reason="control text does not establish pre-action or decision mode",
         )
     call_amount = None
-    call_match = re.search(r"\bcall\s+(?P<amount>\d[\d,.]*(?:\.\d+)?[km]?)", normalized)
+    call_match = re.search(r"\bcall\s+(?P<amount>\S+)", normalized)
     if call_match:
-        call_amount = parse_chip_amount(call_match.group("amount"), confidence=0.95).value
+        try:
+            call_amount = parse_chip_amount(call_match.group("amount"), confidence=0.95).value
+        except ValueError:
+            return HeroActionControlsObservation(
+                mode="ambiguous",
+                confidence=0.0,
+                ocr_text_sha256=digest,
+                reason="call amount is not an exact native-chip number",
+            )
     return HeroActionControlsObservation(
         mode="decision",
         available_actions=available,

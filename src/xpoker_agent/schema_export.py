@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 
 from xpoker_agent.capture.models import LayoutProfile
-from xpoker_agent.evaluation import RecognitionEvaluationReport
+from xpoker_agent.evaluation import RecognitionEvaluationReport, ReconstructionEvaluationReport
 from xpoker_agent.exploit.models import (
     BestResponseAnalysis,
     ExploitAdjustment,
@@ -15,6 +15,7 @@ from xpoker_agent.exploit.models import (
     OpponentRangeSnapshot,
 )
 from xpoker_agent.hardening.audit import CompatibilityAudit
+from xpoker_agent.hardening.offline import OfflineReadinessReport
 from xpoker_agent.models import (
     ActionAttempt,
     DecisionEnvelope,
@@ -82,7 +83,9 @@ MODELS = [
     OpponentRangeSnapshot,
     BestResponseAnalysis,
     CompatibilityAudit,
+    OfflineReadinessReport,
     RecognitionEvaluationReport,
+    ReconstructionEvaluationReport,
     MonitorSnapshot,
     MonitorEnvelope,
     MonitorHistory,

@@ -1306,7 +1306,9 @@ class LiveObservationService:
         ):
             issues.append("native_blinds_not_stable")
         else:
-            _, big_token = self._session_blind_consensus.value.split("/", maxsplit=1)
+            small_token, big_token = self._session_blind_consensus.value.split("/", maxsplit=1)
+            if Decimal(small_token) != 1 or Decimal(big_token) != 2:
+                issues.append("authoritative_native_blinds_not_observed")
             big_blind = Decimal(big_token)
         blind_posts = self._reconcile_blind_posts()
         for kind in ("small_blind", "big_blind"):

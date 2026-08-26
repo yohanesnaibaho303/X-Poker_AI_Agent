@@ -9,7 +9,7 @@ from xpoker_agent.vision.numbers import parse_chip_amount
 
 _POT_LABEL = re.compile(
     r"^\s*(?P<label>P[O0A][TR7])\s*:?\s*"
-    r"(?P<amount>(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?[KkMm]?)\s*$",
+    r"(?P<amount>(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?)\s*$",
     re.IGNORECASE,
 )
 

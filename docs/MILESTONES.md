@@ -59,8 +59,8 @@ Exit: stable normalized frames are automatically collected from the authorized i
 - [ ] Benchmark lightweight OCR candidates on X-Poker numeric regions.
 - [ ] Recognize stacks, bets, pot, side pots, and numeric formats.
 - [ ] Recognize active player, timer, actions, and sizing controls.
-- [ ] Add temporal consensus, alternatives, and calibrated confidence.
-- [ ] Add impossible-card and amount-format rejection.
+- [x] Add temporal consensus, alternatives, and confidence-bearing candidates.
+- [x] Add impossible-card and exact native-chip amount-format rejection.
 - [ ] Build held-out visual regression suites and latency benchmarks.
 
 Exit: supported-layout recognition meets the per-component targets in `docs/QUALITY_GATES.md`.
@@ -157,10 +157,10 @@ Exit: all controller gates pass and supported authorized test hands complete wit
 
 ## Milestone 10 — Hardening and demonstration
 
-- [ ] Expand unsupported-state detection and recovery.
-- [ ] Run endurance, fault-injection, replay, and performance tests.
-- [ ] Finalize Windows packaging and dependency/model manifests.
-- [ ] Document installation, configuration, architecture, limitations, and evaluations.
+- [x] Expand unsupported-state detection and fail-closed recovery.
+- [x] Run offline endurance, fault-injection, replay, and performance tests.
+- [x] Finalize Windows package builder and dependency/template/runtime artifact manifests.
+- [x] Document installation, configuration, architecture, limitations, and evaluations.
 - [ ] Produce a reproducible hackathon demonstration on a fresh authorized machine.
 
 Exit: a new authorized test machine can reproduce the documented demonstration.

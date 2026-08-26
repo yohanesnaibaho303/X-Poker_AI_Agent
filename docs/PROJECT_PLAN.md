@@ -278,7 +278,7 @@ Example:
 
 ```json
 {
-  "spot": "BTN_vs_BB_SRP_100BB",
+  "spot": "BTN_vs_BB_SRP_stack_200chips_pot_12chips",
   "player": "BTN",
   "street": "flop",
   "board": ["Qs", "7h", "2s"],

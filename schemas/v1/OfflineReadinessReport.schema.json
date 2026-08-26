@@ -1,0 +1,124 @@
+{
+  "$defs": {
+    "RuntimeArtifact": {
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "configuration",
+            "template",
+            "dependency_lock",
+            "schema"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "content_sha256": {
+          "maxLength": 64,
+          "minLength": 64,
+          "title": "Content Sha256",
+          "type": "string"
+        },
+        "size_bytes": {
+          "minimum": 1,
+          "title": "Size Bytes",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "path",
+        "kind",
+        "content_sha256",
+        "size_bytes"
+      ],
+      "title": "RuntimeArtifact",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "passed": {
+      "title": "Passed",
+      "type": "boolean"
+    },
+    "machine": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Machine",
+      "type": "object"
+    },
+    "sessions": {
+      "minimum": 1,
+      "title": "Sessions",
+      "type": "integer"
+    },
+    "snapshots": {
+      "minimum": 15,
+      "title": "Snapshots",
+      "type": "integer"
+    },
+    "replay_p95_ms": {
+      "minimum": 0,
+      "title": "Replay P95 Ms",
+      "type": "number"
+    },
+    "replay_budget_ms": {
+      "exclusiveMinimum": 0,
+      "title": "Replay Budget Ms",
+      "type": "number"
+    },
+    "deterministic": {
+      "title": "Deterministic",
+      "type": "boolean"
+    },
+    "artifacts": {
+      "items": {
+        "$ref": "#/$defs/RuntimeArtifact"
+      },
+      "title": "Artifacts",
+      "type": "array"
+    },
+    "compatibility_passed": {
+      "title": "Compatibility Passed",
+      "type": "boolean"
+    },
+    "controller_enabled": {
+      "const": false,
+      "default": false,
+      "title": "Controller Enabled",
+      "type": "boolean"
+    },
+    "limitations": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Limitations",
+      "type": "array"
+    }
+  },
+  "required": [
+    "passed",
+    "machine",
+    "sessions",
+    "snapshots",
+    "replay_p95_ms",
+    "replay_budget_ms",
+    "deterministic",
+    "artifacts",
+    "compatibility_passed",
+    "limitations"
+  ],
+  "title": "OfflineReadinessReport",
+  "type": "object"
+}

@@ -7,6 +7,11 @@ from xpoker_agent.evaluation.recognition import (
     load_recognition_cases,
     write_recognition_report,
 )
+from xpoker_agent.evaluation.reconstruction import (
+    ReconstructionEvaluationCase,
+    ReconstructionEvaluationReport,
+    evaluate_reconstruction_cases,
+)
 
 __all__ = [
     "RecognitionEvaluationCase",
@@ -14,4 +19,7 @@ __all__ = [
     "evaluate_recognition_cases",
     "load_recognition_cases",
     "write_recognition_report",
+    "ReconstructionEvaluationCase",
+    "ReconstructionEvaluationReport",
+    "evaluate_reconstruction_cases",
 ]

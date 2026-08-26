@@ -123,7 +123,7 @@ class NumericRecognition(StrictModel):
     raw_text: str
     value: Decimal = Field(ge=0)
     confidence: float = Field(ge=0.0, le=1.0)
-    format_id: Literal["integer", "decimal", "grouped", "compact"]
+    format_id: Literal["integer", "decimal", "grouped"]
 
 
 class WindowsOcrResult(StrictModel):

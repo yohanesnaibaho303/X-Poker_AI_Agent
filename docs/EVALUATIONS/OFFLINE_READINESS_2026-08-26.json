@@ -1,0 +1,318 @@
+{
+  "schema_version": "1.0",
+  "passed": true,
+  "machine": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python": "3.12.13",
+    "implementation": "CPython",
+    "architecture": "AMD64"
+  },
+  "sessions": 100,
+  "snapshots": 1500,
+  "replay_p95_ms": 99.2356,
+  "replay_budget_ms": 200.0,
+  "deterministic": true,
+  "artifacts": [
+    {
+      "path": "requirements.lock",
+      "kind": "dependency_lock",
+      "content_sha256": "4b5ffd52218a443d75e8ba202a9b66984be9a284f7107d819f2331fe42385939",
+      "size_bytes": 703
+    },
+    {
+      "path": "apps/monitor/package-lock.json",
+      "kind": "dependency_lock",
+      "content_sha256": "df06356783ed084284c2396f4070d1e7b8a1ac4bcb1b6a0dc832e2669657b220",
+      "size_bytes": 55140
+    },
+    {
+      "path": "configs/game/initial_9max_nlh.json",
+      "kind": "configuration",
+      "content_sha256": "28d01e3934e943c4dcecac58114c8eaad361ed644324269c55e263b151789ed2",
+      "size_bytes": 412
+    },
+    {
+      "path": "configs/runtime/default.json",
+      "kind": "configuration",
+      "content_sha256": "98e36da88a2f4a0436107080866896675f89b975c59e1cd0e4e7942b56dc3f69",
+      "size_bytes": 218
+    },
+    {
+      "path": "configs/layouts/xpoker_windows_10_portrait_9max.json",
+      "kind": "configuration",
+      "content_sha256": "c77cb9ec56aa5a6b62a9959e4360236789225481248f6c8a2046ae1f91cce25e",
+      "size_bytes": 3534
+    },
+    {
+      "path": "configs/ranges/library_manifest.json",
+      "kind": "configuration",
+      "content_sha256": "ee8b28decfac7fa5acfab8620024332d24bbc9443e89e826b2a14ddfc4472e96",
+      "size_bytes": 3745
+    },
+    {
+      "path": "data/card_templates/xpoker_portrait_rank_templates_v1.json",
+      "kind": "template",
+      "content_sha256": "8ee82cdb66290a568f304d9b2295e48f30f1b4ae5a114847d4115a45ea6f28ad",
+      "size_bytes": 5756
+    },
+    {
+      "path": "data/card_templates/xpoker_portrait_hero_rank_templates_v1.json",
+      "kind": "template",
+      "content_sha256": "a8ed1897a433fd09200a6db3d22224a7e2e46f24b757f32e6c7c07b601dad80f",
+      "size_bytes": 4049
+    },
+    {
+      "path": "schemas/v1/ActionAttempt.schema.json",
+      "kind": "schema",
+      "content_sha256": "578d177e325dffcdc4cee454ee3677e75f0ce7d749581933c053555e51875ec9",
+      "size_bytes": 3768
+    },
+    {
+      "path": "schemas/v1/BestResponseAnalysis.schema.json",
+      "kind": "schema",
+      "content_sha256": "cf7801c138c4f49af0a217969e706bd6b1066b9c542018c3cd85fb0a522ebfd2",
+      "size_bytes": 1424
+    },
+    {
+      "path": "schemas/v1/CompatibilityAudit.schema.json",
+      "kind": "schema",
+      "content_sha256": "6052833b4a5de3300c0fc9561f7560a5743658499395a762acb47181d233d726",
+      "size_bytes": 1512
+    },
+    {
+      "path": "schemas/v1/DecisionEnvelope.schema.json",
+      "kind": "schema",
+      "content_sha256": "0348341f58e35d53eea976472882141fa00793780aab71dce1a55813bc7cae8c",
+      "size_bytes": 3982
+    },
+    {
+      "path": "schemas/v1/EvidenceRef.schema.json",
+      "kind": "schema",
+      "content_sha256": "9c4a7ad009c8c636b4f078e74ee37d15b9c80a9c18d69f0baf7b61496cb38ec6",
+      "size_bytes": 1567
+    },
+    {
+      "path": "schemas/v1/ExploitAdjustment.schema.json",
+      "kind": "schema",
+      "content_sha256": "25e44eeb84b6c5fbe3d69e04eea9eacef8fbb47741c682c6f3c57516dd84a8e8",
+      "size_bytes": 2400
+    },
+    {
+      "path": "schemas/v1/GameConfig.schema.json",
+      "kind": "schema",
+      "content_sha256": "3378e2d660611713e041d86e04a13b32414dccad46710aa99acd424bcf4c190e",
+      "size_bytes": 3031
+    },
+    {
+      "path": "schemas/v1/HandEvent.schema.json",
+      "kind": "schema",
+      "content_sha256": "bef853daea9beb1b18d347eb83f2b13ee204b04102cd960e560646fa5c70fa3c",
+      "size_bytes": 5459
+    },
+    {
+      "path": "schemas/v1/HandState.schema.json",
+      "kind": "schema",
+      "content_sha256": "42d2e42110b7dd2cbf8c891a77be262a08d2fec9d22804ac5a5d4bc62ceb27c8",
+      "size_bytes": 9818
+    },
+    {
+      "path": "schemas/v1/LayoutProfile.schema.json",
+      "kind": "schema",
+      "content_sha256": "6bc51dbff935dfb077edb8ec67e6631767085b0a23c3c0f36cb87c53ffc5287f",
+      "size_bytes": 4544
+    },
+    {
+      "path": "schemas/v1/LiveCaptureDiagnostic.schema.json",
+      "kind": "schema",
+      "content_sha256": "83fc04084d8f5ca9199addcf87098f4c8c257a04776391a663379e6adceed3b2",
+      "size_bytes": 20867
+    },
+    {
+      "path": "schemas/v1/LiveHeroCalculation.schema.json",
+      "kind": "schema",
+      "content_sha256": "b35b5dc8c833d53eda5f31addb9db6bff2c25388f4d45f661473cc83b399b725",
+      "size_bytes": 3518
+    },
+    {
+      "path": "schemas/v1/LiveObservationStartRequest.schema.json",
+      "kind": "schema",
+      "content_sha256": "683b14ba13afb9385c80a2c5c4ff6df47a4dff01fd5939aae30416e63dd906d0",
+      "size_bytes": 283
+    },
+    {
+      "path": "schemas/v1/LiveObservationStatus.schema.json",
+      "kind": "schema",
+      "content_sha256": "3450aacc3b46df4a6f273e43cca22f254597889dbc4441af34e50cbc8fe9f8e8",
+      "size_bytes": 52651
+    },
+    {
+      "path": "schemas/v1/MonitorEnvelope.schema.json",
+      "kind": "schema",
+      "content_sha256": "707a36a13917efbad4d19bdbd6fc666aeb94887fad2737791318300e2d641cf0",
+      "size_bytes": 842
+    },
+    {
+      "path": "schemas/v1/MonitorHistory.schema.json",
+      "kind": "schema",
+      "content_sha256": "7b99de7ef2d091d031aec386ae3bd479bd0345da39c185bdd97de0aed1c082ff",
+      "size_bytes": 1746
+    },
+    {
+      "path": "schemas/v1/MonitorSnapshot.schema.json",
+      "kind": "schema",
+      "content_sha256": "55dcf4d37e35312aaa2589d7f7bd3bacafb569944e7bfe6fa6b2dd1867d58ea9",
+      "size_bytes": 28850
+    },
+    {
+      "path": "schemas/v1/NodelockResult.schema.json",
+      "kind": "schema",
+      "content_sha256": "f51d27ac593117dce95deb3c02fd7ff3291f502b0be2602045236cdfe4f879d2",
+      "size_bytes": 4191
+    },
+    {
+      "path": "schemas/v1/Observation.schema.json",
+      "kind": "schema",
+      "content_sha256": "95796ea475c4aa258ad2ce9eb4fdef1c13bab664186652e595e879f5c4607968",
+      "size_bytes": 2851
+    },
+    {
+      "path": "schemas/v1/ObservationBatch.schema.json",
+      "kind": "schema",
+      "content_sha256": "f994a3582de305eb6cf5b25a28788b360546e35ace3ac535e9e4a90e966765e6",
+      "size_bytes": 4324
+    },
+    {
+      "path": "schemas/v1/OfflineReadinessReport.schema.json",
+      "kind": "schema",
+      "content_sha256": "1ec70c2d34dd8e4f2bc2b62248075226fc85f6008f5a8bbe56097d7bcb17d31a",
+      "size_bytes": 2680
+    },
+    {
+      "path": "schemas/v1/OpponentProfile.schema.json",
+      "kind": "schema",
+      "content_sha256": "903e95e08465360f8a7b0e89857bc25c1b3d9cfbe846d19f2c2f9dbd8db25c1e",
+      "size_bytes": 5105
+    },
+    {
+      "path": "schemas/v1/OpponentRangeSnapshot.schema.json",
+      "kind": "schema",
+      "content_sha256": "c164669c881954c3aded6fb6ce8fda5ed839b71d406be37e17dfe7b08c4662f9",
+      "size_bytes": 5023
+    },
+    {
+      "path": "schemas/v1/Provenance.schema.json",
+      "kind": "schema",
+      "content_sha256": "4dd1d483bb0c1fb35f4a71f30964a6e7db6c11a432ae3d338bc2cfa6ffd26d23",
+      "size_bytes": 2140
+    },
+    {
+      "path": "schemas/v1/RangeArtifact.schema.json",
+      "kind": "schema",
+      "content_sha256": "40189a39163f6f8313505b9071fbf34dc19c7ea31067e15ad1ab826eade8b1e9",
+      "size_bytes": 6945
+    },
+    {
+      "path": "schemas/v1/RangeMatrix.schema.json",
+      "kind": "schema",
+      "content_sha256": "1c236c6af4a1690d91565c86f9082ba0b9143896baa5a7c85ae1870ae67d9d67",
+      "size_bytes": 3439
+    },
+    {
+      "path": "schemas/v1/RecognitionEvaluationReport.schema.json",
+      "kind": "schema",
+      "content_sha256": "8fcad9d85b001ef702e8323722d271745396abfd75fefe594687756ef8b91a8d",
+      "size_bytes": 3734
+    },
+    {
+      "path": "schemas/v1/ReconstructionEvaluationReport.schema.json",
+      "kind": "schema",
+      "content_sha256": "b29c87fe2b1c0eb3564c23ef631fe0efb27cd0454b8974fdf2346a7ffd774d4f",
+      "size_bytes": 3355
+    },
+    {
+      "path": "schemas/v1/ReplaySeekRequest.schema.json",
+      "kind": "schema",
+      "content_sha256": "f454a8de554a3ea0b8a00cc96d8ced060f33d41eb952e56160304200a5c24472",
+      "size_bytes": 425
+    },
+    {
+      "path": "schemas/v1/ReplayStartRequest.schema.json",
+      "kind": "schema",
+      "content_sha256": "65d49ae38cf5624951873e4a9f76edcf06e8039e040b2a6b5fa9540f2b0af694",
+      "size_bytes": 273
+    },
+    {
+      "path": "schemas/v1/RuntimeConfig.schema.json",
+      "kind": "schema",
+      "content_sha256": "8137f907c9d8ee931e8289a0dd847d9685b9f8707a762b96cab852f03cdd43f7",
+      "size_bytes": 1460
+    },
+    {
+      "path": "schemas/v1/SessionSetup.schema.json",
+      "kind": "schema",
+      "content_sha256": "e8e219acb9fd6f3e560408ab6632f4b6241ebe5029757ae0cc0144b2841a6cd0",
+      "size_bytes": 1782
+    },
+    {
+      "path": "schemas/v1/SessionSetupRequest.schema.json",
+      "kind": "schema",
+      "content_sha256": "2fbca3ccc4edb0fa2d0158559bb6b1e9b8005958fc541750c2d2504299fe4739",
+      "size_bytes": 269
+    },
+    {
+      "path": "schemas/v1/SolverExport.schema.json",
+      "kind": "schema",
+      "content_sha256": "9ff64bec02a3fbdd1cb524a7ee162191104cdd56aeda97c3f56a61cf79c78735",
+      "size_bytes": 8721
+    },
+    {
+      "path": "schemas/v1/StrategyComboComparison.schema.json",
+      "kind": "schema",
+      "content_sha256": "ebe461ac1f95039243002859dcf27ee4b9b8813fa4e481b9dab3fd7668fba74c",
+      "size_bytes": 2774
+    },
+    {
+      "path": "schemas/v1/StrategyComboResult.schema.json",
+      "kind": "schema",
+      "content_sha256": "4be461dc120a1ac761c26cd156d8d22127b6cd305cdce11a6908d2b5167eb9bc",
+      "size_bytes": 2430
+    },
+    {
+      "path": "schemas/v1/StrategyMatch.schema.json",
+      "kind": "schema",
+      "content_sha256": "61a610562e9efbde868777f344cda4f492e75c876e72939128c0bbcad9a6f0d1",
+      "size_bytes": 1616
+    },
+    {
+      "path": "schemas/v1/StrategyNodeArtifact.schema.json",
+      "kind": "schema",
+      "content_sha256": "ddbf2cb544cf0ab4fdd2b2dd88a828394b42054f433f067ffeb62858c6e17287",
+      "size_bytes": 7036
+    },
+    {
+      "path": "schemas/v1/StrategyNodeLookup.schema.json",
+      "kind": "schema",
+      "content_sha256": "416fc8e3db014e8d23ed7eceb46444ea78e3c5afd3ab347d1fb0d5b4774d8e54",
+      "size_bytes": 11039
+    },
+    {
+      "path": "schemas/v1/StrategyResolution.schema.json",
+      "kind": "schema",
+      "content_sha256": "ff696b0dc4ff308fcf9e4706a676912dc578659890dd4592f7ce955020f388aa",
+      "size_bytes": 5724
+    },
+    {
+      "path": "schemas/v1/WeightedRange.schema.json",
+      "kind": "schema",
+      "content_sha256": "b5bfd2be931230a13a2a2425951e42108a36363d98e2f40c472b1501b13be4fa",
+      "size_bytes": 2820
+    }
+  ],
+  "compatibility_passed": true,
+  "controller_enabled": false,
+  "limitations": [
+    "Synthetic replay does not satisfy live recognition or reconstruction promotion gates.",
+    "No configuration-matched GTO solution is bundled.",
+    "Live control remains disabled."
+  ]
+}

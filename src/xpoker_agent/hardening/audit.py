@@ -72,6 +72,27 @@ def run_compatibility_audit(
             )
         )
 
+    runtime_roots = [
+        PROJECT_ROOT / "configs" / "game",
+        PROJECT_ROOT / "configs" / "layouts",
+        PROJECT_ROOT / "configs" / "ranges",
+        PROJECT_ROOT / "data" / "ranges",
+    ]
+    retired_paths = sorted(
+        path.relative_to(PROJECT_ROOT).as_posix()
+        for root in runtime_roots
+        for path in root.rglob("*")
+        if path.is_file()
+        and any(token in path.as_posix().casefold() for token in ("6max", "6-max"))
+    )
+    checks.append(
+        CompatibilityCheck(
+            check="retired_runtime_absent",
+            passed=not retired_paths,
+            detail=f"Retired six-max runtime artifacts checked; found={retired_paths}.",
+        )
+    )
+
     try:
         runtime = load_runtime_config()
         checks.append(
@@ -116,15 +137,26 @@ def run_compatibility_audit(
     expected_schemas = {f"{model.__name__}.schema.json" for model in MODELS}
     try:
         actual_schemas = {path.name for path in resolved_schema_dir.glob("*.schema.json")}
-        for path in resolved_schema_dir.glob("*.schema.json"):
-            json.loads(path.read_text(encoding="utf-8"))
+        published = {
+            path.name: json.loads(path.read_text(encoding="utf-8"))
+            for path in resolved_schema_dir.glob("*.schema.json")
+        }
         missing = sorted(expected_schemas - actual_schemas)
         extra = sorted(actual_schemas - expected_schemas)
+        drifted = sorted(
+            name
+            for model in MODELS
+            if (name := f"{model.__name__}.schema.json") in published
+            and published[name] != model.model_json_schema()
+        )
         checks.append(
             CompatibilityCheck(
                 check="published_schemas",
-                passed=not missing and not extra,
-                detail=f"Schema set checked; missing={missing}, extra={extra}.",
+                passed=not missing and not extra and not drifted,
+                detail=(
+                    f"Schema set checked; missing={missing}, extra={extra}, "
+                    f"drifted={drifted}."
+                ),
             )
         )
     except (OSError, json.JSONDecodeError) as error:

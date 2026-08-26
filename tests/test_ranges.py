@@ -34,7 +34,7 @@ def _range(combos: dict[str, ComboStrategy]) -> WeightedRange:
         player_ref="villain-1",
         hand_id=HAND_ID,
         street=Street.PREFLOP,
-        spot_key="UTG_RFI_100BB_2BB",
+        spot_key="UTG_RFI_stack_200chips_raise_4chips",
         combos=combos,
         source={
             "variant": "NLH",

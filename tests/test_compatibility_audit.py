@@ -14,6 +14,7 @@ def test_repository_compatibility_audit_passes_with_control_disabled() -> None:
         "dashboard_build",
         "published_schemas",
         "reference_range_library",
+        "retired_runtime_absent",
     }
     assert all(check.passed for check in audit.checks)
 
@@ -41,6 +42,19 @@ def test_audit_fails_closed_for_invalid_schema_json(tmp_path: Path) -> None:
     assert audit.passed is False
     assert result.passed is False
     assert "failed" in result.detail.lower()
+
+
+def test_audit_fails_closed_for_schema_drift(tmp_path: Path) -> None:
+    source = Path("schemas/v1")
+    for path in source.glob("*.schema.json"):
+        (tmp_path / path.name).write_bytes(path.read_bytes())
+    (tmp_path / "GameConfig.schema.json").write_text("{}\n", encoding="utf-8")
+
+    audit = run_compatibility_audit(schema_dir=tmp_path)
+    result = next(check for check in audit.checks if check.check == "published_schemas")
+
+    assert audit.passed is False
+    assert "GameConfig.schema.json" in result.detail
 
 
 def test_audit_fails_closed_when_dashboard_build_is_missing(tmp_path: Path) -> None:

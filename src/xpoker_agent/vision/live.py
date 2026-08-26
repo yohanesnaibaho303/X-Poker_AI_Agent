@@ -111,8 +111,12 @@ def build_live_capture_diagnostic(
         ),
         visual_role_confidence=record.visual_role_confidence,
         current_hand_supported=(
-            classification.supported_standard_nlh
-            or classification.supported_single_board_bomb_pot
+            (
+                classification.supported_standard_nlh
+                or classification.supported_single_board_bomb_pot
+            )
+            and classification.small_blind_native == 1
+            and classification.big_blind_native == 2
         ),
         current_hand_mode=current_hand_mode,
         standard_nlh_supported=classification.supported_standard_nlh,

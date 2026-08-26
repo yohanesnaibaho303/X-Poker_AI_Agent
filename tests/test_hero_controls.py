@@ -25,3 +25,10 @@ def test_empty_control_text_is_absent() -> None:
 
     assert result.mode == "absent"
     assert result.confidence == 0.0
+
+
+def test_compact_call_amount_fails_closed() -> None:
+    result = parse_hero_action_controls("Fold Call 4K Raise")
+
+    assert result.mode == "ambiguous"
+    assert result.call_amount_native is None

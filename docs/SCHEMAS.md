@@ -99,7 +99,7 @@ Contains mode, capture rate bounds, evidence retention, confidence thresholds, c
   "observation_id": "uuid",
   "kind": "stack_amount",
   "subject": {"seat": 4},
-  "value": {"amount": "98.50", "unit": "BB"},
+  "value": {"amount_chips": "10,000"},
   "confidence": {"score": 0.994, "calibration_id": "numeric-ocr-v1", "stable_frames": 3},
   "evidence": ["evidence-id"],
   "layout_version": "xpoker-layout-v1",
@@ -200,7 +200,7 @@ and supplied-EV limitations.
   "player_ref": "seat:7",
   "hand_id": "uuid",
   "street": "flop",
-  "spot_key": "BTN_vs_BB_SRP_100BB",
+  "spot_key": "BTN_vs_BB_SRP_stack_200chips_pot_12chips",
   "combos": {
     "AsKs": {
       "weight": 1.0,
@@ -242,7 +242,7 @@ Records calculation kind, exact inputs, result, algorithm (`exact` or `monte_car
   },
   "source_artifact_id": "uuid",
   "confidence": 0.84,
-  "assumptions": ["Used 100 BB solution for observed 96 BB effective stack"]
+  "assumptions": ["Used 200-chip solution for observed 192-chip effective stack"]
 }
 ```
 

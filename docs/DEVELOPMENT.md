@@ -45,6 +45,12 @@ This creates `.venv`, verifies Python 3.12, and installs the exact direct depend
 
 # Record and verify local authorized client-area frames (Git-ignored)
 .\.venv\Scripts\python.exe -m xpoker_agent.capture.recording --frames 5
+
+# Produce content-hashed offline endurance and packaging evidence
+.\.venv\Scripts\python.exe scripts\offline_readiness.py --sessions 100 --output offline-readiness.json
+
+# Run all checks and build a wheel, dashboard archive, locks, and readiness report
+.\scripts\package.ps1
 ```
 
 The application binds only to `127.0.0.1:8765`. The dashboard is available at `/monitor/` and interactive API documentation at `/docs` while it is running.
@@ -81,6 +87,9 @@ GTO solutions.
 - Canonical 1,326-combo ranges, 169-class projection, blockers, action conditioning, and matrices.
 - Exact/seeded equity, exhaustive hand evaluation, and deterministic chip-EV metrics.
 - Hash-verified 9-max native-chip reference-prior RFI library.
+- Hash-verified authorized solver-export import plus exact/full-node and nearest-geometry lookup.
+- Versioned recognition evaluation with frozen dataset hashes, slice metrics, safe rejection, and
+  latency evidence; synthetic/calibration data cannot promote a recognizer.
 - Synthetic 9-max native-chip monitoring replay with bounded WebSocket delivery, gap recovery, health,
   action history, replay scrubbing, deterministic pot odds/SPR, decision-gate inspection, range
   matrix inspection, latency/drop telemetry, synthetic soak coverage, and explicit control lockout.
@@ -94,8 +103,8 @@ GTO solutions.
 - Reference priors are approximate and low-confidence; no configuration-matched GTO data exists yet.
 - The exploit model is complete for synthetic profiles but is not connected to live reconstructed observations.
 - The monitoring dashboard currently reconstructs synthetic replays. Capture diagnostics are live,
-  but opponent-range views, resolved strategy/equity/EV panels, standard-NLH reconstruction input,
-  and authorized complete-session soak evidence remain pending.
+  but validated opponent ranges, standard-NLH reconstruction input, and authorized complete-session
+  soak evidence remain pending. Missing strategy/equity/EV inputs display as unavailable.
 - No table input/control implementation exists. Control is disabled in configuration, schemas, and API responses.
 - The project license has not been selected; external-source boundaries are documented in ADR 0002.
 

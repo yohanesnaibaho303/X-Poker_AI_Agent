@@ -18,8 +18,8 @@ def classify_rule_label(text: str) -> RuleLabelClassification:
     signals: list[str] = []
     blind_values: dict[str, object] = {}
     blind_match = re.search(
-        r"blinds?\s*:\s*(?P<small>\d[\d,.]*(?:\.\d+)?[km]?)\s*/\s*"
-        r"(?P<big>\d[\d,.]*(?:\.\d+)?[km]?)",
+        r"blinds?\s*:\s*(?P<small>\d[\d,.]*(?:\.\d+)?)\s*/\s*"
+        r"(?P<big>\d[\d,.]*(?:\.\d+)?)",
         normalized,
     )
     if blind_match:
@@ -35,7 +35,8 @@ def classify_rule_label(text: str) -> RuleLabelClassification:
     if "bomb pot" in normalized:
         signals.append("literal_bomb_pot")
     active = re.search(
-        r"bomb\s+pot\s*[\(\[]\s*(?P<amount>\d+(?:\.\d+)?[km]?)\s*[\)\]]",
+        r"bomb\s+pot\s*[\(\[]\s*"
+        r"(?P<amount>(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?)\s*[\)\]]",
         normalized,
     )
     if active:
