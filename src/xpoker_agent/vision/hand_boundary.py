@@ -14,8 +14,8 @@ def validate_live_hand_boundary(
     previous_active_seats: list[int],
     current_active_seats: list[int],
 ) -> LiveHandBoundaryValidation:
-    if table_size not in {6, 9}:
-        raise ValueError("table_size must be 6 or 9")
+    if table_size != 9:
+        raise ValueError("only the 9-max table layout is supported")
     previous = set(previous_active_seats)
     current = set(current_active_seats)
     issues: list[str] = []

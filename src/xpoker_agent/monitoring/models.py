@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from datetime import datetime
+from decimal import Decimal
 from typing import Literal
 
 from pydantic import Field, model_validator
@@ -35,6 +36,33 @@ class ReplayProgress(StrictModel):
     interval_ms: int = Field(default=250, ge=25, le=5000)
 
 
+class PokerMathSnapshot(StrictModel):
+    effective_stack_chips: Decimal | None = Field(default=None, ge=0)
+    call_amount_chips: Decimal = Field(default=Decimal("0"), ge=0)
+    pot_odds_required_equity: Decimal | None = Field(default=None, ge=0, le=1)
+    spr: Decimal | None = Field(default=None, ge=0)
+    equity: float | None = Field(default=None, ge=0, le=1)
+    call_ev_chips: Decimal | None = None
+    status: Literal["partial", "complete", "unavailable"]
+    assumptions: list[str] = Field(default_factory=list)
+
+
+class StrategySnapshot(StrictModel):
+    status: Literal["exact", "abstracted", "unavailable"]
+    role: Literal["gto_solution", "reference_prior", "none"]
+    confidence: float = Field(ge=0, le=1)
+    source_artifact_id: str | None = None
+    mismatch: dict[str, object] = Field(default_factory=dict)
+    assumptions: list[str] = Field(default_factory=list)
+
+
+class ExploitSnapshot(StrictModel):
+    status: Literal["available", "synthetic_only", "unavailable"]
+    confidence: float = Field(ge=0, le=1)
+    sample_size: int = Field(default=0, ge=0)
+    assumptions: list[str] = Field(default_factory=list)
+
+
 class MonitorSnapshot(StrictModel):
     schema_version: Literal["1.0"] = "1.0"
     sequence: int = Field(default=0, ge=0)
@@ -46,9 +74,9 @@ class MonitorSnapshot(StrictModel):
     health: MonitorHealth
     metrics: MonitorMetrics
     replay: ReplayProgress
-    poker_math: dict[str, object]
-    strategy: dict[str, object]
-    exploit: dict[str, object]
+    poker_math: PokerMathSnapshot
+    strategy: StrategySnapshot
+    exploit: ExploitSnapshot
     audit: list[dict[str, object]] = Field(default_factory=list)
 
     @model_validator(mode="after")
@@ -80,11 +108,9 @@ class MonitorHistory(StrictModel):
 
 
 class ReplayStartRequest(StrictModel):
-    table_size: Literal[9] = 9
     interval_ms: int = Field(default=250, ge=25, le=5000)
 
 
 class ReplaySeekRequest(StrictModel):
-    table_size: Literal[9] = 9
     index: int = Field(ge=0, le=14)
     interval_ms: int = Field(default=250, ge=25, le=5000)

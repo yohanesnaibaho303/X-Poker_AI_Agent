@@ -95,6 +95,9 @@ def test_nearest_stack_solution_quantifies_mismatch_and_reduces_confidence() -> 
     assert result.match.distance["absolute_mismatch_chips"] == "20"
     assert result.match.confidence == pytest.approx(0.8)
     assert result.strategy is not None
+    assert result.match.assumptions[-1] == (
+        "Used 200 native-chip solution for 180 native-chip request."
+    )
 
 
 def test_unavailable_unopened_bb_spot_has_no_fake_reference_fallback() -> None:

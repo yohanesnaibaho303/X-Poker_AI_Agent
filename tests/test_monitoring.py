@@ -11,35 +11,34 @@ from xpoker_agent.monitoring.replay import ReplayController, build_replay_snapsh
 from xpoker_agent.simulation import run_simulated_hand
 
 
-@pytest.mark.parametrize("table_size", [9])
-def test_simulated_monitor_replay_supports_both_table_sizes(table_size: int) -> None:
-    states, events = run_simulated_hand(table_size)
-    snapshot = build_replay_snapshot(table_size, len(events))
+def test_simulated_monitor_replay_supports_authoritative_table() -> None:
+    states, events = run_simulated_hand()
+    snapshot = build_replay_snapshot(len(events))
 
     assert len(states) == 15
-    assert snapshot.table_size == table_size
+    assert snapshot.table_size == 9
     assert snapshot.state.table_status == "hand_complete"
     assert snapshot.replay.index == snapshot.replay.total == 14
     assert snapshot.health.controller_enabled is False
-    assert snapshot.strategy["status"] == "unavailable"
-    assert snapshot.poker_math["equity"] is None
+    assert snapshot.strategy.status == "unavailable"
+    assert snapshot.poker_math.equity is None
     assert snapshot.metrics.processing_latency_ms > 0
     assert [item["status"] for item in snapshot.audit] == ["passed", "blocked", "blocked"]
 
 
 def test_replay_math_exposes_exact_preflop_pot_odds_without_inventing_equity() -> None:
-    snapshot = build_replay_snapshot(9, 5)
+    snapshot = build_replay_snapshot(5)
 
     assert snapshot.state.next_to_act_seat == snapshot.state.hero_seat
-    assert snapshot.poker_math["call_amount_chips"] == 2
-    assert snapshot.poker_math["pot_odds_required_equity"] == Decimal("0.4")
-    assert snapshot.poker_math["equity"] is None
-    assert snapshot.poker_math["call_ev_chips"] is None
+    assert snapshot.poker_math.call_amount_chips == 2
+    assert snapshot.poker_math.pot_odds_required_equity == Decimal("0.4")
+    assert snapshot.poker_math.equity is None
+    assert snapshot.poker_math.call_ev_chips is None
 
 
-def test_monitor_api_exposes_selected_table_and_reference_matrix() -> None:
-    snapshot = monitor_snapshot(9)
-    matrix = reference_range(Position.BTN, 9)
+def test_monitor_api_exposes_fixed_table_and_reference_matrix() -> None:
+    snapshot = monitor_snapshot()
+    matrix = reference_range(Position.BTN)
 
     assert snapshot["table_size"] == 9
     assert snapshot["source_mode"] == "synthetic_replay"
@@ -49,7 +48,7 @@ def test_monitor_api_exposes_selected_table_and_reference_matrix() -> None:
 
 def test_reference_api_rejects_bb_rfi() -> None:
     with pytest.raises(HTTPException, match="no unopened reference prior"):
-        reference_range(Position.BB, 9)
+        reference_range(Position.BB)
 
 
 def test_monitor_hub_retains_history_and_signals_old_cursor_gap() -> None:
@@ -88,8 +87,8 @@ def test_monitor_envelope_exposes_current_sequence_and_backpressure_metrics() ->
     async def scenario() -> None:
         hub = MonitorHub(subscriber_queue_size=1)
         queue = await hub.subscribe()
-        await hub.publish_snapshot(build_replay_snapshot(9))
-        envelope = await hub.publish_snapshot(build_replay_snapshot(9))
+        await hub.publish_snapshot(build_replay_snapshot())
+        envelope = await hub.publish_snapshot(build_replay_snapshot())
 
         assert envelope.payload["sequence"] == 2
         assert envelope.payload["metrics"]["stream_sequence"] == 2
@@ -105,7 +104,7 @@ def test_replay_controller_publishes_complete_ordered_session() -> None:
     async def scenario() -> None:
         hub = MonitorHub(history_limit=32)
         controller = ReplayController(hub)
-        await controller.start(table_size=9, interval_ms=25)
+        await controller.start(interval_ms=25)
         assert controller._task is not None  # internal task is awaited only in this regression test
         await asyncio.wait_for(controller._task, timeout=2)
 
@@ -124,7 +123,7 @@ def test_replay_controller_can_seek_to_a_deterministic_prefix() -> None:
     async def scenario() -> None:
         hub = MonitorHub(history_limit=32)
         controller = ReplayController(hub)
-        await controller.seek(table_size=9, index=9, interval_ms=250)
+        await controller.seek(index=9, interval_ms=250)
 
         snapshot = hub.snapshot
         assert snapshot is not None
@@ -140,9 +139,8 @@ def test_monitor_hub_survives_repeated_complete_session_prefixes() -> None:
         hub = MonitorHub(history_limit=64, subscriber_queue_size=4)
         queue = await hub.subscribe()
         for _session in range(20):
-            table_size = 9
             for index in range(15):
-                await hub.publish_snapshot(build_replay_snapshot(table_size, index))
+                await hub.publish_snapshot(build_replay_snapshot(index))
 
         snapshot = hub.snapshot
         assert snapshot is not None

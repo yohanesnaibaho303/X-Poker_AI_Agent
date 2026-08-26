@@ -188,7 +188,7 @@ class SessionSetupRequest(StrictModel):
 
 
 class SessionSetup(StrictModel):
-    """User-selectable table size and stack denomination for one X-Poker session."""
+    """Fixed-scope 9-max session with a user-provided native-chip stack."""
 
     table_size: Literal[9] = 9
     game_config_id: str

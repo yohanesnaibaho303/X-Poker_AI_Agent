@@ -417,7 +417,6 @@ class LiveCaptureDiagnostic(StrictModel):
 
 
 class LiveObservationStartRequest(StrictModel):
-    table_size: Literal[9] = 9
     interval_ms: int = Field(default=500, ge=200, le=5000)
 
 

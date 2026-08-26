@@ -21,13 +21,10 @@ import type {
   LiveObservationStatus,
   RangeMatrix,
   SessionPreview,
-  TableSize,
 } from "./types";
 import { useMonitor } from "./useMonitor";
 
-const POSITIONS: Record<TableSize, string[]> = {
-  9: ["UTG", "UTG+1", "UTG+2", "LJ", "HJ", "CO", "BTN", "SB"],
-};
+const RANGE_POSITIONS = ["UTG", "UTG+1", "UTG+2", "LJ", "HJ", "CO", "BTN", "SB"];
 
 function Card({ value }: { value: string }) {
   const suit = value.at(-1);
@@ -226,7 +223,6 @@ function CapturePreview({ diagnostic, nonce }: { diagnostic: LiveCaptureDiagnost
 }
 
 export default function App() {
-  const tableSize: TableSize = 9;
   const [stackInput, setStackInput] = useState("100");
   const [position, setPosition] = useState("BTN");
   const [session, setSession] = useState<SessionPreview | null>(null);
@@ -238,7 +234,7 @@ export default function App() {
   const [liveHero, setLiveHero] = useState<LiveHeroCalculation | null>(null);
   const [captureError, setCaptureError] = useState<string | null>(null);
   const [captureNonce, setCaptureNonce] = useState(0);
-  const { snapshot, connection, error, refresh } = useMonitor(tableSize);
+  const { snapshot, connection, error, refresh } = useMonitor();
 
 
   const rangePosition = liveObservation?.running
@@ -250,17 +246,17 @@ export default function App() {
   );
 
   useEffect(() => {
-    if (!POSITIONS[tableSize].includes(position)) setPosition("BTN");
-    if (!rangePosition || !POSITIONS[tableSize].includes(rangePosition)) {
+    if (!RANGE_POSITIONS.includes(position)) setPosition("BTN");
+    if (!rangePosition || !RANGE_POSITIONS.includes(rangePosition)) {
       setMatrix(null);
       return;
     }
     setMatrixLoading(true);
-    fetchReferenceRange(tableSize, rangePosition)
+    fetchReferenceRange(rangePosition)
       .then(setMatrix)
       .catch(() => setMatrix(null))
       .finally(() => setMatrixLoading(false));
-  }, [position, rangePosition, tableSize]);
+  }, [position, rangePosition]);
 
   useEffect(() => {
     let mounted = true;
@@ -295,13 +291,11 @@ export default function App() {
 
   useEffect(() => {
     if (!liveObservation?.running) return;
-    if (liveObservation.table_size !== tableSize) {
-    }
     const detected = liveObservation.detected_hero_position;
-    if (detected && POSITIONS[liveObservation.table_size].includes(detected)) {
+    if (detected && RANGE_POSITIONS.includes(detected)) {
       setPosition(detected);
     }
-  }, [liveObservation, tableSize]);
+  }, [liveObservation]);
 
   const validateSession = async () => {
     try {
@@ -317,17 +311,17 @@ export default function App() {
   };
 
   const runReplay = async () => {
-    await startReplay(tableSize, 250);
+    await startReplay(250);
     await refresh();
   };
 
   const seek = async (index: number) => {
-    await seekReplay(tableSize, Math.max(0, Math.min(14, index)));
+    await seekReplay(Math.max(0, Math.min(14, index)));
   };
 
   const inspectCapture = async () => {
     try {
-      const result = await runCaptureDiagnostic(tableSize);
+      const result = await runCaptureDiagnostic();
       setCaptureDiagnostic(result);
       setCaptureNonce(Date.now());
       setCaptureError(null);
@@ -338,7 +332,7 @@ export default function App() {
 
   const startLiveCapture = async () => {
     try {
-      const result = await startLiveObservation(tableSize, 500);
+      const result = await startLiveObservation(500);
       setLiveObservation(result.status);
       setCaptureError(null);
     } catch (reason) {
@@ -413,9 +407,9 @@ export default function App() {
             <div className="health-row"><span>Hero seat</span><strong>{liveObservation?.detected_hero_seat != null ? `Seat ${liveObservation.detected_hero_seat + 1} · ${formatPercent(liveObservation.hero_seat_confidence)}` : liveObservation?.hero_seat_reason ?? "waiting"}</strong></div>
             <div className="health-row"><span>Hero position</span><strong>{liveObservation?.detected_hero_position ?? liveObservation?.positions_reason ?? "waiting"}</strong></div>
             <div className="health-row"><span>Dealer seat</span><strong>{liveObservation?.dealer_consensus.accepted ? liveObservation.dealer_consensus.value : liveObservation?.dealer_consensus.reason ?? "waiting"}</strong></div>
-            <div className="health-row"><span>Active seats</span><strong>{liveObservation?.active_seats.length ?? 0}/{tableSize}</strong></div>
+            <div className="health-row"><span>Active seats</span><strong>{liveObservation?.active_seats.length ?? 0}/9</strong></div>
             <div className="health-row"><span>Position gate</span><strong>{liveObservation?.positions_reason ?? "waiting"}</strong></div>
-            <div className="health-row"><span>Stable stacks</span><strong>{liveObservation?.seat_stack_consensus.filter((seat) => seat.consensus.accepted).length ?? 0}/{tableSize}</strong></div>
+            <div className="health-row"><span>Stable stacks</span><strong>{liveObservation?.seat_stack_consensus.filter((seat) => seat.consensus.accepted).length ?? 0}/9</strong></div>
             <div className="health-row"><span>Stable action badges</span><strong>{liveObservation?.seat_action_consensus.filter((seat) => seat.consensus.accepted).length ?? 0}</strong></div>
             <div className="health-row"><span>Hero controls</span><strong>{liveObservation?.hero_control_consensus.accepted ? `${liveObservation.hero_control_consensus.value} · ${liveObservation.hero_control_consensus.stable_frames}` : liveObservation?.hero_control_consensus.reason ?? "waiting"}</strong></div>
             <div className="health-row"><span>Derived candidates</span><strong>{liveObservation?.derived_action_candidates.length ?? 0} · epoch {liveObservation?.hand_epoch ?? 0}</strong></div>
@@ -484,17 +478,29 @@ export default function App() {
                 <span>Live blockers</span><strong>{liveHero?.issues.length ?? 0}</strong>
                 <small>{liveHero?.issues.join(", ") || "Accepted live inputs are internally consistent."}</small>
               </div>
+              <div className="strategy-block">
+                <span>Resolved strategy</span><strong>{snapshot?.strategy.status ?? "unavailable"}</strong>
+                <small>
+                  {snapshot
+                    ? `${snapshot.strategy.role.replaceAll("_", " ")} · confidence ${formatPercent(snapshot.strategy.confidence)} · ${snapshot.strategy.assumptions.join(" ")}`
+                    : "Waiting for strategy status."}
+                </small>
+              </div>
               <div className="math-grid">
                 <div><span>Hero stack</span><strong>{liveHero?.hero_stack_chips ? formatStack(liveHero.hero_stack_chips) : "—"}</strong></div>
-                <div><span>Effective</span><strong>{liveHero?.effective_stack_chips ? formatStack(liveHero.effective_stack_chips) : "—"}</strong></div>
-                <div><span>Pot</span><strong>{liveHero?.pot_chips ? formatStack(liveHero.pot_chips) : "—"}</strong></div>
-                <div><span>SPR</span><strong>{liveHero?.spr ? Number(liveHero.spr).toFixed(2) : "—"}</strong></div>
-                <div><span>Call</span><strong>{liveHero?.call_amount_chips != null ? formatStack(liveHero.call_amount_chips) : "—"}</strong></div>
-                <div><span>Required equity</span><strong>{liveHero?.required_equity ? formatPercent(Number(liveHero.required_equity)) : "—"}</strong></div>
+                <div><span>Effective</span><strong>{liveHero?.effective_stack_chips ? formatStack(liveHero.effective_stack_chips) : snapshot?.poker_math.effective_stack_chips ? formatStack(snapshot.poker_math.effective_stack_chips) : "—"}</strong></div>
+                <div><span>Pot</span><strong>{liveHero?.pot_chips ? formatStack(liveHero.pot_chips) : state ? formatStack(state.pot_main_chips) : "—"}</strong></div>
+                <div><span>SPR</span><strong>{liveHero?.spr ? Number(liveHero.spr).toFixed(2) : snapshot?.poker_math.spr ? Number(snapshot.poker_math.spr).toFixed(2) : "—"}</strong></div>
+                <div><span>Call</span><strong>{liveHero?.call_amount_chips != null ? formatStack(liveHero.call_amount_chips) : snapshot ? formatStack(snapshot.poker_math.call_amount_chips) : "—"}</strong></div>
+                <div><span>Required equity</span><strong>{liveHero?.required_equity ? formatPercent(Number(liveHero.required_equity)) : snapshot?.poker_math.pot_odds_required_equity ? formatPercent(Number(snapshot.poker_math.pot_odds_required_equity)) : "—"}</strong></div>
+              </div>
+              <div className="strategy-block">
+                <span>Opponent model</span><strong>{snapshot?.exploit.status.replaceAll("_", " ") ?? "unavailable"}</strong>
+                <small>{snapshot ? `${snapshot.exploit.sample_size} observations · ${snapshot.exploit.assumptions.join(" ")}` : "Waiting for opponent evidence."}</small>
               </div>
               <label htmlFor="position">Range position</label>
               <select id="position" value={position} onChange={(event) => setPosition(event.target.value)}>
-                {POSITIONS[tableSize].map((item) => <option key={item}>{item}</option>)}
+                {RANGE_POSITIONS.map((item) => <option key={item}>{item}</option>)}
               </select>
             </section>
           </div>

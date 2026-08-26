@@ -1,4 +1,5 @@
 import pytest
+from pydantic import ValidationError
 
 from xpoker_agent.api import (
     capture_status,
@@ -14,7 +15,9 @@ from xpoker_agent.api import (
 )
 from xpoker_agent.capture.profile import EXAMPLE_PROFILE, load_target_profile
 from xpoker_agent.models import SessionSetupRequest
+from xpoker_agent.monitoring.models import ReplaySeekRequest, ReplayStartRequest
 from xpoker_agent.simulation import run_simulated_hand
+from xpoker_agent.vision.models import LiveObservationStartRequest
 
 
 def test_health_reports_disabled_controller() -> None:
@@ -56,6 +59,19 @@ def test_simulation_endpoint_returns_full_trace() -> None:
 def test_six_max_simulation_is_rejected() -> None:
     with pytest.raises(ValueError, match="only 9-max"):
         run_simulated_hand(6)
+
+
+@pytest.mark.parametrize(
+    "model,payload",
+    [
+        (ReplayStartRequest, {"table_size": 6}),
+        (ReplaySeekRequest, {"table_size": 9, "index": 0}),
+        (LiveObservationStartRequest, {"table_size": 9}),
+    ],
+)
+def test_runtime_requests_reject_retired_table_size_field(model, payload) -> None:
+    with pytest.raises(ValidationError, match="Extra inputs are not permitted"):
+        model.model_validate(payload)
 
 
 def test_controller_endpoint_is_fail_closed() -> None:

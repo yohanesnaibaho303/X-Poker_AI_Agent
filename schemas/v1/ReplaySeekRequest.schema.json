@@ -1,12 +1,6 @@
 {
   "additionalProperties": false,
   "properties": {
-    "table_size": {
-      "const": 9,
-      "default": 9,
-      "title": "Table Size",
-      "type": "integer"
-    },
     "index": {
       "maximum": 14,
       "minimum": 0,

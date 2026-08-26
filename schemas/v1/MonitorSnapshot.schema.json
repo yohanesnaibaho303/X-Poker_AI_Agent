@@ -102,6 +102,45 @@
       "title": "EventCategory",
       "type": "string"
     },
+    "ExploitSnapshot": {
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "enum": [
+            "available",
+            "synthetic_only",
+            "unavailable"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "confidence": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "sample_size": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Sample Size",
+          "type": "integer"
+        },
+        "assumptions": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Assumptions",
+          "type": "array"
+        }
+      },
+      "required": [
+        "status",
+        "confidence"
+      ],
+      "title": "ExploitSnapshot",
+      "type": "object"
+    },
     "HandEvent": {
       "additionalProperties": false,
       "properties": {
@@ -606,6 +645,123 @@
       "title": "ParticipationStatus",
       "type": "string"
     },
+    "PokerMathSnapshot": {
+      "additionalProperties": false,
+      "properties": {
+        "effective_stack_chips": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Effective Stack Chips"
+        },
+        "call_amount_chips": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "default": "0",
+          "title": "Call Amount Chips"
+        },
+        "pot_odds_required_equity": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Pot Odds Required Equity"
+        },
+        "spr": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Spr"
+        },
+        "equity": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Equity"
+        },
+        "call_ev_chips": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Call Ev Chips"
+        },
+        "status": {
+          "enum": [
+            "partial",
+            "complete",
+            "unavailable"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "assumptions": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Assumptions",
+          "type": "array"
+        }
+      },
+      "required": [
+        "status"
+      ],
+      "title": "PokerMathSnapshot",
+      "type": "object"
+    },
     "Position": {
       "enum": [
         "UTG",
@@ -803,6 +959,66 @@
       "title": "SeatState",
       "type": "object"
     },
+    "StrategySnapshot": {
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "enum": [
+            "exact",
+            "abstracted",
+            "unavailable"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "role": {
+          "enum": [
+            "gto_solution",
+            "reference_prior",
+            "none"
+          ],
+          "title": "Role",
+          "type": "string"
+        },
+        "confidence": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "source_artifact_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Artifact Id"
+        },
+        "mismatch": {
+          "additionalProperties": true,
+          "title": "Mismatch",
+          "type": "object"
+        },
+        "assumptions": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Assumptions",
+          "type": "array"
+        }
+      },
+      "required": [
+        "status",
+        "role",
+        "confidence"
+      ],
+      "title": "StrategySnapshot",
+      "type": "object"
+    },
     "Street": {
       "enum": [
         "none",
@@ -899,19 +1115,13 @@
       "$ref": "#/$defs/ReplayProgress"
     },
     "poker_math": {
-      "additionalProperties": true,
-      "title": "Poker Math",
-      "type": "object"
+      "$ref": "#/$defs/PokerMathSnapshot"
     },
     "strategy": {
-      "additionalProperties": true,
-      "title": "Strategy",
-      "type": "object"
+      "$ref": "#/$defs/StrategySnapshot"
     },
     "exploit": {
-      "additionalProperties": true,
-      "title": "Exploit",
-      "type": "object"
+      "$ref": "#/$defs/ExploitSnapshot"
     },
     "audit": {
       "items": {

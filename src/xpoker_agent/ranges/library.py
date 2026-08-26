@@ -74,6 +74,21 @@ class PreflopSpotKey(StrictModel):
             for action in self.action_sequence
         ):
             raise ValueError("action sequence contains a position invalid for the table size")
+        if any(action.type == "bet" for action in self.action_sequence):
+            raise ValueError("preflop voluntary aggression must use raise, not bet")
+        previous_voluntary_action = False
+        for action in self.action_sequence:
+            if (
+                action.type == "raise"
+                and not previous_voluntary_action
+                and action.size_chips is not None
+                and action.size_chips <= self.native_big_blind
+            ):
+                raise ValueError(
+                    "an opening raise must exceed the 2-chip forced big blind"
+                )
+            if action.type != "fold":
+                previous_voluntary_action = True
         return self
 
     def canonical_key(self, *, include_stack: bool = True) -> str:

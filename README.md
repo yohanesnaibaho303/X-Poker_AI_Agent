@@ -2,11 +2,12 @@
 
 Inspectable Windows AI agent for an explicitly authorized private X-Poker test table.
 
-The supported configurations are X-Poker 6-max and 9-max cash NLH, zero rake, a default 2 BB preflop open, and a chip-EV objective. Layout profiles and strategy artifacts remain table-size-specific. Live table control is disabled and cannot be enabled until the documented accuracy and safety gates pass.
+Supported configuration is X-Poker 9-max cash NLH, zero rake, fixed native-chip blinds SB 1 / BB 2,
+and chip EV. The 2-chip big blind is a forced blind, not an opening raise. Live table control is
+disabled until documented accuracy and safety gates pass.
 
-Session setup supports user-selected 6-max or 9-max play and BB or native-chip display. Native values
-stay exact internally and render as grouped numbers below 100,000, K from 100,000, and M from
-1,000,000. Native values do not convert to BB until the blind is entered or reliably detected.
+Session setup is fixed to 9-max and native chips. Values stay exact internally and render with grouped
+digits, including 10,000, 200,000, and 1,000,000. No BB conversion or K/M abbreviation exists.
 
 ## Development quick start
 
@@ -35,7 +36,7 @@ To run the deterministic simulated hand:
 
 Milestones 0, 1, 2, 5, and 7 are complete. The repository includes capture/calibration,
 reconstruction and vision foundations, deterministic range and poker-math engines, isolated
-6-max/9-max reference priors, opponent modeling, and a Milestone 8 synthetic-replay monitoring
+9-max native-chip reference priors, opponent modeling, and a Milestone 8 synthetic-replay monitoring
 checkpoint with authorized in-memory capture diagnostics. The priors are deliberately not labeled GTO. Perception/reconstruction promotion,
 configuration-matched GTO data, live-session monitoring acceptance, and control remain gated work.
 

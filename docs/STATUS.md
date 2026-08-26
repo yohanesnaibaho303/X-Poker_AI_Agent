@@ -263,6 +263,19 @@
 - All canonical monetary fields use exact native-chip amounts. BB conversion/display and K/M abbreviations are removed.
 - Fixed blinds are SB 1 and BB 2 native chips. The seeded reference-prior open size is 4 native chips.
 - Retired 6-max configurations, layouts, manifests, and range artifacts were removed.
+- Runtime request schemas and dashboard API calls no longer accept a table-size selector.
+- Position, action-order, and hand-boundary helpers reject retired six-seat layouts while retaining
+  3-to-9-handed play inside the fixed nine-seat table model.
+- Strategy mismatch explanations and the reproducible reference-prior importer now use native-chip
+  stack and action keys only.
+- Synthetic replay controllers and snapshot builders no longer accept table-size arguments; their
+  runtime scope is fixed to the authoritative nine-seat model.
+- Monitoring snapshot strategy, exploit, and poker-math payloads are now strict typed contracts.
+  The dashboard displays strategy role/confidence/assumptions, opponent-model availability, and
+  deterministic replay math without inventing equity or EV.
+- Preflop spot validation rejects `bet` actions and rejects encoding the forced 2-chip BB as an
+  opening raise. The native synthetic hand regression separately proves blind posts of 1 and 2,
+  followed by the observed 4-chip voluntary opening raise.
 - Historical notes below describe earlier checkpoints and are retained only as legacy evidence; they are not supported behavior.
 ## Completed project checkpoints
 

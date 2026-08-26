@@ -16,19 +16,9 @@ def test_nine_max_positions_follow_dealer_clockwise() -> None:
     assert positions[3] is Position.CO
 
 
-def test_six_max_positions_follow_dealer_clockwise() -> None:
-    positions = assign_full_ring_positions(
-        table_size=6, dealer_seat=0, active_seats=set(range(6))
-    )
-
-    assert positions == {
-        0: Position.BTN,
-        1: Position.SB,
-        2: Position.BB,
-        3: Position.UTG,
-        4: Position.HJ,
-        5: Position.CO,
-    }
+def test_six_max_layout_is_rejected() -> None:
+    with pytest.raises(ValueError, match="only the 9-max"):
+        assign_full_ring_positions(table_size=6, dealer_seat=0, active_seats=set(range(6)))
 
 
 def test_partial_ring_never_silently_substitutes_position_set() -> None:
@@ -52,3 +42,22 @@ def test_seven_handed_positions_skip_empty_seats_without_switching_table_scope()
         4: Position.HJ,
         5: Position.CO,
     }
+
+
+def test_eight_handed_position_order_has_exactly_eight_positions() -> None:
+    positions = assign_dealt_positions(
+        table_size=9,
+        dealer_seat=0,
+        active_seats=set(range(8)),
+    )
+
+    assert list(positions.values()) == [
+        Position.BTN,
+        Position.SB,
+        Position.BB,
+        Position.UTG,
+        Position.UTG_1,
+        Position.LJ,
+        Position.HJ,
+        Position.CO,
+    ]

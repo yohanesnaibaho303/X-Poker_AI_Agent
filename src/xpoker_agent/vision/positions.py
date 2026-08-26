@@ -14,7 +14,7 @@ _DEALT_POSITIONS: dict[int, list[Position]] = {
         Position.BTN, Position.SB, Position.BB,
     ],
     8: [
-        Position.UTG, Position.UTG_1, Position.UTG_2, Position.LJ, Position.HJ,
+        Position.UTG, Position.UTG_1, Position.LJ, Position.HJ,
         Position.CO, Position.BTN, Position.SB, Position.BB,
     ],
     9: list(positions_for_table_size(9)),
@@ -24,8 +24,8 @@ _DEALT_POSITIONS: dict[int, list[Position]] = {
 def assign_dealt_positions(
     *, table_size: int, dealer_seat: int, active_seats: set[int]
 ) -> dict[int, Position]:
-    if table_size not in {6, 9}:
-        raise ValueError("table_size must be 6 or 9")
+    if table_size != 9:
+        raise ValueError("only the 9-max table layout is supported")
     if not active_seats.issubset(range(table_size)):
         raise ValueError("active seats must fit the configured table")
     if dealer_seat not in active_seats:

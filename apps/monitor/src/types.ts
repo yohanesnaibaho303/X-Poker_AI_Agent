@@ -96,8 +96,20 @@ export interface MonitorSnapshot {
     status: string;
     assumptions: string[];
   };
-  strategy: Record<string, unknown>;
-  exploit: Record<string, unknown>;
+  strategy: {
+    status: "exact" | "abstracted" | "unavailable";
+    role: "gto_solution" | "reference_prior" | "none";
+    confidence: number;
+    source_artifact_id: string | null;
+    mismatch: Record<string, unknown>;
+    assumptions: string[];
+  };
+  exploit: {
+    status: "available" | "synthetic_only" | "unavailable";
+    confidence: number;
+    sample_size: number;
+    assumptions: string[];
+  };
   audit: Array<{ check: string; status: string; detail: string; source: string }>;
 }
 

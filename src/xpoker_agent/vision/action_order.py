@@ -19,8 +19,8 @@ def validate_action_order(
     actions: list[DerivedActionCandidate], *, table_size: int
 ) -> list[ActionOrderValidation]:
     """Validate only observable clockwise prefixes; never fill a missing action."""
-    if table_size not in {6, 9}:
-        raise ValueError("table_size must be 6 or 9")
+    if table_size != 9:
+        raise ValueError("only the 9-max table layout is supported")
     grouped: dict[tuple[int, str], list[DerivedActionCandidate]] = defaultdict(list)
     for action in actions:
         grouped[(action.hand_epoch, action.street)].append(action)

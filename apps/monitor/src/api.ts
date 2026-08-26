@@ -5,7 +5,6 @@ import type {
   MonitorSnapshot,
   RangeMatrix,
   SessionPreview,
-  TableSize,
 } from "./types";
 
 async function requestJson<T>(path: string, init?: RequestInit): Promise<T> {
@@ -20,16 +19,15 @@ async function requestJson<T>(path: string, init?: RequestInit): Promise<T> {
   return (await response.json()) as T;
 }
 
-export function fetchSnapshot(tableSize: TableSize): Promise<MonitorSnapshot> {
-  return requestJson(`/v1/monitor/snapshot?table_size=${tableSize}`);
+export function fetchSnapshot(): Promise<MonitorSnapshot> {
+  return requestJson("/v1/monitor/snapshot");
 }
 
 export function fetchReferenceRange(
-  tableSize: TableSize,
   position: string,
 ): Promise<RangeMatrix> {
   return requestJson(
-    `/v1/ranges/reference?table_size=${tableSize}&position=${encodeURIComponent(position)}`,
+    `/v1/ranges/reference?position=${encodeURIComponent(position)}`,
   );
 }
 
@@ -44,10 +42,10 @@ export function previewSession(input: {
   });
 }
 
-export function startReplay(tableSize: TableSize, intervalMs = 250): Promise<unknown> {
+export function startReplay(intervalMs = 250): Promise<unknown> {
   return requestJson("/v1/monitor/replay/start", {
     method: "POST",
-    body: JSON.stringify({ table_size: tableSize, interval_ms: intervalMs }),
+    body: JSON.stringify({ interval_ms: intervalMs }),
   });
 }
 
@@ -55,8 +53,8 @@ export function stopReplay(): Promise<unknown> {
   return requestJson("/v1/monitor/replay/stop", { method: "POST" });
 }
 
-export function runCaptureDiagnostic(tableSize: TableSize): Promise<LiveCaptureDiagnostic> {
-  return requestJson(`/v1/capture/diagnostic?table_size=${tableSize}`, { method: "POST" });
+export function runCaptureDiagnostic(): Promise<LiveCaptureDiagnostic> {
+  return requestJson("/v1/capture/diagnostic", { method: "POST" });
 }
 
 export function fetchLatestCaptureDiagnostic(): Promise<LiveCaptureDiagnostic> {
@@ -72,12 +70,11 @@ export function fetchLiveHeroStatus(): Promise<LiveHeroCalculation> {
 }
 
 export function startLiveObservation(
-  tableSize: TableSize,
   intervalMs = 500,
 ): Promise<{ started: boolean; status: LiveObservationStatus }> {
   return requestJson("/v1/capture/live/start", {
     method: "POST",
-    body: JSON.stringify({ table_size: tableSize, interval_ms: intervalMs }),
+    body: JSON.stringify({ interval_ms: intervalMs }),
   });
 }
 
@@ -85,10 +82,10 @@ export function stopLiveObservation(): Promise<{ stopped: boolean; status: LiveO
   return requestJson("/v1/capture/live/stop", { method: "POST" });
 }
 
-export function seekReplay(tableSize: TableSize, index: number): Promise<unknown> {
+export function seekReplay(index: number): Promise<unknown> {
   return requestJson("/v1/monitor/replay/seek", {
     method: "POST",
-    body: JSON.stringify({ table_size: tableSize, index, interval_ms: 250 }),
+    body: JSON.stringify({ index, interval_ms: 250 }),
   });
 }
 

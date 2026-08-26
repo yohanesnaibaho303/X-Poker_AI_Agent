@@ -11,16 +11,19 @@ from time import perf_counter_ns
 from xpoker_agent.models import HandState, ParticipationStatus
 from xpoker_agent.monitoring.hub import MonitorHub
 from xpoker_agent.monitoring.models import (
+    ExploitSnapshot,
     MonitorHealth,
     MonitorMetrics,
     MonitorSnapshot,
+    PokerMathSnapshot,
     ReplayProgress,
+    StrategySnapshot,
 )
 from xpoker_agent.poker_math import effective_stack, pot_odds_required_equity, stack_to_pot_ratio
 from xpoker_agent.simulation import run_simulated_hand
 
 
-def _replay_math(state: HandState) -> dict[str, object]:
+def _replay_math(state: HandState) -> PokerMathSnapshot:
     hero = state.seats[state.hero_seat]
     opponents = [
         seat
@@ -46,30 +49,29 @@ def _replay_math(state: HandState) -> dict[str, object]:
     if effective_stack_chips is not None and state.pot_main_chips > 0:
         spr = stack_to_pot_ratio(effective_stack_chips, state.pot_main_chips)
 
-    return {
-        "effective_stack_chips": effective_stack_chips,
-        "call_amount_chips": call_chips,
-        "pot_odds_required_equity": required_equity,
-        "spr": spr,
-        "equity": None,
-        "call_ev_chips": None,
-        "status": "partial",
-        "assumptions": [
+    return PokerMathSnapshot(
+        effective_stack_chips=effective_stack_chips,
+        call_amount_chips=call_chips,
+        pot_odds_required_equity=required_equity,
+        spr=spr,
+        equity=None,
+        call_ev_chips=None,
+        status="partial",
+        assumptions=[
             "Pot odds and SPR are deterministic from the reconstructed state.",
             "Equity and call EV remain unavailable without a validated opponent range.",
         ],
-    }
+    )
 
 
 def build_replay_snapshot(
-    table_size: int,
     index: int = 0,
     *,
     active: bool = False,
     interval_ms: int = 250,
 ) -> MonitorSnapshot:
     started_ns = perf_counter_ns()
-    states, events = run_simulated_hand(table_size)
+    states, events = run_simulated_hand()
     if index < 0 or index > len(events):
         raise ValueError("replay index is outside the simulated hand")
     state = states[index]
@@ -81,7 +83,7 @@ def build_replay_snapshot(
     ]
     snapshot = MonitorSnapshot(
         generated_at=datetime.now(UTC),
-        table_size=table_size,
+        table_size=9,
         source_mode="synthetic_replay",
         state=state,
         action_history=history,
@@ -98,17 +100,18 @@ def build_replay_snapshot(
             interval_ms=interval_ms,
         ),
         poker_math=_replay_math(state),
-        strategy={
-            "status": "unavailable",
-            "role": "reference_prior",
-            "confidence": 0.55,
-            "assumptions": ["Reference prior may be displayed separately but is not exact GTO."],
-        },
-        exploit={
-            "status": "synthetic_only",
-            "confidence": 0.0,
-            "assumptions": ["No live opponent sample is connected."],
-        },
+        strategy=StrategySnapshot(
+            status="unavailable",
+            role="reference_prior",
+            confidence=0.55,
+            assumptions=["Reference prior may be displayed separately but is not exact GTO."],
+        ),
+        exploit=ExploitSnapshot(
+            status="synthetic_only",
+            confidence=0.0,
+            sample_size=0,
+            assumptions=["No live opponent sample is connected."],
+        ),
         audit=[
             {
                 "check": "state_legality",
@@ -147,14 +150,14 @@ class ReplayController:
     def active(self) -> bool:
         return self._task is not None and not self._task.done()
 
-    async def start(self, *, table_size: int, interval_ms: int) -> None:
+    async def start(self, *, interval_ms: int) -> None:
         await self.stop()
-        self._task = asyncio.create_task(self._run(table_size, interval_ms))
+        self._task = asyncio.create_task(self._run(interval_ms))
 
-    async def seek(self, *, table_size: int, index: int, interval_ms: int) -> None:
+    async def seek(self, *, index: int, interval_ms: int) -> None:
         await self.stop()
         await self.hub.publish_snapshot(
-            build_replay_snapshot(table_size, index, active=False, interval_ms=interval_ms)
+            build_replay_snapshot(index, active=False, interval_ms=interval_ms)
         )
 
     async def stop(self) -> None:
@@ -166,15 +169,14 @@ class ReplayController:
                 await self._task
         self._task = None
 
-    async def _run(self, table_size: int, interval_ms: int) -> None:
-        _, events = run_simulated_hand(table_size)
+    async def _run(self, interval_ms: int) -> None:
+        _, events = run_simulated_hand()
         await self.hub.publish_snapshot(
-            build_replay_snapshot(table_size, 0, active=True, interval_ms=interval_ms)
+            build_replay_snapshot(0, active=True, interval_ms=interval_ms)
         )
         for index, event in enumerate(events, start=1):
             await asyncio.sleep(interval_ms / 1000)
             snapshot = build_replay_snapshot(
-                table_size,
                 index,
                 active=index < len(events),
                 interval_ms=interval_ms,

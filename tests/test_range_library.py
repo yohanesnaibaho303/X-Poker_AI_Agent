@@ -179,3 +179,35 @@ def test_six_max_spot_is_rejected() -> None:
             player_position=Position.UTG,
             players_remaining=6,
         )
+
+
+def test_two_chip_big_blind_cannot_be_encoded_as_opening_raise() -> None:
+    with pytest.raises(ValidationError, match="opening raise must exceed"):
+        PreflopSpotKey(
+            stack_depth_chips=Decimal("200"),
+            player_position=Position.UTG,
+            players_remaining=9,
+            action_sequence=[
+                ObservedRangeAction(
+                    actor_position=Position.UTG,
+                    type="raise",
+                    size_chips=Decimal("2"),
+                )
+            ],
+        )
+
+
+def test_preflop_bet_action_is_rejected_in_favor_of_raise() -> None:
+    with pytest.raises(ValidationError, match="must use raise"):
+        PreflopSpotKey(
+            stack_depth_chips=Decimal("200"),
+            player_position=Position.UTG,
+            players_remaining=9,
+            action_sequence=[
+                ObservedRangeAction(
+                    actor_position=Position.UTG,
+                    type="bet",
+                    size_chips=Decimal("4"),
+                )
+            ],
+        )

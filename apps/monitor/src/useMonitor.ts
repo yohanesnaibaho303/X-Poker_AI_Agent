@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { fetchSnapshot, monitorWebSocketUrl } from "./api";
 import { applyEnvelope, initialStreamState, type StreamState } from "./stream";
-import type { MonitorEnvelope, TableSize } from "./types";
+import type { MonitorEnvelope } from "./types";
 
 export type ConnectionStatus = "connecting" | "live" | "recovering" | "offline";
 
-export function useMonitor(tableSize: TableSize) {
+export function useMonitor() {
   const [stream, setStream] = useState<StreamState>(initialStreamState);
   const [connection, setConnection] = useState<ConnectionStatus>("connecting");
   const [error, setError] = useState<string | null>(null);
@@ -18,7 +18,7 @@ export function useMonitor(tableSize: TableSize) {
   const refresh = useCallback(async () => {
     setConnection("recovering");
     try {
-      const snapshot = await fetchSnapshot(tableSize);
+      const snapshot = await fetchSnapshot();
       const next = {
         snapshot,
         lastSequence: snapshot.sequence,
@@ -32,7 +32,7 @@ export function useMonitor(tableSize: TableSize) {
       setError(reason instanceof Error ? reason.message : "Snapshot request failed");
       setConnection("offline");
     }
-  }, [tableSize]);
+  }, []);
 
   useEffect(() => {
     let disposed = false;

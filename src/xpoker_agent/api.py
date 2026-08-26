@@ -6,7 +6,6 @@ import asyncio
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 from pathlib import Path
-from typing import Literal
 from uuid import UUID
 
 from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
@@ -41,12 +40,6 @@ replay_controller = ReplayController(monitor_hub)
 live_observation = LiveObservationService()
 
 
-def require_table_size(value: int) -> Literal[9]:
-    if value != 9:
-        raise HTTPException(status_code=422, detail="only 9-max is supported")
-    return 9
-
-
 @asynccontextmanager
 async def lifespan(_: FastAPI) -> AsyncIterator[None]:
     configure_logging()
@@ -77,8 +70,8 @@ def health() -> dict[str, object]:
 
 
 @app.get("/v1/config/game")
-def game_config(table_size: int = 9) -> dict[str, object]:
-    return load_game_config(table_size=require_table_size(table_size)).model_dump(mode="json")
+def game_config() -> dict[str, object]:
+    return load_game_config().model_dump(mode="json")
 
 
 @app.get("/v1/config/games")
@@ -165,11 +158,9 @@ def capture_status() -> dict[str, object]:
 
 
 @app.post("/v1/capture/diagnostic")
-async def capture_diagnostic(table_size: int = 9) -> dict[str, object]:
+async def capture_diagnostic() -> dict[str, object]:
     try:
-        diagnostic = await live_observation.inspect_once(
-            table_size=require_table_size(table_size)
-        )
+        diagnostic = await live_observation.inspect_once(table_size=9)
     except (OSError, RuntimeError, ValueError) as error:
         raise HTTPException(status_code=409, detail=str(error)) from error
     return diagnostic.model_dump(mode="json")
@@ -178,7 +169,7 @@ async def capture_diagnostic(table_size: int = 9) -> dict[str, object]:
 @app.post("/v1/capture/live/start")
 async def start_live_observation(request: LiveObservationStartRequest) -> dict[str, object]:
     started = await live_observation.start(
-        table_size=request.table_size,
+        table_size=9,
         interval_ms=request.interval_ms,
     )
     return {
@@ -225,9 +216,9 @@ def latest_capture_frame() -> Response:
 
 
 @app.get("/v1/ranges/reference")
-def reference_range(position: Position, table_size: int = 9) -> dict[str, object]:
-    table_size = require_table_size(table_size)
-    positions = positions_for_table_size(table_size)
+def reference_range(position: Position) -> dict[str, object]:
+    table_size = 9
+    positions = positions_for_table_size(9)
     if position is Position.BB or position not in positions:
         raise HTTPException(status_code=404, detail="no unopened reference prior for this position")
     position_index = positions.index(position)
@@ -250,11 +241,11 @@ def reference_range(position: Position, table_size: int = 9) -> dict[str, object
 
 
 @app.get("/v1/monitor/snapshot")
-def monitor_snapshot(table_size: int = 9) -> dict[str, object]:
-    table_size = require_table_size(table_size)
+def monitor_snapshot() -> dict[str, object]:
+    table_size = 9
     snapshot = monitor_hub.snapshot
     if snapshot is None or snapshot.table_size != table_size:
-        snapshot = build_replay_snapshot(table_size)
+        snapshot = build_replay_snapshot()
     return snapshot.model_dump(mode="json")
 
 
@@ -270,12 +261,11 @@ def monitor_events(after_sequence: int = 0) -> dict[str, object]:
 @app.post("/v1/monitor/replay/start")
 async def start_monitor_replay(request: ReplayStartRequest) -> dict[str, object]:
     await replay_controller.start(
-        table_size=request.table_size,
         interval_ms=request.interval_ms,
     )
     return {
         "started": True,
-        "table_size": request.table_size,
+        "table_size": 9,
         "interval_ms": request.interval_ms,
         "controller_enabled": False,
     }
@@ -290,13 +280,12 @@ async def stop_monitor_replay() -> dict[str, object]:
 @app.post("/v1/monitor/replay/seek")
 async def seek_monitor_replay(request: ReplaySeekRequest) -> dict[str, object]:
     await replay_controller.seek(
-        table_size=request.table_size,
         index=request.index,
         interval_ms=request.interval_ms,
     )
     return {
         "seeked": True,
-        "table_size": request.table_size,
+        "table_size": 9,
         "index": request.index,
         "controller_enabled": False,
     }
@@ -307,7 +296,7 @@ async def monitor_stream(websocket: WebSocket) -> None:
     await websocket.accept()
     queue = await monitor_hub.subscribe()
     try:
-        snapshot = monitor_hub.snapshot or build_replay_snapshot(9)
+        snapshot = monitor_hub.snapshot or build_replay_snapshot()
         await websocket.send_json(
             {
                 "schema_version": "1.0",

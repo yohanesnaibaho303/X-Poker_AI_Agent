@@ -11,7 +11,7 @@ Goal: establish a lightweight, deterministic foundation that can represent a sim
 - [x] Record architecture and licensing decisions.
 - [x] Create Python 3.12 project metadata and locked development dependencies.
 - [x] Create the initial module/package boundaries.
-- [ ] Replace legacy configuration with authoritative 9-max-only cash NLH, zero-rake, native
+- [x] Replace legacy configuration with authoritative 9-max-only cash NLH, zero-rake, native
   SB 1 / BB 2, chip-EV configuration.
 - [x] Implement typed, versioned models for provenance, observations, events, hand state, ranges, strategy matches, decisions, and controller audits.
 - [x] Generate or publish JSON Schemas for persisted and API-facing records.
@@ -72,7 +72,7 @@ Exit: supported-layout recognition meets the per-component targets in `docs/QUAL
 - [x] Implement the NLH state reducer and street/action ordering.
 - [x] Validate unique cards, blinds, calls, raises, all-ins, and side pots.
 - [x] Reconcile stack, bet, pot, and award accounting.
-- [ ] Retire six-seat paths; retain heads-up and multiway play within the nine-seat state model.
+- [x] Retire six-seat paths; retain heads-up and multiway play within the nine-seat state model.
 - [x] Detect hand boundaries and dealer/blind movement.
 - [x] Quarantine ambiguous or impossible hands with evidence.
 - [x] Export canonical hand histories and build replay inspection.
@@ -128,9 +128,8 @@ Exit: synthetic profiles produce stable, explainable, regression-tested adjustme
 - [x] Add replay navigation and decision/audit inspection.
 - [x] Add gap recovery, backpressure, and long-session telemetry.
 
-Checkpoint: legacy synthetic 6-max and 9-max replays stream complete legal traces into the dashboard.
-This predates the 9-max/native-only requirement and must be replaced by a 9-max native SB 1 / BB 2
-regression before Milestone 8 exits.
+Checkpoint: the 9-max native SB 1 / BB 2 synthetic replay streams a complete legal trace into the
+dashboard. Retired table-size request fields are rejected rather than selected at runtime.
 State, action history, confidence, health/latency, deterministic pot odds and SPR, the hero
 reference-prior matrix, explicit unavailable-GTO status, source assumptions, decision gates, and
 control lockout are visible. Scrubbing, snapshot recovery, bounded delivery, and a 20-session

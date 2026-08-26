@@ -35,7 +35,7 @@
     }
   },
   "additionalProperties": false,
-  "description": "User-selectable table size and stack denomination for one X-Poker session.",
+  "description": "Fixed-scope 9-max session with a user-provided native-chip stack.",
   "properties": {
     "table_size": {
       "const": 9,
