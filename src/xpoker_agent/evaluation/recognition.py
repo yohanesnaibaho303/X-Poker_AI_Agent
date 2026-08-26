@@ -4,13 +4,13 @@ from __future__ import annotations
 
 import hashlib
 import json
-import math
 from collections import defaultdict
 from pathlib import Path
 from typing import Literal
 
 from pydantic import Field, model_validator
 
+from xpoker_agent.evaluation.metrics import percentile_95
 from xpoker_agent.models import StrictModel
 
 
@@ -70,12 +70,6 @@ class RecognitionEvaluationReport(StrictModel):
         return self
 
 
-def _percentile_95(values: list[float]) -> float:
-    ordered = sorted(values)
-    index = max(0, math.ceil(len(ordered) * 0.95) - 1)
-    return ordered[index]
-
-
 def _metrics(dataset_slice: str, cases: list[RecognitionEvaluationCase]) -> RecognitionSliceMetrics:
     correct = sum(case.accepted and case.predicted == case.expected for case in cases)
     false_positives = sum(
@@ -96,7 +90,7 @@ def _metrics(dataset_slice: str, cases: list[RecognitionEvaluationCase]) -> Reco
         exact_accuracy=correct / len(cases),
         safe_rejection_rate=(safe_rejections / len(unsupported) if unsupported else None),
         mean_confidence=sum(case.confidence for case in cases) / len(cases),
-        p95_latency_ms=_percentile_95([case.latency_ms for case in cases]),
+        p95_latency_ms=percentile_95([case.latency_ms for case in cases]),
     )
 
 

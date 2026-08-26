@@ -34,10 +34,7 @@ def test_runtime_is_observe_only_and_controller_disabled() -> None:
     assert runtime.controller_enabled is False
 
 
-def test_configuration_rejects_retired_table_size_or_wrong_positions() -> None:
-    with pytest.raises(ValueError, match="only 9-max"):
-        load_game_config(table_size=6)
-
+def test_configuration_rejects_wrong_positions() -> None:
     payload = load_game_config().model_dump(mode="json")
     payload["positions"] = list(reversed([position.value for position in Position]))
     with pytest.raises(ValidationError, match="authoritative order"):

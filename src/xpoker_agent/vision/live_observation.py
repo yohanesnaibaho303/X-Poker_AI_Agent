@@ -7,6 +7,7 @@ import hashlib
 from collections import deque
 from collections.abc import Awaitable, Callable
 from contextlib import suppress
+from dataclasses import dataclass
 from datetime import UTC, datetime
 from decimal import Decimal
 from typing import Literal
@@ -44,6 +45,18 @@ CaptureCallable = Callable[
 ]
 
 
+@dataclass
+class _SeatSamples:
+    stack: deque[TemporalSample]
+    action: deque[TemporalSample]
+    badge_amount: deque[TemporalSample]
+    status: deque[TemporalSample]
+
+    @classmethod
+    def create(cls, maximum_samples: int) -> _SeatSamples:
+        return cls(*(deque(maxlen=maximum_samples) for _ in range(4)))
+
+
 class TargetIdentityChanged(RuntimeError):
     pass
 
@@ -72,14 +85,8 @@ class LiveObservationService:
         self._hero_card_samples: dict[int, deque[TemporalSample]] = {
             index: deque(maxlen=maximum_samples) for index in range(2)
         }
-        self._stack_samples: dict[int, deque[TemporalSample]] = {
-            seat: deque(maxlen=maximum_samples) for seat in range(9)
-        }
-        self._action_samples: dict[int, deque[TemporalSample]] = {
-            seat: deque(maxlen=maximum_samples) for seat in range(9)
-        }
-        self._badge_amount_samples: dict[int, deque[TemporalSample]] = {
-            seat: deque(maxlen=maximum_samples) for seat in range(9)
+        self._seat_samples = {
+            seat: _SeatSamples.create(maximum_samples) for seat in range(9)
         }
         self._hero_control_samples: deque[TemporalSample] = deque(
             maxlen=maximum_samples
@@ -126,9 +133,6 @@ class LiveObservationService:
         self._dealer_samples: deque[TemporalSample] = deque(maxlen=maximum_samples)
         self._dealer_consensus = self._empty_consensus("no_samples")
         self._epoch_dealer_evidence: int | None = None
-        self._status_samples: dict[int, deque[TemporalSample]] = {
-            seat: deque(maxlen=maximum_samples) for seat in range(9)
-        }
         self._seat_status_consensus: list[SeatStatusConsensus] = []
         self._active_seats: list[int] = []
         self._epoch_active_evidence: list[int] = []
@@ -210,12 +214,9 @@ class LiveObservationService:
             samples.clear()
         for samples in self._hero_card_samples.values():
             samples.clear()
-        for samples in self._stack_samples.values():
-            samples.clear()
-        for samples in self._action_samples.values():
-            samples.clear()
-        for samples in self._badge_amount_samples.values():
-            samples.clear()
+        for samples in self._seat_samples.values():
+            for buffer in (samples.stack, samples.action, samples.badge_amount, samples.status):
+                buffer.clear()
         self._hero_control_samples.clear()
         self._mode_consensus = TemporalConsensus(
             accepted=False,
@@ -241,8 +242,6 @@ class LiveObservationService:
         self._dealer_samples.clear()
         self._dealer_consensus = self._empty_consensus("no_samples")
         self._epoch_dealer_evidence = None
-        for samples in self._status_samples.values():
-            samples.clear()
         self._seat_status_consensus = []
         self._active_seats = []
         self._epoch_active_evidence = []
@@ -488,8 +487,8 @@ class LiveObservationService:
                         current_active_seats=[],
                     )
                     self._action_armed_seats.clear()
-                    for samples in self._badge_amount_samples.values():
-                        samples.clear()
+                    for samples in self._seat_samples.values():
+                        samples.badge_amount.clear()
                     self._badge_amount_armed_seats = set(range(diagnostic.table_size))
                     self._action_occurrence_counts.clear()
                     for samples in self._hero_card_samples.values():
@@ -653,7 +652,7 @@ class LiveObservationService:
         stack_consensus: list[SeatStackConsensus] = []
         for seat in range(diagnostic.table_size):
             panel = by_seat.get(seat)
-            samples = self._stack_samples[seat]
+            samples = self._seat_samples[seat].stack
             stack_obscured_by_badge = (
                 panel is not None
                 and panel.stack_native is not None
@@ -724,7 +723,7 @@ class LiveObservationService:
         action_consensus: list[SeatActionConsensus] = []
         for seat in range(diagnostic.table_size):
             observation = by_action_seat.get(seat)
-            samples = self._action_samples[seat]
+            samples = self._seat_samples[seat].action
             if observation is None or observation.action is None:
                 samples.clear()
                 result = self._empty_consensus("current_action_absent")
@@ -742,7 +741,7 @@ class LiveObservationService:
         self._action_consensus = action_consensus
         for seat in range(diagnostic.table_size):
             observation = by_action_seat.get(seat)
-            samples = self._badge_amount_samples[seat]
+            samples = self._seat_samples[seat].badge_amount
             if observation is None or observation.badge_amount_native is None:
                 samples.clear()
                 self._badge_amount_armed_seats.add(seat)
@@ -960,7 +959,7 @@ class LiveObservationService:
             else:
                 value = None
                 confidence = 0.0
-            samples = self._status_samples[occupancy.seat]
+            samples = self._seat_samples[occupancy.seat].status
             if value is None:
                 samples.clear()
                 result = self._empty_consensus("current_seat_status_ambiguous")
@@ -1088,8 +1087,8 @@ class LiveObservationService:
                 self._recognized_hero_cards = []
                 self._hero_cards_accepted = False
                 self._hero_cards_reason = "new_direct_bomb_pot_epoch"
-                for samples in self._badge_amount_samples.values():
-                    samples.clear()
+                for samples in self._seat_samples.values():
+                    samples.badge_amount.clear()
                 self._badge_amount_armed_seats = set(range(diagnostic.table_size))
                 self._last_accepted_pot = None
                 self._last_high_confidence_pot_sample = None

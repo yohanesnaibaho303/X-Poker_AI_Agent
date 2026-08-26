@@ -43,11 +43,10 @@ def _event(
     )
 
 
-def simulated_events(table_size: int = 9) -> list[HandEvent]:
-    if table_size != 9:
-        raise ValueError("only 9-max is supported")
+def simulated_events() -> list[HandEvent]:
     hand_id = SIMULATED_HAND_ID
-    hero, small_blind, big_blind = table_size - 3, table_size - 2, table_size - 1
+    table_size = 9
+    hero, small_blind, big_blind = 6, 7, 8
     return [
         _event(table_size, hand_id, 1, EventCategory.LIFECYCLE, "hand_started"),
         _event(
@@ -176,8 +175,9 @@ def simulated_events(table_size: int = 9) -> list[HandEvent]:
     ]
 
 
-def run_simulated_hand(table_size: int = 9) -> tuple[list[HandState], list[HandEvent]]:
-    config = load_game_config(table_size=table_size)
+def run_simulated_hand() -> tuple[list[HandState], list[HandEvent]]:
+    config = load_game_config()
+    table_size = 9
     hand_id = SIMULATED_HAND_ID
     hero, small_blind, big_blind = table_size - 3, table_size - 2, table_size - 1
     state = create_initial_state(
@@ -194,7 +194,7 @@ def run_simulated_hand(table_size: int = 9) -> tuple[list[HandState], list[HandE
     )
     states = [state]
     reducer = HandStateReducer()
-    events = simulated_events(table_size)
+    events = simulated_events()
     for event in events:
         state = reducer.apply(state, event)
         states.append(state)

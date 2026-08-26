@@ -20,10 +20,8 @@ def _read_json(path: Path) -> dict[str, object]:
     return result
 
 
-def load_game_config(path: Path | None = None, *, table_size: int = 9) -> GameConfig:
+def load_game_config(path: Path | None = None) -> GameConfig:
     if path is None:
-        if table_size != 9:
-            raise ValueError("only 9-max is supported")
         path = DEFAULT_GAME_CONFIG
     return GameConfig.model_validate(_read_json(path))
 

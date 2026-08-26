@@ -17,7 +17,6 @@ from xpoker_agent.api import (
 from xpoker_agent.capture.profile import EXAMPLE_PROFILE, load_target_profile
 from xpoker_agent.models import SessionSetupRequest
 from xpoker_agent.monitoring.models import ReplaySeekRequest, ReplayStartRequest
-from xpoker_agent.simulation import run_simulated_hand
 from xpoker_agent.vision.models import LiveObservationStartRequest
 
 
@@ -55,11 +54,6 @@ def test_simulation_endpoint_returns_full_trace() -> None:
     assert len(result["events"]) == 14
     assert len(result["states"]) == 15
     assert result["states"][-1]["table_status"] == "hand_complete"
-
-
-def test_six_max_simulation_is_rejected() -> None:
-    with pytest.raises(ValueError, match="only 9-max"):
-        run_simulated_hand(6)
 
 
 @pytest.mark.parametrize(

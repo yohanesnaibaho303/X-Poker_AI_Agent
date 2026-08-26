@@ -8,6 +8,7 @@ from typing import Literal
 
 from pydantic import Field, model_validator
 
+from xpoker_agent.evaluation.metrics import percentile_95
 from xpoker_agent.models import StrictModel
 
 
@@ -72,11 +73,6 @@ class ReconstructionEvaluationReport(StrictModel):
         return self
 
 
-def _p95(values: list[float]) -> float:
-    ordered = sorted(values)
-    return ordered[max(0, (len(ordered) * 95 + 99) // 100 - 1)]
-
-
 def evaluate_reconstruction_cases(
     cases: list[ReconstructionEvaluationCase],
     *,
@@ -114,7 +110,7 @@ def evaluate_reconstruction_cases(
         safely_stopped_unsupported=sum(case.safely_stopped for case in unsupported),
         exact_accuracy=exact_accuracy,
         unsupported_safe_rate=safe_rate,
-        p95_latency_ms=_p95([case.latency_ms for case in cases]),
+        p95_latency_ms=percentile_95([case.latency_ms for case in cases]),
     )
     promotion_eligible = dataset_role == "holdout"
     gate_passed = (
