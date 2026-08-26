@@ -325,7 +325,7 @@
 - Milestone 1 — autonomous public-source and component catalog with provenance/licensing boundaries.
 - Milestone 2 — authorized X-Poker window discovery, calibration, normalized capture, and replay diagnostics.
 - Milestone 5 — exact-combo ranges, deterministic poker math, matrix projection, stack abstraction,
-  and isolated provenance-bearing 6-max/9-max reference priors.
+  and isolated provenance-bearing nine-max native-chip reference priors.
 - Milestone 7 — uncertainty-bearing opponent profiles, bounded exploit adjustments, nodelock-like
   range experiments, and synthetic regression evaluation.
 
@@ -344,8 +344,9 @@
   accounting into the existing deterministic hand-state reducer.
 - Expand held-out board-card evaluation coverage across every rank/suit and lighting/result-overlay
   state; keep low-margin cards unknown until the ≥99.9% card gate is measured and passed.
-- Combine dealer consensus with stable occupied/Break states to derive provisional 6-max/9-max
-  positions, then validate clockwise action order before creating canonical events.
+- Combine dealer consensus with stable occupied/Break states to derive provisional positions for
+  3-to-9 dealt players in the fixed nine-seat model, then validate clockwise action order before
+  creating canonical events.
 - Reconcile mutually unique same-seat action/stack pairs with pot deltas; reject rather than infer
   a wager when the observer starts mid-action or temporal evidence arrives outside the match window.
 - Continue gradual 3-to-9-player live captures to validate every occupied seat panel, player state,
