@@ -17,6 +17,7 @@ from xpoker_agent.capture.profile import load_target_profile, match_authorized_t
 from xpoker_agent.capture.windows import discover_xpoker_windows
 from xpoker_agent.chips import create_session_setup
 from xpoker_agent.config import load_game_config, load_runtime_config
+from xpoker_agent.hardening import run_compatibility_audit
 from xpoker_agent.logging import configure_logging
 from xpoker_agent.models import Position, SessionSetupRequest, positions_for_table_size
 from xpoker_agent.monitoring import MonitorHub, ReplayController, build_replay_snapshot
@@ -139,6 +140,11 @@ def controller_status() -> dict[str, object]:
         "available": False,
         "reason": "Control is unavailable until the required acceptance gates pass.",
     }
+
+
+@app.get("/v1/system/compatibility-audit")
+def compatibility_audit() -> dict[str, object]:
+    return run_compatibility_audit().model_dump(mode="json")
 
 
 @app.get("/v1/capture/status")

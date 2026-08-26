@@ -4,10 +4,94 @@ from __future__ import annotations
 
 from uuid import UUID
 
-from pydantic import model_validator
+from pydantic import Field, model_validator
 
 from xpoker_agent.models import StrategyMatch, StrictModel, WeightedRange
 from xpoker_agent.ranges.library import PreflopSpotKey, RangeLibrary, RangeLookup
+
+
+class ComboActionResult(StrictModel):
+    action: str
+    frequency: float = Field(ge=0, le=1)
+    ev_chips: float | None = None
+    ev_loss_chips: float | None = Field(default=None, ge=0)
+
+
+class StrategyComboResult(StrictModel):
+    combo: str
+    match_status: str
+    strategy_role: str
+    equity: float | None = Field(default=None, ge=0, le=1)
+    actions: list[ComboActionResult]
+    confidence: float = Field(ge=0, le=1)
+    source_artifact_id: str | None = None
+    assumptions: list[str]
+
+
+class ComboActionComparison(StrictModel):
+    action: str
+    baseline_frequency: float = Field(ge=0, le=1)
+    candidate_frequency: float = Field(ge=0, le=1)
+    frequency_delta: float = Field(ge=-1, le=1)
+    baseline_ev_chips: float | None = None
+    candidate_ev_chips: float | None = None
+    ev_delta_chips: float | None = None
+
+
+class StrategyComboComparison(StrictModel):
+    combo: str
+    baseline_role: str
+    candidate_role: str
+    equity_delta: float | None = Field(default=None, ge=-1, le=1)
+    actions: list[ComboActionComparison]
+    assumptions: list[str]
+
+
+def compare_combo_results(
+    baseline: StrategyComboResult, candidate: StrategyComboResult
+) -> StrategyComboComparison:
+    if baseline.combo != candidate.combo:
+        raise ValueError("strategy comparison requires the same exact combination")
+    baseline_actions = {item.action: item for item in baseline.actions}
+    candidate_actions = {item.action: item for item in candidate.actions}
+    actions = []
+    for action in sorted(set(baseline_actions) | set(candidate_actions)):
+        left = baseline_actions.get(action)
+        right = candidate_actions.get(action)
+        left_frequency = left.frequency if left is not None else 0.0
+        right_frequency = right.frequency if right is not None else 0.0
+        left_ev = left.ev_chips if left is not None else None
+        right_ev = right.ev_chips if right is not None else None
+        actions.append(
+            ComboActionComparison(
+                action=action,
+                baseline_frequency=left_frequency,
+                candidate_frequency=right_frequency,
+                frequency_delta=right_frequency - left_frequency,
+                baseline_ev_chips=left_ev,
+                candidate_ev_chips=right_ev,
+                ev_delta_chips=(
+                    right_ev - left_ev
+                    if left_ev is not None and right_ev is not None
+                    else None
+                ),
+            )
+        )
+    return StrategyComboComparison(
+        combo=baseline.combo,
+        baseline_role=baseline.strategy_role,
+        candidate_role=candidate.strategy_role,
+        equity_delta=(
+            candidate.equity - baseline.equity
+            if baseline.equity is not None and candidate.equity is not None
+            else None
+        ),
+        actions=actions,
+        assumptions=[
+            "Frequency deltas are candidate minus baseline for the same exact combination.",
+            "EV and equity deltas remain unavailable unless both inputs provide them.",
+        ],
+    )
 
 
 class StrategyResolution(StrictModel):
@@ -101,6 +185,41 @@ class PreflopStrategyResolver:
             ),
             strategy=strategy,
             reference_prior=reference,
+        )
+
+    @staticmethod
+    def summarize_combo(resolution: StrategyResolution, combo: str) -> StrategyComboResult:
+        selected = resolution.strategy or resolution.reference_prior
+        if selected is None:
+            raise KeyError("no strategy or reference prior is available for combo lookup")
+        strategy = selected.combos.get(combo)
+        if strategy is None or strategy.weight <= 0:
+            raise KeyError(f"combo is absent from the resolved range: {combo}")
+        complete_ev = bool(strategy.actions) and set(strategy.ev_chips) == set(strategy.actions)
+        best_ev = max(strategy.ev_chips.values()) if complete_ev else None
+        actions = [
+            ComboActionResult(
+                action=action,
+                frequency=frequency,
+                ev_chips=strategy.ev_chips.get(action),
+                ev_loss_chips=(
+                    max(0.0, best_ev - strategy.ev_chips[action])
+                    if best_ev is not None
+                    else None
+                ),
+            )
+            for action, frequency in sorted(strategy.actions.items())
+        ]
+        role = str(selected.source.get("strategy_role", "unknown"))
+        return StrategyComboResult(
+            combo=combo,
+            match_status=resolution.match.status,
+            strategy_role=role,
+            equity=strategy.equity,
+            actions=actions,
+            confidence=min(resolution.match.confidence or selected.confidence, selected.confidence),
+            source_artifact_id=selected.source.get("artifact_id"),
+            assumptions=[*resolution.match.assumptions, *selected.assumptions],
         )
 
     @staticmethod

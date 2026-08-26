@@ -124,8 +124,14 @@ export interface RangeCell {
   hand_class: string;
   row: number;
   column: number;
+  possible_combos: number;
+  included_combos: number;
+  combo_weight: number;
   inclusion_frequency: number;
   action_mix: Record<string, number>;
+  unassigned_action_frequency: number;
+  equity: number | null;
+  ev_chips: Record<string, number>;
 }
 
 export interface RangeMatrix {

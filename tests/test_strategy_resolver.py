@@ -12,7 +12,11 @@ from xpoker_agent.ranges.library import (
     RangeLibrary,
     load_seeded_reference_library,
 )
-from xpoker_agent.strategy.resolver import PreflopStrategyResolver, StrategyResolution
+from xpoker_agent.strategy.resolver import (
+    PreflopStrategyResolver,
+    StrategyResolution,
+    compare_combo_results,
+)
 
 HAND_ID = UUID("60000000-0000-0000-0000-000000000001")
 
@@ -57,6 +61,14 @@ def _gto_artifact(stack: str = "200") -> RangeArtifact:
     return RangeArtifact.model_validate(payload)
 
 
+def _gto_artifact_with_combo_results() -> RangeArtifact:
+    artifact = _gto_artifact()
+    artifact.combos["AsAh"].actions = {"fold": 0.1, "raise@4chips": 0.9}
+    artifact.combos["AsAh"].equity = 0.82
+    artifact.combos["AsAh"].ev_chips = {"fold": 0.0, "raise@4chips": 3.5}
+    return artifact
+
+
 def test_reference_prior_is_returned_separately_when_gto_is_unavailable() -> None:
     resolver = PreflopStrategyResolver(reference_library=load_seeded_reference_library())
 
@@ -98,6 +110,70 @@ def test_nearest_stack_solution_quantifies_mismatch_and_reduces_confidence() -> 
     assert result.match.assumptions[-1] == (
         "Used 200 native-chip solution for 180 native-chip request."
     )
+
+
+def test_combo_summary_exposes_frequency_equity_ev_and_ev_loss() -> None:
+    resolver = PreflopStrategyResolver(
+        gto_library=RangeLibrary([_gto_artifact_with_combo_results()])
+    )
+    resolution = resolver.resolve(_button_spot(), player_ref="hero", hand_id=HAND_ID)
+
+    result = resolver.summarize_combo(resolution, "AsAh")
+
+    assert result.match_status == "exact"
+    assert result.strategy_role == "gto_solution"
+    assert result.equity == 0.82
+    assert [(item.action, item.frequency) for item in result.actions] == [
+        ("fold", 0.1),
+        ("raise@4chips", 0.9),
+    ]
+    assert result.actions[0].ev_chips == 0.0
+    assert result.actions[0].ev_loss_chips == 3.5
+    assert result.actions[1].ev_loss_chips == 0.0
+
+
+def test_combo_summary_fails_closed_when_no_strategy_is_available() -> None:
+    resolver = PreflopStrategyResolver()
+    resolution = resolver.resolve(_button_spot(), player_ref="hero", hand_id=HAND_ID)
+
+    with pytest.raises(KeyError, match="no strategy"):
+        resolver.summarize_combo(resolution, "AsAh")
+
+
+def test_combo_comparison_reports_candidate_minus_baseline_deltas() -> None:
+    resolver = PreflopStrategyResolver(
+        gto_library=RangeLibrary([_gto_artifact_with_combo_results()])
+    )
+    resolution = resolver.resolve(_button_spot(), player_ref="hero", hand_id=HAND_ID)
+    baseline = resolver.summarize_combo(resolution, "AsAh")
+    candidate = baseline.model_copy(deep=True)
+    candidate.strategy_role = "reference_prior"
+    candidate.equity = 0.78
+    candidate.actions[0].frequency = 0.2
+    candidate.actions[0].ev_chips = 0.25
+    candidate.actions[1].frequency = 0.8
+    candidate.actions[1].ev_chips = 3.0
+
+    comparison = compare_combo_results(baseline, candidate)
+
+    assert comparison.equity_delta == pytest.approx(-0.04)
+    assert comparison.actions[0].action == "fold"
+    assert comparison.actions[0].frequency_delta == pytest.approx(0.1)
+    assert comparison.actions[0].ev_delta_chips == pytest.approx(0.25)
+    assert comparison.actions[1].frequency_delta == pytest.approx(-0.1)
+    assert comparison.actions[1].ev_delta_chips == pytest.approx(-0.5)
+
+
+def test_combo_comparison_rejects_different_physical_combinations() -> None:
+    resolver = PreflopStrategyResolver(
+        gto_library=RangeLibrary([_gto_artifact_with_combo_results()])
+    )
+    resolution = resolver.resolve(_button_spot(), player_ref="hero", hand_id=HAND_ID)
+    baseline = resolver.summarize_combo(resolution, "AsAh")
+    candidate = baseline.model_copy(update={"combo": "AdAc"})
+
+    with pytest.raises(ValueError, match="same exact combination"):
+        compare_combo_results(baseline, candidate)
 
 
 def test_unavailable_unopened_bb_spot_has_no_fake_reference_fallback() -> None:

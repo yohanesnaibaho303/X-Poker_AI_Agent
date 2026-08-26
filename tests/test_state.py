@@ -204,6 +204,48 @@ def test_bomb_pot_flop_requires_observed_contribution_from_every_participant() -
         )
 
 
+def test_bomb_pot_flop_rejects_unexplained_unequal_contributions() -> None:
+    reducer = HandStateReducer()
+    state = reducer.apply(
+        make_initial_state(),
+        make_event(
+            1,
+            EventCategory.LIFECYCLE,
+            "hand_started",
+            hand_mode=HandMode.SINGLE_BOARD_BOMB_POT,
+        ),
+    )
+    state = reducer.apply(
+        state, make_event(2, EventCategory.DEALING, "dealer_assigned", dealer_seat=6)
+    )
+    for sequence, seat, amount in ((3, 6, "2"), (4, 7, "2"), (5, 8, "4")):
+        state = reducer.apply(
+            state,
+            make_event(
+                sequence,
+                EventCategory.FORCED_WAGER,
+                "bomb_ante_posted",
+                actor_seat=seat,
+                street=Street.PREFLOP,
+                amount=EventAmount(
+                    to_chips=Decimal(amount),
+                    added_chips=Decimal(amount),
+                ),
+            ),
+        )
+
+    with pytest.raises(StateTransitionError, match="unequal Bomb Pot contribution"):
+        reducer.apply(
+            state,
+            make_event(
+                6,
+                EventCategory.DEALING,
+                "board_cards_observed",
+                street=Street.FLOP,
+                cards=["Qs", "Jh", "2c"],
+            ),
+        )
+
 def test_reducer_does_not_mutate_previous_state(initial_state) -> None:
     next_state = HandStateReducer().apply(
         initial_state, make_event(1, EventCategory.LIFECYCLE, "hand_started")

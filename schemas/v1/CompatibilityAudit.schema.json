@@ -1,0 +1,72 @@
+{
+  "$defs": {
+    "CompatibilityCheck": {
+      "additionalProperties": false,
+      "properties": {
+        "check": {
+          "title": "Check",
+          "type": "string"
+        },
+        "passed": {
+          "title": "Passed",
+          "type": "boolean"
+        },
+        "detail": {
+          "title": "Detail",
+          "type": "string"
+        },
+        "content_sha256": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "minLength": 64,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Content Sha256"
+        }
+      },
+      "required": [
+        "check",
+        "passed",
+        "detail"
+      ],
+      "title": "CompatibilityCheck",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "passed": {
+      "title": "Passed",
+      "type": "boolean"
+    },
+    "checks": {
+      "items": {
+        "$ref": "#/$defs/CompatibilityCheck"
+      },
+      "title": "Checks",
+      "type": "array"
+    },
+    "controller_enabled": {
+      "title": "Controller Enabled",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "passed",
+    "checks",
+    "controller_enabled"
+  ],
+  "title": "CompatibilityAudit",
+  "type": "object"
+}

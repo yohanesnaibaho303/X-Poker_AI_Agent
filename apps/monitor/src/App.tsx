@@ -13,6 +13,7 @@ import {
   stopReplay,
 } from "./api";
 import { formatPercent, formatStack } from "./format";
+import { buildActionRows } from "./strategy";
 import type {
   HandEvent,
   HandState,
@@ -163,6 +164,29 @@ function RangeGrid({
         </>
       )}
     </section>
+  );
+}
+
+function ActionFrequencyChart({ cell }: { cell: RangeMatrix["cells"][number] | null }) {
+  const actions = buildActionRows(cell);
+  return (
+    <div className="action-chart" aria-label="Selected hand action frequencies">
+      <div className="action-chart-heading">
+        <span>Selected-hand frequencies</span>
+        <strong>{cell?.hand_class ?? "—"}</strong>
+      </div>
+      {actions.length === 0 && <small>No resolved action frequencies.</small>}
+      {actions.map(({ action, frequency, evChips }) => (
+        <div className="action-frequency" key={action}>
+          <div><span>{action}</span><strong>{formatPercent(frequency)}</strong></div>
+          <i><b style={{ width: `${frequency * 100}%` }} /></i>
+          <small>
+            EV {evChips != null ? `${formatStack(evChips)} chips` : "unavailable"}
+          </small>
+        </div>
+      ))}
+      {cell?.equity != null && <small>Equity {formatPercent(cell.equity)}</small>}
+    </div>
   );
 }
 
@@ -474,6 +498,7 @@ export default function App() {
                 <span>Detected range action</span><strong>{heroRangeCell ? `Open 4 chips ${formatPercent(heroRangeCell.action_mix["raise@4chips"] ?? 0)}` : "Unavailable"}</strong>
                 <small>{liveHero?.hero_position ? `${liveHero.hand_class ?? "Hand pending"} at ${liveHero.hero_position} selected automatically · ${liveHero.dealt_player_count}-handed · range mismatch ${liveHero.range_seat_mismatch} seat(s). Reference prior, not exact GTO.` : "Waiting for a resolved dealt position."}</small>
               </div>
+              <ActionFrequencyChart cell={heroRangeCell} />
               <div className="strategy-block">
                 <span>Live blockers</span><strong>{liveHero?.issues.length ?? 0}</strong>
                 <small>{liveHero?.issues.join(", ") || "Accepted live inputs are internally consistent."}</small>

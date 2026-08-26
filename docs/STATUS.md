@@ -276,6 +276,22 @@
 - Preflop spot validation rejects `bet` actions and rejects encoding the forced 2-chip BB as an
   opening raise. The native synthetic hand regression separately proves blind posts of 1 and 2,
   followed by the observed 4-chip voluntary opening raise.
+- Strategy resolution now exposes a strict per-combination result with action frequencies, equity,
+  native-chip EV, native-chip EV loss, confidence, source artifact, and assumptions. Missing ranges,
+  missing combinations, and incomplete EV data fail closed instead of fabricating values.
+- The dashboard reference-range panel now renders selected-hand action-frequency bars and shows
+  equity and native-chip EV when present. Reference priors remain visibly separate from GTO results.
+- Range artifacts now reject BB/K/M or malformed sizing keys, unsized monetary actions, non-finite
+  chip amounts, and EV entries for actions absent from the strategy. Frontend regressions verify
+  deterministic action ordering and no fabricated rows when strategy is unavailable.
+- Bomb Pot fault injection now explicitly rejects unequal observed contributions unless the short
+  contributor is stack-exhausted; no contribution is inferred from a configured label or range.
+- Added deterministic exact-combination strategy comparison. It reports candidate-minus-baseline
+  frequency, equity, and native-chip EV deltas while leaving missing paired values unavailable.
+- Milestone 10 now has a fail-closed compatibility audit covering the authoritative 9-max SB 1 / BB
+  2 configuration, controller lockout, hash-verified reference library, complete parseable schema
+  set, and production dashboard entry point. The local API exposes the inspectable audit result;
+  missing or malformed artifacts make the combined result fail.
 - Historical notes below describe earlier checkpoints and are retained only as legacy evidence; they are not supported behavior.
 ## Completed project checkpoints
 

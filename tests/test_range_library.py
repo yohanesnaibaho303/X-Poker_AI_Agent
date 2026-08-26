@@ -211,3 +211,34 @@ def test_preflop_bet_action_is_rejected_in_favor_of_raise() -> None:
                 )
             ],
         )
+
+
+@pytest.mark.parametrize("action", ["raise@2bb", "raise@200K", "bet", "raise@NaNchips"])
+def test_range_artifact_rejects_non_native_or_unsized_monetary_actions(action: str) -> None:
+    payload = _artifact().model_dump(mode="json")
+    payload["combos"] = {
+        "AsAh": {
+            "weight": 1.0,
+            "actions": {action: 1.0},
+            "equity": None,
+            "ev_chips": {},
+        }
+    }
+
+    with pytest.raises(ValidationError, match="native-chip|action sizing|positive finite"):
+        RangeArtifact.model_validate(payload)
+
+
+def test_range_artifact_rejects_ev_for_action_missing_from_strategy() -> None:
+    payload = _artifact().model_dump(mode="json")
+    payload["combos"] = {
+        "AsAh": {
+            "weight": 1.0,
+            "actions": {"raise@4chips": 1.0},
+            "equity": 0.8,
+            "ev_chips": {"fold": 0.0, "raise@4chips": 3.5},
+        }
+    }
+
+    with pytest.raises(ValidationError, match="EV for an unavailable action"):
+        RangeArtifact.model_validate(payload)

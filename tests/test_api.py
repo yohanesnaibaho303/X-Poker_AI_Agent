@@ -3,6 +3,7 @@ from pydantic import ValidationError
 
 from xpoker_agent.api import (
     capture_status,
+    compatibility_audit,
     controller_status,
     game_config,
     health,
@@ -78,6 +79,13 @@ def test_controller_endpoint_is_fail_closed() -> None:
     result = controller_status()
     assert result["enabled"] is False
     assert result["available"] is False
+
+
+def test_compatibility_audit_endpoint_reports_control_lockout() -> None:
+    result = compatibility_audit()
+
+    assert result["passed"] is True
+    assert result["controller_enabled"] is False
 
 
 def test_capture_status_is_xpoker_only_and_inactive(monkeypatch) -> None:

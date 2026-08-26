@@ -1,0 +1,121 @@
+{
+  "$defs": {
+    "ComboActionResult": {
+      "additionalProperties": false,
+      "properties": {
+        "action": {
+          "title": "Action",
+          "type": "string"
+        },
+        "frequency": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Frequency",
+          "type": "number"
+        },
+        "ev_chips": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ev Chips"
+        },
+        "ev_loss_chips": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ev Loss Chips"
+        }
+      },
+      "required": [
+        "action",
+        "frequency"
+      ],
+      "title": "ComboActionResult",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "combo": {
+      "title": "Combo",
+      "type": "string"
+    },
+    "match_status": {
+      "title": "Match Status",
+      "type": "string"
+    },
+    "strategy_role": {
+      "title": "Strategy Role",
+      "type": "string"
+    },
+    "equity": {
+      "anyOf": [
+        {
+          "maximum": 1,
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Equity"
+    },
+    "actions": {
+      "items": {
+        "$ref": "#/$defs/ComboActionResult"
+      },
+      "title": "Actions",
+      "type": "array"
+    },
+    "confidence": {
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Confidence",
+      "type": "number"
+    },
+    "source_artifact_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Source Artifact Id"
+    },
+    "assumptions": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Assumptions",
+      "type": "array"
+    }
+  },
+  "required": [
+    "combo",
+    "match_status",
+    "strategy_role",
+    "actions",
+    "confidence",
+    "assumptions"
+  ],
+  "title": "StrategyComboResult",
+  "type": "object"
+}

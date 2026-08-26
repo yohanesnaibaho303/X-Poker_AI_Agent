@@ -13,6 +13,7 @@ from xpoker_agent.exploit.models import (
     OpponentProfile,
     OpponentRangeSnapshot,
 )
+from xpoker_agent.hardening.audit import CompatibilityAudit
 from xpoker_agent.models import (
     ActionAttempt,
     DecisionEnvelope,
@@ -39,7 +40,11 @@ from xpoker_agent.monitoring.models import (
 )
 from xpoker_agent.ranges.library import RangeArtifact
 from xpoker_agent.ranges.matrix import RangeMatrix
-from xpoker_agent.strategy.resolver import StrategyResolution
+from xpoker_agent.strategy.resolver import (
+    StrategyComboComparison,
+    StrategyComboResult,
+    StrategyResolution,
+)
 from xpoker_agent.vision.models import (
     LiveCaptureDiagnostic,
     LiveObservationStartRequest,
@@ -63,11 +68,14 @@ MODELS = [
     RangeMatrix,
     StrategyMatch,
     StrategyResolution,
+    StrategyComboResult,
+    StrategyComboComparison,
     OpponentProfile,
     ExploitAdjustment,
     NodelockResult,
     OpponentRangeSnapshot,
     BestResponseAnalysis,
+    CompatibilityAudit,
     MonitorSnapshot,
     MonitorEnvelope,
     MonitorHistory,

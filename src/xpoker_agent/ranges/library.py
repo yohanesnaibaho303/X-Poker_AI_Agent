@@ -140,8 +140,34 @@ class RangeArtifact(StrictModel):
     def validate_combo_keys(cls, combos: dict[str, ComboStrategy]) -> dict[str, ComboStrategy]:
         if not combos:
             raise ValueError("range artifact must contain exact combos")
-        for combo in combos:
+        for combo, strategy in combos.items():
             split_combo(combo)
+            if not set(strategy.ev_chips).issubset(strategy.actions):
+                raise ValueError(f"combo {combo} has EV for an unavailable action")
+            for action in set(strategy.actions) | set(strategy.ev_chips):
+                if "@" not in action:
+                    if action in {"bet", "raise"}:
+                        raise ValueError(
+                            f"combo {combo} monetary action must include an exact native-chip size"
+                        )
+                    continue
+                action_type, size_token = action.split("@", maxsplit=1)
+                if action_type not in {"bet", "raise", "all_in"} or not size_token.endswith(
+                    "chips"
+                ):
+                    raise ValueError(
+                        f"combo {combo} action sizing must use action@<amount>chips"
+                    )
+                try:
+                    size = Decimal(size_token.removesuffix("chips"))
+                except ArithmeticError as error:
+                    raise ValueError(
+                        f"combo {combo} action has an invalid native-chip amount"
+                    ) from error
+                if not size.is_finite() or size <= 0:
+                    raise ValueError(
+                        f"combo {combo} action must have a positive finite native-chip amount"
+                    )
         return combos
 
     def to_weighted_range(self, *, player_ref: str, hand_id: UUID) -> WeightedRange:

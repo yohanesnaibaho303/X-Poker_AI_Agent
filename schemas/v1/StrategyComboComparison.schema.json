@@ -1,0 +1,127 @@
+{
+  "$defs": {
+    "ComboActionComparison": {
+      "additionalProperties": false,
+      "properties": {
+        "action": {
+          "title": "Action",
+          "type": "string"
+        },
+        "baseline_frequency": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Baseline Frequency",
+          "type": "number"
+        },
+        "candidate_frequency": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Candidate Frequency",
+          "type": "number"
+        },
+        "frequency_delta": {
+          "maximum": 1,
+          "minimum": -1,
+          "title": "Frequency Delta",
+          "type": "number"
+        },
+        "baseline_ev_chips": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Baseline Ev Chips"
+        },
+        "candidate_ev_chips": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Candidate Ev Chips"
+        },
+        "ev_delta_chips": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ev Delta Chips"
+        }
+      },
+      "required": [
+        "action",
+        "baseline_frequency",
+        "candidate_frequency",
+        "frequency_delta"
+      ],
+      "title": "ComboActionComparison",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "combo": {
+      "title": "Combo",
+      "type": "string"
+    },
+    "baseline_role": {
+      "title": "Baseline Role",
+      "type": "string"
+    },
+    "candidate_role": {
+      "title": "Candidate Role",
+      "type": "string"
+    },
+    "equity_delta": {
+      "anyOf": [
+        {
+          "maximum": 1,
+          "minimum": -1,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Equity Delta"
+    },
+    "actions": {
+      "items": {
+        "$ref": "#/$defs/ComboActionComparison"
+      },
+      "title": "Actions",
+      "type": "array"
+    },
+    "assumptions": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Assumptions",
+      "type": "array"
+    }
+  },
+  "required": [
+    "combo",
+    "baseline_role",
+    "candidate_role",
+    "actions",
+    "assumptions"
+  ],
+  "title": "StrategyComboComparison",
+  "type": "object"
+}
