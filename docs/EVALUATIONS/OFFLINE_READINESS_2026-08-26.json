@@ -9,7 +9,7 @@
   },
   "sessions": 100,
   "snapshots": 1500,
-  "replay_p95_ms": 99.2356,
+  "replay_p95_ms": 97.4332,
   "replay_budget_ms": 200.0,
   "deterministic": true,
   "artifacts": [
@@ -222,6 +222,12 @@
       "kind": "schema",
       "content_sha256": "8fcad9d85b001ef702e8323722d271745396abfd75fefe594687756ef8b91a8d",
       "size_bytes": 3734
+    },
+    {
+      "path": "schemas/v1/RecognitionReplayReport.schema.json",
+      "kind": "schema",
+      "content_sha256": "cb1fb249509525cf03e1fbd9032a5db244556ae56aa432e28c1c466c51e5a82a",
+      "size_bytes": 3712
     },
     {
       "path": "schemas/v1/ReconstructionEvaluationReport.schema.json",

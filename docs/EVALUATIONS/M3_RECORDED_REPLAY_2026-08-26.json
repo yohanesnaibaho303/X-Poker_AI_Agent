@@ -1,0 +1,144 @@
+{
+  "schema_version": "1.0",
+  "replay_id": "xpoker-capture-20260824T085939.328783Z",
+  "manifest_sha256": "4cd86dac03158880c4cdc7224785fec8fec1e8bdb0eff590d75f6adca5807a73",
+  "source_layout_id": "xpoker-windows-10-portrait-v1",
+  "evaluation_layout_id": "xpoker-windows-10-portrait-9max-v1",
+  "layout_exact": false,
+  "frame_count": 12,
+  "p95_total_latency_ms": 498.1948,
+  "frames": [
+    {
+      "sequence": 0,
+      "content_sha256": "4ad3a7497ba10a89c26bb06cf84f80ca4174f924cee919ae4ff691ad9b23fa97",
+      "current_hand_supported": false,
+      "current_hand_mode": "standard_nlh",
+      "board_cards": [],
+      "hero_cards": [],
+      "occupied_seats": 2,
+      "total_latency_ms": 498.1948
+    },
+    {
+      "sequence": 1,
+      "content_sha256": "b357a420c4e09afd3ead58a524e83fba91136feed864c185d2e7c72d22c3ccfd",
+      "current_hand_supported": false,
+      "current_hand_mode": "standard_nlh",
+      "board_cards": [],
+      "hero_cards": [],
+      "occupied_seats": 2,
+      "total_latency_ms": 298.94230000000005
+    },
+    {
+      "sequence": 2,
+      "content_sha256": "2a6f695441c0ddd651d3a0890729fe40a1c96043c6c7b480077c647b3f058458",
+      "current_hand_supported": false,
+      "current_hand_mode": "standard_nlh",
+      "board_cards": [],
+      "hero_cards": [],
+      "occupied_seats": 2,
+      "total_latency_ms": 302.4581
+    },
+    {
+      "sequence": 3,
+      "content_sha256": "c1ae668428db229b2add23262a5efd47fdcba92508c6c4da18d4dff1cd7681af",
+      "current_hand_supported": false,
+      "current_hand_mode": "standard_nlh",
+      "board_cards": [],
+      "hero_cards": [],
+      "occupied_seats": 2,
+      "total_latency_ms": 324.765
+    },
+    {
+      "sequence": 4,
+      "content_sha256": "f9690c7d88f98c8157608b6868767fb54e39d6d6db89432d889031b758610614",
+      "current_hand_supported": false,
+      "current_hand_mode": "standard_nlh",
+      "board_cards": [],
+      "hero_cards": [],
+      "occupied_seats": 2,
+      "total_latency_ms": 340.0052
+    },
+    {
+      "sequence": 5,
+      "content_sha256": "fcc18bb03bc96c3d59d18dca4314a700c74f019ee6afc4034f2dabefc4693bc3",
+      "current_hand_supported": false,
+      "current_hand_mode": "standard_nlh",
+      "board_cards": [],
+      "hero_cards": [],
+      "occupied_seats": 2,
+      "total_latency_ms": 317.8986
+    },
+    {
+      "sequence": 6,
+      "content_sha256": "5286fac91206cd2acadc0c6942f7bdd196b1ea502f164cae8d49b9b9465bbd0d",
+      "current_hand_supported": false,
+      "current_hand_mode": "standard_nlh",
+      "board_cards": [],
+      "hero_cards": [],
+      "occupied_seats": 2,
+      "total_latency_ms": 320.8451
+    },
+    {
+      "sequence": 7,
+      "content_sha256": "49f6dde061c6334537fd670e7ceaee8865b999fb660378c85b12a4dcd280c0e3",
+      "current_hand_supported": false,
+      "current_hand_mode": "standard_nlh",
+      "board_cards": [],
+      "hero_cards": [],
+      "occupied_seats": 2,
+      "total_latency_ms": 308.741
+    },
+    {
+      "sequence": 8,
+      "content_sha256": "11c987d30e0fc11073a45e0c124c98ba1eb364b9d01d820d651596a0ae5a78ae",
+      "current_hand_supported": false,
+      "current_hand_mode": "standard_nlh",
+      "board_cards": [],
+      "hero_cards": [],
+      "occupied_seats": 2,
+      "total_latency_ms": 378.56690000000003
+    },
+    {
+      "sequence": 9,
+      "content_sha256": "b43760d7feaddc4c277585e4198f7075aafa6e53c078ae686d401b4a24ee9734",
+      "current_hand_supported": false,
+      "current_hand_mode": "standard_nlh",
+      "board_cards": [],
+      "hero_cards": [],
+      "occupied_seats": 2,
+      "total_latency_ms": 368.63289999999995
+    },
+    {
+      "sequence": 10,
+      "content_sha256": "9d472dd3efb1d7d7583ec8449846e1d777e76bbce752751f6768a671385d2b8d",
+      "current_hand_supported": false,
+      "current_hand_mode": "standard_nlh",
+      "board_cards": [],
+      "hero_cards": [],
+      "occupied_seats": 2,
+      "total_latency_ms": 376.3669
+    },
+    {
+      "sequence": 11,
+      "content_sha256": "c0013594273b61a16d4d15f679b776fbb1cda5b8b5208e1f13afd3027ffc7509",
+      "current_hand_supported": false,
+      "current_hand_mode": "standard_nlh",
+      "board_cards": [],
+      "hero_cards": [],
+      "occupied_seats": 2,
+      "total_latency_ms": 391.58520000000004
+    }
+  ],
+  "promotion_eligible": false,
+  "controller_enabled": false,
+  "limitations": [
+    "Recorded replay execution is regression evidence, not labeled holdout accuracy.",
+    "Raw OCR text is excluded from this privacy-safe report.",
+    "Historical manifest fields were unavailable and are not promotion evidence.",
+    "Source layout version differs from the current evaluation layout."
+  ],
+  "legacy_missing_fields": [
+    "target_hwnd",
+    "target_process_id"
+  ]
+}

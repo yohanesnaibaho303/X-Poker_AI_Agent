@@ -155,22 +155,10 @@ def build_live_capture_diagnostic(
     )
 
 
-async def diagnose_authorized_table(
-    *,
-    table_size: int = 9,
-    sequence: int = 0,
-    locked_hwnd: int | None = None,
-    locked_process_id: int | None = None,
-) -> tuple[LiveCaptureDiagnostic, CapturedFrame]:
-    profile = load_target_profile()
-    layout = load_layout_profile(table_size=table_size)
-    frame, record = capture_authorized_frame(
-        sequence,
-        profile,
-        layout,
-        locked_hwnd=locked_hwnd,
-        locked_process_id=locked_process_id,
-    )
+async def diagnose_captured_frame(
+    *, frame: CapturedFrame, record: CaptureFrameRecord, layout: LayoutProfile
+) -> LiveCaptureDiagnostic:
+    """Run the same privacy-scoped recognition path for live or recorded evidence."""
     seat_observations = classify_seat_occupancy(frame, layout)
     rule_crop = crop_layout_region(frame, layout, "rule_label")
     pot_crop = crop_layout_region(frame, layout, "pot")
@@ -209,17 +197,34 @@ async def diagnose_authorized_table(
     action_results = seat_results[len(panel_seats) :]
     panel_ocr = dict(zip(panel_seats, panel_results, strict=True))
     action_ocr = dict(zip(panel_seats, action_results, strict=True))
-    return (
-        build_live_capture_diagnostic(
-            frame=frame,
-            record=record,
-            layout=layout,
-            rule_ocr=rule_ocr,
-            pot_ocr=pot_ocr,
-            seat_observations=seat_observations,
-            panel_ocr=panel_ocr,
-            action_ocr=action_ocr,
-            controls_ocr=controls_ocr,
-        ),
-        frame,
+    return build_live_capture_diagnostic(
+        frame=frame,
+        record=record,
+        layout=layout,
+        rule_ocr=rule_ocr,
+        pot_ocr=pot_ocr,
+        seat_observations=seat_observations,
+        panel_ocr=panel_ocr,
+        action_ocr=action_ocr,
+        controls_ocr=controls_ocr,
     )
+
+
+async def diagnose_authorized_table(
+    *,
+    table_size: int = 9,
+    sequence: int = 0,
+    locked_hwnd: int | None = None,
+    locked_process_id: int | None = None,
+) -> tuple[LiveCaptureDiagnostic, CapturedFrame]:
+    profile = load_target_profile()
+    layout = load_layout_profile(table_size=table_size)
+    frame, record = capture_authorized_frame(
+        sequence,
+        profile,
+        layout,
+        locked_hwnd=locked_hwnd,
+        locked_process_id=locked_process_id,
+    )
+    diagnostic = await diagnose_captured_frame(frame=frame, record=record, layout=layout)
+    return diagnostic, frame

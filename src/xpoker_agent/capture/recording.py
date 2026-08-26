@@ -200,8 +200,13 @@ def record_capture_replay(count: int, output_dir: Path) -> CaptureReplayManifest
 
 
 def verify_capture_replay(manifest_path: Path) -> list[str]:
-    manifest = CaptureReplayManifest.model_validate_json(manifest_path.read_text(encoding="utf-8"))
+    manifest, legacy_fields = load_capture_replay(manifest_path)
     issues: list[str] = []
+    if legacy_fields:
+        issues.append(
+            "legacy manifest identity/source fields unavailable: "
+            + ", ".join(sorted(legacy_fields))
+        )
     for record in manifest.frames:
         if record.artifact_path is None:
             issues.append(f"frame {record.sequence} has no artifact")
@@ -218,6 +223,24 @@ def verify_capture_replay(manifest_path: Path) -> list[str]:
         if (frame.width, frame.height) != (record.width, record.height):
             issues.append(f"frame {record.sequence} dimensions mismatch")
     return issues
+
+
+def load_capture_replay(manifest_path: Path) -> tuple[CaptureReplayManifest, set[str]]:
+    """Load current manifests or preserve older local evidence with explicit missing-field flags."""
+    payload = json.loads(manifest_path.read_text(encoding="utf-8"))
+    legacy_fields: set[str] = set()
+    for frame in payload.get("frames", []):
+        for field, fallback in (
+            ("target_hwnd", 1),
+            ("target_process_id", 1),
+            ("source_width", frame.get("width")),
+            ("source_height", frame.get("height")),
+            ("source_dpi", frame.get("dpi")),
+        ):
+            if field not in frame:
+                legacy_fields.add(field)
+                frame[field] = fallback
+    return CaptureReplayManifest.model_validate(payload), legacy_fields
 
 
 def main() -> None:

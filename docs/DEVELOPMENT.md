@@ -46,6 +46,9 @@ This creates `.venv`, verifies Python 3.12, and installs the exact direct depend
 # Record and verify local authorized client-area frames (Git-ignored)
 .\.venv\Scripts\python.exe -m xpoker_agent.capture.recording --frames 5
 
+# Re-run production recognition on an existing capture without a live table
+.\.venv\Scripts\python.exe scripts\evaluate_capture_replay.py data\frames\<replay>\manifest.json --output recognition-replay.json
+
 # Produce content-hashed offline endurance and packaging evidence
 .\.venv\Scripts\python.exe scripts\offline_readiness.py --sessions 100 --output offline-readiness.json
 

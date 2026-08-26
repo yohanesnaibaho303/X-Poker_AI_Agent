@@ -38,6 +38,13 @@ def test_occupied_panel_without_numeric_token_is_ambiguous() -> None:
     assert result.stack_native is None
 
 
+def test_compact_stack_token_is_ambiguous_and_never_calculated() -> None:
+    result = parse_seat_panel(_occupancy(), "player 115K")
+
+    assert result.status == "ambiguous"
+    assert result.stack_native is None
+
+
 def test_empty_seat_skips_ocr_and_carries_no_private_text_hash() -> None:
     result = parse_seat_panel(_occupancy("empty"), None)
 

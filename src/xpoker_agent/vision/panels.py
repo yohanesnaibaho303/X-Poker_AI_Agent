@@ -8,7 +8,7 @@ import re
 from xpoker_agent.vision.models import SeatOccupancyObservation, SeatPanelObservation
 from xpoker_agent.vision.numbers import parse_chip_amount
 
-_AMOUNT_TOKEN = re.compile(r"(?<!\S)(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?[KkMm]?(?!\S)")
+_AMOUNT_TOKEN = re.compile(r"(?<!\S)(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?(?!\S)")
 
 
 def parse_seat_panel(

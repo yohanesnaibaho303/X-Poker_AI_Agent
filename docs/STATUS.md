@@ -301,7 +301,7 @@
   set, and production dashboard entry point. The local API exposes the inspectable audit result;
   missing or malformed artifacts make the combined result fail.
 - Added a Windows package builder and offline-readiness runner. The frozen 2026-08-26 report passed
-  100 sessions and 1,500 snapshots deterministically at 99.2356 ms p95 against the 200 ms offline
+  100 sessions and 1,500 snapshots deterministically at 97.4332 ms p95 against the 200 ms offline
   replay budget, with dependency locks, templates, configurations, and schemas content-hashed.
 - Added reconstruction promotion accounting with frozen replay hashes, exact supported-hand rate,
   100% unsupported-state safety, p95 latency, and holdout-only promotion eligibility.
@@ -311,6 +311,13 @@
   SB 1 / BB 2. Other blind structures remain visible as evidence but cannot enter reconstruction.
 - Compatibility auditing now detects schema drift and retired six-max runtime artifacts, not only
   missing files. Any mismatch fails combined offline readiness.
+- Recorded capture manifests can now run through the exact production recognition boundary without
+  a live table. Reports verify frame hashes, omit raw OCR text, expose latency and structured outputs,
+  and remain explicitly ineligible for holdout promotion until labels are supplied.
+- A 12-frame legacy-layout replay completed through production recognition at 498.1948 ms p95.
+  This exceeds the 200 ms target and does not pass M3: source layout differs from current calibration,
+  identity fields are absent in the historical manifest, and no holdout labels exist. Evidence is
+  retained as a failed regression benchmark, not a promotion result.
 - Historical notes below describe earlier checkpoints and are retained only as legacy evidence; they are not supported behavior.
 ## Completed project checkpoints
 

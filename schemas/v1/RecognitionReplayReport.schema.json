@@ -1,0 +1,158 @@
+{
+  "$defs": {
+    "RecognitionReplayFrame": {
+      "additionalProperties": false,
+      "properties": {
+        "sequence": {
+          "minimum": 0,
+          "title": "Sequence",
+          "type": "integer"
+        },
+        "content_sha256": {
+          "maxLength": 64,
+          "minLength": 64,
+          "title": "Content Sha256",
+          "type": "string"
+        },
+        "current_hand_supported": {
+          "title": "Current Hand Supported",
+          "type": "boolean"
+        },
+        "current_hand_mode": {
+          "enum": [
+            "standard_nlh",
+            "single_board_bomb_pot",
+            "ambiguous"
+          ],
+          "title": "Current Hand Mode",
+          "type": "string"
+        },
+        "board_cards": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Board Cards",
+          "type": "array"
+        },
+        "hero_cards": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Hero Cards",
+          "type": "array"
+        },
+        "occupied_seats": {
+          "maximum": 9,
+          "minimum": 0,
+          "title": "Occupied Seats",
+          "type": "integer"
+        },
+        "total_latency_ms": {
+          "minimum": 0,
+          "title": "Total Latency Ms",
+          "type": "number"
+        }
+      },
+      "required": [
+        "sequence",
+        "content_sha256",
+        "current_hand_supported",
+        "current_hand_mode",
+        "board_cards",
+        "hero_cards",
+        "occupied_seats",
+        "total_latency_ms"
+      ],
+      "title": "RecognitionReplayFrame",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "replay_id": {
+      "title": "Replay Id",
+      "type": "string"
+    },
+    "manifest_sha256": {
+      "maxLength": 64,
+      "minLength": 64,
+      "title": "Manifest Sha256",
+      "type": "string"
+    },
+    "source_layout_id": {
+      "title": "Source Layout Id",
+      "type": "string"
+    },
+    "evaluation_layout_id": {
+      "title": "Evaluation Layout Id",
+      "type": "string"
+    },
+    "layout_exact": {
+      "title": "Layout Exact",
+      "type": "boolean"
+    },
+    "frame_count": {
+      "minimum": 1,
+      "title": "Frame Count",
+      "type": "integer"
+    },
+    "p95_total_latency_ms": {
+      "minimum": 0,
+      "title": "P95 Total Latency Ms",
+      "type": "number"
+    },
+    "frames": {
+      "items": {
+        "$ref": "#/$defs/RecognitionReplayFrame"
+      },
+      "title": "Frames",
+      "type": "array"
+    },
+    "promotion_eligible": {
+      "const": false,
+      "default": false,
+      "title": "Promotion Eligible",
+      "type": "boolean"
+    },
+    "controller_enabled": {
+      "const": false,
+      "default": false,
+      "title": "Controller Enabled",
+      "type": "boolean"
+    },
+    "limitations": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Limitations",
+      "type": "array"
+    },
+    "legacy_missing_fields": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Legacy Missing Fields",
+      "type": "array"
+    }
+  },
+  "required": [
+    "replay_id",
+    "manifest_sha256",
+    "source_layout_id",
+    "evaluation_layout_id",
+    "layout_exact",
+    "frame_count",
+    "p95_total_latency_ms",
+    "frames",
+    "limitations",
+    "legacy_missing_fields"
+  ],
+  "title": "RecognitionReplayReport",
+  "type": "object"
+}

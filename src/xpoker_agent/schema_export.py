@@ -54,6 +54,7 @@ from xpoker_agent.vision.models import (
     LiveObservationStartRequest,
     LiveObservationStatus,
 )
+from xpoker_agent.vision.replay import RecognitionReplayReport
 
 MODELS = [
     GameConfig,
@@ -95,6 +96,7 @@ MODELS = [
     LiveCaptureDiagnostic,
     LiveObservationStartRequest,
     LiveObservationStatus,
+    RecognitionReplayReport,
     DecisionEnvelope,
     ActionAttempt,
 ]
