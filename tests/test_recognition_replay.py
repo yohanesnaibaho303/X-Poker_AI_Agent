@@ -88,6 +88,9 @@ def test_recorded_replay_runs_same_diagnostic_boundary_without_raw_text(
 
     assert report.frame_count == 1
     assert report.frames[0].current_hand_supported is True
+    assert report.frames[0].hero_action_surface == "absent"
+    assert report.hero_action_surface_counts == {"absent": 1}
+    assert report.max_consecutive_decision_frames == 0
     assert report.promotion_eligible is False
     assert report.controller_enabled is False
     assert "Bomb Pot" not in report.model_dump_json()

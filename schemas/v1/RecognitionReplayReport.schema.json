@@ -41,6 +41,16 @@
           "title": "Hero Cards",
           "type": "array"
         },
+        "hero_action_surface": {
+          "enum": [
+            "absent",
+            "pre_action",
+            "decision",
+            "ambiguous"
+          ],
+          "title": "Hero Action Surface",
+          "type": "string"
+        },
         "occupied_seats": {
           "maximum": 9,
           "minimum": 0,
@@ -60,6 +70,7 @@
         "current_hand_mode",
         "board_cards",
         "hero_cards",
+        "hero_action_surface",
         "occupied_seats",
         "total_latency_ms"
       ],
@@ -114,6 +125,18 @@
       "title": "Frames",
       "type": "array"
     },
+    "hero_action_surface_counts": {
+      "additionalProperties": {
+        "type": "integer"
+      },
+      "title": "Hero Action Surface Counts",
+      "type": "object"
+    },
+    "max_consecutive_decision_frames": {
+      "minimum": 0,
+      "title": "Max Consecutive Decision Frames",
+      "type": "integer"
+    },
     "promotion_eligible": {
       "const": false,
       "default": false,
@@ -150,6 +173,8 @@
     "frame_count",
     "p95_total_latency_ms",
     "frames",
+    "hero_action_surface_counts",
+    "max_consecutive_decision_frames",
     "limitations",
     "legacy_missing_fields"
   ],

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+from collections import Counter
 from collections.abc import Awaitable, Callable
 from pathlib import Path
 from typing import Literal
@@ -31,6 +32,7 @@ class RecognitionReplayFrame(StrictModel):
     current_hand_mode: Literal["standard_nlh", "single_board_bomb_pot", "ambiguous"]
     board_cards: list[str]
     hero_cards: list[str]
+    hero_action_surface: Literal["absent", "pre_action", "decision", "ambiguous"]
     occupied_seats: int = Field(ge=0, le=9)
     total_latency_ms: float = Field(ge=0)
 
@@ -45,6 +47,8 @@ class RecognitionReplayReport(StrictModel):
     frame_count: int = Field(ge=1)
     p95_total_latency_ms: float = Field(ge=0)
     frames: list[RecognitionReplayFrame]
+    hero_action_surface_counts: dict[str, int]
+    max_consecutive_decision_frames: int = Field(ge=0)
     promotion_eligible: Literal[False] = False
     controller_enabled: Literal[False] = False
     limitations: list[str]
@@ -87,6 +91,7 @@ async def diagnose_capture_replay(
                 current_hand_mode=diagnostic.current_hand_mode,
                 board_cards=[item.card for item in diagnostic.board_cards if item.card],
                 hero_cards=[item.card for item in diagnostic.hero_cards.cards if item.card],
+                hero_action_surface=diagnostic.hero_action_controls.mode,
                 occupied_seats=sum(
                     item.status == "occupied" for item in diagnostic.seat_observations
                 ),
@@ -95,6 +100,11 @@ async def diagnose_capture_replay(
         )
     latencies = sorted(item.total_latency_ms for item in results)
     p95 = latencies[max(0, (len(latencies) * 95 + 99) // 100 - 1)]
+    max_decision_run = 0
+    decision_run = 0
+    for frame in results:
+        decision_run = decision_run + 1 if frame.hero_action_surface == "decision" else 0
+        max_decision_run = max(max_decision_run, decision_run)
     return RecognitionReplayReport(
         replay_id=manifest.replay_id,
         manifest_sha256=hashlib.sha256(raw_manifest).hexdigest(),
@@ -104,6 +114,10 @@ async def diagnose_capture_replay(
         frame_count=len(results),
         p95_total_latency_ms=p95,
         frames=results,
+        hero_action_surface_counts=dict(
+            Counter(frame.hero_action_surface for frame in results)
+        ),
+        max_consecutive_decision_frames=max_decision_run,
         limitations=[
             "Recorded replay execution is regression evidence, not labeled holdout accuracy.",
             "Raw OCR text is excluded from this privacy-safe report.",
