@@ -21,7 +21,13 @@ from xpoker_agent.monitoring.models import (
     StrategyActionSnapshot,
     StrategySnapshot,
 )
-from xpoker_agent.poker_math import effective_stack, pot_odds_required_equity, stack_to_pot_ratio
+from xpoker_agent.poker_math import (
+    call_ev_chips,
+    effective_stack,
+    monte_carlo_equity,
+    pot_odds_required_equity,
+    stack_to_pot_ratio,
+)
 from xpoker_agent.ranges.cards import canonical_combo
 from xpoker_agent.ranges.library import (
     ObservedRangeAction,
@@ -29,7 +35,7 @@ from xpoker_agent.ranges.library import (
     load_seeded_gto_library,
     load_seeded_reference_library,
 )
-from xpoker_agent.simulation import run_simulated_hand
+from xpoker_agent.simulation import SIMULATED_HAND_ID, run_simulated_hand
 from xpoker_agent.strategy.resolver import PreflopStrategyResolver
 
 
@@ -39,6 +45,32 @@ def _strategy_resolver() -> PreflopStrategyResolver:
         gto_library=load_seeded_gto_library(),
         reference_library=load_seeded_reference_library(),
     )
+
+
+@lru_cache(maxsize=1)
+def _synthetic_opponent_artifact():
+    folds = [
+        ObservedRangeAction(actor_position=position, type="fold")
+        for position in Position
+        if position not in {Position.SB, Position.BB}
+    ]
+    spot = PreflopSpotKey(
+        player_position=Position.SB,
+        players_remaining=2,
+        stack_depth_chips=Decimal("200"),
+        action_sequence=folds,
+    )
+    return load_seeded_gto_library().lookup(spot).artifact
+
+
+@lru_cache(maxsize=32)
+def _synthetic_equity(hero_combo: str) -> float:
+    opponent = _synthetic_opponent_artifact().to_weighted_range(
+        player_ref="synthetic-opponent", hand_id=SIMULATED_HAND_ID
+    )
+    return monte_carlo_equity(
+        hero_combo, [opponent], [], trials=256, random_seed=7
+    ).equity
 
 
 def _replay_math(state: HandState) -> PokerMathSnapshot:
@@ -67,18 +99,30 @@ def _replay_math(state: HandState) -> PokerMathSnapshot:
     if effective_stack_chips is not None and state.pot_main_chips > 0:
         spr = stack_to_pot_ratio(effective_stack_chips, state.pot_main_chips)
 
+    equity: float | None = None
+    ev: Decimal | None = None
+    assumptions = [
+        "Pot odds and SPR are deterministic from the reconstructed state.",
+        "Equity uses a seeded synthetic SB GTO range for offline replay only.",
+    ]
+    if state.street is Street.PREFLOP and len(state.hero_cards) == 2 and opponents:
+        try:
+            equity = _synthetic_equity(canonical_combo(*state.hero_cards))
+            if call_chips:
+                ev = call_ev_chips(Decimal(str(equity)), state.pot_main_chips, call_chips)
+            assumptions.append("Equity is Monte Carlo (256 trials, seed 7), not live evidence.")
+        except (KeyError, ValueError):
+            assumptions.append("No compatible validated offline opponent range was available.")
+
     return PokerMathSnapshot(
         effective_stack_chips=effective_stack_chips,
         call_amount_chips=call_chips,
         pot_odds_required_equity=required_equity,
         spr=spr,
-        equity=None,
-        call_ev_chips=None,
-        status="partial",
-        assumptions=[
-            "Pot odds and SPR are deterministic from the reconstructed state.",
-            "Equity and call EV remain unavailable without a validated opponent range.",
-        ],
+        equity=equity,
+        call_ev_chips=ev,
+        status="complete" if equity is not None else "partial",
+        assumptions=assumptions,
     )
 
 
@@ -110,14 +154,11 @@ def _replay_strategy(state: HandState) -> StrategySnapshot:
         player_position=Position.BTN,
         players_remaining=3,
         action_sequence=[
-            ObservedRangeAction(actor_position=position, type="fold")
-            for position in positions
+            ObservedRangeAction(actor_position=position, type="fold") for position in positions
         ],
     )
     combo = canonical_combo(*state.hero_cards)
-    resolution = _strategy_resolver().resolve(
-        spot, player_ref="hero", hand_id=state.hand_id
-    )
+    resolution = _strategy_resolver().resolve(spot, player_ref="hero", hand_id=state.hand_id)
     try:
         result = _strategy_resolver().summarize_combo(resolution, combo)
     except KeyError:
@@ -167,15 +208,16 @@ def build_replay_snapshot(
         "GTO strategy is model-abstracted and limited to supported unopened preflop spots.",
         "Table control is disabled.",
     ]
+    exploit_actions = {item.action: item.frequency for item in strategy.action_frequencies}
+    math = _replay_math(state)
+    trace_ready = bool(exploit_actions) and math.equity is not None
     snapshot = MonitorSnapshot(
         generated_at=datetime.now(UTC),
         table_size=9,
         source_mode="synthetic_replay",
         state=state,
         action_history=history,
-        health=MonitorHealth(
-            status="degraded", strategy_status=strategy.status, warnings=warnings
-        ),
+        health=MonitorHealth(status="degraded", strategy_status=strategy.status, warnings=warnings),
         metrics=MonitorMetrics(
             state_revision=state.revision,
             event_count=len(history),
@@ -187,14 +229,19 @@ def build_replay_snapshot(
             total=len(events),
             interval_ms=interval_ms,
         ),
-        poker_math=_replay_math(state),
+        poker_math=math,
         strategy=strategy,
         exploit=ExploitSnapshot(
-            status="synthetic_only",
-            confidence=0.0,
+            status="synthetic_only" if exploit_actions else "unavailable",
+            confidence=strategy.confidence if exploit_actions else 0.0,
             sample_size=0,
-            opponent_range_status="unavailable",
-            assumptions=["No live opponent sample is connected."],
+            opponent_range_status="synthetic" if exploit_actions else "unavailable",
+            baseline_actions=exploit_actions,
+            adjusted_actions=exploit_actions,
+            assumptions=[
+                "Offline replay links the resolved hero mix to a synthetic opponent model; "
+                "no observed sample is connected."
+            ],
         ),
         audit=[
             {
@@ -218,6 +265,22 @@ def build_replay_snapshot(
                 "status": "blocked",
                 "detail": "Controller implementation and arming are absent.",
                 "source": "runtime safety boundary",
+            },
+            {
+                "check": "decision_trace",
+                "status": "passed" if trace_ready else "blocked",
+                "detail": (
+                    "State, synthetic range, resolved strategy, equity, EV, and exploit mix "
+                    "are linked."
+                    if trace_ready
+                    else "Trace is incomplete until a supported strategy and opponent "
+                    "equity are available."
+                ),
+                "state_revision": state.revision,
+                "strategy_status": strategy.status,
+                "math_status": math.status,
+                "exploit_status": "synthetic" if exploit_actions else "unavailable",
+                "source": "offline replay decision trace",
             },
         ],
     )

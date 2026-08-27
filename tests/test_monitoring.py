@@ -21,9 +21,14 @@ def test_simulated_monitor_replay_supports_authoritative_table() -> None:
     assert snapshot.replay.index == snapshot.replay.total == 14
     assert snapshot.health.controller_enabled is False
     assert snapshot.strategy.status == "unavailable"
-    assert snapshot.poker_math.equity is None
+    assert snapshot.poker_math.equity is None  # completed hand has no active opponent model
     assert snapshot.metrics.processing_latency_ms > 0
-    assert [item["status"] for item in snapshot.audit] == ["passed", "blocked", "blocked"]
+    assert [item["status"] for item in snapshot.audit] == [
+        "passed",
+        "blocked",
+        "blocked",
+        "blocked",
+    ]
 
 
 def test_replay_math_exposes_exact_preflop_pot_odds_without_inventing_equity() -> None:
@@ -32,8 +37,8 @@ def test_replay_math_exposes_exact_preflop_pot_odds_without_inventing_equity() -
     assert snapshot.state.next_to_act_seat == snapshot.state.hero_seat
     assert snapshot.poker_math.call_amount_chips == 2
     assert snapshot.poker_math.pot_odds_required_equity == Decimal("0.4")
-    assert snapshot.poker_math.equity is None
-    assert snapshot.poker_math.call_ev_chips is None
+    assert snapshot.poker_math.equity is not None
+    assert snapshot.poker_math.call_ev_chips is not None
 
 
 def test_replay_gto_strategy_is_always_model_abstracted() -> None:
@@ -45,12 +50,20 @@ def test_replay_gto_strategy_is_always_model_abstracted() -> None:
     assert all(snapshot.strategy.status == "abstracted" for snapshot in resolved)
     assert all(snapshot.health.strategy_status == "abstracted" for snapshot in resolved)
     assert all(snapshot.strategy.equity is None for snapshot in resolved)
-    assert all(snapshot.exploit.opponent_range_status == "unavailable" for snapshot in snapshots)
+    assert all(
+        snapshot.exploit.opponent_range_status
+        == ("synthetic" if snapshot.strategy.action_frequencies else "unavailable")
+        for snapshot in snapshots
+    )
 
     decision = build_replay_snapshot(5)
     assert decision.strategy.hero_combo == "AsKd"
     assert decision.strategy.status == "abstracted"
-    assert [item["status"] for item in decision.audit] == ["passed", "passed", "blocked"]
+    assert decision.poker_math.equity is not None
+    assert decision.poker_math.call_ev_chips is not None
+    assert decision.exploit.opponent_range_status == "synthetic"
+    assert [item["status"] for item in decision.audit] == ["passed", "passed", "blocked", "passed"]
+    assert decision.audit[-1]["state_revision"] == decision.state.revision
 
 
 def test_monitor_api_exposes_fixed_table_and_reference_matrix() -> None:
