@@ -43,11 +43,13 @@ def _event(
     )
 
 
-def simulated_events() -> list[HandEvent]:
+def simulated_events(dealt_players: int = 3) -> list[HandEvent]:
+    if not 3 <= dealt_players <= 9:
+        raise ValueError("dealt_players must be between 3 and 9")
     hand_id = SIMULATED_HAND_ID
     table_size = 9
     hero, small_blind, big_blind = 6, 7, 8
-    return [
+    events = [
         _event(table_size, hand_id, 1, EventCategory.LIFECYCLE, "hand_started"),
         _event(
             table_size,
@@ -173,28 +175,52 @@ def simulated_events() -> list[HandEvent]:
             street=Street.FLOP,
         ),
     ]
+    events[5:5] = [
+        _event(
+            table_size,
+            hand_id,
+            6 + index,
+            EventCategory.BETTING_ACTION,
+            "fold",
+            actor_seat=seat,
+            street=Street.PREFLOP,
+        )
+        for index, seat in enumerate(range(9 - dealt_players, 6))
+    ]
+    return [
+        event.model_copy(
+            update={
+                "sequence": sequence,
+                "event_id": uuid5(
+                    NAMESPACE_URL,
+                    f"xpoker-agent:simulation:{dealt_players}max:event:{sequence}",
+                ),
+            }
+        )
+        for sequence, event in enumerate(events, start=1)
+    ]
 
 
-def run_simulated_hand() -> tuple[list[HandState], list[HandEvent]]:
+def run_simulated_hand(dealt_players: int = 3) -> tuple[list[HandState], list[HandEvent]]:
+    if not 3 <= dealt_players <= 9:
+        raise ValueError("dealt_players must be between 3 and 9")
     config = load_game_config()
     table_size = 9
     hand_id = SIMULATED_HAND_ID
-    hero, small_blind, big_blind = table_size - 3, table_size - 2, table_size - 1
+    hero = 6
+    occupied_seats = range(9 - dealt_players, 9)
+    positions = dict(zip(occupied_seats, list(Position)[-dealt_players:], strict=True))
     state = create_initial_state(
         hand_id=hand_id,
         config_version=config.config_id,
         hero_seat=hero,
-        occupied_stacks_chips={
-            hero: Decimal("200"),
-            small_blind: Decimal("200"),
-            big_blind: Decimal("200"),
-        },
-        positions={hero: Position.BTN, small_blind: Position.SB, big_blind: Position.BB},
+        occupied_stacks_chips={seat: Decimal("200") for seat in occupied_seats},
+        positions=positions,
         table_size=table_size,
     )
     states = [state]
     reducer = HandStateReducer()
-    events = simulated_events()
+    events = simulated_events(dealt_players)
     for event in events:
         state = reducer.apply(state, event)
         states.append(state)

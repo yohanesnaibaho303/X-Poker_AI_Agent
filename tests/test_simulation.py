@@ -1,5 +1,7 @@
 from decimal import Decimal
 
+import pytest
+
 from xpoker_agent.models import EventCategory, Position
 from xpoker_agent.simulation import run_simulated_hand
 
@@ -31,3 +33,11 @@ def test_simulated_hand_retains_nine_canonical_seats_and_positions() -> None:
     assert initial.seats[6].position is Position.BTN
     assert initial.seats[7].position is Position.SB
     assert initial.seats[8].position is Position.BB
+
+
+@pytest.mark.parametrize("dealt_players", range(3, 10))
+def test_simulated_hand_supports_each_dealt_player_count(dealt_players: int) -> None:
+    states, events = run_simulated_hand(dealt_players)
+    assert len([seat for seat in states[0].seats if seat.starting_stack_chips]) == dealt_players
+    assert states[-1].validation.legal is True
+    assert [event.sequence for event in events] == list(range(1, len(events) + 1))
