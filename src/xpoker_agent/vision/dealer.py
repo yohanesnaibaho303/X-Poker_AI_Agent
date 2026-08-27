@@ -5,70 +5,43 @@ from __future__ import annotations
 from xpoker_agent.capture.frames import CapturedFrame
 from xpoker_agent.capture.models import LayoutProfile
 from xpoker_agent.vision.models import DealerButtonObservation, PixelBox
-from xpoker_agent.vision.primitives import normalized_box
-
-
-def _rgb(frame: CapturedFrame, x: int, y: int) -> tuple[int, int, int]:
-    offset = ((frame.height - 1 - y) * frame.width + x) * 4
-    blue, green, red, _ = frame.bgra_bottom_up[offset : offset + 4]
-    return red, green, blue
-
-
-def _bright_neutral(frame: CapturedFrame, x: int, y: int) -> bool:
-    red, green, blue = _rgb(frame, x, y)
-    return min(red, green, blue) >= 175 and max(red, green, blue) - min(red, green, blue) <= 35
+from xpoker_agent.vision.primitives import (
+    bright_neutral_mask,
+    connected_components,
+    crop_frame,
+    normalized_box,
+)
 
 
 def detect_dealer_button(
     frame: CapturedFrame, layout: LayoutProfile
 ) -> DealerButtonObservation:
-    visited: set[tuple[int, int]] = set()
     candidates: list[tuple[PixelBox, int]] = []
     top = round(frame.height * 0.07)
     bottom = round(frame.height * 0.86)
-    for y in range(top, bottom):
-        for x in range(frame.width):
-            if (x, y) in visited or not _bright_neutral(frame, x, y):
-                continue
-            pending = [(x, y)]
-            visited.add((x, y))
-            points: list[tuple[int, int]] = []
-            while pending:
-                current_x, current_y = pending.pop()
-                points.append((current_x, current_y))
-                for adjacent in (
-                    (current_x - 1, current_y),
-                    (current_x + 1, current_y),
-                    (current_x, current_y - 1),
-                    (current_x, current_y + 1),
-                ):
-                    adjacent_x, adjacent_y = adjacent
-                    if (
-                        0 <= adjacent_x < frame.width
-                        and top <= adjacent_y < bottom
-                        and adjacent not in visited
-                        and _bright_neutral(frame, adjacent_x, adjacent_y)
-                    ):
-                        visited.add(adjacent)
-                        pending.append(adjacent)
-            left = min(point[0] for point in points)
-            right = max(point[0] for point in points) + 1
-            component_top = min(point[1] for point in points)
-            component_bottom = max(point[1] for point in points) + 1
-            width = right - left
-            height = component_bottom - component_top
-            if 16 <= width <= 19 and 14 <= height <= 16 and 120 <= len(points) <= 300:
-                candidates.append(
-                    (
-                        PixelBox(
-                            left=left,
-                            top=component_top,
-                            right=right,
-                            bottom=component_bottom,
-                        ),
-                        len(points),
-                    )
+    crop = crop_frame(frame, PixelBox(left=0, top=top, right=frame.width, bottom=bottom))
+    mask = bright_neutral_mask(crop, minimum_channel=175, maximum_channel_spread=35)
+    for component in connected_components(mask, minimum_area=120):
+        pixels = sum(
+            sum(
+                mask.top_down[
+                    y * mask.width + component.left : y * mask.width + component.right
+                ]
+            )
+            for y in range(component.top, component.bottom)
+        )
+        if 16 <= component.width <= 19 and 14 <= component.height <= 16 and pixels <= 300:
+            candidates.append(
+                (
+                    PixelBox(
+                        left=component.left,
+                        top=component.top + top,
+                        right=component.right,
+                        bottom=component.bottom + top,
+                    ),
+                    pixels,
                 )
+            )
     if len(candidates) != 1:
         return DealerButtonObservation(
             seat=None,

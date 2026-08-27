@@ -142,6 +142,18 @@ def normalize_frame(frame: CapturedFrame, width: int, height: int) -> CapturedFr
         raise ValueError("normalized dimensions must be positive")
     if (frame.width, frame.height) == (width, height):
         return frame
+    if width % frame.width == 0 and height % frame.height == 0:
+        x_scale = width // frame.width
+        y_scale = height // frame.height
+        row_size = frame.width * 4
+        rows = []
+        for offset in range(0, len(frame.bgra_bottom_up), row_size):
+            source_row = frame.bgra_bottom_up[offset : offset + row_size]
+            expanded = b"".join(
+                source_row[x : x + 4] * x_scale for x in range(0, row_size, 4)
+            )
+            rows.append(expanded * y_scale)
+        return CapturedFrame(width=width, height=height, bgra_bottom_up=b"".join(rows))
 
     x_source = [min(frame.width - 1, x * frame.width // width) for x in range(width)]
     rows: list[bytes] = []
