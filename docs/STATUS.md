@@ -344,6 +344,45 @@
 
 ## Next
 
+- The continuous observer now measures its interval from frame start rather than sleeping again
+  after recognition. Integer-factor nearest-neighbor scaling uses an exact fast path, and dealer
+  detection reuses the shared binary-mask/component primitives. Live throughput improved from about
+  1.2 FPS to about 2 FPS while retaining identical fail-closed recognition semantics.
+- Live evidence reached a reducer-validated canonical standard-NLH prefix. The latest validated
+  prefix is retained across later ambiguous frames and hand boundaries for audit. A witnessed next
+  boundary can now finalize an exact single-winner, single-pot hand when one nearby stable stack
+  increase matches the retained pot and reducer eligibility. Split pots, side pots, top-ups, netted
+  new-hand blinds, or any nonexact evidence remain unresolved and fail closed.
+- A visually labeled live `Td 7d` hand added the missing left-`T` hero-rank mask with its exact
+  source-frame hash. The matching right-`7` candidate was independently recognized. This is
+  calibration/self-match evidence, not held-out accuracy promotion.
+- Two user-supplied authorized screenshots passed the configured action-region crop and Windows OCR
+  path end to end. Source SHA-256 `1fd74d96de459ba0080e3cbf5d8142d8f7eeccdda8e426cbd0bffe3245cb6cc3`
+  produced `Call 2 Call Any` and correctly remained `pre_action` with no legal actions; SHA-256
+  `2f25f7167b753b730f8764bf6d149c69065ef4d5de011dbdbba7d49c1a030836` produced
+  `Fold Call 10 Raise` and correctly became a pending `decision` with exact call amount 10. This is
+  two-frame calibration evidence; live acceptance still requires three distinct stable frames.
+- The live-hero monitor now exposes the action-surface mode and refuses a ready recommendation unless
+  the accepted surface is `decision`; stable `pre_action`, absent, and ambiguous surfaces remain
+  visible but blocked.
+- Retained BMP replay confirms the distinction across real session states: a folded/non-hero action
+  frame yields an ambiguous hero surface, while a current hero frame yields `pre_action` from
+  `Call Any`; neither is promoted to a hero decision. The observer therefore preserves the live
+  fail-closed boundary when the hero is not currently actionable.
+- Production replay of retained manifest `xpoker-capture-20260826T153413.331688Z` processed all 120
+  frames with matching source/evaluation layouts and p95 diagnostic latency 336.62 ms. Frames
+  consistently recognized the supported standard-NLH mode and `Qd 5h`; promotion remains false
+  because this is replay evidence rather than labeled holdout data.
+- Replay frames now retain only the structured hero action-surface mode. The same 120-frame manifest
+  classified every frame as `pre_action`, matching the observed non-decision state; no legal hero
+  action was emitted.
+- A second retained 120-frame manifest (`xpoker-capture-20260826T152905.769899Z`) replayed into 54
+  `decision`, 34 `pre_action`, and 32 `ambiguous` hero-surface frames, including a 38-frame stable
+  decision interval. This validates state separation across real session transitions; it remains
+  calibration evidence and does not authorize control or promotion.
+- Replay reports now include aggregate hero action-surface counts; a regenerated 12-frame retained
+  report records `{"ambiguous": 12}` without retaining OCR text.
+
 - Continue live capture, perception evidence, and reconstructed-observation integration in the monitor.
 - Observe complete standard hands and an active single-board Bomb Pot on the authorized table for
   temporal contribution and hand-mode calibration; no new user-facing replay work is required.
