@@ -60,6 +60,9 @@ This creates `.venv`, verifies Python 3.12, and installs the exact direct depend
 
 # Run all checks and build a wheel, dashboard archive, locks, and readiness report
 .\scripts\package.ps1
+
+# Rehearse the fresh-machine demo path without starting the API or using a table
+.\scripts\offline_demo.ps1
 ```
 
 The application binds only to `127.0.0.1:8765`. The dashboard is available at `/monitor/` and interactive API documentation at `/docs` while it is running.
