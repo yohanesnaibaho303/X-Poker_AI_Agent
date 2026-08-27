@@ -60,3 +60,15 @@ def test_withholds_calculation_when_hero_evidence_is_missing() -> None:
     assert result.hand_class is None
     assert "hero_seat_not_detected" in result.issues
     assert "hero_cards_not_detected" in result.issues
+
+
+def test_withholds_recommendation_on_pre_action_surface() -> None:
+    status = LiveObservationService().status().model_copy(
+        update={"hero_control_consensus": _accepted("pre_action:fold_or_check,call_any:")}
+    )
+
+    result = build_live_hero_calculation(status)
+
+    assert result.action_surface == "pre_action"
+    assert result.ready is False
+    assert "hero_decision_surface_not_active" in result.issues

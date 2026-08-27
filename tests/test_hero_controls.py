@@ -4,7 +4,7 @@ from xpoker_agent.vision.controls import parse_hero_action_controls
 
 
 def test_pre_action_toggles_are_not_legal_actions() -> None:
-    result = parse_hero_action_controls("F/C   Check   Call Any")
+    result = parse_hero_action_controls("F/C   Call 2   Call Any")
 
     assert result.mode == "pre_action"
     assert result.available_actions == []
@@ -13,11 +13,11 @@ def test_pre_action_toggles_are_not_legal_actions() -> None:
 
 
 def test_current_decision_controls_include_call_amount() -> None:
-    result = parse_hero_action_controls("Fold  Call 4  Raise")
+    result = parse_hero_action_controls("Fold  Call 10  Raise")
 
     assert result.mode == "decision"
     assert result.available_actions == ["fold", "call", "raise"]
-    assert result.call_amount_native == Decimal("4")
+    assert result.call_amount_native == Decimal("10")
 
 
 def test_empty_control_text_is_absent() -> None:

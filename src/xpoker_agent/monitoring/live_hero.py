@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from decimal import Decimal, InvalidOperation
+from typing import Literal
 
 from xpoker_agent.models import Position, StrictModel
 from xpoker_agent.poker_math import (
@@ -28,6 +29,9 @@ class LiveHeroCalculation(StrictModel):
     effective_stack_chips: Decimal | None = None
     required_equity: Decimal | None = None
     spr: Decimal | None = None
+    action_surface: Literal["absent", "pre_action", "decision", "ambiguous"] = (
+        "ambiguous"
+    )
     ready: bool
     issues: list[str]
     assumptions: list[str]
@@ -67,6 +71,11 @@ def build_live_hero_calculation(status: LiveObservationStatus) -> LiveHeroCalcul
         issues.append("hero_cards_not_detected")
     if status.detected_hero_position is None:
         issues.append("hero_position_not_resolved")
+    action_surface: Literal["absent", "pre_action", "decision", "ambiguous"] = "ambiguous"
+    if status.hero_control_consensus.accepted and status.hero_control_consensus.value:
+        action_surface = status.hero_control_consensus.value.split(":", 1)[0]  # type: ignore[assignment]
+    if action_surface != "decision":
+        issues.append("hero_decision_surface_not_active")
 
     stack_values = {
         item.seat: _accepted_decimal(item.consensus.value)
@@ -121,6 +130,7 @@ def build_live_hero_calculation(status: LiveObservationStatus) -> LiveHeroCalcul
         effective_stack_chips=effective_chips,
         required_equity=required_equity,
         spr=spr,
+        action_surface=action_surface,
         ready=not issues,
         issues=issues,
         assumptions=[
