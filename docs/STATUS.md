@@ -397,10 +397,9 @@
   a wager when the observer starts mid-action or temporal evidence arrives outside the match window.
 - Continue gradual 3-to-9-player live captures to validate every occupied seat panel, player state,
   stack/bet crop, dealer marker, and clockwise action transition.
-- Add opponent-range, poker-math, exact/abstracted strategy, exploit-frequency, provenance, and
-  decision-trace views as those upstream results become available.
-- Connect the completed exploit layer to real reconstructed observations and resolved strategy EVs
-  during Milestone 8 integration.
+- Synthetic replay now exposes opponent-range status, poker math, exact/abstracted strategy,
+  exploit frequencies, provenance assumptions, and a decision-trace audit entry. Connect these
+  views to validated observed ranges and live reconstructed strategy EVs when that evidence exists.
 - Continue M3/M4 promotion evaluation from representative live standard NLH evidence, retaining
   only minimal internal regression fixtures needed for deterministic safety tests.
 
