@@ -189,4 +189,5 @@ class OfflineController:
                 ],
             }
         )
+        self.audit_log[-1] = result
         return result
