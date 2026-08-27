@@ -1,0 +1,59 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "case_id": {
+      "title": "Case Id",
+      "type": "string"
+    },
+    "replay_sha256": {
+      "maxLength": 64,
+      "minLength": 64,
+      "title": "Replay Sha256",
+      "type": "string"
+    },
+    "dataset_slice": {
+      "title": "Dataset Slice",
+      "type": "string"
+    },
+    "supported": {
+      "title": "Supported",
+      "type": "boolean"
+    },
+    "exact_match": {
+      "title": "Exact Match",
+      "type": "boolean"
+    },
+    "safely_stopped": {
+      "title": "Safely Stopped",
+      "type": "boolean"
+    },
+    "latency_ms": {
+      "minimum": 0,
+      "title": "Latency Ms",
+      "type": "number"
+    },
+    "failure_reason": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Failure Reason"
+    }
+  },
+  "required": [
+    "case_id",
+    "replay_sha256",
+    "dataset_slice",
+    "supported",
+    "exact_match",
+    "safely_stopped",
+    "latency_ms"
+  ],
+  "title": "ReconstructionEvaluationCase",
+  "type": "object"
+}

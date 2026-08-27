@@ -1,0 +1,80 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "case_id": {
+      "title": "Case Id",
+      "type": "string"
+    },
+    "component": {
+      "enum": [
+        "card",
+        "numeric_ocr",
+        "street",
+        "seat",
+        "action_control"
+      ],
+      "title": "Component",
+      "type": "string"
+    },
+    "dataset_slice": {
+      "title": "Dataset Slice",
+      "type": "string"
+    },
+    "expected": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Expected"
+    },
+    "predicted": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Predicted"
+    },
+    "accepted": {
+      "title": "Accepted",
+      "type": "boolean"
+    },
+    "confidence": {
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Confidence",
+      "type": "number"
+    },
+    "latency_ms": {
+      "minimum": 0,
+      "title": "Latency Ms",
+      "type": "number"
+    },
+    "evidence_sha256": {
+      "maxLength": 64,
+      "minLength": 64,
+      "title": "Evidence Sha256",
+      "type": "string"
+    }
+  },
+  "required": [
+    "case_id",
+    "component",
+    "dataset_slice",
+    "expected",
+    "predicted",
+    "accepted",
+    "confidence",
+    "latency_ms",
+    "evidence_sha256"
+  ],
+  "title": "RecognitionEvaluationCase",
+  "type": "object"
+}
