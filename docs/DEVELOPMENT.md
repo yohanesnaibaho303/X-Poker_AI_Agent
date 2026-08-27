@@ -49,8 +49,14 @@ This creates `.venv`, verifies Python 3.12, and installs the exact direct depend
 # Re-run production recognition on an existing capture without a live table
 .\.venv\Scripts\python.exe scripts\evaluate_capture_replay.py data\frames\<replay>\manifest.json --output recognition-replay.json
 
+# Evaluate frozen reconstruction cases (promotion requires --dataset-role holdout)
+.\.venv\Scripts\python.exe scripts\evaluate_reconstruction.py cases.json reconstruction-report.json --reducer-version 1.0 --dataset-id recorded-standard-nlh --dataset-role regression
+
 # Produce content-hashed offline endurance and packaging evidence
 .\.venv\Scripts\python.exe scripts\offline_readiness.py --sessions 100 --output offline-readiness.json
+
+# Exercise offline controller gates; this never sends OS input
+.\.venv\Scripts\python.exe -c "from xpoker_agent.controller import SafetyGateInput, evaluate_safety_gates; print(evaluate_safety_gates(SafetyGateInput()).model_dump_json())"
 
 # Run all checks and build a wheel, dashboard archive, locks, and readiness report
 .\scripts\package.ps1
@@ -106,8 +112,9 @@ GTO solutions.
 - Reference priors are approximate and low-confidence; no configuration-matched GTO data exists yet.
 - The exploit model is complete for synthetic profiles but is not connected to live reconstructed observations.
 - The monitoring dashboard currently reconstructs synthetic replays. Capture diagnostics are live,
-  but validated opponent ranges, standard-NLH reconstruction input, and authorized complete-session
-  soak evidence remain pending. Missing strategy/equity/EV inputs display as unavailable.
+  but validated observed opponent ranges, standard-NLH reconstruction input, and authorized
+  complete-session soak evidence remain pending. Synthetic replay can expose seeded equity/EV and
+  an explicit decision trace; live control remains unavailable.
 - No table input/control implementation exists. Control is disabled in configuration, schemas, and API responses.
 - The project license has not been selected; external-source boundaries are documented in ADR 0002.
 
