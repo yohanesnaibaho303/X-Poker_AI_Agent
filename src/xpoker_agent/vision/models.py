@@ -271,6 +271,18 @@ class StackDeltaCandidate(StrictModel):
     reason: str = "stable stack decrease; action and pot reconciliation pending"
 
 
+class StackIncreaseCandidate(StrictModel):
+    event_id: str = Field(min_length=64, max_length=64)
+    hand_epoch: int = Field(ge=0)
+    frame_sequence: int = Field(ge=0)
+    seat: int = Field(ge=0, le=8)
+    previous_stack_native: Decimal = Field(ge=0)
+    current_stack_native: Decimal = Field(ge=0)
+    increase_native: Decimal = Field(gt=0)
+    canonical_event_accepted: Literal[False] = False
+    reason: str = "stable stack increase; settlement or top-up role unresolved"
+
+
 class PotDeltaCandidate(StrictModel):
     event_id: str = Field(min_length=64, max_length=64)
     hand_epoch: int = Field(ge=0)
@@ -364,7 +376,7 @@ class LiveCanonicalHandPrefix(StrictModel):
     events: list[HandEvent]
     state: HandState
     source_action_event_ids: list[str] = Field(default_factory=list)
-    complete: Literal[False] = False
+    complete: bool = False
     reason: str = "validated live canonical hand prefix"
 
 
@@ -472,12 +484,16 @@ class LiveObservationStatus(StrictModel):
     hand_starting_stacks_native: dict[int, Decimal] = Field(default_factory=dict)
     reconstruction_readiness: LiveReconstructionReadiness
     canonical_hand: LiveCanonicalHandPrefix | None = None
+    retained_canonical_hand: LiveCanonicalHandPrefix | None = None
+    latest_completed_hand: LiveCanonicalHandPrefix | None = None
+    settlement_reason: str = "no retained hand is eligible for settlement"
     canonical_reconstruction_error: str | None = None
     derived_action_candidates: list[DerivedActionCandidate] = Field(default_factory=list)
     seat_badge_amount_candidates: list[SeatBadgeAmountCandidate] = Field(
         default_factory=list
     )
     stack_delta_candidates: list[StackDeltaCandidate] = Field(default_factory=list)
+    stack_increase_candidates: list[StackIncreaseCandidate] = Field(default_factory=list)
     pot_delta_candidates: list[PotDeltaCandidate] = Field(default_factory=list)
     action_amount_reconciliations: list[ActionAmountReconciliation] = Field(
         default_factory=list

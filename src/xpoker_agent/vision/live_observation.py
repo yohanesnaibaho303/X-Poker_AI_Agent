@@ -15,7 +15,10 @@ from typing import Literal
 from xpoker_agent.capture.frames import CapturedFrame
 from xpoker_agent.vision.action_order import validate_action_order
 from xpoker_agent.vision.blind_posts import reconcile_blind_posts
-from xpoker_agent.vision.canonical import build_standard_live_hand_prefix
+from xpoker_agent.vision.canonical import (
+    build_standard_live_hand_prefix,
+    complete_single_winner_live_hand,
+)
 from xpoker_agent.vision.hand_boundary import validate_live_hand_boundary
 from xpoker_agent.vision.live import diagnose_authorized_table
 from xpoker_agent.vision.models import (
@@ -34,6 +37,7 @@ from xpoker_agent.vision.models import (
     SeatStackConsensus,
     SeatStatusConsensus,
     StackDeltaCandidate,
+    StackIncreaseCandidate,
     TemporalConsensus,
     TemporalSample,
 )
@@ -164,6 +168,9 @@ class LiveObservationService:
             issues=["prior_hand_context_unavailable"],
             reason="observer has not witnessed a complete hand boundary",
         )
+        self._retained_canonical_hand: LiveCanonicalHandPrefix | None = None
+        self._latest_completed_hand: LiveCanonicalHandPrefix | None = None
+        self._settlement_reason = "no retained hand is eligible for settlement"
         self._last_accepted_board_count: int | None = None
         self._last_board_signature: tuple[str, ...] | None = None
         self._last_board_dealer: int | None = None
@@ -177,6 +184,7 @@ class LiveObservationService:
         )
         self._last_accepted_stacks: dict[int, Decimal] = {}
         self._stack_deltas: deque[StackDeltaCandidate] = deque(maxlen=50)
+        self._stack_increases: deque[StackIncreaseCandidate] = deque(maxlen=50)
         self._last_accepted_pot: Decimal | None = None
         self._pot_deltas: deque[PotDeltaCandidate] = deque(maxlen=50)
         self.latest_diagnostic: LiveCaptureDiagnostic | None = None
@@ -273,6 +281,9 @@ class LiveObservationService:
             issues=["prior_hand_context_unavailable"],
             reason="observer has not witnessed a complete hand boundary",
         )
+        self._retained_canonical_hand = None
+        self._latest_completed_hand = None
+        self._settlement_reason = "no retained hand is eligible for settlement"
         self._last_accepted_board_count = None
         self._last_board_signature = None
         self._last_board_dealer = None
@@ -284,6 +295,7 @@ class LiveObservationService:
         self._badge_amount_candidates.clear()
         self._last_accepted_stacks.clear()
         self._stack_deltas.clear()
+        self._stack_increases.clear()
         self._last_accepted_pot = None
         self._pot_deltas.clear()
         self.latest_diagnostic = None
@@ -717,6 +729,27 @@ class LiveObservationService:
                             committed_native=previous - current,
                         )
                     )
+            elif previous is not None and current > previous:
+                encoded = (
+                    f"{diagnostic.target_fingerprint}:{self._hand_epoch}:stack-increase:"
+                    f"{item.seat}:{previous}:{current}"
+                ).encode()
+                event_id = hashlib.sha256(encoded).hexdigest()
+                if not any(
+                    candidate.event_id == event_id
+                    for candidate in self._stack_increases
+                ):
+                    self._stack_increases.append(
+                        StackIncreaseCandidate(
+                            event_id=event_id,
+                            hand_epoch=self._hand_epoch,
+                            frame_sequence=diagnostic.frame_sequence,
+                            seat=item.seat,
+                            previous_stack_native=previous,
+                            current_stack_native=current,
+                            increase_native=current - previous,
+                        )
+                    )
             if previous != current:
                 self._last_accepted_stacks[item.seat] = current
         by_action_seat = {action.seat: action for action in diagnostic.seat_actions}
@@ -1105,6 +1138,7 @@ class LiveObservationService:
     async def _run(self) -> None:
         try:
             while not self._stop_event.is_set():
+                loop_started = asyncio.get_running_loop().time()
                 try:
                     await self.inspect_once(table_size=self._table_size)
                 except TargetIdentityChanged:
@@ -1112,10 +1146,13 @@ class LiveObservationService:
                 except (OSError, RuntimeError, ValueError):
                     if self._consecutive_failures >= self._maximum_consecutive_failures:
                         break
+                remaining = max(
+                    0.0,
+                    self._interval_ms / 1000
+                    - (asyncio.get_running_loop().time() - loop_started),
+                )
                 with suppress(TimeoutError):
-                    await asyncio.wait_for(
-                        self._stop_event.wait(), timeout=self._interval_ms / 1000
-                    )
+                    await asyncio.wait_for(self._stop_event.wait(), timeout=remaining)
         finally:
             self._stopped_at = datetime.now(UTC)
 
@@ -1130,6 +1167,7 @@ class LiveObservationService:
             if hero_seat is not None
             else None
         )
+        self._try_complete_retained_hand()
         readiness = self._reconstruction_readiness()
         canonical_hand: LiveCanonicalHandPrefix | None = None
         canonical_error: str | None = None
@@ -1146,6 +1184,7 @@ class LiveObservationService:
                     }
                 )
             else:
+                self._retained_canonical_hand = canonical_hand
                 readiness = readiness.model_copy(
                     update={
                         "canonical_events_emitted": True,
@@ -1209,10 +1248,14 @@ class LiveObservationService:
             hand_starting_stacks_native=self._hand_starting_stacks_native,
             reconstruction_readiness=readiness,
             canonical_hand=canonical_hand,
+            retained_canonical_hand=self._retained_canonical_hand,
+            latest_completed_hand=self._latest_completed_hand,
+            settlement_reason=self._settlement_reason,
             canonical_reconstruction_error=canonical_error,
             derived_action_candidates=list(self._derived_actions),
             seat_badge_amount_candidates=list(self._badge_amount_candidates),
             stack_delta_candidates=list(self._stack_deltas),
+            stack_increase_candidates=list(self._stack_increases),
             pot_delta_candidates=list(self._pot_deltas),
             action_amount_reconciliations=self._reconcile_action_amounts(),
             action_pot_reconciliations=self._reconcile_action_pot(),
@@ -1221,6 +1264,36 @@ class LiveObservationService:
             ),
             last_error=self._last_error,
         )
+
+    def _try_complete_retained_hand(self) -> None:
+        prefix = self._retained_canonical_hand
+        if prefix is None or prefix.complete:
+            return
+        if (
+            self._hand_boundary_validation.status != "validated"
+            or self._hand_epoch != prefix.hand_epoch + 1
+        ):
+            self._settlement_reason = "next hand boundary is not validated"
+            return
+        candidates = [
+            candidate
+            for candidate in self._stack_increases
+            if candidate.hand_epoch in {prefix.hand_epoch, self._hand_epoch}
+            and abs(candidate.frame_sequence - self._hand_epoch_start_sequence) <= 12
+        ]
+        if len(candidates) != 1:
+            self._settlement_reason = (
+                "settlement requires exactly one nearby stable stack increase"
+            )
+            return
+        try:
+            completed = complete_single_winner_live_hand(prefix, candidates[0])
+        except ValueError as error:
+            self._settlement_reason = str(error)
+            return
+        self._retained_canonical_hand = completed
+        self._latest_completed_hand = completed
+        self._settlement_reason = completed.reason
 
     def _reconcile_action_amounts(self) -> list[ActionAmountReconciliation]:
         amount_actions = {"call", "bet", "raise", "all_in"}

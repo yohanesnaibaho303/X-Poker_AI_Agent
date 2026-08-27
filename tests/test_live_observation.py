@@ -127,6 +127,21 @@ def test_live_observation_builds_consensus_and_stops_cleanly() -> None:
     asyncio.run(scenario())
 
 
+def test_live_observation_interval_includes_processing_time() -> None:
+    async def scenario() -> None:
+        async def capture(_: int, sequence: int):
+            await asyncio.sleep(0.03)
+            return _diagnostic(sequence), CapturedFrame(1, 1, b"\x00" * 4)
+
+        service = LiveObservationService(capture)
+        await service.start(table_size=9, interval_ms=40)
+        await asyncio.sleep(0.13)
+        assert service.status().frames_succeeded >= 3
+        await service.stop()
+
+    asyncio.run(scenario())
+
+
 def test_pre_action_controls_stabilize_without_becoming_legal_actions() -> None:
     async def scenario() -> None:
         controls = HeroActionControlsObservation(
@@ -237,6 +252,30 @@ def test_changed_numeric_value_requires_fresh_consecutive_consensus() -> None:
         assert delta.seat == 0
         assert delta.committed_native == 2
         assert delta.canonical_event_accepted is False
+
+    asyncio.run(scenario())
+
+
+def test_stable_stack_increase_stays_noncanonical() -> None:
+    async def scenario() -> None:
+        async def capture(_: int, sequence: int):
+            diagnostic = _diagnostic(sequence)
+            value = 100 if sequence <= 3 else 110
+            diagnostic.seat_panels[0] = diagnostic.seat_panels[0].model_copy(
+                update={"stack_native": value, "stack_token": str(value)}
+            )
+            return diagnostic, CapturedFrame(1, 1, b"\x00" * 4)
+
+        service = LiveObservationService(capture)
+        for _ in range(6):
+            await service.inspect_once(table_size=9)
+
+        candidates = service.status().stack_increase_candidates
+        assert len(candidates) == 1
+        assert candidates[0].previous_stack_native == 100
+        assert candidates[0].current_stack_native == 110
+        assert candidates[0].increase_native == 10
+        assert candidates[0].canonical_event_accepted is False
 
     asyncio.run(scenario())
 

@@ -19,6 +19,7 @@ from xpoker_agent.vision.models import (
     BlindPostReconciliation,
     DerivedActionCandidate,
     LiveCanonicalHandPrefix,
+    StackIncreaseCandidate,
 )
 
 
@@ -214,4 +215,57 @@ def build_standard_live_hand_prefix(
         events=events,
         state=state,
         source_action_event_ids=[action.event_id for action in actions],
+    )
+
+
+def complete_single_winner_live_hand(
+    prefix: LiveCanonicalHandPrefix,
+    stack_increase: StackIncreaseCandidate,
+) -> LiveCanonicalHandPrefix:
+    """Complete only an exact one-layer, one-winner settlement."""
+    if prefix.complete:
+        return prefix
+    state = prefix.state
+    if state.next_to_act_seat is not None:
+        raise ValueError("betting is not closed")
+    if len(state.pot_layers) != 1:
+        raise ValueError("single-pot settlement requires exactly one pot layer")
+    if stack_increase.previous_stack_native != state.seats[stack_increase.seat].stack_chips:
+        raise ValueError("winner stack baseline does not match the retained hand")
+    if stack_increase.increase_native != state.pot_main_chips:
+        raise ValueError("stack increase does not equal the complete retained pot")
+
+    reducer = HandStateReducer()
+    events = list(prefix.events)
+    award = HandEvent(
+        event_id=uuid5(prefix.hand_id, f"event:{len(events) + 1}:pot_awarded"),
+        hand_id=prefix.hand_id,
+        sequence=len(events) + 1,
+        category=EventCategory.SETTLEMENT,
+        type="pot_awarded",
+        winner_seat=stack_increase.seat,
+        pot_index=0,
+        amount=EventAmount(added_chips=stack_increase.increase_native),
+        confidence=_confidence(0.95, "xpoker-stack-settlement-v1"),
+        assumptions=[f"visual_candidate:{stack_increase.event_id}"],
+    )
+    state = reducer.apply(state, award)
+    events.append(award)
+    completed = HandEvent(
+        event_id=uuid5(prefix.hand_id, f"event:{len(events) + 1}:hand_completed"),
+        hand_id=prefix.hand_id,
+        sequence=len(events) + 1,
+        category=EventCategory.LIFECYCLE,
+        type="hand_completed",
+        confidence=_confidence(1.0, "live-hand-boundary-v1"),
+    )
+    state = reducer.apply(state, completed)
+    events.append(completed)
+    return prefix.model_copy(
+        update={
+            "events": events,
+            "state": state,
+            "complete": True,
+            "reason": "validated single-pot live hand completed at witnessed boundary",
+        }
     )

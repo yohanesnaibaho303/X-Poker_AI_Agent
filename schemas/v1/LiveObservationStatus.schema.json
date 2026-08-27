@@ -1007,7 +1007,6 @@
           "type": "array"
         },
         "complete": {
-          "const": false,
           "default": false,
           "title": "Complete",
           "type": "boolean"
@@ -1706,6 +1705,91 @@
       "title": "StackDeltaCandidate",
       "type": "object"
     },
+    "StackIncreaseCandidate": {
+      "additionalProperties": false,
+      "properties": {
+        "event_id": {
+          "maxLength": 64,
+          "minLength": 64,
+          "title": "Event Id",
+          "type": "string"
+        },
+        "hand_epoch": {
+          "minimum": 0,
+          "title": "Hand Epoch",
+          "type": "integer"
+        },
+        "frame_sequence": {
+          "minimum": 0,
+          "title": "Frame Sequence",
+          "type": "integer"
+        },
+        "seat": {
+          "maximum": 8,
+          "minimum": 0,
+          "title": "Seat",
+          "type": "integer"
+        },
+        "previous_stack_native": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "title": "Previous Stack Native"
+        },
+        "current_stack_native": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "title": "Current Stack Native"
+        },
+        "increase_native": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "title": "Increase Native"
+        },
+        "canonical_event_accepted": {
+          "const": false,
+          "default": false,
+          "title": "Canonical Event Accepted",
+          "type": "boolean"
+        },
+        "reason": {
+          "default": "stable stack increase; settlement or top-up role unresolved",
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "event_id",
+        "hand_epoch",
+        "frame_sequence",
+        "seat",
+        "previous_stack_native",
+        "current_stack_native",
+        "increase_native"
+      ],
+      "title": "StackIncreaseCandidate",
+      "type": "object"
+    },
     "Street": {
       "enum": [
         "none",
@@ -2125,6 +2209,33 @@
       ],
       "default": null
     },
+    "retained_canonical_hand": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/LiveCanonicalHandPrefix"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "latest_completed_hand": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/LiveCanonicalHandPrefix"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "settlement_reason": {
+      "default": "no retained hand is eligible for settlement",
+      "title": "Settlement Reason",
+      "type": "string"
+    },
     "canonical_reconstruction_error": {
       "anyOf": [
         {
@@ -2156,6 +2267,13 @@
         "$ref": "#/$defs/StackDeltaCandidate"
       },
       "title": "Stack Delta Candidates",
+      "type": "array"
+    },
+    "stack_increase_candidates": {
+      "items": {
+        "$ref": "#/$defs/StackIncreaseCandidate"
+      },
+      "title": "Stack Increase Candidates",
       "type": "array"
     },
     "pot_delta_candidates": {

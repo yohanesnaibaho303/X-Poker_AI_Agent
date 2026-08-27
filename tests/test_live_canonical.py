@@ -2,8 +2,18 @@ from decimal import Decimal
 
 import pytest
 
-from xpoker_agent.vision.canonical import build_standard_live_hand_prefix
-from xpoker_agent.vision.models import BlindPostReconciliation
+from xpoker_agent.vision.canonical import (
+    build_standard_live_hand_prefix,
+    complete_single_winner_live_hand,
+)
+from xpoker_agent.vision.live_observation import LiveObservationService
+from xpoker_agent.vision.models import (
+    ActionAmountReconciliation,
+    BlindPostReconciliation,
+    DerivedActionCandidate,
+    LiveHandBoundaryValidation,
+    StackIncreaseCandidate,
+)
 
 
 def _blind_posts() -> list[BlindPostReconciliation]:
@@ -58,6 +68,33 @@ def _build(**overrides: object):
     return build_standard_live_hand_prefix(**values)
 
 
+def _closed_prefix():
+    actions = [
+        DerivedActionCandidate(
+            event_id=event_id * 64,
+            hand_epoch=1,
+            frame_sequence=sequence,
+            seat=seat,
+            street="preflop",
+            action="fold",
+            confidence=0.95,
+        )
+        for event_id, sequence, seat in (("c", 10, 0), ("d", 11, 1))
+    ]
+    reconciliations = [
+        ActionAmountReconciliation(
+            action_event_id=action.event_id,
+            seat=action.seat,
+            action="fold",
+            amount_native=0,
+            status="not_required",
+            reason="test evidence",
+        )
+        for action in actions
+    ]
+    return _build(actions=actions, amount_reconciliations=reconciliations)
+
+
 def test_builds_a_deterministic_reducer_validated_live_prefix() -> None:
     first = _build()
     second = _build()
@@ -90,3 +127,72 @@ def test_rejects_live_stack_that_disagrees_with_reducer() -> None:
                 2: Decimal("98"),
             }
         )
+
+
+def test_retains_last_validated_prefix_when_current_frame_is_not_ready() -> None:
+    service = LiveObservationService()
+    service._retained_canonical_hand = _build()
+
+    status = service.status()
+
+    assert status.canonical_hand is None
+    assert status.retained_canonical_hand == _build()
+
+
+def test_completes_exact_single_winner_settlement_at_next_boundary() -> None:
+    prefix = _closed_prefix()
+    increase = StackIncreaseCandidate(
+        event_id="e" * 64,
+        hand_epoch=1,
+        frame_sequence=20,
+        seat=2,
+        previous_stack_native=98,
+        current_stack_native=101,
+        increase_native=3,
+    )
+
+    completed = complete_single_winner_live_hand(prefix, increase)
+
+    assert completed.complete is True
+    assert [event.type for event in completed.events[-2:]] == [
+        "pot_awarded",
+        "hand_completed",
+    ]
+    assert completed.state.pot_main_chips == 0
+    assert completed.state.seats[2].stack_chips == 101
+
+    service = LiveObservationService()
+    service._retained_canonical_hand = prefix
+    service._hand_epoch = 2
+    service._hand_epoch_start_sequence = 21
+    service._hand_boundary_validation = LiveHandBoundaryValidation(
+        hand_epoch=2,
+        previous_dealer_seat=0,
+        current_dealer_seat=1,
+        expected_dealer_seat=1,
+        previous_active_seats=[0, 1, 2],
+        current_active_seats=[0, 1, 2],
+        status="validated",
+        reason="test evidence",
+    )
+    service._stack_increases.append(increase)
+
+    status = service.status()
+    assert status.latest_completed_hand is not None
+    assert status.latest_completed_hand.complete is True
+
+
+def test_rejects_ambiguous_or_nonexact_settlement() -> None:
+    prefix = _closed_prefix()
+    increase = StackIncreaseCandidate(
+        event_id="e" * 64,
+        hand_epoch=1,
+        frame_sequence=20,
+        seat=2,
+        previous_stack_native=98,
+        current_stack_native=100,
+        increase_native=2,
+    )
+
+    with pytest.raises(ValueError, match="complete retained pot"):
+        complete_single_winner_live_hand(prefix, increase)
