@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+from pathlib import Path
 from typing import Literal
 
 from pydantic import Field, model_validator
@@ -134,3 +135,10 @@ def evaluate_reconstruction_cases(
             else ["Regression fixtures cannot satisfy the reconstruction promotion gate."]
         ),
     )
+
+
+def load_reconstruction_cases(path: Path) -> list[ReconstructionEvaluationCase]:
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(payload, list):
+        raise ValueError("reconstruction dataset must be a JSON array")
+    return [ReconstructionEvaluationCase.model_validate(item) for item in payload]

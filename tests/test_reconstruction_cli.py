@@ -2,6 +2,8 @@ import json
 import subprocess
 import sys
 
+from xpoker_agent.evaluation.reconstruction import load_reconstruction_cases
+
 
 def test_reconstruction_evaluator_writes_holdout_gate_report(tmp_path) -> None:
     dataset = tmp_path / "cases.json"
@@ -22,6 +24,7 @@ def test_reconstruction_evaluator_writes_holdout_gate_report(tmp_path) -> None:
         ),
         encoding="utf-8",
     )
+    assert load_reconstruction_cases(dataset)[0].case_id == "hand-1"
     subprocess.run(
         [
             sys.executable,

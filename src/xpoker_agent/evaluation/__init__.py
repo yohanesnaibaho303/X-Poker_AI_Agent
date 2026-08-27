@@ -11,6 +11,7 @@ from xpoker_agent.evaluation.reconstruction import (
     ReconstructionEvaluationCase,
     ReconstructionEvaluationReport,
     evaluate_reconstruction_cases,
+    load_reconstruction_cases,
 )
 
 __all__ = [
@@ -22,4 +23,5 @@ __all__ = [
     "ReconstructionEvaluationCase",
     "ReconstructionEvaluationReport",
     "evaluate_reconstruction_cases",
+    "load_reconstruction_cases",
 ]
