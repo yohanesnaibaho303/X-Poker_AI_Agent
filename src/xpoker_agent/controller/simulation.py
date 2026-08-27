@@ -151,11 +151,16 @@ class OfflineController:
         observed_transition: str | None,
     ) -> SimulatedActionResult:
         if action not in calibration.targets:
+            duplicate = idempotency_token in self._tokens
+            self._tokens.add(idempotency_token)
             result = SimulatedActionResult(
                 idempotency_token=idempotency_token,
                 action=action,
                 outcome="blocked",
-                audit=[PreflightCheck(name="calibrated_target", passed=False)],
+                audit=[
+                    PreflightCheck(name="calibrated_target", passed=False),
+                    PreflightCheck(name="duplicate_prevention", passed=not duplicate),
+                ],
             )
             self.audit_log.append(result)
             return result
