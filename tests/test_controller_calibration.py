@@ -49,6 +49,7 @@ def test_calibrated_simulation_blocks_unmapped_actions() -> None:
     )
     assert result.outcome == "blocked"
     assert result.audit[0].name == "calibrated_target"
+    assert result.calibration_id == calibration.calibration_id
 
     repeated = OfflineController()
     first = repeated.execute_calibrated(
@@ -68,4 +69,5 @@ def test_calibrated_simulation_blocks_unmapped_actions() -> None:
         observed_transition="raise",
     )
     assert first.outcome == second.outcome == "blocked"
+    assert second.calibration_id == calibration.calibration_id
     assert any(check.name == "duplicate_prevention" and not check.passed for check in second.audit)

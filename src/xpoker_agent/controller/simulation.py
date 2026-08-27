@@ -61,6 +61,8 @@ class SimulatedActionResult(StrictModel):
     outcome: str
     audit: list[PreflightCheck]
     verified: bool = False
+    calibration_id: str | None = None
+    target_region: tuple[float, float, float, float] | None = None
 
 
 def evaluate_safety_gates(gates: SafetyGateInput) -> SafetyGateResult:
@@ -161,6 +163,7 @@ class OfflineController:
                     PreflightCheck(name="calibrated_target", passed=False),
                     PreflightCheck(name="duplicate_prevention", passed=not duplicate),
                 ],
+                calibration_id=calibration.calibration_id,
             )
             self.audit_log.append(result)
             return result
@@ -171,5 +174,19 @@ class OfflineController:
             expected_transition=expected_transition,
             observed_transition=observed_transition,
         )
-        result.audit.append(PreflightCheck(name="calibrated_target", passed=True))
+        result = result.model_copy(
+            update={
+                "calibration_id": calibration.calibration_id,
+                "target_region": (
+                    calibration.targets[action].x,
+                    calibration.targets[action].y,
+                    calibration.targets[action].width,
+                    calibration.targets[action].height,
+                ),
+                "audit": [
+                    *result.audit,
+                    PreflightCheck(name="calibrated_target", passed=True),
+                ],
+            }
+        )
         return result
