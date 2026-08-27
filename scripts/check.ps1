@@ -11,6 +11,8 @@ if (-not (Test-Path -LiteralPath $python)) {
 
 Push-Location $projectRoot
 try {
+    $env:TEMP = Join-Path $projectRoot ".test-tmp"
+    $env:TMP = $env:TEMP
     & $python -m ruff check .
     if ($LASTEXITCODE -ne 0) {
         throw "Ruff failed with exit code $LASTEXITCODE."

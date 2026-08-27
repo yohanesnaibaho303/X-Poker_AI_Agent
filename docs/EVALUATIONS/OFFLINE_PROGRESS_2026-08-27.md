@@ -5,7 +5,7 @@
 Executed from the repository root with the pinned project dependencies:
 
 - `python -m ruff check .` — passed.
-- `python -m pytest` — 354 tests passed.
+- `python -m pytest` — 356 tests passed.
 - `npm --prefix apps/monitor run check` — TypeScript check, 9 dashboard tests, and Vite production build passed.
 - `python -m compileall -q src tests scripts` — passed.
 

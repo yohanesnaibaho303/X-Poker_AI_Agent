@@ -1,8 +1,8 @@
 # Build Status
 
-- Last updated: 2026-08-26 (Asia/Jakarta)
+- Last updated: 2026-08-27 (Asia/Jakarta)
 - Current milestone: Milestone 8 — live monitoring application plus 9-max/native-only migration
-- Overall project against revised scope: 3 of 11 milestones complete
+- Overall project against revised scope: 6 of 11 milestones complete
 - Current state: Milestone 6 is complete. Milestone 8 live-observation dashboard integration is in
   progress; its live-session exit gate and M3/M4 promotion gates remain pending.
 - Live control: Disabled
@@ -154,7 +154,7 @@
   epochs with zero failures and produced six mutually unique provisional matches: Call 2 and 4,
   plus Bet 4, 3, 6, and 2 native units. None are canonical events yet because legal order and pot
   accounting remain outstanding gates.
-- Current full suite: Ruff passed; 292 Pytest/Hypothesis tests, 11 TypeScript tests, and the
+- Current full suite: Ruff passed; 356 Pytest/Hypothesis tests, 9 TypeScript tests, and the
   production dashboard build passed. Table control remains disabled.
 - Added deterministic provisional clockwise-order validation. Each visual action now carries the
   stable dealer and active-seat context present when it was emitted. Preflop starts after the BB;
@@ -333,6 +333,8 @@
 - Milestone 2 — authorized X-Poker window discovery, calibration, normalized capture, and replay diagnostics.
 - Milestone 5 — exact-combo ranges, deterministic poker math, matrix projection, stack abstraction,
   and isolated provenance-bearing nine-max native-chip reference priors.
+- Milestone 6 — versioned GTO strategy integration with explicit abstraction and unavailable-state
+  reporting when an exact solution is not available.
 - Milestone 7 — uncertainty-bearing opponent profiles, bounded exploit adjustments, nodelock-like
   range experiments, and synthetic regression evaluation.
 
