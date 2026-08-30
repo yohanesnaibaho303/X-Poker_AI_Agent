@@ -11,7 +11,7 @@ from xpoker_agent.vision.cards import (
     detect_card_slots,
     validate_unique_cards,
 )
-from xpoker_agent.vision.live import build_live_capture_diagnostic
+from xpoker_agent.vision.live import _scaled_pot_crop, build_live_capture_diagnostic
 from xpoker_agent.vision.models import (
     CardRecognition,
     PixelBox,
@@ -69,6 +69,15 @@ def test_windows_ocr_adapter_converts_capture_rows_to_top_down() -> None:
     )
 
     assert _top_down_bgra(frame) == b"\x00\x00\xff\xff" + b"\xff\x00\x00\xff"
+
+
+def test_live_diagnostic_scales_tiny_pot_crop_before_ocr() -> None:
+    frame = CapturedFrame(450, 850, b"\x00" * 450 * 850 * 4)
+    layout = load_layout_profile()
+    pot = crop_frame(frame, normalized_box(frame, layout.regions["pot"]))
+    scaled = _scaled_pot_crop(frame, layout)
+
+    assert (scaled.width, scaled.height) == (pot.width * 4, pot.height * 4)
 
 
 def test_normalized_box_is_half_open_and_inside_frame() -> None:
@@ -236,9 +245,7 @@ def test_chip_amount_parser_accepts_supported_formats(
     assert result.format_id == format_id
 
 
-@pytest.mark.parametrize(
-    "text", ["-1", "1,00", "1 000", "1.2.3", "", "12BB", "1,5K", "2.5K", "1M"]
-)
+@pytest.mark.parametrize("text", ["-1", "1,00", "1 000", "1.2.3", "", "12BB", "1,5K", "2.5K", "1M"])
 def test_chip_amount_parser_rejects_ambiguous_or_unsupported_formats(text: str) -> None:
     with pytest.raises(ValueError, match="chip amount"):
         parse_chip_amount(text, confidence=0.5)

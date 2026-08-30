@@ -76,9 +76,7 @@ def build_live_capture_diagnostic(
     seat_actions = [
         parse_action_badge(
             observation,
-            action_ocr[observation.seat].text
-            if observation.seat in action_ocr
-            else None,
+            action_ocr[observation.seat].text if observation.seat in action_ocr else None,
         )
         for observation in seat_observations
     ]
@@ -125,9 +123,7 @@ def build_live_capture_diagnostic(
         bomb_pot_state=classification.bomb_pot_state,
         hands_until_bomb=classification.hands_until_bomb,
         bomb_pot_interval_hands=classification.bomb_pot_interval_hands,
-        bomb_pot_forced_contribution_native=(
-            classification.bomb_pot_forced_contribution_native
-        ),
+        bomb_pot_forced_contribution_native=(classification.bomb_pot_forced_contribution_native),
         small_blind_native=classification.small_blind_native,
         big_blind_native=classification.big_blind_native,
         blind_confidence=classification.blind_confidence,
@@ -155,21 +151,24 @@ def build_live_capture_diagnostic(
     )
 
 
+def _scaled_pot_crop(frame: CapturedFrame, layout: LayoutProfile) -> CapturedFrame:
+    crop = crop_layout_region(frame, layout, "pot")
+    return normalize_frame(crop, crop.width * 4, crop.height * 4)
+
+
 async def diagnose_captured_frame(
     *, frame: CapturedFrame, record: CaptureFrameRecord, layout: LayoutProfile
 ) -> LiveCaptureDiagnostic:
     """Run the same privacy-scoped recognition path for live or recorded evidence."""
     seat_observations = classify_seat_occupancy(frame, layout)
     rule_crop = crop_layout_region(frame, layout, "rule_label")
-    pot_crop = crop_layout_region(frame, layout, "pot")
+    pot_crop = _scaled_pot_crop(frame, layout)
     controls_crop = crop_layout_region(frame, layout, "actions")
     controls_crop = normalize_frame(
         controls_crop, controls_crop.width * 2, controls_crop.height * 2
     )
     panel_seats = [
-        observation.seat
-        for observation in seat_observations
-        if observation.status != "empty"
+        observation.seat for observation in seat_observations if observation.status != "empty"
     ]
     panel_crops = [
         crop_frame(
