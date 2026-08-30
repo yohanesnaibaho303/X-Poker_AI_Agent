@@ -478,3 +478,12 @@ This file is updated at meaningful checkpoints. The detailed checklist remains i
 - A follow-up 120-second run captured 285/285 frames, accepted hero `Ad 2d`, clean standard-NLH
   mode, and two validated boundaries. One epoch reconciled both blinds and reached only
   `current_pot_not_stable`; it remained safely non-canonical.
+
+## 2026-08-30 pot OCR scaling checkpoint
+
+- Pot-region OCR now uses the existing 4x nearest-neighbor scaler before Windows OCR; focused and
+  full Python verification passed.
+- A post-change 120-second run captured 270/270 frames across three boundaries. No epoch's best
+  readiness state included `current_pot_not_stable`, removing the previous clean-hand blocker.
+- The run crossed ambiguous/Bomb Pot states and did not produce a complete canonical hand; missing
+  mode, blind, and starting-stack evidence continued to fail closed. Control remained disabled.
