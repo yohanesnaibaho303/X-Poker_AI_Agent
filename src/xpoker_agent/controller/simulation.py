@@ -43,6 +43,32 @@ class RaiseSizingPlan(StrictModel):
     expected_displays: list[Decimal]
 
 
+class RaiseMeterTarget(StrictModel):
+    minimum_native: Decimal
+    maximum_native: Decimal
+    target_native: Decimal
+    normalized_from_bottom: Decimal
+    normalized_y: Decimal
+
+
+def plan_raise_meter_target(
+    minimum_native: Decimal, maximum_native: Decimal, target_native: Decimal
+) -> RaiseMeterTarget:
+    """Map an exact raise target to X-Poker's vertical meter touch/drag position."""
+    if minimum_native <= 0 or maximum_native <= minimum_native:
+        raise ValueError("raise meter requires positive increasing bounds")
+    if not minimum_native <= target_native <= maximum_native:
+        raise ValueError("target raise is outside the legal meter range")
+    ratio = (target_native - minimum_native) / (maximum_native - minimum_native)
+    return RaiseMeterTarget(
+        minimum_native=minimum_native,
+        maximum_native=maximum_native,
+        target_native=target_native,
+        normalized_from_bottom=ratio,
+        normalized_y=Decimal("1") - ratio,
+    )
+
+
 def plan_raise_sizing(
     displayed_native: Decimal, target_native: Decimal, *, step_native: Decimal = Decimal("1")
 ) -> RaiseSizingPlan:

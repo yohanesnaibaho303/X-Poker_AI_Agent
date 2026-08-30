@@ -6,9 +6,20 @@ from xpoker_agent.controller import (
     OfflineController,
     SafetyGateInput,
     evaluate_safety_gates,
+    plan_raise_meter_target,
     plan_raise_sizing,
     simulate_action,
 )
+
+
+def test_raise_meter_maps_touch_or_drag_target_from_bottom_to_top() -> None:
+    middle = plan_raise_meter_target(Decimal("10"), Decimal("30"), Decimal("20"))
+    assert middle.normalized_from_bottom == Decimal("0.5")
+    assert middle.normalized_y == Decimal("0.5")
+    assert plan_raise_meter_target(Decimal("10"), Decimal("30"), Decimal("30")).normalized_y == 0
+
+    with pytest.raises(ValueError, match="outside"):
+        plan_raise_meter_target(Decimal("10"), Decimal("30"), Decimal("31"))
 
 
 def test_raise_sizing_uses_plus_or_minus_to_reach_exact_native_price() -> None:
