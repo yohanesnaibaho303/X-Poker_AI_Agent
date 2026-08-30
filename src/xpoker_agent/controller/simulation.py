@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from decimal import Decimal
+
 from pydantic import Field
 
 from xpoker_agent.capture.models import LayoutProfile, NormalizedRect
@@ -30,6 +32,39 @@ class ActionCalibration(StrictModel):
     layout_id: str
     version: str
     targets: dict[str, NormalizedRect]
+
+
+class RaiseSizingPlan(StrictModel):
+    target_native: Decimal
+    displayed_native: Decimal
+    step_native: Decimal
+    adjustment: str
+    presses: int
+    expected_displays: list[Decimal]
+
+
+def plan_raise_sizing(
+    displayed_native: Decimal, target_native: Decimal, *, step_native: Decimal = Decimal("1")
+) -> RaiseSizingPlan:
+    """Plan exact +/- correction after opening or dragging X-Poker's Raise slider."""
+    if displayed_native <= 0 or target_native <= 0 or step_native <= 0:
+        raise ValueError("raise amounts and adjustment step must be positive")
+    delta = target_native - displayed_native
+    presses, remainder = divmod(abs(delta), step_native)
+    if remainder:
+        raise ValueError("target raise is not reachable with the observed adjustment step")
+    direction = "plus" if delta > 0 else "minus" if delta < 0 else "none"
+    signed_step = step_native if delta > 0 else -step_native
+    return RaiseSizingPlan(
+        target_native=target_native,
+        displayed_native=displayed_native,
+        step_native=step_native,
+        adjustment=direction,
+        presses=int(presses),
+        expected_displays=[
+            displayed_native + signed_step * index for index in range(1, int(presses) + 1)
+        ],
+    )
 
 
 def calibrate_actions(

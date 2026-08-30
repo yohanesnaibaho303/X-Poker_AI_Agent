@@ -1,9 +1,30 @@
+from decimal import Decimal
+
+import pytest
+
 from xpoker_agent.controller import (
     OfflineController,
     SafetyGateInput,
     evaluate_safety_gates,
+    plan_raise_sizing,
     simulate_action,
 )
+
+
+def test_raise_sizing_uses_plus_or_minus_to_reach_exact_native_price() -> None:
+    plus = plan_raise_sizing(Decimal("18"), Decimal("21"))
+    assert (plus.adjustment, plus.presses, plus.expected_displays) == (
+        "plus",
+        3,
+        [Decimal("19"), Decimal("20"), Decimal("21")],
+    )
+
+    minus = plan_raise_sizing(Decimal("18"), Decimal("16"), step_native=Decimal("0.50"))
+    assert minus.adjustment == "minus"
+    assert minus.expected_displays[-1] == Decimal("16")
+
+    with pytest.raises(ValueError, match="not reachable"):
+        plan_raise_sizing(Decimal("18"), Decimal("18.25"), step_native=Decimal("0.50"))
 
 
 def test_offline_controller_stays_blocked_until_every_gate_passes() -> None:
