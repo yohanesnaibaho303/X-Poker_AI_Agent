@@ -497,3 +497,8 @@ This file is updated at meaningful checkpoints. The detailed checklist remains i
   reset immediately so ambiguity cannot bridge chip accounting; two misses fail closed.
 - A 120-second post-calibration run captured 261/261 frames with no pot-stability blocker. Its hand
   mode and boundary remained ambiguous, so it supplied M3 calibration evidence but no M4 promotion.
+- A subsequent 180-second standard-NLH run captured 406/406 frames, accepted hero `Ah 5c`,
+  reconciled seven action amounts and two pot changes, and validated two boundaries. Its closest
+  epoch was blocked only by a missed exact big-blind post.
+- Reusing one Windows OCR engine was live-tested and reverted because concurrent region requests
+  fail with `Another RecognizeAsync operation is already running!`; the proven parallel path remains.
