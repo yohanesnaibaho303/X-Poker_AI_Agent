@@ -311,6 +311,36 @@ def test_pot_delta_requires_two_stable_endpoints_and_does_not_bridge_ambiguity()
     asyncio.run(scenario())
 
 
+def test_one_missed_pot_frame_keeps_consensus_but_two_fail_closed() -> None:
+    async def scenario() -> None:
+        values = [10, 10, 10, None, None]
+
+        async def capture(_: int, sequence: int):
+            diagnostic = _diagnostic(sequence)
+            value = values[sequence - 1]
+            diagnostic.pot = PotObservation(
+                value_native=value,
+                token=None if value is None else str(value),
+                confidence=0.0 if value is None else 0.95,
+                reason="test candidate",
+            )
+            return diagnostic, CapturedFrame(1, 1, b"\x00" * 4)
+
+        service = LiveObservationService(capture)
+        for _ in range(3):
+            await service.inspect_once(table_size=9)
+        assert service.status().pot_consensus.accepted is True
+
+        await service.inspect_once(table_size=9)
+        assert service.status().pot_consensus.accepted is True
+        assert service.status().pot_delta_candidates == []
+
+        await service.inspect_once(table_size=9)
+        assert service.status().pot_consensus.accepted is False
+
+    asyncio.run(scenario())
+
+
 def test_high_confidence_pot_transition_is_candidate_only_until_cross_signal_match() -> None:
     async def scenario() -> None:
         async def capture(_: int, sequence: int):

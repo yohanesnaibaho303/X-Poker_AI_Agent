@@ -186,6 +186,7 @@ class LiveObservationService:
         self._stack_deltas: deque[StackDeltaCandidate] = deque(maxlen=50)
         self._stack_increases: deque[StackIncreaseCandidate] = deque(maxlen=50)
         self._last_accepted_pot: Decimal | None = None
+        self._pot_ambiguous_frames = 0
         self._pot_deltas: deque[PotDeltaCandidate] = deque(maxlen=50)
         self.latest_diagnostic: LiveCaptureDiagnostic | None = None
         self.latest_frame: CapturedFrame | None = None
@@ -297,6 +298,7 @@ class LiveObservationService:
         self._stack_deltas.clear()
         self._stack_increases.clear()
         self._last_accepted_pot = None
+        self._pot_ambiguous_frames = 0
         self._pot_deltas.clear()
         self.latest_diagnostic = None
         self.latest_frame = None
@@ -533,10 +535,13 @@ class LiveObservationService:
 
         if diagnostic.pot.value_native is None:
             self._pot_samples.clear()
-            self._pot_consensus = self._empty_consensus("current_pot_ambiguous")
+            self._pot_ambiguous_frames += 1
+            if self._pot_ambiguous_frames > 1:
+                self._pot_consensus = self._empty_consensus("current_pot_ambiguous")
             self._last_accepted_pot = None
             self._last_high_confidence_pot_sample = None
         else:
+            self._pot_ambiguous_frames = 0
             current_raw_pot = TemporalSample(
                 frame_sequence=diagnostic.frame_sequence,
                 content_sha256=diagnostic.content_sha256,
@@ -601,7 +606,11 @@ class LiveObservationService:
                     confidence=diagnostic.pot.confidence,
                 ),
             )
-        if self._pot_consensus.accepted and self._pot_consensus.value is not None:
+        if (
+            diagnostic.pot.value_native is not None
+            and self._pot_consensus.accepted
+            and self._pot_consensus.value is not None
+        ):
             current_pot = Decimal(self._pot_consensus.value)
             previous_pot = self._last_accepted_pot
             if previous_pot is not None and current_pot > previous_pot:
