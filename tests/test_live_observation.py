@@ -341,6 +341,38 @@ def test_one_missed_pot_frame_keeps_consensus_but_two_fail_closed() -> None:
     asyncio.run(scenario())
 
 
+def test_one_missed_stack_frame_keeps_consensus_without_bridging_delta() -> None:
+    async def scenario() -> None:
+        values = [100, 100, 100, None, None]
+
+        async def capture(_: int, sequence: int):
+            diagnostic = _diagnostic(sequence)
+            value = values[sequence - 1]
+            panel = diagnostic.seat_panels[0]
+            diagnostic.seat_panels[0] = panel.model_copy(
+                update={
+                    "stack_native": value,
+                    "stack_token": None if value is None else str(value),
+                    "confidence": 0.0 if value is None else 0.99,
+                }
+            )
+            return diagnostic, CapturedFrame(1, 1, b"\x00" * 4)
+
+        service = LiveObservationService(capture)
+        for _ in range(3):
+            await service.inspect_once(table_size=9)
+        assert service.status().seat_stack_consensus[0].consensus.accepted is True
+
+        await service.inspect_once(table_size=9)
+        assert service.status().seat_stack_consensus[0].consensus.accepted is True
+        assert service.status().stack_delta_candidates == []
+
+        await service.inspect_once(table_size=9)
+        assert service.status().seat_stack_consensus[0].consensus.accepted is False
+
+    asyncio.run(scenario())
+
+
 def test_high_confidence_pot_transition_is_candidate_only_until_cross_signal_match() -> None:
     async def scenario() -> None:
         async def capture(_: int, sequence: int):

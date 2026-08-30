@@ -183,6 +183,7 @@ class LiveObservationService:
             maxlen=50
         )
         self._last_accepted_stacks: dict[int, Decimal] = {}
+        self._stack_ambiguous_frames = [0] * 9
         self._stack_deltas: deque[StackDeltaCandidate] = deque(maxlen=50)
         self._stack_increases: deque[StackIncreaseCandidate] = deque(maxlen=50)
         self._last_accepted_pot: Decimal | None = None
@@ -295,6 +296,7 @@ class LiveObservationService:
         self._badge_amount_armed_seats = set(range(table_size))
         self._badge_amount_candidates.clear()
         self._last_accepted_stacks.clear()
+        self._stack_ambiguous_frames = [0] * 9
         self._stack_deltas.clear()
         self._stack_increases.clear()
         self._last_accepted_pot = None
@@ -686,13 +688,21 @@ class LiveObservationService:
                 or stack_obscured_by_badge
             ):
                 samples.clear()
-                state = panel.status if panel is not None else "ambiguous"
-                result = self._empty_consensus(
-                    "current_stack_obscured_by_numeric_badge"
-                    if stack_obscured_by_badge
-                    else "current_stack_ambiguous"
-                )
+                self._stack_ambiguous_frames[seat] += 1
+                self._last_accepted_stacks.pop(seat, None)
+                previous = self._stack_consensus[seat]
+                if self._stack_ambiguous_frames[seat] == 1 and previous.consensus.accepted:
+                    state = previous.player_status
+                    result = previous.consensus
+                else:
+                    state = panel.status if panel is not None else "ambiguous"
+                    result = self._empty_consensus(
+                        "current_stack_obscured_by_numeric_badge"
+                        if stack_obscured_by_badge
+                        else "current_stack_ambiguous"
+                    )
             else:
+                self._stack_ambiguous_frames[seat] = 0
                 state = panel.status
                 result = self._append_consecutive(
                     samples,
