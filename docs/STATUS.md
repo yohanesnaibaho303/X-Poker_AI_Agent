@@ -417,3 +417,11 @@
   requires labeled/temporally validated complete-hand evidence across all seats and action states.
 
 This file is updated at meaningful checkpoints. The detailed checklist remains in `docs/MILESTONES.md`.
+
+## 2026-08-30 spectator checkpoint
+
+- Bounded observer captured `data/frames/live-status-20260830-spectator.json`: 24/24 frames
+  succeeded over 10 seconds; target stable; standard NLH; nine active seats; boundary validated.
+- No hero cards, hero seat, stable starting stacks, reconciled big-blind post, legal actions,
+  canonical hand, or award observed. Readiness remained false with fail-closed blockers.
+- `controller_enabled` remained false. No input sent. No raw control OCR retained.
