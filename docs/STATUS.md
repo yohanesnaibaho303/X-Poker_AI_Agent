@@ -502,3 +502,13 @@ This file is updated at meaningful checkpoints. The detailed checklist remains i
   epoch was blocked only by a missed exact big-blind post.
 - Reusing one Windows OCR engine was live-tested and reverted because concurrent region requests
   fail with `Another RecognizeAsync operation is already running!`; the proven parallel path remains.
+
+## 2026-08-30 blind and stack checkpoint
+
+- A 180-second standard-NLH run captured 397/397 frames and reconciled both exact blind amounts;
+  its best epoch was blocked only by active-stack stability.
+- One-frame stack OCR occlusion now preserves accepted display state while immediately clearing the
+  accounting baseline, and hand boundaries snapshot accepted stack consensus rather than cleared
+  delta baselines. Focused and full tests passed.
+- Follow-up runs captured 414/414 and 403/403 frames with up to four action/pot matches. They crossed
+  ambiguous/Bomb Pot transitions and did not provide a clean complete standard-hand promotion case.
