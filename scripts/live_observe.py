@@ -88,6 +88,7 @@ async def observe(seconds: int, interval_ms: int, output: Path | None) -> None:
                     "max_eligible_actions": 0,
                     "canonical_hand_observed": False,
                     "canonical_hand": None,
+                    "canonical_errors": [],
                     "matched_blind_amounts": [],
                     "fewest_readiness_issues": [],
                 },
@@ -115,6 +116,10 @@ async def observe(seconds: int, interval_ms: int, output: Path | None) -> None:
             epoch["canonical_hand_observed"] |= sample.canonical_hand is not None
             if sample.canonical_hand is not None:
                 epoch["canonical_hand"] = sample.canonical_hand.model_dump(mode="json")
+            if sample.canonical_reconstruction_error:
+                epoch["canonical_errors"] = sorted(
+                    {*epoch["canonical_errors"], sample.canonical_reconstruction_error}
+                )
             epoch["matched_blind_amounts"] = sorted(
                 {*epoch["matched_blind_amounts"], *matched_blinds}
             )
