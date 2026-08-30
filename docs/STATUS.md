@@ -487,3 +487,13 @@ This file is updated at meaningful checkpoints. The detailed checklist remains i
   readiness state included `current_pot_not_stable`, removing the previous clean-hand blocker.
 - The run crossed ambiguous/Bomb Pot states and did not produce a complete canonical hand; missing
   mode, blind, and starting-stack evidence continued to fail closed. Control remained disabled.
+
+## 2026-08-30 pot OCR geometry checkpoint
+
+- Live structured sampling showed the prior broad crop repeatedly produced `25 Por 25`, combining
+  a wager with the pot label. The calibrated center band now produced stable `POT 35` and `POT 45`
+  values without duplicate numeric text.
+- One missed pot OCR frame is tolerated for current-state continuity, while all pot-delta baselines
+  reset immediately so ambiguity cannot bridge chip accounting; two misses fail closed.
+- A 120-second post-calibration run captured 261/261 frames with no pot-stability blocker. Its hand
+  mode and boundary remained ambiguous, so it supplied M3 calibration evidence but no M4 promotion.
