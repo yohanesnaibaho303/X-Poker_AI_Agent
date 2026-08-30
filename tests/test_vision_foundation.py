@@ -27,7 +27,7 @@ from xpoker_agent.vision.primitives import (
 )
 from xpoker_agent.vision.rules import classify_rule_label
 from xpoker_agent.vision.temporal import consensus
-from xpoker_agent.vision.windows_ocr import _ocr_engine, _top_down_bgra
+from xpoker_agent.vision.windows_ocr import _top_down_bgra
 
 _HASHES = [f"{index:064x}" for index in range(1, 8)]
 
@@ -69,10 +69,6 @@ def test_windows_ocr_adapter_converts_capture_rows_to_top_down() -> None:
     )
 
     assert _top_down_bgra(frame) == b"\x00\x00\xff\xff" + b"\xff\x00\x00\xff"
-
-
-def test_windows_ocr_engine_factory_is_process_cached() -> None:
-    assert _ocr_engine.cache_parameters() == {"maxsize": None, "typed": False}
 
 
 def test_live_diagnostic_scales_tiny_pot_crop_before_ocr() -> None:

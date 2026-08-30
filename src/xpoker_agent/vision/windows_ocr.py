@@ -4,21 +4,10 @@ from __future__ import annotations
 
 import os
 import time
-from functools import cache
 
 from xpoker_agent.capture.frames import CapturedFrame
 from xpoker_agent.vision.models import WindowsOcrResult
 from xpoker_agent.vision.primitives import validate_frame
-
-
-@cache
-def _ocr_engine():
-    from winrt.windows.media.ocr import OcrEngine  # noqa: PLC0415
-
-    engine = OcrEngine.try_create_from_user_profile_languages()
-    if engine is None:
-        raise OSError("Windows has no OCR language available for the user profile")
-    return engine
 
 
 def _top_down_bgra(frame: CapturedFrame) -> bytes:
@@ -39,6 +28,7 @@ async def recognize_text(frame: CapturedFrame) -> WindowsOcrResult:
         BitmapPixelFormat,
         SoftwareBitmap,
     )
+    from winrt.windows.media.ocr import OcrEngine  # noqa: PLC0415
     from winrt.windows.storage.streams import Buffer  # noqa: PLC0415
 
     pixels = _top_down_bgra(frame)
@@ -52,7 +42,10 @@ async def recognize_text(frame: CapturedFrame) -> WindowsOcrResult:
         BitmapAlphaMode.IGNORE,
     )
     bitmap.copy_from_buffer(buffer)
-    engine = _ocr_engine()
+    engine = OcrEngine.try_create_from_user_profile_languages()
+    if engine is None:
+        bitmap.close()
+        raise OSError("Windows has no OCR language available for the user profile")
     started = time.perf_counter_ns()
     try:
         result = await engine.recognize_async(bitmap)
