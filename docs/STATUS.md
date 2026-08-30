@@ -465,3 +465,13 @@ This file is updated at meaningful checkpoints. The detailed checklist remains i
   so the observer correctly refused to split them into inferred per-action deltas.
 - Epoch 4 reached a validated boundary with both blinds; unstable hero cards, stacks, and pot still
   blocked canonical reconstruction. No reducer error occurred and control remained disabled.
+
+## 2026-08-30 seated manual checkpoint
+
+- Two read-only runs captured 435/435 and 414/414 frames while the user operated X-Poker manually.
+  Control remained disabled and no agent input was sent.
+- The first run crossed an active Bomb Pot/ambiguous interval. The second observed standard NLH,
+  two validated boundaries, accepted hero cards, both exact blind amounts, 21 action candidates,
+  10 exact action/amount matches, and one action/pot match.
+- Canonical reconstruction remained blocked by incomplete starting stacks, unstable active stacks,
+  transient hand-mode ambiguity, and incomplete action order. No reducer error occurred.
