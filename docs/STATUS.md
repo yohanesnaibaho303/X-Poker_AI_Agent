@@ -447,3 +447,12 @@ This file is updated at meaningful checkpoints. The detailed checklist remains i
 - The hand remained non-canonical because hand-mode evidence conflicted across the epoch, pot
   deltas were unresolved, stacks/pot were not continuously stable, and clockwise action evidence
   was incomplete. This is calibration evidence only; control remained disabled.
+
+## 2026-08-30 online spectator checkpoint 4
+
+- A second 120-second run captured 256/256 frames, one validated boundary, 28 action candidates,
+  13 exact action/amount matches, and three action/pot matches.
+- The next hand remained non-canonical because its exact big-blind post was missed, hero cards lost
+  temporal stability, and clockwise action order was incomplete. No reducer error occurred.
+- Observer reports now retain per-epoch reducer errors instead of losing them after a boundary.
+  Control remained disabled and no input was sent.
