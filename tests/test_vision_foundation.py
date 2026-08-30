@@ -74,6 +74,9 @@ def test_windows_ocr_adapter_converts_capture_rows_to_top_down() -> None:
 def test_live_diagnostic_scales_tiny_pot_crop_before_ocr() -> None:
     frame = CapturedFrame(450, 850, b"\x00" * 450 * 850 * 4)
     layout = load_layout_profile()
+    assert layout.regions["pot"] == NormalizedRect(
+        x=0.40, y=0.33, width=0.20, height=0.08
+    )
     pot = crop_frame(frame, normalized_box(frame, layout.regions["pot"]))
     scaled = _scaled_pot_crop(frame, layout)
 
