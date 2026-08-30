@@ -44,7 +44,9 @@ from xpoker_agent.vision.models import (
 from xpoker_agent.vision.positions import assign_dealt_positions
 from xpoker_agent.vision.temporal import consensus
 
-CaptureCallable = Callable[[int, int], Awaitable[tuple[LiveCaptureDiagnostic, CapturedFrame]]]
+CaptureCallable = Callable[
+    [int, int], Awaitable[tuple[LiveCaptureDiagnostic, CapturedFrame]]
+]
 
 
 @dataclass
@@ -87,8 +89,12 @@ class LiveObservationService:
         self._hero_card_samples: dict[int, deque[TemporalSample]] = {
             index: deque(maxlen=maximum_samples) for index in range(2)
         }
-        self._seat_samples = {seat: _SeatSamples.create(maximum_samples) for seat in range(9)}
-        self._hero_control_samples: deque[TemporalSample] = deque(maxlen=maximum_samples)
+        self._seat_samples = {
+            seat: _SeatSamples.create(maximum_samples) for seat in range(9)
+        }
+        self._hero_control_samples: deque[TemporalSample] = deque(
+            maxlen=maximum_samples
+        )
         self._maximum_consecutive_failures = maximum_consecutive_failures
         self._capture_lock = asyncio.Lock()
         self._stop_event = asyncio.Event()
@@ -145,7 +151,9 @@ class LiveObservationService:
             for seat in range(9)
         ]
         self._action_consensus = [
-            SeatActionConsensus(seat=seat, consensus=self._empty_consensus("no_samples"))
+            SeatActionConsensus(
+                seat=seat, consensus=self._empty_consensus("no_samples")
+            )
             for seat in range(9)
         ]
         self._hero_control_consensus = self._empty_consensus("no_samples")
@@ -171,12 +179,13 @@ class LiveObservationService:
         self._action_occurrence_counts: dict[tuple[int, str, int, str], int] = {}
         self._derived_actions: deque[DerivedActionCandidate] = deque(maxlen=50)
         self._badge_amount_armed_seats: set[int] = set(range(9))
-        self._badge_amount_candidates: deque[SeatBadgeAmountCandidate] = deque(maxlen=50)
+        self._badge_amount_candidates: deque[SeatBadgeAmountCandidate] = deque(
+            maxlen=50
+        )
         self._last_accepted_stacks: dict[int, Decimal] = {}
         self._stack_deltas: deque[StackDeltaCandidate] = deque(maxlen=50)
         self._stack_increases: deque[StackIncreaseCandidate] = deque(maxlen=50)
         self._last_accepted_pot: Decimal | None = None
-        self._pot_ambiguous_frames = 0
         self._pot_deltas: deque[PotDeltaCandidate] = deque(maxlen=50)
         self.latest_diagnostic: LiveCaptureDiagnostic | None = None
         self.latest_frame: CapturedFrame | None = None
@@ -255,7 +264,9 @@ class LiveObservationService:
             for seat in range(9)
         ]
         self._action_consensus = [
-            SeatActionConsensus(seat=seat, consensus=self._empty_consensus("no_samples"))
+            SeatActionConsensus(
+                seat=seat, consensus=self._empty_consensus("no_samples")
+            )
             for seat in range(9)
         ]
         self._hero_control_consensus = self._empty_consensus("no_samples")
@@ -286,7 +297,6 @@ class LiveObservationService:
         self._stack_deltas.clear()
         self._stack_increases.clear()
         self._last_accepted_pot = None
-        self._pot_ambiguous_frames = 0
         self._pot_deltas.clear()
         self.latest_diagnostic = None
         self.latest_frame = None
@@ -302,7 +312,9 @@ class LiveObservationService:
         await self._task
         return True
 
-    async def inspect_once(self, *, table_size: Literal[9]) -> LiveCaptureDiagnostic:
+    async def inspect_once(
+        self, *, table_size: Literal[9]
+    ) -> LiveCaptureDiagnostic:
         async with self._capture_lock:
             sequence = self._latest_sequence + 1
             self._frames_attempted += 1
@@ -322,7 +334,9 @@ class LiveObservationService:
                 raise
             return diagnostic
 
-    def _record_success(self, diagnostic: LiveCaptureDiagnostic, frame: CapturedFrame) -> None:
+    def _record_success(
+        self, diagnostic: LiveCaptureDiagnostic, frame: CapturedFrame
+    ) -> None:
         if self._session_target_fingerprint is None:
             self._session_target_fingerprint = diagnostic.target_fingerprint
             self._session_hwnd = diagnostic.target_hwnd
@@ -404,7 +418,10 @@ class LiveObservationService:
         return consensus(list(samples))
 
     def _record_numeric_observations(self, diagnostic: LiveCaptureDiagnostic) -> None:
-        if diagnostic.small_blind_native is None or diagnostic.big_blind_native is None:
+        if (
+            diagnostic.small_blind_native is None
+            or diagnostic.big_blind_native is None
+        ):
             self._blind_samples.clear()
             self._blind_consensus = self._empty_consensus("current_blinds_ambiguous")
         else:
@@ -413,7 +430,10 @@ class LiveObservationService:
                 TemporalSample(
                     frame_sequence=diagnostic.frame_sequence,
                     content_sha256=diagnostic.content_sha256,
-                    value=(f"{diagnostic.small_blind_native}/{diagnostic.big_blind_native}"),
+                    value=(
+                        f"{diagnostic.small_blind_native}/"
+                        f"{diagnostic.big_blind_native}"
+                    ),
                     confidence=diagnostic.blind_confidence,
                 ),
             )
@@ -447,7 +467,9 @@ class LiveObservationService:
                     and board_count == 0
                 ):
                     self._previous_epoch_dealer = self._epoch_dealer_evidence
-                    self._previous_epoch_active_seats = list(self._epoch_active_evidence)
+                    self._previous_epoch_active_seats = list(
+                        self._epoch_active_evidence
+                    )
                     self._hand_starting_stacks_native = {
                         seat: self._last_accepted_stacks[seat]
                         for seat in self._previous_epoch_active_seats
@@ -457,13 +479,17 @@ class LiveObservationService:
                     self._epoch_active_evidence = []
                     self._hand_epoch += 1
                     self._hand_epoch_start_sequence = diagnostic.frame_sequence
-                    self._epoch_mode_consensus = self._empty_consensus("new_hand_mode_unresolved")
+                    self._epoch_mode_consensus = self._empty_consensus(
+                        "new_hand_mode_unresolved"
+                    )
                     self._epoch_mode_conflict = False
                     self._last_board_signature = None
                     self._last_board_dealer = None
                     self._last_board_active_seats = []
                     self._dealer_samples.clear()
-                    self._dealer_consensus = self._empty_consensus("new_hand_dealer_unresolved")
+                    self._dealer_consensus = self._empty_consensus(
+                        "new_hand_dealer_unresolved"
+                    )
                     self._hand_boundary_validation = validate_live_hand_boundary(
                         hand_epoch=self._hand_epoch,
                         table_size=diagnostic.table_size,
@@ -507,13 +533,10 @@ class LiveObservationService:
 
         if diagnostic.pot.value_native is None:
             self._pot_samples.clear()
-            self._pot_ambiguous_frames += 1
-            if self._pot_ambiguous_frames > 1:
-                self._pot_consensus = self._empty_consensus("current_pot_ambiguous")
+            self._pot_consensus = self._empty_consensus("current_pot_ambiguous")
             self._last_accepted_pot = None
             self._last_high_confidence_pot_sample = None
         else:
-            self._pot_ambiguous_frames = 0
             current_raw_pot = TemporalSample(
                 frame_sequence=diagnostic.frame_sequence,
                 content_sha256=diagnostic.content_sha256,
@@ -534,7 +557,9 @@ class LiveObservationService:
                         5: "river",
                     }
                     raw_street = (
-                        street_by_cards.get(int(self._board_consensus.value or "-1"), "unknown")
+                        street_by_cards.get(
+                            int(self._board_consensus.value or "-1"), "unknown"
+                        )
                         if self._board_consensus.accepted
                         else "unknown"
                     )
@@ -576,17 +601,15 @@ class LiveObservationService:
                     confidence=diagnostic.pot.confidence,
                 ),
             )
-        if (
-            diagnostic.pot.value_native is not None
-            and self._pot_consensus.accepted
-            and self._pot_consensus.value is not None
-        ):
+        if self._pot_consensus.accepted and self._pot_consensus.value is not None:
             current_pot = Decimal(self._pot_consensus.value)
             previous_pot = self._last_accepted_pot
             if previous_pot is not None and current_pot > previous_pot:
                 street_by_cards = {0: "preflop", 3: "flop", 4: "turn", 5: "river"}
                 pot_street = (
-                    street_by_cards.get(int(self._board_consensus.value or "-1"), "unknown")
+                    street_by_cards.get(
+                        int(self._board_consensus.value or "-1"), "unknown"
+                    )
                     if self._board_consensus.accepted
                     else "unknown"
                 )
@@ -712,7 +735,10 @@ class LiveObservationService:
                     f"{item.seat}:{previous}:{current}"
                 ).encode()
                 event_id = hashlib.sha256(encoded).hexdigest()
-                if not any(candidate.event_id == event_id for candidate in self._stack_increases):
+                if not any(
+                    candidate.event_id == event_id
+                    for candidate in self._stack_increases
+                ):
                     self._stack_increases.append(
                         StackIncreaseCandidate(
                             event_id=event_id,
@@ -806,11 +832,16 @@ class LiveObservationService:
                     confidence=controls.confidence,
                 ),
             )
-        visible_by_seat = {action.seat: action.action for action in diagnostic.seat_actions}
+        visible_by_seat = {
+            action.seat: action.action for action in diagnostic.seat_actions
+        }
         for seat in range(diagnostic.table_size):
             if visible_by_seat.get(seat) is None:
                 self._action_armed_seats.add(seat)
-        if self._board_consensus.accepted and self._mode_consensus.accepted:
+        if (
+            self._board_consensus.accepted
+            and self._mode_consensus.accepted
+        ):
             street_by_cards = {0: "preflop", 3: "flop", 4: "turn", 5: "river"}
             street = street_by_cards.get(int(self._board_consensus.value or "-1"))
             if street is not None:
@@ -975,7 +1006,9 @@ class LiveObservationService:
                         confidence=confidence,
                     ),
                 )
-            status_results.append(SeatStatusConsensus(seat=occupancy.seat, consensus=result))
+            status_results.append(
+                SeatStatusConsensus(seat=occupancy.seat, consensus=result)
+            )
         self._seat_status_consensus = status_results
         if len(status_results) != diagnostic.table_size or not all(
             item.consensus.accepted for item in status_results
@@ -1020,13 +1053,16 @@ class LiveObservationService:
             self._provisional_positions = {}
             self._positions_reason = "dealt_position_naming_unavailable"
 
-    def _record_direct_bomb_pot_boundary(self, diagnostic: LiveCaptureDiagnostic) -> None:
+    def _record_direct_bomb_pot_boundary(
+        self, diagnostic: LiveCaptureDiagnostic
+    ) -> None:
         if not self._board_cards_accepted or len(self._recognized_board_cards) < 3:
             return
         signature = tuple(self._recognized_board_cards)
         current_dealer = (
             int(self._dealer_consensus.value)
-            if self._dealer_consensus.accepted and self._dealer_consensus.value is not None
+            if self._dealer_consensus.accepted
+            and self._dealer_consensus.value is not None
             else None
         )
         current_active = list(self._active_seats)
@@ -1065,7 +1101,9 @@ class LiveObservationService:
                 self._previous_epoch_active_seats = previous_active
                 self._hand_epoch = next_epoch
                 self._hand_starting_stacks_native = {}
-                self._epoch_mode_consensus = self._empty_consensus("new_hand_mode_unresolved")
+                self._epoch_mode_consensus = self._empty_consensus(
+                    "new_hand_mode_unresolved"
+                )
                 self._epoch_mode_conflict = False
                 self._hand_epoch_start_sequence = (
                     first_card_samples[0].frame_sequence
@@ -1110,7 +1148,8 @@ class LiveObservationService:
                         break
                 remaining = max(
                     0.0,
-                    self._interval_ms / 1000 - (asyncio.get_running_loop().time() - loop_started),
+                    self._interval_ms / 1000
+                    - (asyncio.get_running_loop().time() - loop_started),
                 )
                 with suppress(TimeoutError):
                     await asyncio.wait_for(self._stop_event.wait(), timeout=remaining)
@@ -1124,7 +1163,9 @@ class LiveObservationService:
             latest_age_ms = max(0.0, (datetime.now(UTC) - latest_at).total_seconds() * 1000)
         hero_seat, hero_seat_confidence, hero_seat_reason = self._detect_hero_seat()
         hero_position = (
-            self._provisional_positions.get(hero_seat) if hero_seat is not None else None
+            self._provisional_positions.get(hero_seat)
+            if hero_seat is not None
+            else None
         )
         self._try_complete_retained_hand()
         readiness = self._reconstruction_readiness()
@@ -1166,10 +1207,14 @@ class LiveObservationService:
             target_fingerprint=self._session_target_fingerprint,
             target_stable=self._target_stable,
             current_hand_mode=(
-                self.latest_diagnostic.current_hand_mode if self.latest_diagnostic else "ambiguous"
+                self.latest_diagnostic.current_hand_mode
+                if self.latest_diagnostic
+                else "ambiguous"
             ),
             current_hand_supported=(
-                self.latest_diagnostic.current_hand_supported if self.latest_diagnostic else False
+                self.latest_diagnostic.current_hand_supported
+                if self.latest_diagnostic
+                else False
             ),
             mode_consensus=self._mode_consensus,
             epoch_mode_consensus=self._epoch_mode_consensus,
@@ -1237,7 +1282,9 @@ class LiveObservationService:
             and abs(candidate.frame_sequence - self._hand_epoch_start_sequence) <= 12
         ]
         if len(candidates) != 1:
-            self._settlement_reason = "settlement requires exactly one nearby stable stack increase"
+            self._settlement_reason = (
+                "settlement requires exactly one nearby stable stack increase"
+            )
             return
         try:
             completed = complete_single_winner_live_hand(prefix, candidates[0])
@@ -1337,7 +1384,9 @@ class LiveObservationService:
             big_blind = Decimal(big_token)
         blind_posts = self._reconcile_blind_posts()
         for kind in ("small_blind", "big_blind"):
-            result = next((item for item in blind_posts if item.blind_kind == kind), None)
+            result = next(
+                (item for item in blind_posts if item.blind_kind == kind), None
+            )
             if result is None or result.status != "matched":
                 issues.append(f"{kind}_post_not_reconciled")
         if not self._dealer_consensus.accepted:
@@ -1352,7 +1401,9 @@ class LiveObservationService:
         if not set(self._active_seats).issubset(stable_stack_seats):
             issues.append("active_stacks_not_stable")
         boundary_active = set(self._hand_boundary_validation.current_active_seats)
-        if not boundary_active or not boundary_active.issubset(self._hand_starting_stacks_native):
+        if not boundary_active or not boundary_active.issubset(
+            self._hand_starting_stacks_native
+        ):
             issues.append("starting_stacks_not_captured")
         hero_seat, _, _ = self._detect_hero_seat()
         if hero_seat is None:
@@ -1372,7 +1423,9 @@ class LiveObservationService:
             action for action in self._derived_actions if action.hand_epoch == self._hand_epoch
         ]
         current_ids = {action.event_id for action in current_actions}
-        amount_by_id = {item.action_event_id: item for item in self._reconcile_action_amounts()}
+        amount_by_id = {
+            item.action_event_id: item for item in self._reconcile_action_amounts()
+        }
         pot_by_id = {item.action_event_id: item for item in self._reconcile_action_pot()}
         eligible_ids: list[str] = []
         for action in current_actions:
@@ -1429,7 +1482,9 @@ class LiveObservationService:
         current_stacks = {
             item.seat: Decimal(item.consensus.value)
             for item in self._stack_consensus
-            if item.seat in active and item.consensus.accepted and item.consensus.value is not None
+            if item.seat in active
+            and item.consensus.accepted
+            and item.consensus.value is not None
         }
         return build_standard_live_hand_prefix(
             target_fingerprint=self._session_target_fingerprint,
@@ -1445,14 +1500,18 @@ class LiveObservationService:
             hero_cards=list(self._recognized_hero_cards),
             board_cards=list(self._recognized_board_cards),
             actions=[
-                action for action in self._derived_actions if action.hand_epoch == self._hand_epoch
+                action
+                for action in self._derived_actions
+                if action.hand_epoch == self._hand_epoch
             ],
             amount_reconciliations=self._reconcile_action_amounts(),
         )
 
     def _detect_hero_seat(self) -> tuple[int | None, float, str]:
         """Map local-only hero evidence to the calibrated bottom X-Poker seat."""
-        seat_zero = next((item for item in self._seat_status_consensus if item.seat == 0), None)
+        seat_zero = next(
+            (item for item in self._seat_status_consensus if item.seat == 0), None
+        )
         if (
             seat_zero is not None
             and seat_zero.consensus.accepted
@@ -1485,7 +1544,9 @@ class LiveObservationService:
             or self._session_blind_consensus.value is None
         ):
             return []
-        small_token, big_token = self._session_blind_consensus.value.split("/", maxsplit=1)
+        small_token, big_token = self._session_blind_consensus.value.split(
+            "/", maxsplit=1
+        )
         return reconcile_blind_posts(
             hand_epoch=self._hand_epoch,
             epoch_start_sequence=self._hand_epoch_start_sequence,

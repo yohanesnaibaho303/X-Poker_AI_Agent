@@ -152,7 +152,9 @@ def test_pre_action_controls_stabilize_without_becoming_legal_actions() -> None:
         )
 
         async def capture(_: int, sequence: int):
-            return _diagnostic(sequence, hero_controls=controls), CapturedFrame(1, 1, b"\x00" * 4)
+            return _diagnostic(sequence, hero_controls=controls), CapturedFrame(
+                1, 1, b"\x00" * 4
+            )
 
         service = LiveObservationService(capture)
         for _ in range(3):
@@ -180,7 +182,9 @@ def test_numeric_badge_becomes_one_temporal_candidate() -> None:
         )
 
         async def capture(_: int, sequence: int):
-            return _diagnostic(sequence, seat_actions=[badge]), CapturedFrame(1, 1, b"\x00" * 4)
+            return _diagnostic(sequence, seat_actions=[badge]), CapturedFrame(
+                1, 1, b"\x00" * 4
+            )
 
         service = LiveObservationService(capture)
         for _ in range(5):
@@ -205,7 +209,9 @@ def test_numeric_badge_value_is_not_also_accepted_as_a_stack() -> None:
         )
 
         async def capture(_: int, sequence: int):
-            return _diagnostic(sequence, seat_actions=[badge]), CapturedFrame(1, 1, b"\x00" * 4)
+            return _diagnostic(sequence, seat_actions=[badge]), CapturedFrame(
+                1, 1, b"\x00" * 4
+            )
 
         service = LiveObservationService(capture)
         for _ in range(3):
@@ -305,36 +311,6 @@ def test_pot_delta_requires_two_stable_endpoints_and_does_not_bridge_ambiguity()
     asyncio.run(scenario())
 
 
-def test_one_missed_pot_frame_keeps_consensus_but_two_fail_closed() -> None:
-    async def scenario() -> None:
-        values = [10, 10, 10, None, None]
-
-        async def capture(_: int, sequence: int):
-            diagnostic = _diagnostic(sequence)
-            value = values[sequence - 1]
-            diagnostic.pot = PotObservation(
-                value_native=value,
-                token=None if value is None else str(value),
-                confidence=0.0 if value is None else 0.95,
-                reason="test candidate",
-            )
-            return diagnostic, CapturedFrame(1, 1, b"\x00" * 4)
-
-        service = LiveObservationService(capture)
-        for _ in range(3):
-            await service.inspect_once(table_size=9)
-        assert service.status().pot_consensus.accepted is True
-
-        await service.inspect_once(table_size=9)
-        assert service.status().pot_consensus.accepted is True
-        assert service.status().pot_delta_candidates == []
-
-        await service.inspect_once(table_size=9)
-        assert service.status().pot_consensus.accepted is False
-
-    asyncio.run(scenario())
-
-
 def test_high_confidence_pot_transition_is_candidate_only_until_cross_signal_match() -> None:
     async def scenario() -> None:
         async def capture(_: int, sequence: int):
@@ -356,7 +332,10 @@ def test_high_confidence_pot_transition_is_candidate_only_until_cross_signal_mat
         assert status.pot_consensus.accepted is False
         assert len(status.pot_delta_candidates) == 1
         assert status.pot_delta_candidates[0].increase_native == Decimal("2")
-        assert status.pot_delta_candidates[0].evidence_mode == "cross_signal_single_frame"
+        assert (
+            status.pot_delta_candidates[0].evidence_mode
+            == "cross_signal_single_frame"
+        )
         assert status.pot_delta_candidates[0].canonical_event_accepted is False
 
     asyncio.run(scenario())
