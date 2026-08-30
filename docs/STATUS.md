@@ -456,3 +456,12 @@ This file is updated at meaningful checkpoints. The detailed checklist remains i
   temporal stability, and clockwise action order was incomplete. No reducer error occurred.
 - Observer reports now retain per-epoch reducer errors instead of losing them after a boundary.
   Control remained disabled and no input was sent.
+
+## 2026-08-30 online spectator checkpoint 5
+
+- A 180-second run captured 422/422 frames across four observed epochs with a stable target,
+  41 action candidates, 15 exact action/amount matches, and both native blind amounts.
+- No action/pot match was accepted. X-Poker's visible pot transitions aggregated multiple wagers,
+  so the observer correctly refused to split them into inferred per-action deltas.
+- Epoch 4 reached a validated boundary with both blinds; unstable hero cards, stacks, and pot still
+  blocked canonical reconstruction. No reducer error occurred and control remained disabled.
