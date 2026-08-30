@@ -425,3 +425,15 @@ This file is updated at meaningful checkpoints. The detailed checklist remains i
 - No hero cards, hero seat, stable starting stacks, reconciled big-blind post, legal actions,
   canonical hand, or award observed. Readiness remained false with fail-closed blockers.
 - `controller_enabled` remained false. No input sent. No raw control OCR retained.
+
+## 2026-08-30 online spectator checkpoint 2
+
+- Bounded observer captured `data/frames/live-status-20260830-online-02.json`: 64/64 frames
+  succeeded over 30 seconds; target stable; standard NLH and native SB 1 / BB 2 accepted.
+- All nine seats and dealer seat 7 reached consensus. Dealer movement from seat 6 to seat 7
+  validated a hand boundary and yielded full-ring provisional positions.
+- River check/bet/check candidates were observed. The 50-chip bet matched the same-seat stack
+  decrease, but no stable pot increase appeared; action order also began mid-round. No action was
+  promoted to canonical state.
+- The following preflop remained blocked by missing exact early-epoch blind evidence, one ambiguous
+  stack, missing hero-seat evidence, and incomplete starting stacks. Control remained disabled.
