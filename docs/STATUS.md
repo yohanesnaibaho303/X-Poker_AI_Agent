@@ -437,3 +437,13 @@ This file is updated at meaningful checkpoints. The detailed checklist remains i
   promoted to canonical state.
 - The following preflop remained blocked by missing exact early-epoch blind evidence, one ambiguous
   stack, missing hero-seat evidence, and incomplete starting stacks. Control remained disabled.
+
+## 2026-08-30 online spectator checkpoint 3
+
+- A 120-second bounded observer run captured 263/263 frames with a stable authorized target and
+  naturally observed an active `single_board_bomb_pot` candidate.
+- Hero cards `9d 7c`, board `9h Qs Jd 5h`, 16 action candidates, three amount matches, and exact
+  native blind amounts 1 and 2 reached temporal acceptance during the run.
+- The hand remained non-canonical because hand-mode evidence conflicted across the epoch, pot
+  deltas were unresolved, stacks/pot were not continuously stable, and clockwise action evidence
+  was incomplete. This is calibration evidence only; control remained disabled.
