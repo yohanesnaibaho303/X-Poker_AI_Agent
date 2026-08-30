@@ -678,9 +678,9 @@ def test_hand_boundary_uses_last_stable_epoch_context_when_button_is_occluded() 
                 SeatPanelObservation(
                     seat=seat,
                     status="seated",
-                    stack_native=100 + seat,
-                    stack_token=str(100 + seat),
-                    confidence=0.95,
+                    stack_native=None if sequence == 5 else 100 + seat,
+                    stack_token=None if sequence == 5 else str(100 + seat),
+                    confidence=0.0 if sequence == 5 else 0.95,
                     reason="test candidate",
                 )
                 for seat in active

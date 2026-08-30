@@ -474,10 +474,15 @@ class LiveObservationService:
                     self._previous_epoch_active_seats = list(
                         self._epoch_active_evidence
                     )
+                    stable_stacks = {
+                        item.seat: Decimal(item.consensus.value)
+                        for item in self._stack_consensus
+                        if item.consensus.accepted and item.consensus.value is not None
+                    }
                     self._hand_starting_stacks_native = {
-                        seat: self._last_accepted_stacks[seat]
+                        seat: stable_stacks[seat]
                         for seat in self._previous_epoch_active_seats
-                        if seat in self._last_accepted_stacks
+                        if seat in stable_stacks
                     }
                     self._epoch_dealer_evidence = None
                     self._epoch_active_evidence = []
