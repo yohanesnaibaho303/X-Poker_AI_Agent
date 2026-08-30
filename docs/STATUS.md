@@ -475,3 +475,6 @@ This file is updated at meaningful checkpoints. The detailed checklist remains i
   10 exact action/amount matches, and one action/pot match.
 - Canonical reconstruction remained blocked by incomplete starting stacks, unstable active stacks,
   transient hand-mode ambiguity, and incomplete action order. No reducer error occurred.
+- A follow-up 120-second run captured 285/285 frames, accepted hero `Ad 2d`, clean standard-NLH
+  mode, and two validated boundaries. One epoch reconciled both blinds and reached only
+  `current_pot_not_stable`; it remained safely non-canonical.
