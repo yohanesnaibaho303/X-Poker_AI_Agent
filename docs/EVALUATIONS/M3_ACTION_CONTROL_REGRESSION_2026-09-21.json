@@ -1,0 +1,41 @@
+{
+  "component": "action_control",
+  "component_version": "hero-action-surface-v1",
+  "dataset_id": "xpoker-portrait-9max-pre-action-regression-v1",
+  "dataset_role": "regression",
+  "dataset_sha256": "0ac8ad2c7fed5ffd216d6a32cd6b709682ef6bf11fb8671c77756b2226d27b23",
+  "gate_passed": false,
+  "limitations": [
+    "Calibration and regression data cannot satisfy a promotion gate.",
+    "Ground truth is limited to one manually observed pre-action sequence.",
+    "Per-frame confidence was not retained by the source replay and is reported as 0.0.",
+    "Total diagnostic latency includes capture and all recognition work, not action controls alone."
+  ],
+  "overall": {
+    "correct": 120,
+    "dataset_slice": "all",
+    "exact_accuracy": 1.0,
+    "false_negatives": 0,
+    "false_positives": 0,
+    "mean_confidence": 0.0,
+    "p95_latency_ms": 275.0952,
+    "safe_rejection_rate": null,
+    "total": 120
+  },
+  "promotion_eligible": false,
+  "schema_version": "1.0",
+  "slices": [
+    {
+      "correct": 120,
+      "dataset_slice": "portrait_9max_pre_action",
+      "exact_accuracy": 1.0,
+      "false_negatives": 0,
+      "false_positives": 0,
+      "mean_confidence": 0.0,
+      "p95_latency_ms": 275.0952,
+      "safe_rejection_rate": null,
+      "total": 120
+    }
+  ],
+  "target_accuracy": 1.0
+}

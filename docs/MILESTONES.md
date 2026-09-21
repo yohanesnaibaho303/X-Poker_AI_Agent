@@ -86,6 +86,11 @@ Exit: stable normalized frames are automatically collected from the authorized i
 - [x] Add impossible-card and exact native-chip amount-format rejection.
 - [ ] Build held-out visual regression suites and latency benchmarks.
 
+Checkpoint: the 2026-09-21 offline audit hash-inventoried 598 local evidence files into 512 unique
+artifacts and froze a 120-frame exact-layout pre-action regression set. The regression remains
+non-promotable, and the best retained replay p95 is 211.0976 ms against the 200 ms budget. The audit
+lists the exact card, dealer, numeric, state, and control evidence needed from a future live session.
+
 Exit: supported-layout recognition meets the per-component targets in `docs/QUALITY_GATES.md`.
 
 ## Milestone 4 — Complete hand reconstruction

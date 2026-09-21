@@ -1,0 +1,3856 @@
+{
+  "duplicate_groups": [
+    [
+      "xpoker-capture-20260826T152616.921055Z/frame-000004.bmp",
+      "xpoker-capture-20260826T152616.921055Z/frame-000005.bmp",
+      "xpoker-capture-20260826T152616.921055Z/frame-000008.bmp"
+    ],
+    [
+      "xpoker-capture-20260826T152616.921055Z/frame-000012.bmp",
+      "xpoker-capture-20260826T152616.921055Z/frame-000013.bmp",
+      "xpoker-capture-20260826T152616.921055Z/frame-000014.bmp",
+      "xpoker-capture-20260826T152616.921055Z/frame-000015.bmp",
+      "xpoker-capture-20260826T152616.921055Z/frame-000016.bmp",
+      "xpoker-capture-20260826T152616.921055Z/frame-000017.bmp"
+    ],
+    [
+      "xpoker-capture-20260826T152616.921055Z/frame-000018.bmp",
+      "xpoker-capture-20260826T152616.921055Z/frame-000019.bmp",
+      "xpoker-capture-20260826T152616.921055Z/frame-000020.bmp",
+      "xpoker-capture-20260826T152616.921055Z/frame-000021.bmp",
+      "xpoker-capture-20260826T152616.921055Z/frame-000022.bmp"
+    ],
+    [
+      "xpoker-capture-20260826T152616.921055Z/frame-000040.bmp",
+      "xpoker-capture-20260826T152616.921055Z/frame-000041.bmp",
+      "xpoker-capture-20260826T152616.921055Z/frame-000042.bmp",
+      "xpoker-capture-20260826T152616.921055Z/frame-000043.bmp",
+      "xpoker-capture-20260826T152616.921055Z/frame-000044.bmp",
+      "xpoker-capture-20260826T152616.921055Z/frame-000045.bmp",
+      "xpoker-capture-20260826T152616.921055Z/frame-000046.bmp",
+      "xpoker-capture-20260826T152616.921055Z/frame-000047.bmp",
+      "xpoker-capture-20260826T152616.921055Z/frame-000048.bmp"
+    ],
+    [
+      "xpoker-capture-20260826T152616.921055Z/frame-000052.bmp",
+      "xpoker-capture-20260826T152616.921055Z/frame-000053.bmp",
+      "xpoker-capture-20260826T152616.921055Z/frame-000054.bmp",
+      "xpoker-capture-20260826T152616.921055Z/frame-000055.bmp",
+      "xpoker-capture-20260826T152616.921055Z/frame-000056.bmp",
+      "xpoker-capture-20260826T152616.921055Z/frame-000057.bmp",
+      "xpoker-capture-20260826T152616.921055Z/frame-000058.bmp",
+      "xpoker-capture-20260826T152616.921055Z/frame-000059.bmp",
+      "xpoker-capture-20260826T152616.921055Z/frame-000060.bmp",
+      "xpoker-capture-20260826T152616.921055Z/frame-000061.bmp",
+      "xpoker-capture-20260826T152616.921055Z/frame-000062.bmp",
+      "xpoker-capture-20260826T152616.921055Z/frame-000063.bmp",
+      "xpoker-capture-20260826T152616.921055Z/frame-000064.bmp",
+      "xpoker-capture-20260826T152616.921055Z/frame-000065.bmp",
+      "xpoker-capture-20260826T152616.921055Z/frame-000066.bmp",
+      "xpoker-capture-20260826T152616.921055Z/frame-000067.bmp",
+      "xpoker-capture-20260826T152616.921055Z/frame-000068.bmp",
+      "xpoker-capture-20260826T152616.921055Z/frame-000069.bmp"
+    ],
+    [
+      "xpoker-capture-20260826T152616.921055Z/frame-000075.bmp",
+      "xpoker-capture-20260826T152616.921055Z/frame-000076.bmp",
+      "xpoker-capture-20260826T152616.921055Z/frame-000077.bmp",
+      "xpoker-capture-20260826T152616.921055Z/frame-000078.bmp"
+    ],
+    [
+      "xpoker-capture-20260826T152616.921055Z/frame-000079.bmp",
+      "xpoker-capture-20260826T152616.921055Z/frame-000080.bmp",
+      "xpoker-capture-20260826T152616.921055Z/frame-000081.bmp",
+      "xpoker-capture-20260826T152616.921055Z/frame-000082.bmp",
+      "xpoker-capture-20260826T152616.921055Z/frame-000083.bmp"
+    ],
+    [
+      "xpoker-capture-20260826T152616.921055Z/frame-000087.bmp",
+      "xpoker-capture-20260826T152616.921055Z/frame-000088.bmp"
+    ],
+    [
+      "xpoker-capture-20260826T152616.921055Z/frame-000092.bmp",
+      "xpoker-capture-20260826T152616.921055Z/frame-000093.bmp"
+    ],
+    [
+      "xpoker-capture-20260826T152905.769899Z/frame-000020.bmp",
+      "xpoker-capture-20260826T152905.769899Z/frame-000021.bmp"
+    ],
+    [
+      "xpoker-capture-20260826T152905.769899Z/frame-000039.bmp",
+      "xpoker-capture-20260826T152905.769899Z/frame-000040.bmp",
+      "xpoker-capture-20260826T152905.769899Z/frame-000041.bmp"
+    ],
+    [
+      "xpoker-capture-20260826T152905.769899Z/frame-000085.bmp",
+      "xpoker-capture-20260826T152905.769899Z/frame-000086.bmp"
+    ],
+    [
+      "xpoker-capture-20260826T152905.769899Z/frame-000087.bmp",
+      "xpoker-capture-20260826T152905.769899Z/frame-000088.bmp",
+      "xpoker-capture-20260826T152905.769899Z/frame-000089.bmp",
+      "xpoker-capture-20260826T152905.769899Z/frame-000090.bmp"
+    ],
+    [
+      "xpoker-capture-20260826T153144.090663Z/frame-000023.bmp",
+      "xpoker-capture-20260826T153144.090663Z/frame-000024.bmp",
+      "xpoker-capture-20260826T153144.090663Z/frame-000025.bmp",
+      "xpoker-capture-20260826T153144.090663Z/frame-000026.bmp",
+      "xpoker-capture-20260826T153144.090663Z/frame-000027.bmp",
+      "xpoker-capture-20260826T153144.090663Z/frame-000028.bmp"
+    ],
+    [
+      "xpoker-capture-20260826T153144.090663Z/frame-000029.bmp",
+      "xpoker-capture-20260826T153144.090663Z/frame-000030.bmp",
+      "xpoker-capture-20260826T153144.090663Z/frame-000031.bmp",
+      "xpoker-capture-20260826T153144.090663Z/frame-000032.bmp",
+      "xpoker-capture-20260826T153144.090663Z/frame-000033.bmp",
+      "xpoker-capture-20260826T153144.090663Z/frame-000034.bmp",
+      "xpoker-capture-20260826T153144.090663Z/frame-000035.bmp",
+      "xpoker-capture-20260826T153144.090663Z/frame-000036.bmp",
+      "xpoker-capture-20260826T153144.090663Z/frame-000037.bmp",
+      "xpoker-capture-20260826T153144.090663Z/frame-000038.bmp",
+      "xpoker-capture-20260826T153144.090663Z/frame-000039.bmp",
+      "xpoker-capture-20260826T153144.090663Z/frame-000040.bmp"
+    ],
+    [
+      "xpoker-capture-20260826T153144.090663Z/frame-000041.bmp",
+      "xpoker-capture-20260826T153144.090663Z/frame-000042.bmp",
+      "xpoker-capture-20260826T153144.090663Z/frame-000043.bmp",
+      "xpoker-capture-20260826T153144.090663Z/frame-000044.bmp",
+      "xpoker-capture-20260826T153144.090663Z/frame-000045.bmp",
+      "xpoker-capture-20260826T153144.090663Z/frame-000046.bmp",
+      "xpoker-capture-20260826T153144.090663Z/frame-000047.bmp",
+      "xpoker-capture-20260826T153144.090663Z/frame-000048.bmp"
+    ],
+    [
+      "xpoker-capture-20260826T153144.090663Z/frame-000054.bmp",
+      "xpoker-capture-20260826T153144.090663Z/frame-000055.bmp",
+      "xpoker-capture-20260826T153144.090663Z/frame-000056.bmp",
+      "xpoker-capture-20260826T153144.090663Z/frame-000057.bmp",
+      "xpoker-capture-20260826T153144.090663Z/frame-000058.bmp",
+      "xpoker-capture-20260826T153144.090663Z/frame-000059.bmp",
+      "xpoker-capture-20260826T153144.090663Z/frame-000060.bmp",
+      "xpoker-capture-20260826T153144.090663Z/frame-000061.bmp",
+      "xpoker-capture-20260826T153144.090663Z/frame-000062.bmp"
+    ],
+    [
+      "xpoker-capture-20260826T153144.090663Z/frame-000071.bmp",
+      "xpoker-capture-20260826T153144.090663Z/frame-000072.bmp"
+    ],
+    [
+      "xpoker-capture-20260826T153413.331688Z/frame-000083.bmp",
+      "xpoker-capture-20260826T153413.331688Z/frame-000084.bmp"
+    ],
+    [
+      "xpoker-capture-20260826T153413.331688Z/frame-000109.bmp",
+      "xpoker-capture-20260826T153413.331688Z/frame-000112.bmp"
+    ]
+  ],
+  "files": [
+    {
+      "bytes": 11934,
+      "dimensions": "45x66",
+      "path": "crop-stack-0.bmp",
+      "sha256": "9578ecf932148ae0c9c5282e8192d5a655a9773fc8862c66ef758379aa19212e"
+    },
+    {
+      "bytes": 11934,
+      "dimensions": "45x66",
+      "path": "crop-stack-1.bmp",
+      "sha256": "6bd8a707664650d2d086770ecf49fa3d409d1e97848bd536e087ef66f413d404"
+    },
+    {
+      "bytes": 11934,
+      "dimensions": "45x66",
+      "path": "crop-stack-2.bmp",
+      "sha256": "92e036bb7d49a9e1f374565b42e91a54029417b47a717589435a2df988953fd2"
+    },
+    {
+      "bytes": 11934,
+      "dimensions": "45x66",
+      "path": "crop-stack-3.bmp",
+      "sha256": "e9c6a50c6caf11050ae2c5e2243e3dea03f4cac505f6cd0c7aa3b84b92925fb2"
+    },
+    {
+      "bytes": 11934,
+      "dimensions": "45x66",
+      "path": "crop-stack-4.bmp",
+      "sha256": "16196e11884aa34bba741a2892092b7a98a0f1d4120d4bbfbb9ad343933fcac6"
+    },
+    {
+      "bytes": 17054,
+      "dimensions": "50x85",
+      "path": "hero-crop-0.bmp",
+      "sha256": "bbcddfd4884ccf2148850e4551fc2855b3777b503a40fb012b655a3f73273c2a"
+    },
+    {
+      "bytes": 17054,
+      "dimensions": "50x85",
+      "path": "hero-crop-1.bmp",
+      "sha256": "346f51e2040e17843a9bed46d883da5cbfbfa1310669e57e00d3bb1c0c5cb316"
+    },
+    {
+      "bytes": 17054,
+      "dimensions": "50x85",
+      "path": "hero-crop-2.bmp",
+      "sha256": "711adcf2e5122990c7448e2a2afdd7edf9d734ad582b1c9a2311271e0c61cc93"
+    },
+    {
+      "bytes": 17054,
+      "dimensions": "50x85",
+      "path": "hero-crop-3.bmp",
+      "sha256": "06f1bdb583ceaabe65f8af480e388c859eed3895f9f148e9725c531fbb0e069a"
+    },
+    {
+      "bytes": 17054,
+      "dimensions": "50x85",
+      "path": "hero-crop-4.bmp",
+      "sha256": "e40f036a6d769072f228a917724a09130898d21d3295efd177cd2d878cf2a9e0"
+    },
+    {
+      "bytes": 17054,
+      "dimensions": "50x85",
+      "path": "hero-crop-5.bmp",
+      "sha256": "d0bfb4b77d65454776af279b8df54bb472e8e48d24322962d992c001c792a206"
+    },
+    {
+      "bytes": 11934,
+      "dimensions": "45x66",
+      "path": "hero-straight-0.bmp",
+      "sha256": "05c21bf9881deaef84ef08cd26c4463be65d6179b9953d57fd3af69ad3f6f356"
+    },
+    {
+      "bytes": 11934,
+      "dimensions": "45x66",
+      "path": "hero-straight-1.bmp",
+      "sha256": "2c3b04aed883d62a964fb007700a821aa5b28df0fa14d5807215842eb2bed8e0"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "live-9max-calibration.bmp",
+      "sha256": "16ff6da9d2952f41781bf3736eb9644d772cc814fb9395871d3cd0dc62e4bde5"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "live-9max-playing.bmp",
+      "sha256": "d6499e530efb7b26be662ed8d7a5f881751e5c003266077ea5f20c33838eb3be"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "live-card-enroll-01.bmp",
+      "sha256": "6c17454f90b96574e83fe0154e5cd63245e7dd5b5e004f49313bc98696e0af03"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "live-card-enroll-02.bmp",
+      "sha256": "ef7cf50dbd43e99541677a5b3f0c6bdf62a77a8e81a05f2e9d95550e10d2184f"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "live-card-validation-02.bmp",
+      "sha256": "3e2427176a97173c19badd4afb4eaaf807ae684154ed5b812e6256679cc06e78"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "live-card-validation.bmp",
+      "sha256": "931d14701d548153e10edb9aa2b0736fdb2777ffd832b0166f8ca07ae7f11199"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "live-current-2.bmp",
+      "sha256": "02a3f17791ce074a08e22000ab7f719501ca918843c04932b9fa7af198466663"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "live-current.bmp",
+      "sha256": "fa626ccbc74d025dd5c989d4f047b558a2de9e9b66f974339aa4e6ff1e4da647"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "live-stack-calibration.bmp",
+      "sha256": "72ec7874824b73498d9643acabb131a5e1fc27f7aceebfc64bf3ebca8384324e"
+    },
+    {
+      "bytes": 57276,
+      "path": "live-status-20260826-2fps.json",
+      "sha256": "1b53978062837ddf71aa7fe3cca25e519f164239fdcfbb4be747e37392ed04eb"
+    },
+    {
+      "bytes": 49291,
+      "path": "live-status-20260826-boundary2.json",
+      "sha256": "e6a81a7728ebe1386db9b56a3bd383dc0047c3f9b277bcded19048a26f06eb3c"
+    },
+    {
+      "bytes": 58845,
+      "path": "live-status-20260826-cadence-fix.json",
+      "sha256": "aeeedc6ea38460bc2703fc1aab100653bbda87568493ed13f9e7b5a12ff85b53"
+    },
+    {
+      "bytes": 66434,
+      "path": "live-status-20260826-canonical-payload.json",
+      "sha256": "510992bd4617b33c7a0de76d82dafbc7f142317e9d87f9ded965670244f0ef6b"
+    },
+    {
+      "bytes": 101513,
+      "path": "live-status-20260826-complete-hand-attempt.json",
+      "sha256": "79e045e5ebcec7681a44ee1343c84a6e3aa2eed3ec6f1434fcc6b6f3340c6947"
+    },
+    {
+      "bytes": 68933,
+      "path": "live-status-20260826-cumulative.json",
+      "sha256": "1c76edbb7b98c6073e4a319861b2aa9102ce2f9808f556d43ddb454194b04e96"
+    },
+    {
+      "bytes": 39771,
+      "path": "live-status-20260826-extended.json",
+      "sha256": "1bc2831bb12e74b179fce2b5272c4563729069cc7d45635318887f32b6618ec4"
+    },
+    {
+      "bytes": 51186,
+      "path": "live-status-20260826-hero-next.json",
+      "sha256": "16e408a8f7aa7159e244caf37bb062b0f0531e7e2827ecb0c619ee4a5116b978"
+    },
+    {
+      "bytes": 43595,
+      "path": "live-status-20260826-per-epoch.json",
+      "sha256": "c6343405b9ea6ea495b5f1f9d43c6a72bdb78d0620db2e34cdc17d5409c9aa04"
+    },
+    {
+      "bytes": 95260,
+      "path": "live-status-20260826-retained-prefix-2.json",
+      "sha256": "ea920226567fd09a35670ecb0b3fe9a070a7142be033d6ba6a122dab6ac5d581"
+    },
+    {
+      "bytes": 43903,
+      "path": "live-status-20260826-retained-prefix.json",
+      "sha256": "6d052c9330009a6bb9f9a1f0a384d48dab8639d105191e6ad2c29c1d197b0fcc"
+    },
+    {
+      "bytes": 66198,
+      "path": "live-status-20260830-blinds-01.json",
+      "sha256": "373e284bf3526448bf821408db9e515c1f45f77c8c44d92ae9280d9d34a0b3d9"
+    },
+    {
+      "bytes": 76490,
+      "path": "live-status-20260830-boundary-stacks-01.json",
+      "sha256": "199c0e516a265603aa3c9a4edb5b6cdc9c85aab04e63a15494d04b42cd52bf9e"
+    },
+    {
+      "bytes": 11058,
+      "path": "live-status-20260830-ocr-cache-01.json",
+      "sha256": "7c21b57692ceb54bd77c7cb93139081a9d0297758b6c724e8f26d0a8e3842423"
+    },
+    {
+      "bytes": 21652,
+      "path": "live-status-20260830-online-02.json",
+      "sha256": "938a1c4deca298ed48108e687ddbf667a20710f0af0acf3acc45a473a16a51b7"
+    },
+    {
+      "bytes": 43470,
+      "path": "live-status-20260830-online-03.json",
+      "sha256": "53b5bd830d3afe5dd0abe34c0901028ca61addb5e4c4d7055962c505c6f797a4"
+    },
+    {
+      "bytes": 51859,
+      "path": "live-status-20260830-online-04.json",
+      "sha256": "fc12413d6340c379efc75ce5dfcd6414eda3378397773cfcfc113f994dad2543"
+    },
+    {
+      "bytes": 72370,
+      "path": "live-status-20260830-online-05.json",
+      "sha256": "7ee5d3dd1cbf907d3958797569156e0bd252dbdbd91bb0f00b229c55f136d605"
+    },
+    {
+      "bytes": 79236,
+      "path": "live-status-20260830-online-06.json",
+      "sha256": "8cd838d7a7947877ffe5de3df06e15ff70ff514e920fc7522a5a8e5bc6e05019"
+    },
+    {
+      "bytes": 99433,
+      "path": "live-status-20260830-online-07.json",
+      "sha256": "8b7d696717668a43ea099e4aa31dbb53f629da724e315c68218ee798e0b99039"
+    },
+    {
+      "bytes": 36683,
+      "path": "live-status-20260830-player-01.json",
+      "sha256": "360976a2f74a8df07086fb9481d7b0f2b3569e67295fa7371936e78f9fbc3e8f"
+    },
+    {
+      "bytes": 65158,
+      "path": "live-status-20260830-player-02.json",
+      "sha256": "7973e00d42fc54e819068a8e59a806b5724ff1395267fc865580196c687ee42b"
+    },
+    {
+      "bytes": 50463,
+      "path": "live-status-20260830-player-03.json",
+      "sha256": "fff1c1116a052cece48cce815c9faab193f1d641f64f62792713cf92a6bcd36b"
+    },
+    {
+      "bytes": 27709,
+      "path": "live-status-20260830-pot-crop-01.json",
+      "sha256": "57dcf279a4211267f44caa53939795c37e6e42cccb5b467e138752dd2c417604"
+    },
+    {
+      "bytes": 64320,
+      "path": "live-status-20260830-pot-crop-02.json",
+      "sha256": "f5b7fca8dfade9b4a25f480684cde0db4bf674bae01e75705459d8b6c46eb3aa"
+    },
+    {
+      "bytes": 54033,
+      "path": "live-status-20260830-pot-grace-01.json",
+      "sha256": "fb8080bc5d6372ce2d194ab053b9b1da3769f3ce7e705eedb6fad78a041299c6"
+    },
+    {
+      "bytes": 35863,
+      "path": "live-status-20260830-pot-scale-01.json",
+      "sha256": "da8ffc988f42eb7da72bb190dd65c3fd63aff7db1465f593309b77b72f93d319"
+    },
+    {
+      "bytes": 52936,
+      "path": "live-status-20260830-pot-scale-02.json",
+      "sha256": "0c264c4754effeb4c71a2e8b4e6622abc7abc38bd8c8b23b1f5391638179bf1e"
+    },
+    {
+      "bytes": 15985,
+      "path": "live-status-20260830-spectator.json",
+      "sha256": "2b620033513f59c2fb8c854ceeefeba03e8a715de6009ffc3d404e0fdfb2df00"
+    },
+    {
+      "bytes": 45034,
+      "path": "live-status-20260830-stack-grace-01.json",
+      "sha256": "1d9c0bf4c8b7ac503a051dabd12690a33d339bfefda7fd576f5fb38fa9f5ee1e"
+    },
+    {
+      "bytes": 75650,
+      "path": "live-status-20260830-stack-grace-02.json",
+      "sha256": "c10925c9c62b93d6efb0d599f7d3815768584acef9df349505b4dc5d86ce6692"
+    },
+    {
+      "bytes": 17901,
+      "path": "live-status-20260909-blind-fix.json",
+      "sha256": "513e9392ae24f8ae3a23eaa914e4b57f4fdf98b762d26e04d2eb65d6dd6079e6"
+    },
+    {
+      "bytes": 25039,
+      "path": "live-status-20260909-current.json",
+      "sha256": "753b6815b776773c3171aa38ba7aeb3eedb886fe41cfbe63c9506e5939896a31"
+    },
+    {
+      "bytes": 22181,
+      "path": "live-status-20260909-panel-scale.json",
+      "sha256": "b47937d051428d1bde89c6dbcee257732a50117c5f5a04ec2d0cac0c6f9408e3"
+    },
+    {
+      "bytes": 71221,
+      "path": "live-status-20260909-priority1-120s.json",
+      "sha256": "5260b40cf5f0411b8a4afce79ca5fea03040785e9e25b814e3c4b27dcaf619c9"
+    },
+    {
+      "bytes": 74273,
+      "path": "live-status-20260909-priority1-boundary.json",
+      "sha256": "dc41b2a3697f613da57b6e64057f3b90f2459e008e854b48603250aa95b82d66"
+    },
+    {
+      "bytes": 89896,
+      "path": "live-status-20260909-priority1-decision.json",
+      "sha256": "9852ced1047ab4b7535f8022dc514e750eec92c137105cd2e4a947227cfcb9dd"
+    },
+    {
+      "bytes": 144738,
+      "path": "live-status-20260909-priority1-fast.json",
+      "sha256": "40d65bd1deae7d776405fd967ffaa209d96dbc47323a881802da92086539839c"
+    },
+    {
+      "bytes": 177199,
+      "path": "live-status-20260909-priority1-hero-decision-2.json",
+      "sha256": "47321bbdebad0e1a2b07dc5274193cab8477d618d101d1fdc7d7fc5cf697d2d9"
+    },
+    {
+      "bytes": 162232,
+      "path": "live-status-20260909-priority1-hero-decision-3.json",
+      "sha256": "071a4145c2fd797b6ea7feab6a38edf8bc2cbbbf75fd166f3375b07e69cb914a"
+    },
+    {
+      "bytes": 73030,
+      "path": "live-status-20260909-priority1-hero-decision-4.json",
+      "sha256": "0b68a2c8afa13e0eed107b8c37fc4b7a7507df11174f3fd2de50a8894667cfb9"
+    },
+    {
+      "bytes": 88921,
+      "path": "live-status-20260909-priority1-post-blind-fix.json",
+      "sha256": "7b695d6c6ce96eed7a592101b8001bd0b0ed7956637fd971ad6283bcd825555e"
+    },
+    {
+      "bytes": 54890,
+      "path": "live-status-20260909-priority1-post-panel-fix.json",
+      "sha256": "23af7f2a566e6376f7b5414d1b1d7414f786e3b86b1ac27e8ee6072bee954e76"
+    },
+    {
+      "bytes": 11037,
+      "path": "live-status-20260909-priority1-rerun.json",
+      "sha256": "8b897e764ca51dd108994f11cde11f1a8e23f3c88f1dce8d77afb38a5c9537a3"
+    },
+    {
+      "bytes": 126488,
+      "path": "live-status-20260909-priority1-starting-stacks.json",
+      "sha256": "fd3d3d0a5369391d8838da0651291e92e5e632c188feb6da17d72e0b84dbd0e3"
+    },
+    {
+      "bytes": 15586,
+      "path": "live-status-20260909-priority1-third.json",
+      "sha256": "05294df9d5ff0156110c47744c227fac555056a5656c9dce4f345bf1ad7b812e"
+    },
+    {
+      "bytes": 11037,
+      "path": "live-status-20260909-priority1.json",
+      "sha256": "d25737226bc01e5f141ab666f321d38f1a7f5ee45ffd81e5ed5a20e67aefb71e"
+    },
+    {
+      "bytes": 11073,
+      "path": "live-status-current.json",
+      "sha256": "692d22c700dce1f0ca9b50bf4df5975755113d7e83c02ab5d91363d982cf3e92"
+    },
+    {
+      "bytes": 11004,
+      "path": "live-status-no-table-current.json",
+      "sha256": "bdc9693a952bf776239eab3310d6373ee0379e0e3fc9817442f4b5eabd392123"
+    },
+    {
+      "bytes": 13382,
+      "path": "live-status-runner-check.json",
+      "sha256": "4322097d3b8b6b4ab95d0e44920731a361b4b5d31b176f5d067e5775d6f64cf2"
+    },
+    {
+      "bytes": 4876,
+      "path": "offline-recognition-report-12.json",
+      "sha256": "2cea157d7a0cd518469e5cc78b94d3d933b875d2cd8db762bcd62f4436d4c200"
+    },
+    {
+      "bytes": 1282,
+      "path": "offline-recognition-report.json",
+      "sha256": "113cc119542ccdb4126e5edbb17a711c5925732c52e0c17b9e9d75b1ae844f7f"
+    },
+    {
+      "bytes": 1447,
+      "path": "retained-replay-20260824T091138.json",
+      "sha256": "85386eee09403511858c8f11c3f6aa986cbc1e052ba4b67da132923e1e24e49f"
+    },
+    {
+      "bytes": 53630,
+      "path": "retained-replay-20260826T152616.json",
+      "sha256": "aa95cd6279936905ce3237e00ed1e3ea3cc82cb450ee7a75510898a382a7e623"
+    },
+    {
+      "bytes": 5653,
+      "path": "retained-replay-20260826T152813.json",
+      "sha256": "1b91fc14a604d5ab2aa0d507e32844d8bdbd22375656cc92e67165361f5bba2f"
+    },
+    {
+      "bytes": 55608,
+      "path": "retained-replay-20260826T152905.json",
+      "sha256": "e42a449073a1d6872ae336cf90abb0ee8f35d043e5b617a851f761b7da49e829"
+    },
+    {
+      "bytes": 50240,
+      "path": "retained-replay-20260826T153413.json",
+      "sha256": "d050dcd0d075ba52fb7af2f2f521b89eda7a4e5b61cab4932528879850cfd763"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260824T041906.381091Z/frame-000000.bmp",
+      "sha256": "a0e7e2c601d1824f11c65494236a2761eb0738180f302cf8a263d266f3141574"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260824T041923.313808Z/frame-000000.bmp",
+      "sha256": "0b616ba65222a7cd5a4181a95fc3363e62f168b1c91c1865d4c2dd81bcf7a79e"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260824T041923.313808Z/frame-000001.bmp",
+      "sha256": "4cee3378bdc8f664c456ad19bc09c92b814ecb5680da5a24c98a5c045b2878ef"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260824T041923.313808Z/frame-000002.bmp",
+      "sha256": "8aa013cce9bf7b6182a2caed777e266456ed1c9a85179098bd20d803258eee15"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260824T041923.313808Z/frame-000003.bmp",
+      "sha256": "8a2989af3558fe149d3b152aa2d0edf4ffa44981aa728094ceb2d8d36135d5b9"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260824T041923.313808Z/frame-000004.bmp",
+      "sha256": "84e4ddc5098efbe2f17834c3cfb4076fe6522703f57f472a44e9790de478db38"
+    },
+    {
+      "bytes": 4284,
+      "path": "xpoker-capture-20260824T041923.313808Z/manifest.json",
+      "sha256": "6faaacc70ae4de05325fcbf535c37e88550d4975f119ad4c65287e2b5512d9b5"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260824T085939.328783Z/frame-000000.bmp",
+      "sha256": "f6b279a0bc0fcdd6de437c0238bfad3a1998cf1a2b2eeacabc3f853c102b20ce"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260824T085939.328783Z/frame-000001.bmp",
+      "sha256": "f031268ee0e0c48014022882885859a8cd4c3a9b2e5ea1be4fa00fed9779d36d"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260824T085939.328783Z/frame-000002.bmp",
+      "sha256": "6eb1fbbb9ea45a72cf2ff051502d391de3459b7272e833d796f334c49c8217df"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260824T085939.328783Z/frame-000003.bmp",
+      "sha256": "14157f46be1b21d0619ea5f7cadfd9b6d7de24958d185e268ee1e17378325516"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260824T085939.328783Z/frame-000004.bmp",
+      "sha256": "2401170c2cff6a030db1a9463d89e910dfa5563aede3a3d8519060359f4ba91e"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260824T085939.328783Z/frame-000005.bmp",
+      "sha256": "1e1a805506c38a5ce957051fde2b47459d5a89f4a4bbe1827e9c6e3f31d016b0"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260824T085939.328783Z/frame-000006.bmp",
+      "sha256": "31457ca5c992a4205ea0aacce42a2a7873019bc0369f3aa0c6c779eb34094ced"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260824T085939.328783Z/frame-000007.bmp",
+      "sha256": "4d2e9b729c64916f51acb46dd8e2b6e846f6185a6fd2f97fc626f7f0d428fa31"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260824T085939.328783Z/frame-000008.bmp",
+      "sha256": "5c33152dbc592d4901c2586944a57e4b151c145be4ffbc18ac42cb607ac78c08"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260824T085939.328783Z/frame-000009.bmp",
+      "sha256": "e16815ad8d787151e824732019e0e3ff81c83da6be6123830f3ab2f033abb7dc"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260824T085939.328783Z/frame-000010.bmp",
+      "sha256": "e9dd5e7b1f5b4bd3eaee3b5d3aeec21b3e1eaf5800f42d3403021490176f983c"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260824T085939.328783Z/frame-000011.bmp",
+      "sha256": "311bff9e5cfece0a0f7e95d2f6cd77adf54ebe5127dbe6d80f33316262d10e0d"
+    },
+    {
+      "bytes": 10828,
+      "path": "xpoker-capture-20260824T085939.328783Z/manifest.json",
+      "sha256": "4cd86dac03158880c4cdc7224785fec8fec1e8bdb0eff590d75f6adca5807a73"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260824T091138.567143Z/frame-000000.bmp",
+      "sha256": "530a853ad4c8fd793ed29d8720c5e144c49ae3a5d9c14aa8763bd7c6d7ea31e6"
+    },
+    {
+      "bytes": 1190,
+      "path": "xpoker-capture-20260824T091138.567143Z/manifest.json",
+      "sha256": "f13e0cd18b84b4f66443740931b5a1db212ad09c201094d2755d2c2203d9d59a"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000000.bmp",
+      "sha256": "7220a1dd86e8e635f8a8e84262eae96d16b849e43a4efd09acb0f77893955161"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000001.bmp",
+      "sha256": "4bbfd7def69bc95d17fc9e73339ba3f37199e03fced3a31590577917129c1ccf"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000002.bmp",
+      "sha256": "c395c2e86d09b6be08621d201fdd3a356ac62d3ba80bc598bee6291de83007db"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000003.bmp",
+      "sha256": "c1a52553ae06d66318e90caaec959666450675a3ad64794f5ba78451214c60ba"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000004.bmp",
+      "sha256": "947a7d3b5088b95d93e7f1a920d3511eb9151486620d6532041e2d04c5077c47"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000005.bmp",
+      "sha256": "947a7d3b5088b95d93e7f1a920d3511eb9151486620d6532041e2d04c5077c47"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000006.bmp",
+      "sha256": "280cc213f1c54223e667f6b9c7220da6bb6bf48593ca80c97a732cee43e4c789"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000007.bmp",
+      "sha256": "40ceebe18a9fe494163627052ee04f1b0e42d7164257d30d7b6a6c417a8f318a"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000008.bmp",
+      "sha256": "947a7d3b5088b95d93e7f1a920d3511eb9151486620d6532041e2d04c5077c47"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000009.bmp",
+      "sha256": "71d061136901b3dbc48d1436fb819e780009e7b8b65c06098fe0a0ca1e36246d"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000010.bmp",
+      "sha256": "49c65d528a8c2e3ea9ff3cc7fa86f2f9396d1602a076171eb5229c36a2cf0c51"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000011.bmp",
+      "sha256": "d1a8a68b0fd31b684390964b1dce4bc281f88231aed94f0564450f9ec47da571"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000012.bmp",
+      "sha256": "dfa03df62c19435969b5766f8495e73ca22d6accaa640906a8491e72a5a5258c"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000013.bmp",
+      "sha256": "dfa03df62c19435969b5766f8495e73ca22d6accaa640906a8491e72a5a5258c"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000014.bmp",
+      "sha256": "dfa03df62c19435969b5766f8495e73ca22d6accaa640906a8491e72a5a5258c"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000015.bmp",
+      "sha256": "dfa03df62c19435969b5766f8495e73ca22d6accaa640906a8491e72a5a5258c"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000016.bmp",
+      "sha256": "dfa03df62c19435969b5766f8495e73ca22d6accaa640906a8491e72a5a5258c"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000017.bmp",
+      "sha256": "dfa03df62c19435969b5766f8495e73ca22d6accaa640906a8491e72a5a5258c"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000018.bmp",
+      "sha256": "e938478ce5dd6ab236bf3f270bb33f270d0701473752f4cb27057fa7f1402e79"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000019.bmp",
+      "sha256": "e938478ce5dd6ab236bf3f270bb33f270d0701473752f4cb27057fa7f1402e79"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000020.bmp",
+      "sha256": "e938478ce5dd6ab236bf3f270bb33f270d0701473752f4cb27057fa7f1402e79"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000021.bmp",
+      "sha256": "e938478ce5dd6ab236bf3f270bb33f270d0701473752f4cb27057fa7f1402e79"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000022.bmp",
+      "sha256": "e938478ce5dd6ab236bf3f270bb33f270d0701473752f4cb27057fa7f1402e79"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000023.bmp",
+      "sha256": "5070543c921b41c9529ba0974d3d92b843d0281fbdfe3f7075d291bdc1d11062"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000024.bmp",
+      "sha256": "434b825877017a6500c177180a7b474fd84ea863245be161792fa04c7790f5be"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000025.bmp",
+      "sha256": "7066f9c73ea788cda21e621a718b5a9085abfdf32f89bf281accf1ac418ac5e0"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000026.bmp",
+      "sha256": "b0abefd6352a05738365f376ee652fab6a8aec3cd4881fadc85b074128fdf4d4"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000027.bmp",
+      "sha256": "a5be584f13094be678e168731250c0f12389c7bf04769acdc82f5d71842b48ec"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000028.bmp",
+      "sha256": "b672a754d25274056c02d7a7662b594ebdd31d823b56db78b330543d62ba5a82"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000029.bmp",
+      "sha256": "098e73a997081a0beb5723958ab082d9fdee85f249093cfd538db18a883f2da4"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000030.bmp",
+      "sha256": "9cc1bf529287bd124d5c779f0890138910e693cb8fccc37f0dd536844e636227"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000031.bmp",
+      "sha256": "c4a871f8005acc22e217a4fd0bc1de4cc9c0706cbe1c7969be0a33f9da7d23b4"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000032.bmp",
+      "sha256": "e2b885c29c20c87237c3b0f73fbd89a170ed08f2b06a58990969b29f841291b7"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000033.bmp",
+      "sha256": "512bbe74f15b617ee23fff19447eb75125d05617e0966d3e409b7ea7257e28e1"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000034.bmp",
+      "sha256": "895b17f75eb57d802ac49024c68a6f43ca78484b73f2ee2c8513d7ba3f01648c"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000035.bmp",
+      "sha256": "c3ff0f3a020e71c96f6458270531f9a325c9abee42cb07ea65b84ed236c7a12d"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000036.bmp",
+      "sha256": "b726790889c18b5073ba86d2b20738d6c840661f6dea9b798340bd6ed63bb9ae"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000037.bmp",
+      "sha256": "411fc9f8c8eee47be9b6d9230bace979fb943db93c101a1c6d5f97fd2d457676"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000038.bmp",
+      "sha256": "5747aa545a0070ebe3567989c34ec41220c322b6bada77ad56bb5ef9251e3783"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000039.bmp",
+      "sha256": "7adceb1aba42713f7897c53c20048e2c9389a4244d9d1475a17abf1ecd396863"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000040.bmp",
+      "sha256": "1668eedef643e23ed99d12271f65299e917651134566db4f6b8bedca5fbd1650"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000041.bmp",
+      "sha256": "1668eedef643e23ed99d12271f65299e917651134566db4f6b8bedca5fbd1650"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000042.bmp",
+      "sha256": "1668eedef643e23ed99d12271f65299e917651134566db4f6b8bedca5fbd1650"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000043.bmp",
+      "sha256": "1668eedef643e23ed99d12271f65299e917651134566db4f6b8bedca5fbd1650"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000044.bmp",
+      "sha256": "1668eedef643e23ed99d12271f65299e917651134566db4f6b8bedca5fbd1650"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000045.bmp",
+      "sha256": "1668eedef643e23ed99d12271f65299e917651134566db4f6b8bedca5fbd1650"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000046.bmp",
+      "sha256": "1668eedef643e23ed99d12271f65299e917651134566db4f6b8bedca5fbd1650"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000047.bmp",
+      "sha256": "1668eedef643e23ed99d12271f65299e917651134566db4f6b8bedca5fbd1650"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000048.bmp",
+      "sha256": "1668eedef643e23ed99d12271f65299e917651134566db4f6b8bedca5fbd1650"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000049.bmp",
+      "sha256": "280ab7953b6f1881857a4a4e4489edfe88b2d25e9287b70355aa6c889e18e566"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000050.bmp",
+      "sha256": "3618e7322ba9afdbf0aa5271cbe4d20351d60332558c1b03b316ab4a179d9a74"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000051.bmp",
+      "sha256": "af2287cd7213a6eef5576ab03b989a703725e8107984791cea2f572b2ad9c5af"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000052.bmp",
+      "sha256": "727f8137fed04f5be0d61055efe7c6defaf423fa0f0ddfd07086f4ddffcf2107"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000053.bmp",
+      "sha256": "727f8137fed04f5be0d61055efe7c6defaf423fa0f0ddfd07086f4ddffcf2107"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000054.bmp",
+      "sha256": "727f8137fed04f5be0d61055efe7c6defaf423fa0f0ddfd07086f4ddffcf2107"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000055.bmp",
+      "sha256": "727f8137fed04f5be0d61055efe7c6defaf423fa0f0ddfd07086f4ddffcf2107"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000056.bmp",
+      "sha256": "727f8137fed04f5be0d61055efe7c6defaf423fa0f0ddfd07086f4ddffcf2107"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000057.bmp",
+      "sha256": "727f8137fed04f5be0d61055efe7c6defaf423fa0f0ddfd07086f4ddffcf2107"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000058.bmp",
+      "sha256": "727f8137fed04f5be0d61055efe7c6defaf423fa0f0ddfd07086f4ddffcf2107"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000059.bmp",
+      "sha256": "727f8137fed04f5be0d61055efe7c6defaf423fa0f0ddfd07086f4ddffcf2107"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000060.bmp",
+      "sha256": "727f8137fed04f5be0d61055efe7c6defaf423fa0f0ddfd07086f4ddffcf2107"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000061.bmp",
+      "sha256": "727f8137fed04f5be0d61055efe7c6defaf423fa0f0ddfd07086f4ddffcf2107"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000062.bmp",
+      "sha256": "727f8137fed04f5be0d61055efe7c6defaf423fa0f0ddfd07086f4ddffcf2107"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000063.bmp",
+      "sha256": "727f8137fed04f5be0d61055efe7c6defaf423fa0f0ddfd07086f4ddffcf2107"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000064.bmp",
+      "sha256": "727f8137fed04f5be0d61055efe7c6defaf423fa0f0ddfd07086f4ddffcf2107"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000065.bmp",
+      "sha256": "727f8137fed04f5be0d61055efe7c6defaf423fa0f0ddfd07086f4ddffcf2107"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000066.bmp",
+      "sha256": "727f8137fed04f5be0d61055efe7c6defaf423fa0f0ddfd07086f4ddffcf2107"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000067.bmp",
+      "sha256": "727f8137fed04f5be0d61055efe7c6defaf423fa0f0ddfd07086f4ddffcf2107"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000068.bmp",
+      "sha256": "727f8137fed04f5be0d61055efe7c6defaf423fa0f0ddfd07086f4ddffcf2107"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000069.bmp",
+      "sha256": "727f8137fed04f5be0d61055efe7c6defaf423fa0f0ddfd07086f4ddffcf2107"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000070.bmp",
+      "sha256": "19575be5b1178c0879cef25a375e41f79d1b3025ef6f78fdf93465fa7f9a2157"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000071.bmp",
+      "sha256": "7567661822eaa57fd1c211bbb2cdffd6d86aa4475ed996e9e0899a54427d88f4"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000072.bmp",
+      "sha256": "2ecd3312db0b383929dcb44aa013639f6583b1ab2cc86616580697250ca17c50"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000073.bmp",
+      "sha256": "6d73cf064b39819a0d9970a4dc1db3845a8fa7a6a43ad851e6682fe0c26741f4"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000074.bmp",
+      "sha256": "0998bee42f2f2c471a6b6858b2e57d9b5bcbabf0422c37bac2440878a289c2ac"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000075.bmp",
+      "sha256": "6fe0dd2d5edfb7715fbe100de023dbf43b0df87d4d62143f500072029149c881"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000076.bmp",
+      "sha256": "6fe0dd2d5edfb7715fbe100de023dbf43b0df87d4d62143f500072029149c881"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000077.bmp",
+      "sha256": "6fe0dd2d5edfb7715fbe100de023dbf43b0df87d4d62143f500072029149c881"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000078.bmp",
+      "sha256": "6fe0dd2d5edfb7715fbe100de023dbf43b0df87d4d62143f500072029149c881"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000079.bmp",
+      "sha256": "556ec443f0f2aacba3782a23e63e38658ed34ff0b17314c8ff063645c1742aaf"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000080.bmp",
+      "sha256": "556ec443f0f2aacba3782a23e63e38658ed34ff0b17314c8ff063645c1742aaf"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000081.bmp",
+      "sha256": "556ec443f0f2aacba3782a23e63e38658ed34ff0b17314c8ff063645c1742aaf"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000082.bmp",
+      "sha256": "556ec443f0f2aacba3782a23e63e38658ed34ff0b17314c8ff063645c1742aaf"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000083.bmp",
+      "sha256": "556ec443f0f2aacba3782a23e63e38658ed34ff0b17314c8ff063645c1742aaf"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000084.bmp",
+      "sha256": "22a960c6164d9ed37773c5bca19156c66eddbf412bdec937d9dfaaa770288ecc"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000085.bmp",
+      "sha256": "0b4e7f81cb8be5ddd937a3bae3e16ee8eaa7efd44085ea15c52526f38029689a"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000086.bmp",
+      "sha256": "3045b511ac4068ed289ed29dbad45af03a713a6a49b0a14da5f25fb44889c40c"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000087.bmp",
+      "sha256": "d7d776d10ca30da24cda5e77ff638e94749f9398e695872a0b34f692baf1b353"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000088.bmp",
+      "sha256": "d7d776d10ca30da24cda5e77ff638e94749f9398e695872a0b34f692baf1b353"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000089.bmp",
+      "sha256": "19343ba3ec7aef99b44e789a9dbe3b6bb7744f71a044f3eecbe2280e366ce193"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000090.bmp",
+      "sha256": "f670563fafa4c29bb2a4ace5e54648b54df570ae6ae726ccbda307d8aa959958"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000091.bmp",
+      "sha256": "5a67b43a6e0e7f4476a1e75b4c2e6f42aabe936501e6a1054a6e001d0b08f3b7"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000092.bmp",
+      "sha256": "dd6170566d2d13078bd8311051d172225547c8063b7e4fac31e7d4913fdc982a"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000093.bmp",
+      "sha256": "dd6170566d2d13078bd8311051d172225547c8063b7e4fac31e7d4913fdc982a"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000094.bmp",
+      "sha256": "d45d9dd8e1aeecdbe3edccfd646b37f99a5c3f9e5aad95f08945c822b6073b24"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000095.bmp",
+      "sha256": "6cca943ad8481a22dc605d2e5d0ce0daa1747b593312fdf325b32f92c145c1d3"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000096.bmp",
+      "sha256": "f58d0cf7fce32c29499ebe16c4826b8709e6b7c2a7b8c9dadc3e48a6b3bd3e1b"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000097.bmp",
+      "sha256": "e58ca34b049e100695e7bd6a6f4a440078a8ca71560af9625deaedd85a1c0011"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000098.bmp",
+      "sha256": "a98d879d5a5f782352bb0a3f833f9b4996e21a64d13f1bab9185ae39a7ce2cd4"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000099.bmp",
+      "sha256": "a16cdcc50144ef43cad197d7734ea5bb671f05cc82cc63d996ed8c10af32f9ad"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000100.bmp",
+      "sha256": "fca8d81061a258802b3dc981cfdcfc304512ff8539d63499f3ffeeba58a70b6b"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000101.bmp",
+      "sha256": "603cc322fed256afa0159be41212697e13611550053cc8bfc472ddad7461107b"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000102.bmp",
+      "sha256": "d22f3b6e20374fada69d4304b2db4ce44774bac7bfdd8e10775752062379c731"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000103.bmp",
+      "sha256": "33448c62e23780da953150a7803704e23340b2a43cf166da21ebc1f3df84ef5e"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000104.bmp",
+      "sha256": "cfedfe12794802c6635531e0dc71e171213d77489703e9a8946b4834cc934c7b"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000105.bmp",
+      "sha256": "29f539e46ef1fd72c0370c5eb67239794d6ec02ce0bf5d69c7c25c1fb42f53b9"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000106.bmp",
+      "sha256": "4466a7f5dc0b65f83bfe5f1bf2e3f48fb448871fd52b4a29500a49ec99be84f8"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000107.bmp",
+      "sha256": "57eeccec6a5308c60baee9366ecf988f797436c401df64e7f58ae2a8b53412bd"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000108.bmp",
+      "sha256": "409a6fd8ea82ea0b888c131262b92111ac161738a4add244e2b299ab6de5fc03"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000109.bmp",
+      "sha256": "1a1bab08f4193384ab95e1802bb79de5e4a8a381ed0d8be0da7e4b702ec71957"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000110.bmp",
+      "sha256": "1a1024fac7a8b36e567024124b435c2c83c8d2de76651a35da6aafff681ae802"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000111.bmp",
+      "sha256": "d2f54e056e1305c7487f006bc32428cc083172a568ba3c1ebea496e7d3764596"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000112.bmp",
+      "sha256": "43166ff25718df7e495e7931fb9d0846c51ed2d8017065309c0574a3c90a6771"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000113.bmp",
+      "sha256": "2195c85cfbf5c5f07275e85aa1edee90d25cb75b85f5e32f1df1bf44ef09afba"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000114.bmp",
+      "sha256": "beafc1a08d206746473b9ee6105200c9b7c53bd2d0fbe5169c5d6177af53cb67"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000115.bmp",
+      "sha256": "6f82b821b102f9c2f3c2dbc59c05f2455858c49f08308a73f59acc9e2f52d07b"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000116.bmp",
+      "sha256": "8dc898056e3262615ea594aa0d1812226c6c00d0f8641c91c7d421040aef9f02"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000117.bmp",
+      "sha256": "3ef5b4350a27aa96a413b3501ed0df76b44270ed9364f00a41f461b813d11024"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000118.bmp",
+      "sha256": "538870034de06f91e55ac39d89105df7844b5be44763b190347f73ac7469a2f6"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152616.921055Z/frame-000119.bmp",
+      "sha256": "6099fd42dae9dddac2ecadbfa33d1e9f25567c1dba1ac25cb386faccbcec4060"
+    },
+    {
+      "bytes": 114089,
+      "path": "xpoker-capture-20260826T152616.921055Z/manifest.json",
+      "sha256": "5aabf742119306525a7978fadcf6fb18c6e8158024f4be24fe3854c8cd925de4"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152813.127337Z/frame-000000.bmp",
+      "sha256": "14fbee4971a1480bcb735b2e1d48bb960355700692eb0ea26126514eedb1f0d9"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152813.127337Z/frame-000001.bmp",
+      "sha256": "9b54e7e2a7cff2e8878674cacb411d631c354b8e19263aa3057e8a398bcedc75"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152813.127337Z/frame-000002.bmp",
+      "sha256": "ea0f12121c847c503d9b0564e3b7b9ae81064c0a60408c955a4c27b3517eee84"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152813.127337Z/frame-000003.bmp",
+      "sha256": "2e9e5c252198474274eddacd58d22e3f700c5be50599cb2ebefc165244a3045a"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152813.127337Z/frame-000004.bmp",
+      "sha256": "92a4fd3e067505d3da066e80618db2141fbe2929d04bfaee87a055e7e0f93f38"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152813.127337Z/frame-000005.bmp",
+      "sha256": "77de9cc386ca5ae6c3d520ef385ce42bb09a62bb5f265db592906020babd3b52"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152813.127337Z/frame-000006.bmp",
+      "sha256": "1c1c620a00273f5bbfb7dba7a91256c4ff5e9f15f7368cc7953fb7149278806a"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152813.127337Z/frame-000007.bmp",
+      "sha256": "12a05f2c7f9a6bf4953ba362c3dd616fffaa78f16f5c5fc15d7860908045ee84"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152813.127337Z/frame-000008.bmp",
+      "sha256": "10bf68bb0b19f36a1c2b7ee512d03d3c3e73940c9d0bfdcc896ce2e3607f2ed3"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152813.127337Z/frame-000009.bmp",
+      "sha256": "680142e1e204fe276999760a2ed23e5c94ef534589c844d940fb34f1c69f992e"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152813.127337Z/frame-000010.bmp",
+      "sha256": "f5208a1f21ed09bbe350d8a136b945d1d9e2f50a322f5a824ea280dfc1715825"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152813.127337Z/frame-000011.bmp",
+      "sha256": "65a0cb42f3d1c131704990fc2e4735d44d4c01d7689991216733bd246439ce38"
+    },
+    {
+      "bytes": 11685,
+      "path": "xpoker-capture-20260826T152813.127337Z/manifest.json",
+      "sha256": "3c39c61473c4eeb31d27dca5d9a58ded51db844aba0335b8b779317c16ac44bc"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000000.bmp",
+      "sha256": "1cae53ac8fa25bf0ae12ffbd3d52a55a10f4980eecf5e9a6e04dbcec15fe1c5d"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000001.bmp",
+      "sha256": "474a0df6a27e231c3f2175eb6283ea5ca8ee6790b1d6456331409b33acedf562"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000002.bmp",
+      "sha256": "fcd8b771e6adb9313f722b41578e700d630479004dffd817369a680a30a15290"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000003.bmp",
+      "sha256": "5d8fdb2af16c43e5983af80b7069f0da7ee5ebfe6c60432cba7b211e2f91a349"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000004.bmp",
+      "sha256": "16995cc5683993995f4de7cb8e8a8c389a306e36ac55bb9337866ce4e06b9b58"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000005.bmp",
+      "sha256": "dc154dad0caaad57a8e1927db74e807e82ae56a38076ccd6390790209f7bef97"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000006.bmp",
+      "sha256": "0572579e808e7442a4df97f89345f9ce7cac0dbd0bc08fef70a062807009e1e3"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000007.bmp",
+      "sha256": "bcc07ac9bba75167c73ed3e2fb21c689404113b24ad5191835719f153f68fce2"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000008.bmp",
+      "sha256": "04451fce81d5708291909ec213611cadac9e897161214e71400449006a6147a7"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000009.bmp",
+      "sha256": "d58c298b2465f8d9d28fb6b656eaa9b38fa9e3194135f2715c9f3a8c1f0ce067"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000010.bmp",
+      "sha256": "87b875d9c24886d043c5b99ca3afaffa9e44ae997c35654c841f300e3e3e077a"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000011.bmp",
+      "sha256": "6bd94b6f977efa640e6f0ba2867058a211ea2c5019a7c9162383bd5af0fd9fe7"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000012.bmp",
+      "sha256": "e5f26121e2085bcb9b96b3abce42bbc766d55a2dcaa0a55f09ab68c52ded28a9"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000013.bmp",
+      "sha256": "05b565613beb136e1fc3f0b68d778ebb674dab68b86cc87e7a8229fcdc600996"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000014.bmp",
+      "sha256": "75f50db55a3437bff3cc3bbadafa3e98b08dcaeb4522f8fdbb397f5e9d93dbaf"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000015.bmp",
+      "sha256": "631282c291a4c9c31979d7fafe4abb8627430b080c62836564fc54f053769bc4"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000016.bmp",
+      "sha256": "1b72b371a122c66ffa0bf36c5089b61ab1c9e8a270da861abae98f0d5bc15951"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000017.bmp",
+      "sha256": "67d3fa332728eb5a681bb2a5cdfd9cbc542047192d5aa257190e1e8f6432364e"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000018.bmp",
+      "sha256": "fab09c505ff5344feaed5de335d66b501f8edfa6c6bc898fb80a5555a4785059"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000019.bmp",
+      "sha256": "e3c4cfbd5e6476c4fbb067a1b23cbb44bd3220071d2c4157c04fb388398653c0"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000020.bmp",
+      "sha256": "08e13e59a411469475221257da72f399daee5c72c64fb27358dcc32ea2b0742b"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000021.bmp",
+      "sha256": "08e13e59a411469475221257da72f399daee5c72c64fb27358dcc32ea2b0742b"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000022.bmp",
+      "sha256": "55b6234f0ca1b709a8a6d762c9ff350d94d2748d16392d2a0297bed416c3af3e"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000023.bmp",
+      "sha256": "4c7c45180136ca1db5ba7bb05bbdefff97417e45a8d71bf08e617adfb021a4b7"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000024.bmp",
+      "sha256": "e92caba2844f92e7ca398a5f3780e3245b61a409ba8e5c164da7bf9774380564"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000025.bmp",
+      "sha256": "c13ea586e589f71bc8c1c6c1a5336dae0a23bd3978d61117b5afaaa3a2f9e945"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000026.bmp",
+      "sha256": "62711a3f080a0e474af9a2fae4cbe141d20d6cce16006f596defa9a761198b13"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000027.bmp",
+      "sha256": "6064d4bdd5aaab81b55bc21406eea5df20ae9e3ba0acaf502419497757597ac2"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000028.bmp",
+      "sha256": "6db5aaeac182f9a95c53b034cc7a14a82e35b30419180d70c4762fd199f02b4a"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000029.bmp",
+      "sha256": "518cf1b38651e1a21d290362a304aec26d0e5df1f3740426defd1ec9e0ff8c92"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000030.bmp",
+      "sha256": "25988df37316f970670dde0d819e53dc26294cb5bad6b00fae73332e6fb97dd6"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000031.bmp",
+      "sha256": "62093faf997fd9d50133afdefd1f35457b78b1939ec32040658c2082a1b26f75"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000032.bmp",
+      "sha256": "1f90efdbd41315c5045d4bcd42e6794ebf853412b6cd3949c1dcc60cdddd4d29"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000033.bmp",
+      "sha256": "b7e0d564e58b09e64d6657f88bbf4bab2582f9a162ba4bbf55e0e58ec8364f20"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000034.bmp",
+      "sha256": "6fa7098c4dd5cdbf59fb096ee0bb198f2f9d85c42900d96a6a47f36eda457c44"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000035.bmp",
+      "sha256": "112de1005791fc6b4768d19504c9cd27a85ae325f178c8ff6a342cdc2d991bbc"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000036.bmp",
+      "sha256": "2295f20c374762c56335d0a01239e7d11c4ea057a9e4641d8074b4ef8c1735c7"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000037.bmp",
+      "sha256": "b9afc2521501969ef13788a96b9cfce9c8b3019b323051d63f91960a6a21f430"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000038.bmp",
+      "sha256": "b0381e71bbc3e5c40d5c1a44771906e6f062a55e0b86865cfc917898ac777e53"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000039.bmp",
+      "sha256": "fea638150a2edae692a3d5784ce79618e382ba49ddbd326c37b6253063c90a76"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000040.bmp",
+      "sha256": "fea638150a2edae692a3d5784ce79618e382ba49ddbd326c37b6253063c90a76"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000041.bmp",
+      "sha256": "fea638150a2edae692a3d5784ce79618e382ba49ddbd326c37b6253063c90a76"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000042.bmp",
+      "sha256": "d73609e949ae809868362c11a806ddd7e6015b701a1f667a946e2c5e0b8c5ce8"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000043.bmp",
+      "sha256": "60916df002f4489bbe2cc186c46d80e6b437ff04a0155ee0ffb4d76001382db3"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000044.bmp",
+      "sha256": "0fbc5432edf9492733b457be03ce513985d35508c0c0aa33c239a35894e4d5e5"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000045.bmp",
+      "sha256": "a00d6b46b254ceb7826a5ebb8a6d4eb95d48de0e93bc663029d93edcc59e7896"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000046.bmp",
+      "sha256": "eefd6fd4aa97d07d5871c1444c2a6489df21fad522ff739352812bd913e90afc"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000047.bmp",
+      "sha256": "e70a361482dc9c16cfb19bb1518f6791b0968a745403fd8b0ad80b58d10ac127"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000048.bmp",
+      "sha256": "74b27345d790c7a350f8df45a1a440184a54ed75a077aa8f5ee770b5a417e261"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000049.bmp",
+      "sha256": "696900421a2f25f7ac1d471a4953b85bf9b855f0f5adccf3b8580ce3da7903f7"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000050.bmp",
+      "sha256": "d50482132ed06e789d167a787cd5cf729e26b08275d8eb0b64cba7d9902a6c90"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000051.bmp",
+      "sha256": "0e4e03cf9caaa4ca65f1d202e5af15914b9a74a8985793c8ff2eaae27a7b54fa"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000052.bmp",
+      "sha256": "e95e42d72f4cfe094afa5928ed0d94eb390b2019fc47c30ae38af5a66ae9de26"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000053.bmp",
+      "sha256": "158d2c0aa36e9a00145bb36abd863873749185f6874e87e6a90224a122dea701"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000054.bmp",
+      "sha256": "a8f94ce5fa65e802e077fe5bc0ae14513e3949d8a7620a7ccacde544e70197b9"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000055.bmp",
+      "sha256": "22a17f306fca0ca1084721d7d1fae3182be65219ca1ba1c40f79868edc548f05"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000056.bmp",
+      "sha256": "b4daad07194c93e37a82c28ee5eb1a162dacc8ddb879f4a3e31613f9eb15cc5c"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000057.bmp",
+      "sha256": "9e9aaea54b01b48edc214a9c3974960dcf370d2760115d3c7d1ec0a0a698821f"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000058.bmp",
+      "sha256": "d0d76b6ce2e5331be16193ffc1c5a66d46091198ea2415f27570e2eb6c64da15"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000059.bmp",
+      "sha256": "deed715f27d7cb386746032970ebd6e7bd17771153f4078f28655cb8dd6f44c5"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000060.bmp",
+      "sha256": "8e67a0e4fe2b5fc7e285e0c4a53f33230d8cfb5bd3e1e42569ca35e6b1c59de6"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000061.bmp",
+      "sha256": "4916f8a2adcea8bff64705fc2e835bdbf1729d02f54f2e46296ea19a56c7d5f4"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000062.bmp",
+      "sha256": "fface99c41f0cb43c1b1c5d7eda672bbcf3cf9d2f9232ebb786d75e6d621fbe7"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000063.bmp",
+      "sha256": "9f1d9c64cf34bb797cdd053766a9c2f2ad970b9437209c0dc8e7c4faa98d56db"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000064.bmp",
+      "sha256": "6ce9aba6307b49facbde5fdf4e8f3cfe8885256d537365b98f80a250981d6f00"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000065.bmp",
+      "sha256": "7f235828a772d3aec2e982442f96ba1ef9eaf5b225e4ae7254b288c61ef8747a"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000066.bmp",
+      "sha256": "440230b8253cb7d1825f2695b0a6fdf12060db7e13f02414a93e27ce1ee22fee"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000067.bmp",
+      "sha256": "53c130261f0fe447268e36a3f3745902178feda7e48fc2746eb7563a9dc41f3a"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000068.bmp",
+      "sha256": "e99cf3c85f4e9e83173f4f777c58818a67700bf2831839f4b5c174203a6d3da7"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000069.bmp",
+      "sha256": "8effd0f7137ff7aaf20bf643a5bfe943bba2e114c7a0ef72e9b5b86978f4f516"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000070.bmp",
+      "sha256": "d0a68c3ba446ea23fecc51119357b8f7c0d9158f81b0332c065caa127efcefaa"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000071.bmp",
+      "sha256": "dbaaed5c31abaee4982c4b8e46c73740e44a7eca43dba150df63a2bcb5c57090"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000072.bmp",
+      "sha256": "0e15e33a4a2d4dc9ce3378925fcd1cb263653f541d9c3547c1dd20397d263073"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000073.bmp",
+      "sha256": "c909e30ba2e8e62361c436bb29b60d7b70328627bf6797812024bc49082420e7"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000074.bmp",
+      "sha256": "9d4f75923159c9218f27e1ae4fd1182ff01eedcf3f8bb1d3d82246b465ef449f"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000075.bmp",
+      "sha256": "c22a92a14f11cd19382ca21d31d6fd6fda5514214c8054881a77402d8a554a7e"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000076.bmp",
+      "sha256": "fd3d76c044b8237c4d8adfa6c1ebaf9a2f537690c332a46a4d370c32dd1ceb29"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000077.bmp",
+      "sha256": "3e48af6864ad04f39646addb0c3ae2e06634bcc03df111df27806480d1ad9513"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000078.bmp",
+      "sha256": "5d34e8d8737d749ab5135ed7a5d7d2c373618157cea3119c179e5039a80ceae2"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000079.bmp",
+      "sha256": "20772a9d84ab6ad8d0fc2292a38f50f0422caa7dfd474f2f214596b321fc59f7"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000080.bmp",
+      "sha256": "0919d06501df4794d1ab9ba0f8e7b2905b642962d0b5411b48ec53d6419414c2"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000081.bmp",
+      "sha256": "66a4f99a051b25bbb1151b9ebc10d22b6a6f21a30ed3d797c2997b07189f58a6"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000082.bmp",
+      "sha256": "63ec9e1ee84a34981d5b0c4b8fe1ab8f545a77cbaf27996441ccbf21bcf88434"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000083.bmp",
+      "sha256": "ba2583777b3ca680c05b6ad0393e52e6805a927dfd29f3263157d1f48c5dc999"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000084.bmp",
+      "sha256": "82771670290ae01388feb09bb21ee1fee6cec070d00231a649c2721f4e779e31"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000085.bmp",
+      "sha256": "1f83e61ed1152fdd4c63d1ca3f33a1435d1e26d1cb4cdee82e7141f77a18b60f"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000086.bmp",
+      "sha256": "1f83e61ed1152fdd4c63d1ca3f33a1435d1e26d1cb4cdee82e7141f77a18b60f"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000087.bmp",
+      "sha256": "926e2dac05fd54f70eb7ce9f3838dd2a01922959cc8dd6967c6c2b57db822bf3"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000088.bmp",
+      "sha256": "926e2dac05fd54f70eb7ce9f3838dd2a01922959cc8dd6967c6c2b57db822bf3"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000089.bmp",
+      "sha256": "926e2dac05fd54f70eb7ce9f3838dd2a01922959cc8dd6967c6c2b57db822bf3"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000090.bmp",
+      "sha256": "926e2dac05fd54f70eb7ce9f3838dd2a01922959cc8dd6967c6c2b57db822bf3"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000091.bmp",
+      "sha256": "7bdabdca7879ce85192faf22f83aeb96777c1813ee358544a2d8110d6236bd4f"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000092.bmp",
+      "sha256": "1d60a72e458fe89d246a723275b8b0cb48d616547fd77bf6789020570b256bca"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000093.bmp",
+      "sha256": "f0543823b111099e71d288a696022db92c1373d64610aa0f12256c58881bd936"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000094.bmp",
+      "sha256": "459bf0db54d3dc64056d65424b6b2678ce2a3b617440be2e8cc168ac832a2f02"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000095.bmp",
+      "sha256": "1159259839f00523b0ce43942ca02c37c0cdafc48f6766f4569d80ae0b2fc3f7"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000096.bmp",
+      "sha256": "cadf8c944fdbb9408ebe48fe1a2bfd57bbfcd7ef5886a51cc02b2821c016ad6d"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000097.bmp",
+      "sha256": "eba952e917a74947a25f0e5c1308c5e8e35b06eb6da2b851a73f67e8513fafd5"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000098.bmp",
+      "sha256": "b5f7a6692ac2f93e820a4b0fd9a2cbee3d1c7d9cc06ae62913c292c477b24b57"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000099.bmp",
+      "sha256": "5374c3eeb1005b13609620cf87025e628a0096f3f2d76856ca8553971e481ab7"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000100.bmp",
+      "sha256": "b059fe9db81e0aef5ecd2e75148e10c8720cb6e508ba30b6844436bb0c54283a"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000101.bmp",
+      "sha256": "7cf34ecbfd50b8a9b7c1a1f73cf2ffd25d9beb0b17d3a8dafbbf5e22415e9da9"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000102.bmp",
+      "sha256": "d0a661a9f74fcf766dc664f470e1b48c423c4ef62eb9551236e29b87ebaeb57f"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000103.bmp",
+      "sha256": "1cf3178fc0fee52e305da56a14baf370c28675b48af3d259f5a77f726f2c57f1"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000104.bmp",
+      "sha256": "ca91f3a1f1da4e1def067482503a947f9b9f68bf4e4efd00492aad76577e6bc3"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000105.bmp",
+      "sha256": "aec5d7669142951682bd91628ff9bce3244563c9af4d535a1a7d8532c05c858b"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000106.bmp",
+      "sha256": "b9df1bbd81f67be179fea2d83b1dbcec31ca4a8ca960d2e5118334c1513503a9"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000107.bmp",
+      "sha256": "5ed9da5326fd493d1eea86ae5abb4411567a24a350b2ea66e393ba83e8bc2501"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000108.bmp",
+      "sha256": "d7a1f1fa6eae3254ff755e075bd35624e971b8ee2478abdb13f76c3d55f7643e"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000109.bmp",
+      "sha256": "5a2707a10a2707ec9cb0cd5699461c04e07d639901719e60ed8fe1f418716d5a"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000110.bmp",
+      "sha256": "ee40727600b337b489d7f9ed6705375cbcb59eb821337c647db42256745197fd"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000111.bmp",
+      "sha256": "e454db06c276fc960adf780656e8d7bc8ce2c9f42ef5bb9914f6b6fe70539712"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000112.bmp",
+      "sha256": "56e16e6ead488911239885727ce715c56a6475c07c779b360d145163db52a59d"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000113.bmp",
+      "sha256": "ec1dbcb12e9f0bd36f4417785bd2569c7fad0e4334f250559c9bf3e5a71401a5"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000114.bmp",
+      "sha256": "654964c175388f247a434f0cc97b02860d336478d5543ccdc603c87a36158114"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000115.bmp",
+      "sha256": "7c0452986cfefbc1fda1efe1ba97da1062d783801b5cd07dbba96e3c4d4bbf13"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000116.bmp",
+      "sha256": "7a0a98adec6876717b086f9bd64c65a53bcf2a15f4238b2c34a4605e7ba42526"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000117.bmp",
+      "sha256": "f1936e1467be53082fc3645bd7bdf78826b8d1f3fffcc4cae2493ca35d684186"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000118.bmp",
+      "sha256": "fc39bffab0c9b004d95a63f698a25be423c83d225aa9aae0f0f8d191644a6354"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T152905.769899Z/frame-000119.bmp",
+      "sha256": "a375652cb36f199bd9bc2dcef3d8d3f230611ce7ed24a121e11c5e32b64899b7"
+    },
+    {
+      "bytes": 114089,
+      "path": "xpoker-capture-20260826T152905.769899Z/manifest.json",
+      "sha256": "0a613d74e4efebf45afa53333faa10bd9aaafca4bb27a86a2b7a9eac772cf820"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000000.bmp",
+      "sha256": "1230c2f7606233178f6dd03bf06f6b688c72aba0d96a46d90b49b0571f732eaf"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000001.bmp",
+      "sha256": "ba6477d879e07e327ed40708ef220e9ea497f0d0bc946ae00c1107bbce956a88"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000002.bmp",
+      "sha256": "debdc4bb8be67ed7f317c0c7fd088b76836c06fdde69a60dcf5adae3fee3fec8"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000003.bmp",
+      "sha256": "8d4c2d81ecc239667576e695bb4351c62a02b51410eb1008eac1efe1414d6fcf"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000004.bmp",
+      "sha256": "cfd2f94eb4b28fec14a432f66d0698e33dc0a2d97f4ae0b432a174dc2bf82c87"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000005.bmp",
+      "sha256": "90a5fbdfc883b2f5f4c4b44516a75089e26c245f079a9600992d2e83a1a0d71c"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000006.bmp",
+      "sha256": "7beda56749df2bce81e6161ebbec8fd3bacb311edd804672587f5b9561c397db"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000007.bmp",
+      "sha256": "5c5728cb6ea9a79c31c7c8ca14935cc3fd0791d5134e79bc41bfcdfe083b59b3"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000008.bmp",
+      "sha256": "5242f6a9644bb4d35f9c93af7190b77dff89337b349755106d71b0133a1a1f60"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000009.bmp",
+      "sha256": "4f361965f88ff91685d6f4f2dfd07f6bb3dd6757400daa1010bd643de4e92fac"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000010.bmp",
+      "sha256": "0b53b32472cf4046354bfd0854bd7ae7e2362d5e735aff58aa050b445a3d2a4e"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000011.bmp",
+      "sha256": "93e9476ced77dcfd275328252c604b5c46e6132f2fa1dd92b76a9f640415830a"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000012.bmp",
+      "sha256": "49764462dd81485d136f22fbb02c83d61d8a42ef3cb376cb55de49719a9d3355"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000013.bmp",
+      "sha256": "4099a0f91f68a199d21ce3404e3a427075889892825f6e7f88643cc44f86a84a"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000014.bmp",
+      "sha256": "7aa31e5a6be1badd051c5b5aad595d36b3b651a7b4cae9788bbf4a07928c8218"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000015.bmp",
+      "sha256": "1e202846c486aee4755b708137e20b8247ba54cefd28bcab4daaf235441e51b4"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000016.bmp",
+      "sha256": "54ef1d9a388c2a8a90b53d455f786f9fd07f01a0c50f1919980f71b2457010c2"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000017.bmp",
+      "sha256": "f0df37ea51c4d413bbf026da4705c2e8ff1b7917256ef76740d8976e901d2f87"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000018.bmp",
+      "sha256": "e6923b868d7dd546254ff97210fb26f86b4e1e41eecf521b2f5968258108d3a9"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000019.bmp",
+      "sha256": "f58126d5382c71062ddd6a67eb59f052a9fb77b7a4db60129259e409f9de2a85"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000020.bmp",
+      "sha256": "14d7a4e9bd39e4545d2fcab252aded63bdf870b999087c60494915e00d230ea7"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000021.bmp",
+      "sha256": "514f42591cbabc35062ceeadebf3cc97df6ec0a2a6ae4d916b25c48b7abe6ad1"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000022.bmp",
+      "sha256": "b51ec33fd057eb6f7ddfd2245af2863262adeba92a0b15985e16b24974fb452d"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000023.bmp",
+      "sha256": "243d795e51d2f080345684cd6c4bf3b3051d26ba63cf4a73306d6ca0cc31e232"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000024.bmp",
+      "sha256": "243d795e51d2f080345684cd6c4bf3b3051d26ba63cf4a73306d6ca0cc31e232"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000025.bmp",
+      "sha256": "243d795e51d2f080345684cd6c4bf3b3051d26ba63cf4a73306d6ca0cc31e232"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000026.bmp",
+      "sha256": "243d795e51d2f080345684cd6c4bf3b3051d26ba63cf4a73306d6ca0cc31e232"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000027.bmp",
+      "sha256": "243d795e51d2f080345684cd6c4bf3b3051d26ba63cf4a73306d6ca0cc31e232"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000028.bmp",
+      "sha256": "243d795e51d2f080345684cd6c4bf3b3051d26ba63cf4a73306d6ca0cc31e232"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000029.bmp",
+      "sha256": "1d7a6fc1e4f0972ba6cfc321b12c022a2e0fd6320db0f53df65c79644f8d7a3f"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000030.bmp",
+      "sha256": "1d7a6fc1e4f0972ba6cfc321b12c022a2e0fd6320db0f53df65c79644f8d7a3f"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000031.bmp",
+      "sha256": "1d7a6fc1e4f0972ba6cfc321b12c022a2e0fd6320db0f53df65c79644f8d7a3f"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000032.bmp",
+      "sha256": "1d7a6fc1e4f0972ba6cfc321b12c022a2e0fd6320db0f53df65c79644f8d7a3f"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000033.bmp",
+      "sha256": "1d7a6fc1e4f0972ba6cfc321b12c022a2e0fd6320db0f53df65c79644f8d7a3f"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000034.bmp",
+      "sha256": "1d7a6fc1e4f0972ba6cfc321b12c022a2e0fd6320db0f53df65c79644f8d7a3f"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000035.bmp",
+      "sha256": "1d7a6fc1e4f0972ba6cfc321b12c022a2e0fd6320db0f53df65c79644f8d7a3f"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000036.bmp",
+      "sha256": "1d7a6fc1e4f0972ba6cfc321b12c022a2e0fd6320db0f53df65c79644f8d7a3f"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000037.bmp",
+      "sha256": "1d7a6fc1e4f0972ba6cfc321b12c022a2e0fd6320db0f53df65c79644f8d7a3f"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000038.bmp",
+      "sha256": "1d7a6fc1e4f0972ba6cfc321b12c022a2e0fd6320db0f53df65c79644f8d7a3f"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000039.bmp",
+      "sha256": "1d7a6fc1e4f0972ba6cfc321b12c022a2e0fd6320db0f53df65c79644f8d7a3f"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000040.bmp",
+      "sha256": "1d7a6fc1e4f0972ba6cfc321b12c022a2e0fd6320db0f53df65c79644f8d7a3f"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000041.bmp",
+      "sha256": "4fefce4441d79653f8c910f0276ffc56c0fe45f47b00214c530f155afbf3f6f0"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000042.bmp",
+      "sha256": "4fefce4441d79653f8c910f0276ffc56c0fe45f47b00214c530f155afbf3f6f0"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000043.bmp",
+      "sha256": "4fefce4441d79653f8c910f0276ffc56c0fe45f47b00214c530f155afbf3f6f0"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000044.bmp",
+      "sha256": "4fefce4441d79653f8c910f0276ffc56c0fe45f47b00214c530f155afbf3f6f0"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000045.bmp",
+      "sha256": "4fefce4441d79653f8c910f0276ffc56c0fe45f47b00214c530f155afbf3f6f0"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000046.bmp",
+      "sha256": "4fefce4441d79653f8c910f0276ffc56c0fe45f47b00214c530f155afbf3f6f0"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000047.bmp",
+      "sha256": "4fefce4441d79653f8c910f0276ffc56c0fe45f47b00214c530f155afbf3f6f0"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000048.bmp",
+      "sha256": "4fefce4441d79653f8c910f0276ffc56c0fe45f47b00214c530f155afbf3f6f0"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000049.bmp",
+      "sha256": "5ab73d1432c09f63f43556442465e2c13fcdd5c6c443566730f7f1bca1897955"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000050.bmp",
+      "sha256": "5dc1a8a496b18f7cc0ab465323ccd5af4daf9c38178e9d95e14f8ab6cd19e2e4"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000051.bmp",
+      "sha256": "921ea593cff589cfc08871e9ca20d03219bd5a762dbabbd2a89e75cd3a1d68a4"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000052.bmp",
+      "sha256": "b95946a25b26b5db98e58663f4466f81786bb9281193cf589013ce2c43de561d"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000053.bmp",
+      "sha256": "25e6d546db81be3e716e908e8cbca02078499503d0a700b3dbefa0bbd22380ba"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000054.bmp",
+      "sha256": "099c39eeaf6c255296f141451427db91de361ec80f4c56751b0e0143cd4ade96"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000055.bmp",
+      "sha256": "099c39eeaf6c255296f141451427db91de361ec80f4c56751b0e0143cd4ade96"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000056.bmp",
+      "sha256": "099c39eeaf6c255296f141451427db91de361ec80f4c56751b0e0143cd4ade96"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000057.bmp",
+      "sha256": "099c39eeaf6c255296f141451427db91de361ec80f4c56751b0e0143cd4ade96"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000058.bmp",
+      "sha256": "099c39eeaf6c255296f141451427db91de361ec80f4c56751b0e0143cd4ade96"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000059.bmp",
+      "sha256": "099c39eeaf6c255296f141451427db91de361ec80f4c56751b0e0143cd4ade96"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000060.bmp",
+      "sha256": "099c39eeaf6c255296f141451427db91de361ec80f4c56751b0e0143cd4ade96"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000061.bmp",
+      "sha256": "099c39eeaf6c255296f141451427db91de361ec80f4c56751b0e0143cd4ade96"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000062.bmp",
+      "sha256": "099c39eeaf6c255296f141451427db91de361ec80f4c56751b0e0143cd4ade96"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000063.bmp",
+      "sha256": "2f592d66348ca9886dcc872d79900e1aa6fa6258e17b7afc8df2f1d4eb1acc0f"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000064.bmp",
+      "sha256": "92f3beaf2e4c00ca0575aa4de16cec5d0bc8fb1d6915b7f202a662b09ed29243"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000065.bmp",
+      "sha256": "3126160e5f548906e0aed1d69d5c09ebda329211dd9381ca4eb201b822678f5e"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000066.bmp",
+      "sha256": "c30ab8d7cc3105d71c3d4f83fe84867ff62cfd760eb51c3bbd465cc8a5db2b71"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000067.bmp",
+      "sha256": "e06d547f7efd812c7bd7c982ec235e005af43855e4abf10b040e0f9e7e9f7267"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000068.bmp",
+      "sha256": "771ac8a8488f97baa850966f2235739b921c0183836996750cb690444d3620b2"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000069.bmp",
+      "sha256": "dfc2b6fba13c11c976d1e912a603af1baa93927e159c3b67f1427a1e50e45ee8"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000070.bmp",
+      "sha256": "bcf9df9f0ccbff14ea7556246686cba2b7c21f81e607fb6285d3d224d6d77bc4"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000071.bmp",
+      "sha256": "0dbfce022aef03602e5752b138d2e553d0ae5793d94a4479b78230f762948043"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000072.bmp",
+      "sha256": "0dbfce022aef03602e5752b138d2e553d0ae5793d94a4479b78230f762948043"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000073.bmp",
+      "sha256": "4dce5c98cd8041b059c73541807f319e648e1137d0b8de738413568c6b59da50"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000074.bmp",
+      "sha256": "db721896b6e9b7ad061b45b1d54ce90d52a96a01e8a617a2c444124603fe22d3"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000075.bmp",
+      "sha256": "63a7db058c0e79f8de0db22a6b4bc498c049899a651cce8dbfc9401b2a0607f5"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000076.bmp",
+      "sha256": "594194fbcc65f2b0eecc625cd483556ad2aaad66300ebc078cb5a4dda9a6fdc8"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000077.bmp",
+      "sha256": "5233c329c05f7f2110e298cc9029d7441999e8fdec9a53e09a73c59b5cea8716"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000078.bmp",
+      "sha256": "c0d0f812b45dbe974aac266f4d980e9223b5ac828ddd4f3234020343e2a726bd"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000079.bmp",
+      "sha256": "a023cadf700b8fba880fba8585d8b6626c50028bc935935ee2efddf7a240edec"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000080.bmp",
+      "sha256": "bc3c49172d82ed7747c68bb658983bde82d8ffd2a7b6e9fef8220289674a792b"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000081.bmp",
+      "sha256": "7df9b6d181a17f0be72600c60dada2fc12e05b1e6c3bba0967055f4f97ce9f10"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000082.bmp",
+      "sha256": "ede114e7a1830d9f9c4db1db4a57d88c1d1e7ef3130ceda548791020b570fa4a"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000083.bmp",
+      "sha256": "1c73c2e020cbb2ac9ca2af2cee086743401a309680feac55bfe8caeb40560252"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000084.bmp",
+      "sha256": "5081747aa9b301a2a5996587c54543d5875faa6414e32d6d64fce9cefe1c4573"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000085.bmp",
+      "sha256": "df428c779c865a6ab30087f5c0cdd4dfb3a4a07f71244252bee3e229caf6c037"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000086.bmp",
+      "sha256": "66e846507db7d9933c598c0a5b65f3bf9b99ebce0ffb0adcb81836bdf1161f38"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000087.bmp",
+      "sha256": "0f844bf3b433c7f8494e0edfc80ba4a20ffe72e1d9cc438b1509c88a14630fec"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000088.bmp",
+      "sha256": "60eaf9a8f3468cf8d42f80e9e980b9d059e385ab201f6754de3a79315fa6584f"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000089.bmp",
+      "sha256": "980df75a6121e8674eda5bbef8c9ae17bde49f55ddef8b36cfb87886ff16bd2c"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000090.bmp",
+      "sha256": "254030bc46bbd1ffc7a067939102244927b0a9f1c34d0792d7c9a238429e8af3"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000091.bmp",
+      "sha256": "75fb712139f9823a2e4bdaf627d9bce1664bb58f147cd5b571826229e3ffea52"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000092.bmp",
+      "sha256": "276293bb4c80843517a6a5c3a9e728dbc644aa5968c606964d738068128be9a4"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000093.bmp",
+      "sha256": "269ed627fc1b34510014db3ea0df41439ee76f9d1cd271a1937d9cab0f60fca4"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000094.bmp",
+      "sha256": "306f6f677d36c2da4752df6cd9ddce056f509deffe0c4832a00a24686d48f602"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000095.bmp",
+      "sha256": "a637024e6dfcf4679188641d3562e5b973724705cd21f947565c70f6911d956d"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000096.bmp",
+      "sha256": "03f05aa82a9476cd2924b1e398571437a60e68400cf2c0cc7c19462de083d018"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000097.bmp",
+      "sha256": "a5b2f46b1f3e407391e9d2b8fc7dcc173a53f2604bf58c94f2522f80edbe6c48"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000098.bmp",
+      "sha256": "6e55d76d7358e8e7455ef7c49215f992fac87b52bc555fc3395a03fc57df9101"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000099.bmp",
+      "sha256": "774e86d0f83130a879f892b3d1a79af2924db12f7520a496f9e4c58c2ee85f90"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000100.bmp",
+      "sha256": "a1dc767aa4a555f4585aed2b23ec70f780ca7e08fea9dbfa9c5c413c699a6ca6"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000101.bmp",
+      "sha256": "0459fa0ce983120ac8f1fd2aeda61ce18b3abf5dd4d15665d39fb61b35c51427"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000102.bmp",
+      "sha256": "d850057ec9f184fe97f8d31c7583a510583bbe3a05bf9b999b10df8d80abb483"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000103.bmp",
+      "sha256": "6fe7d43c3fa123f72d362df6dfde54e39302ab79f101e31bf251451426675f87"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000104.bmp",
+      "sha256": "70fe80470ea713863c65d697807cd0619192d3f6f323d812d13955665ba44314"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000105.bmp",
+      "sha256": "161bb2e1a69d61fc89974b1a2b575347418a88d4836e83990efd6a2647f2dc0f"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000106.bmp",
+      "sha256": "261f815994c281836650db20cc66a59b2dfce37d5920bb66e665a1d119e8a0c0"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000107.bmp",
+      "sha256": "45bd652d7117421ae2c5343dc137d401e7c82372f7555813a1eeb9a75b1bfb75"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000108.bmp",
+      "sha256": "4c6c796ad528e9ae0d7d9306cea62d7ec8bfd007af2586f67ffa9ec2a265db18"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000109.bmp",
+      "sha256": "3401760288d1dd597ae20a79cc3589f18d9a890e938f6f2c35322e34149057f3"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000110.bmp",
+      "sha256": "92a4c379faf20cef1b65ecec183aebe7f72fdc2797ab32285ca0e1bf58bcc15b"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000111.bmp",
+      "sha256": "4f3af9469228f58b7bcc9d04d3878820d85a3d8210c2276ffed33255cf2bfbf4"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000112.bmp",
+      "sha256": "c6b64ea0ab5bb3d6d45fd22e995e2ec2f109e4e4f560e6f1f54be9b083331cb3"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000113.bmp",
+      "sha256": "40135f6b6ebaede9d107619f8e1e207c98d1b2daea503ea6ba48cc7011560261"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000114.bmp",
+      "sha256": "24e421fc2dcae54e2463b9d5e7eccfc18f3d6f2c9d911320dc5fd78f2e6ae0db"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000115.bmp",
+      "sha256": "478d2e39f9447b2dc4207d3c3d7ab5afeeb4ee9a8f1ada779cf875b78ee58202"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000116.bmp",
+      "sha256": "58c44d1b2932ceabbeca2cbcc660e503416d175349bd2ebddc009f2a25ac69ea"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000117.bmp",
+      "sha256": "048021625d828e68b67e487612dc9af118825980729dc92644c974c84d3bf4ef"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000118.bmp",
+      "sha256": "4e7e4bb8accb796b64141ed6da88387ff1e33d19f061d6e3931062d76d510cf6"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153144.090663Z/frame-000119.bmp",
+      "sha256": "970e481eb1f936686f0430eceecf68e5d8061ff550b2e02f8958f2097a180e93"
+    },
+    {
+      "bytes": 114089,
+      "path": "xpoker-capture-20260826T153144.090663Z/manifest.json",
+      "sha256": "0964902f2a35f11c3d9eb2ac89aced3a5a59c3f3c5b4419be979c6a261972776"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000000.bmp",
+      "sha256": "d563e08a5e52d8f114e432b45937db16716bfede2ac90c2bcadffe1b3975644b"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000001.bmp",
+      "sha256": "a89d378c840109cbcad864421695fc92f33830fb5198b7c7bb03f43f9feed4d2"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000002.bmp",
+      "sha256": "cd498479d8877fb72ca550b89eeb29958a214916374d076c43938a37101d0296"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000003.bmp",
+      "sha256": "adead5c12bfb07f94369f5db6ef6f5cc901ed3ce689be2170fc245b4968c2599"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000004.bmp",
+      "sha256": "059c48844285732443e28973ecd976225c5608a90c04d4b2d41e4cf8a4d13947"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000005.bmp",
+      "sha256": "22bb9bae8144c2f20faefa5036e72323d379902f497980902f53ac71c34dddc3"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000006.bmp",
+      "sha256": "3452d69b86cb936057014d002c7ffe81e0319f36031aa266518ec119df70c96a"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000007.bmp",
+      "sha256": "6562e4f9943b419c5a8930be1f8b3ab2d19be0fa239efca866949eba1554ebcb"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000008.bmp",
+      "sha256": "de750793e08587121a3a13cd49dcef94bdc3b3adc5958328e8f4d18a5db673bb"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000009.bmp",
+      "sha256": "90959680027f86a30c5b4da0969dea3fdbafaa760644f6e680b34b3f228f5aa2"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000010.bmp",
+      "sha256": "fe17246a9fa114a1f694ffa447ffca3ebb6ac076cf3936486222853dfda43eef"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000011.bmp",
+      "sha256": "2348d41f24e03dd69a1abb3987a57d4f8ac71e725e4fead47904ad577420e7f1"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000012.bmp",
+      "sha256": "9dadfce53d118723565183562c8b9731cadf1ddf5f9a904c26512ccb3f809317"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000013.bmp",
+      "sha256": "e71bec943d82b5840bb18d1e38bc8eee296b29c0858ed647efc6f56cdb39d4df"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000014.bmp",
+      "sha256": "d560f6a6c5cbc0e1fcd1f3f915318829c398710894ea4a9837c606a567eecc4c"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000015.bmp",
+      "sha256": "a2c1f9eea7b8618df37d4eb833586a7f89afb7e2004b72faa33050e6dc125bdd"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000016.bmp",
+      "sha256": "647f00ed2b96ca604cd2c1571d8cd55635713644366915f1ffbba83771a9c3cc"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000017.bmp",
+      "sha256": "e16dce06c442db7dd3343f3969adfdf306d1b92f9e49767da1dc1a25772520cd"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000018.bmp",
+      "sha256": "8bf8bfb673dc3e98bddd3347afba89907cbe8e9c5d056e8db8f82cb9471e58e2"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000019.bmp",
+      "sha256": "9ed5c4997b8bc78f4d7d76be3632c9ddb1b0e45d5cba2d4eb660c62cb9c6ade8"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000020.bmp",
+      "sha256": "f31b6ce088c92826b4bd151a6129a3cd72e96dcd2c317363f3fd77f27e8eb275"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000021.bmp",
+      "sha256": "adb79ba2a9285aae0590a5a8e4e1b2c58d0e7acff53bae32fc41c335b77fc1c0"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000022.bmp",
+      "sha256": "c291a5aef5c946e38d5d542967a2b1d2a26ee062ee974585ce56e898e6bc4bda"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000023.bmp",
+      "sha256": "46bb4a39c4ed56ddb5c10f1cbbb0eb2162603f5a52ca998590e52601dedeafdd"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000024.bmp",
+      "sha256": "9ffbacb6bb8a26a7135d01b1a2bf21231ee4a266e3b433d9ff654bf387266881"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000025.bmp",
+      "sha256": "710a0adac51ef857776f469895a9f0aff6797fa06c7494aeb34ed210a4230a3d"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000026.bmp",
+      "sha256": "b54e488661b2aa047de0d758b0884d36c35a6ffbf35ecb49e59de452500373a0"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000027.bmp",
+      "sha256": "07f29698250545d17ffaa20b685978707aeda5d5be6ff9ee17d465532b1d728b"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000028.bmp",
+      "sha256": "36a6c6c98d0675a859646e0346a701ad668129fdabcf503c776b01e21a3ce0bf"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000029.bmp",
+      "sha256": "db359477f3cf81bb379c04e4d0e74b407c1f111f3c5874149de29edf9ef0fec7"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000030.bmp",
+      "sha256": "c0b81176e0e63b111e24fc6c786080c09858c6d48666eeebc006d52edf1739a1"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000031.bmp",
+      "sha256": "1e4eb15691ef258a4e96150a015b03c556707a830b858c44e83ca2c7db68d7bf"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000032.bmp",
+      "sha256": "f761d36c1e6116c6586a93896a0dbc701518f2baf0564050d152874f3f83c1ec"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000033.bmp",
+      "sha256": "60e7c058a942d73a2ef409301fff34ab7ecbe28bb13fb4c3246adb17d3d658a0"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000034.bmp",
+      "sha256": "372f72a282bbbc091e77fbbaf06c713d5f40dcbfd708244aecd753e80fec8bf7"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000035.bmp",
+      "sha256": "5457e416f19c072b60d6e2892608a30297b1bcd28f1268636ecac06d158318db"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000036.bmp",
+      "sha256": "a193acb403c444ac8e2abbbeb5102e60b42ebb68bb80c313af8554a2380bc805"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000037.bmp",
+      "sha256": "d1d7324567ee597a6b87323b96d5c1b15a688e91cce555e6ce558e75072486b6"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000038.bmp",
+      "sha256": "89f55fcf5b745414430a4537efaf6db58d0ec2dcaea8ef8fe4afc0c4bd970fc7"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000039.bmp",
+      "sha256": "ed3373d57aba8b4bfd06dea75e2263d15c1b49d7b6d92d34f830f8971fd104a6"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000040.bmp",
+      "sha256": "1c473ccf1ce023c0349f300d639a25b4a6988a32443a346f10ee799a93adf6e0"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000041.bmp",
+      "sha256": "2b5a2af1396dbec3cb7ae53fe031036e6d4e0323047df989592f9ea4fd488750"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000042.bmp",
+      "sha256": "0ec0d6ec738c24b01e4063709fb921d15d5f83ac56a819a404fd51e101dd9c38"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000043.bmp",
+      "sha256": "46662d769837fea757e8cf4390233fca734f9503147e5cfe1904dd281e839965"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000044.bmp",
+      "sha256": "bfc56702364091cb5c87a4dee1d891720bbe8b3cbb86f937cfe42c76e34f4340"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000045.bmp",
+      "sha256": "ade3bf6c8147c5a455c331467ebec8445d153bd859589235c1b2b7cfa9c137d5"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000046.bmp",
+      "sha256": "6e6b1168342c496b112c71b8b6d3e592dc93f62969df64f4261f3f00e3365d89"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000047.bmp",
+      "sha256": "c46b866e06f94e8a25b25c8c0491321af598529b90c2014f1b5fb3e5c50795c3"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000048.bmp",
+      "sha256": "a5450901c3e1b59a32a1838c95828e0c76e5fd86fe60d883520f0f3c825d0c62"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000049.bmp",
+      "sha256": "d8e1e57bce8d5eb052702c86c535a35317b5dd1f8b3a0a0c310bd2cb45211a44"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000050.bmp",
+      "sha256": "57ae49f21711c396d68c9f8fc8019a8f4051904df5bddb0895c5e1d617a4b0aa"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000051.bmp",
+      "sha256": "808a71f53884150b99459b5a2cf58f715582fcee8a07a4d8106bf4d843a08e8a"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000052.bmp",
+      "sha256": "f7394bee107fa72b3c978ec5cfc2407f535dcd2f4ca17a20a48c607448577847"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000053.bmp",
+      "sha256": "cae73da548a1644d74e8855b730cd92f684c4d3c4e36803b4e3ea153934d11f4"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000054.bmp",
+      "sha256": "dcb1722ef35fce21cd0249d6fcf7d66e2e54ab961af4b2602288083bd985c002"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000055.bmp",
+      "sha256": "b7ac294739847ef50ce08659cf8c73b18a1626c20bcbac39a50c7883c24578bc"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000056.bmp",
+      "sha256": "d563f6d9700b08c1fa8ea13f8a48be89f603cdf26dbda1a8fa03831b3b690fe8"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000057.bmp",
+      "sha256": "f1ee9568410ccda327aea06e0587cb16c81f5d81b9ac26fd737f380b31f0a3fe"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000058.bmp",
+      "sha256": "b24a10d0d07a590ce3a9d53302d7578848e2609faf94c43aa119be1f8dbfb76d"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000059.bmp",
+      "sha256": "be878a51d4c303087183da789f5c927544bd57d73893686629a899db7054f4f1"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000060.bmp",
+      "sha256": "e6c75093478fbb60082bfea807cf11ec0615d7f4afeba4dc5d5709416693dd21"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000061.bmp",
+      "sha256": "2172fca7ad283f3b63f0809fe984637cf5969a0d24c2f88018326a7f1140f853"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000062.bmp",
+      "sha256": "11665626693e06e173316c7acc8bcab292d8a0bfcddb3a256f8d64195e44d42f"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000063.bmp",
+      "sha256": "2f5a7ba5c8484cbc3704a59c366dfe5c4f8b510bc44a314b675d30097187c2ce"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000064.bmp",
+      "sha256": "48fe8268a5a190edb487e512544dedbcaa90fc8706ed66ec0d78b8853dab2acc"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000065.bmp",
+      "sha256": "4add3a810e7edc2e134f7eb7d5fa45f9ed2c7040dc376b957e381a8850930809"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000066.bmp",
+      "sha256": "a3bfb1a4753f170fad164d2e7bef655a01c0e8ffcc4bfc9f42904a4e899a8d86"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000067.bmp",
+      "sha256": "98fc8074059d71ce83ce9d770799c6e537640871934eedc8088cd615d1142b2c"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000068.bmp",
+      "sha256": "56401b92258fb4108252a8efab10ff3c64908548033bc16cdb1e4ca52a06a9a6"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000069.bmp",
+      "sha256": "ae6e1180fa9035e9f7aa6f4e6bd90f4916976e6fba5699470e81f4dd28fc612e"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000070.bmp",
+      "sha256": "6547958f2ba8a9b26a797957c1f7c0b09b45f19055b70dedb9949a8a3c0e11b0"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000071.bmp",
+      "sha256": "bb80439d68f8ea9ead3295cf335dc98ebeca82d1e8c60515bebffaae96b71508"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000072.bmp",
+      "sha256": "494acdeb284b43c82bf0f1aa7d691c98062bcb587d698ad1ddbc46843ea1b597"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000073.bmp",
+      "sha256": "d03f63a50a86335a33677a36940d03cd29adb6fd8fbe4ddb133c9993a2683330"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000074.bmp",
+      "sha256": "8980d6b8fec59ab426c142b6f4ed36e44311bc44d28dae8ac54e6353560e7813"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000075.bmp",
+      "sha256": "761e67521daae24d7327ae58469bd3652ade3cd79718f25cdba848d7e13d6bfc"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000076.bmp",
+      "sha256": "ec09cd8ed665aa2a97bf8f2170718798e8d3cbef8c95bac0b807e59e1c7745c3"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000077.bmp",
+      "sha256": "351507c297aef83302284a9e33a75c10266716caf00e1ddcc57049e8173a6795"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000078.bmp",
+      "sha256": "39444e3333c42265a55a94eab8730f050824c3ce8ccd572a086eaf0a95caa5e5"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000079.bmp",
+      "sha256": "cb9048148b7da1c997f0e1150a21a9a90ab8663beca510ba5a864f34c2ca35cb"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000080.bmp",
+      "sha256": "b01913c7b7686d14191c2a1050b0ab1fe97f666e760351a56ac69212dba7b33e"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000081.bmp",
+      "sha256": "371171b48567fc6611ca6b295c747534c730fd98a460432e8d1cdf32bccd87d2"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000082.bmp",
+      "sha256": "61e879f0ed450be6fc4234a23aae8b04c6e5d23fe40b38bbed789ee4de315106"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000083.bmp",
+      "sha256": "76f2c4053c912946435c5978c805258fa6c992e3b642288103b7ae018d02b33d"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000084.bmp",
+      "sha256": "76f2c4053c912946435c5978c805258fa6c992e3b642288103b7ae018d02b33d"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000085.bmp",
+      "sha256": "2ad5dfb02caa7aa9a8fbf301012ddf8e148420f95d59386ca69f33c58370ff7e"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000086.bmp",
+      "sha256": "bf1ea4972b7b7201439143064507a58311938ce39b4703fead90ceb9b3afc1af"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000087.bmp",
+      "sha256": "0618d33f32c7786cd095d7e25590c99fabf48c4814f7255b8eea595b4bfe72a7"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000088.bmp",
+      "sha256": "c32344cb44c9da39764dd7514b5914392ad20382ec333ff4c692b699779d7dcf"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000089.bmp",
+      "sha256": "1f6fd0a3a6dbbf5b005d48c77f5d3e483cbf97c417d77734db92d24971cead08"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000090.bmp",
+      "sha256": "8eeb7abaa3dac77faaeb5c95d4342e8c7cfc8178487288f60590b731837c2f04"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000091.bmp",
+      "sha256": "d653a95c8a2236fd82284ade129390217c1295f27f26df096b34d04557f8bff4"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000092.bmp",
+      "sha256": "68bcd27ce84829bd0ec053cfa295a4676996a3eac8d18f5c2fd8b5c938b2017d"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000093.bmp",
+      "sha256": "1943e2e6bea3639f0232413a8bfea35ae1713f4c886fcfdcba9fe7d7743993c8"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000094.bmp",
+      "sha256": "5b27bc377ca1c75abbf1619e2bdc552d6e67ee478e0997f0922065b50beb514b"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000095.bmp",
+      "sha256": "4fefe098960034f97efbab011e33218b87f9682ddbbd4e51600624215408cd29"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000096.bmp",
+      "sha256": "7862ce28b021dbb724b842285edb6c88d1e7bbea65e63dec2d80e3b8868fad28"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000097.bmp",
+      "sha256": "6ef617b3b857414764694fe41dd4d4d95b19e7f13ede8dbaa3a8a95cc7054a41"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000098.bmp",
+      "sha256": "2164c0e97b702d906e55b4e1bbe4e32fb5d3953d473bfbd3bf237efb8f37d902"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000099.bmp",
+      "sha256": "a79103783583e3951b4164a9a364a596c1880aa49e184562b6a0ea6b56b94f59"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000100.bmp",
+      "sha256": "4cd479652bd35fa0f91546206a4cb1d2bdaae4e0fc162c2ba1df13ef9f30e84a"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000101.bmp",
+      "sha256": "7c9f7d5729aa1384716a7aba4dedba64486a4b6cbccd15db503d201536b041d4"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000102.bmp",
+      "sha256": "55d0c0daa936b31de2adc53a471d4d80449aff15c66ea7949de059500fd2344b"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000103.bmp",
+      "sha256": "fb0e3ce8341ca0b155b06d8584d14048439e180ee8b7e3f1ca807b632aa928c8"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000104.bmp",
+      "sha256": "0118ce4edd97df5f834b233a649607c33d097ca0a2b8133deeeed7f28cddd3dd"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000105.bmp",
+      "sha256": "92bbb14f5d306794f24953596952fec99cbca67539be7f3de60c6b361c2725d0"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000106.bmp",
+      "sha256": "fcd6a300c4c53dc1622cf71ebc41bc9bcf18e8475e78e4b4c8299cc09d333e2d"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000107.bmp",
+      "sha256": "992d1da2fa0c152a0fb78341bb9842c408a8c74e87e200da9f3d001732983cfe"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000108.bmp",
+      "sha256": "a07a0b99b1fc3af2b8ebb8a191ebeb89167474aa7572f2f5c6df03ffd2770a3d"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000109.bmp",
+      "sha256": "d4f97b61e377655f4690781f765f3d88e75c67468deb795bc581791a378d98d3"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000110.bmp",
+      "sha256": "12b53a86be2ca9088d3ae6012945ab4e0e09e7f10a51129c2252a907443c831b"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000111.bmp",
+      "sha256": "c8b565b6d90be506482ec307354e870d6889547ea68fa90427afc565146b016f"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000112.bmp",
+      "sha256": "d4f97b61e377655f4690781f765f3d88e75c67468deb795bc581791a378d98d3"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000113.bmp",
+      "sha256": "e343c61036674edfc472dff347ee7750969e1de75b98870cb7136de9b6e09925"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000114.bmp",
+      "sha256": "c096c651d48f1ea6cb91f1e66bad06952c422766c4bdf93fb27adac115410a5d"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000115.bmp",
+      "sha256": "33cf17dd2d25762f3f911f9461844302ce8f6afef7668d538da7bd1a19f74f79"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000116.bmp",
+      "sha256": "c187851aa56ef717348880663e2c4c46e9f7280f39fc71ae1cfb4891538ebc05"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000117.bmp",
+      "sha256": "48363c7b8ea09519811e90c3cae76793b8d7ef371549dc6b0201bfb4de945b08"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000118.bmp",
+      "sha256": "8069977b0048ee385295de04b9f2847048bb37128f48daf7f2295868b86b1d9d"
+    },
+    {
+      "bytes": 1424054,
+      "dimensions": "445x800",
+      "path": "xpoker-capture-20260826T153413.331688Z/frame-000119.bmp",
+      "sha256": "75b855a999e585bb5480702909abfaf3da0530bc713172e7e89872b929e561f4"
+    },
+    {
+      "bytes": 114089,
+      "path": "xpoker-capture-20260826T153413.331688Z/manifest.json",
+      "sha256": "9aaa37c8156833a429c0b2c3526aeda1fd369226127dae5d6dcb1db7ea2a127f"
+    }
+  ],
+  "gate_gaps": [
+    "No frozen unseen holdout partition exists; current evidence is calibration or regression only.",
+    "Card evidence does not establish >=99.5% held-out whole-card accuracy across all ranks, suits, lighting, and overlays.",
+    "Numeric evidence does not establish >=99.0% held-out exact accuracy for stacks, bets, pots, and side pots.",
+    "Seat/action evidence does not establish held-out coverage for every seat, dealer location, player state, timer, active-player marker, and sizing control.",
+    "Recorded exact-layout replay p95 remains above the 200 ms decision-window budget.",
+    "Showdown cards and side pots lack sufficient labeled evidence."
+  ],
+  "limitations": [
+    "Coverage is inferred only from structured privacy-safe records and file metadata; it is not ground truth.",
+    "Raw OCR text and player identity are intentionally excluded.",
+    "Observed coverage cannot satisfy a promotion gate without independently labeled holdout cases."
+  ],
+  "observed_coverage": {
+    "action_types": [
+      "all_in",
+      "bet",
+      "call",
+      "check",
+      "fold",
+      "raise"
+    ],
+    "dealer_seats": [
+      0,
+      1,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "hand_modes": [
+      "ambiguous",
+      "single_board_bomb_pot",
+      "standard_nlh"
+    ],
+    "hero_action_surfaces": [
+      "ambiguous",
+      "decision",
+      "pre_action"
+    ],
+    "numeric_channels": [
+      "blind",
+      "pot",
+      "stack"
+    ],
+    "ranks": [
+      "2",
+      "3",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "A",
+      "J",
+      "K",
+      "Q",
+      "T"
+    ],
+    "recognized_cards": [
+      "2c",
+      "2d",
+      "2h",
+      "2s",
+      "3c",
+      "3h",
+      "3s",
+      "5c",
+      "5d",
+      "5h",
+      "5s",
+      "6c",
+      "6d",
+      "6h",
+      "6s",
+      "7c",
+      "7d",
+      "7h",
+      "8c",
+      "8d",
+      "8h",
+      "8s",
+      "9c",
+      "9d",
+      "9h",
+      "Ac",
+      "Ad",
+      "Ah",
+      "As",
+      "Jc",
+      "Jd",
+      "Js",
+      "Kc",
+      "Kd",
+      "Kh",
+      "Ks",
+      "Qc",
+      "Qd",
+      "Qh",
+      "Qs",
+      "Tc",
+      "Ts"
+    ],
+    "replay_p95_latency_ms": [
+      211.0976,
+      275.0952,
+      288.28729999999996,
+      397.0691,
+      487.14009999999996,
+      528.8373,
+      562.0346
+    ],
+    "seat_states_by_seat": {
+      "0": [
+        "empty",
+        "seated"
+      ],
+      "1": [
+        "empty",
+        "seated"
+      ],
+      "2": [
+        "empty",
+        "seated"
+      ],
+      "3": [
+        "empty",
+        "seated"
+      ],
+      "4": [
+        "empty",
+        "seated"
+      ],
+      "5": [
+        "empty",
+        "seated"
+      ],
+      "6": [
+        "seated"
+      ],
+      "7": [
+        "empty",
+        "on_break",
+        "seated"
+      ],
+      "8": [
+        "empty",
+        "seated"
+      ]
+    },
+    "suits": [
+      "c",
+      "d",
+      "h",
+      "s"
+    ]
+  },
+  "schema_version": "1.0",
+  "scope": "offline_m3_local_evidence",
+  "summary": {
+    "bmp_dimensions": {
+      "445x800": 520,
+      "45x66": 7,
+      "50x85": 6
+    },
+    "duplicate_file_count": 86,
+    "duplicate_group_count": 20,
+    "extension_counts": {
+      ".bmp": 533,
+      ".json": 65
+    },
+    "file_count": 598,
+    "layouts": {
+      "xpoker-windows-10-portrait-9max-v1": 16,
+      "xpoker-windows-10-portrait-v1": 6
+    },
+    "total_bytes": 744273756,
+    "unique_content_count": 512
+  }
+}

@@ -1,12 +1,23 @@
 # Build Status
 
-- Last updated: 2026-09-09 (Asia/Jakarta)
+- Last updated: 2026-09-21 (Asia/Jakarta)
 - Current priority: read-only live GTO recommendation, using the required M3/M4/M6/M8 path
 - Overall project against revised scope: 6 of 11 milestones complete
 - Current state: Milestone 6 is complete. Priority 1 now targets automatic hero-card/position
   detection and a fail-closed GTO Fold/Call/Raise recommendation in the Milestone 8 dashboard;
   its live-session exit gate and M3/M4 promotion gates remain pending.
 - Live control: Disabled
+
+## 2026-09-21 Milestone 3 offline evidence audit
+
+- Hash-inventoried 598 local evidence files totaling 744,273,756 bytes into 512 unique artifacts;
+  no ignored raw frames were added to version control.
+- Froze a 120-case exact-layout action-control regression set from the documented pre-action replay.
+  It reproduced `pre_action` on all 120 frames, but remains non-promotable regression evidence.
+- The fastest retained replay is 211.0976 ms p95 versus the 200 ms decision-window budget.
+- The remaining live collection is now scoped to an unseen held-out split, missing card/dealer/state
+  slices, exact bet/side-pot OCR labels, showdown evidence, complete action controls, and a post-
+  optimization latency run. Control remains disabled.
 
 ## Priority revision — 2026-09-09
 
