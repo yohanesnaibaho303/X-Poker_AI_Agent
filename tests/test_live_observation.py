@@ -3,8 +3,12 @@ from datetime import UTC, datetime
 from decimal import Decimal
 
 from xpoker_agent.capture.frames import CapturedFrame
-from xpoker_agent.vision.live_observation import LiveObservationService
+from xpoker_agent.vision.live_observation import (
+    LiveObservationService,
+    _starting_stacks_from_opening_pot,
+)
 from xpoker_agent.vision.models import (
+    BlindPostReconciliation,
     CardFaceObservation,
     DealerButtonObservation,
     DerivedActionCandidate,
@@ -18,6 +22,40 @@ from xpoker_agent.vision.models import (
     SeatPanelObservation,
     StackDeltaCandidate,
 )
+
+
+def test_recovers_preblind_stacks_only_with_both_exact_opening_posts() -> None:
+    posts = [
+        BlindPostReconciliation(
+            hand_epoch=1,
+            seat=1,
+            blind_kind="small_blind",
+            amount_native=Decimal("1"),
+            stack_delta_event_id="a" * 64,
+            status="matched",
+            reason="test",
+        ),
+        BlindPostReconciliation(
+            hand_epoch=1,
+            seat=2,
+            blind_kind="big_blind",
+            amount_native=Decimal("2"),
+            stack_delta_event_id="b" * 64,
+            status="matched",
+            reason="test",
+        ),
+    ]
+
+    assert _starting_stacks_from_opening_pot(
+        {0: Decimal("100"), 1: Decimal("99"), 2: Decimal("98")},
+        [0, 1, 2],
+        posts,
+    ) == {0: Decimal("100"), 1: Decimal("100"), 2: Decimal("100")}
+    assert _starting_stacks_from_opening_pot(
+        {0: Decimal("100"), 1: Decimal("99"), 2: Decimal("98")},
+        [0, 1, 2],
+        posts[:1],
+    ) is None
 
 
 def _diagnostic(

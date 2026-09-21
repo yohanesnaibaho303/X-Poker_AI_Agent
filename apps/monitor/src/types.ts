@@ -14,6 +14,23 @@ export interface LiveHeroCalculation {
   effective_stack_chips: string | null;
   required_equity: string | null;
   spr: string | null;
+  action_surface: "absent" | "pre_action" | "decision" | "ambiguous";
+  legal_actions: string[];
+  strategy_status: "exact" | "abstracted" | "unavailable";
+  strategy_role: "gto_solution" | "none";
+  strategy_confidence: number;
+  strategy_source_artifact_id: string | null;
+  strategy_equity: number | null;
+  strategy_actions: Array<{
+    action: string;
+    frequency: number;
+    ev_chips: number | null;
+    ev_loss_chips: number | null;
+  }>;
+  strategy_assumptions: string[];
+  recommended_action: string | null;
+  recommendation_ready: boolean;
+  recommendation_issues: string[];
   ready: boolean;
   issues: string[];
   assumptions: string[];

@@ -2,6 +2,7 @@ from decimal import Decimal
 
 import pytest
 
+from xpoker_agent.models import Position
 from xpoker_agent.vision.canonical import (
     build_standard_live_hand_prefix,
     complete_single_winner_live_hand,
@@ -110,6 +111,7 @@ def test_builds_a_deterministic_reducer_validated_live_prefix() -> None:
     assert first.state.next_to_act_seat == 0
     assert first.state.pot_main_chips == Decimal("3")
     assert first.state.hero_cards == ["As", "Kd"]
+    assert first.state.hero_position is Position.BTN
     assert not first.complete
 
 

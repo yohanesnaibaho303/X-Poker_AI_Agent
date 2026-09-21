@@ -7,6 +7,7 @@ import asyncio
 import json
 from pathlib import Path
 
+from xpoker_agent.monitoring.live_hero import build_live_hero_calculation
 from xpoker_agent.vision.live_observation import LiveObservationService
 
 
@@ -27,12 +28,18 @@ async def observe(seconds: int, interval_ms: int, output: Path | None) -> None:
         "max_stack_increases": 0,
         "retained_canonical_hand": None,
         "matched_blind_amounts": [],
+        "gto_recommendation_observed": False,
+        "latest_gto_recommendation": None,
         "epochs": {},
     }
     try:
         for _ in range(seconds):
             await asyncio.sleep(1)
             sample = service.status()
+            hero = build_live_hero_calculation(sample)
+            if hero.recommendation_ready:
+                evidence["gto_recommendation_observed"] = True
+                evidence["latest_gto_recommendation"] = hero.model_dump(mode="json")
             evidence["max_hand_epoch"] = max(
                 evidence["max_hand_epoch"], sample.hand_epoch
             )
@@ -132,6 +139,7 @@ async def observe(seconds: int, interval_ms: int, output: Path | None) -> None:
         await service.stop()
 
     status = service.status()
+    hero = build_live_hero_calculation(status)
     if output is not None:
         output.write_text(
             json.dumps(
@@ -161,6 +169,7 @@ async def observe(seconds: int, interval_ms: int, output: Path | None) -> None:
                 "canonical_error": status.canonical_reconstruction_error,
                 "readiness": status.reconstruction_readiness.model_dump(mode="json"),
                 "controller_enabled": status.controller_enabled,
+                "live_hero": hero.model_dump(mode="json"),
                 "last_error": status.last_error,
                 "evidence": evidence,
             },

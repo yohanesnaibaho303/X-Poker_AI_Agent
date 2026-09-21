@@ -1,11 +1,75 @@
 # Build Status
 
-- Last updated: 2026-08-27 (Asia/Jakarta)
-- Current milestone: Milestone 8 — live monitoring application plus 9-max/native-only migration
+- Last updated: 2026-09-09 (Asia/Jakarta)
+- Current priority: read-only live GTO recommendation, using the required M3/M4/M6/M8 path
 - Overall project against revised scope: 6 of 11 milestones complete
-- Current state: Milestone 6 is complete. Milestone 8 live-observation dashboard integration is in
-  progress; its live-session exit gate and M3/M4 promotion gates remain pending.
+- Current state: Milestone 6 is complete. Priority 1 now targets automatic hero-card/position
+  detection and a fail-closed GTO Fold/Call/Raise recommendation in the Milestone 8 dashboard;
+  its live-session exit gate and M3/M4 promotion gates remain pending.
 - Live control: Disabled
+
+## Priority revision — 2026-09-09
+
+1. Finish the read-only live recommendation loop: stable hero cards, hero seat/position, legal
+   decision context, compatible provenance-bearing GTO match, and visible action frequencies.
+   Show Check/Bet instead of Fold/Call/Raise when those are the legal actions. Missing strategy data
+   remains unavailable rather than falling back to a generic hand-strength heuristic.
+2. Proceed to Milestone 9 authorized control only after Priority 1 and all applicable quality gates
+   pass. Manual arming, private-table identity, duplicate prevention, and post-input verification
+   remain mandatory.
+
+## 2026-09-09 Priority 1 implementation checkpoint
+
+- The live-hero endpoint now resolves a reducer-validated, full-ring unopened preflop state through
+  the existing hash-verified GTO library and returns the exact hero combination's source-backed
+  action frequencies, highest-frequency action, confidence, assumptions, abstraction status,
+  equity/EV when present, and source artifact ID.
+- The dashboard displays that live result instead of presenting the reference-prior matrix action
+  as the recommendation. Postflop, facing-action, partial-starting-ring, non-canonical, and
+  state/control-conflict spots remain explicitly unavailable because no compatible production GTO
+  artifact exists.
+- Full verification passed: Ruff, 363 Python tests, 9 dashboard tests, TypeScript, and the production
+  dashboard build.
+- A 120-second authorized read-only run captured 237/239 frames across two boundaries, accepted hero
+  cards during one epoch, and observed 26 action candidates, four action/amount matches, and one
+  action/pot match. No epoch simultaneously validated native blinds, starting/active stacks, and
+  hero-seat context, so no canonical hand or GTO recommendation was emitted. Control remained
+  disabled.
+
+## 2026-09-09 Priority 1 live-recognition checkpoint
+
+- The observed X-Poker rule crop repeatedly rendered `Blinds` as `alinds`; the shared parser now
+  accepts that exact bounded OCR alias. A live diagnostic and temporal run resolved native SB 1 /
+  BB 2 at 0.99 confidence, and a later 361/361-frame run reconciled both blind posts.
+- Occupied seat 3 was unreadable at the native panel-crop size but produced the same exact `538.08`
+  stack at 2x, 3x, and 4x. The shared panel OCR path now uses the smallest successful 2x scale. A
+  live check then returned numeric candidates for all eight occupied seats.
+- A 30/30-frame temporal run accepted hero `Jd 5d`, seat 0, BTN, stack 219, pot 11, effective stack
+  33, and SPR 3. The action surface was correctly classified as pre-action and no recommendation
+  was emitted.
+- Live RFI lookup now supports 3-to-9 dealt players on the fixed nine-seat layout by explicitly
+  mapping absent earlier positions into the nearest 9-max RFI abstraction, reducing confidence by
+  the dealt-player ratio, and documenting unavailable dead-card effects.
+- The closest later standard hand validated its boundary, blind posts, active/starting stacks,
+  pot, dealer, ring, and hero seat; hero cards did not remain stable in that same epoch. Priority 1
+  live end-to-end recommendation proof therefore remains pending, and control remains disabled.
+- Full verification passed: Ruff, 366 Python tests, 9 dashboard tests, TypeScript, and the production
+  dashboard build.
+
+## 2026-09-09 Priority 1 opening-stack checkpoint
+
+- A 300-second fast read-only run captured 731/731 frames, reached five provisional epochs, accepted
+  full-ring hero `9c 7d` at BTN, matched both blind amounts, and validated hand boundaries. Its two
+  best epochs were blocked only by an incomplete pre-blind starting-stack snapshot.
+- Standard hands may briefly obscure a seat panel at the board reset. The observer now records a
+  replacement snapshot only when the post-boundary opening pot is exactly 3, every active stack is
+  stable, and both exact SB 1 / BB 2 posts independently reconcile. It adds only those forced blind
+  amounts back to their seats; every other pot or incomplete blind pair remains ineligible.
+- A post-change 240-second run captured 579/579 frames. The starting-stack blocker disappeared; the
+  best validated standard epoch was blocked only by hero cards not remaining stable in that same
+  epoch. No GTO recommendation was emitted and control remained disabled.
+- Full verification passed: Ruff, 367 Python tests, 9 dashboard tests, TypeScript, and the production
+  dashboard build.
 
 ## Requirement revision — 2026-08-26
 
@@ -512,3 +576,15 @@ This file is updated at meaningful checkpoints. The detailed checklist remains i
   delta baselines. Focused and full tests passed.
 - Follow-up runs captured 414/414 and 403/403 frames with up to four action/pot matches. They crossed
   ambiguous/Bomb Pot transitions and did not provide a clean complete standard-hand promotion case.
+
+## 2026-09-09 Priority 1 live-decision checkpoint
+
+- A 300-second read-only run captured 732/732 frames, accepted hero `7h 5d` at CO, validated three
+  standard-NLH boundaries, reconstructed exact native blinds 1 and 2, and emitted a legal canonical
+  opening prefix. Advice remained unavailable because hero was not yet next to act and later action
+  order was incomplete; control remained disabled.
+- Live evidence exposed that canonical prefix construction omitted validated dealt-seat positions.
+  The shared builder now reuses `assign_dealt_positions`; focused tests and the full gate pass with
+  367 Python tests, 9 dashboard tests, TypeScript checking, and a production build.
+- A subsequent pre-fix observer process captured 584/584 frames and six boundaries without an input
+  action. A fresh post-fix authorized monitoring run is in progress for runtime recommendation proof.

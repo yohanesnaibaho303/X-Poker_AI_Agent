@@ -11,7 +11,11 @@ from xpoker_agent.vision.cards import (
     detect_card_slots,
     validate_unique_cards,
 )
-from xpoker_agent.vision.live import _scaled_pot_crop, build_live_capture_diagnostic
+from xpoker_agent.vision.live import (
+    _scaled_panel_crop,
+    _scaled_pot_crop,
+    build_live_capture_diagnostic,
+)
 from xpoker_agent.vision.models import (
     CardRecognition,
     PixelBox,
@@ -81,6 +85,16 @@ def test_live_diagnostic_scales_tiny_pot_crop_before_ocr() -> None:
     scaled = _scaled_pot_crop(frame, layout)
 
     assert (scaled.width, scaled.height) == (pot.width * 4, pot.height * 4)
+
+
+def test_live_diagnostic_scales_seat_panel_crop_before_ocr() -> None:
+    frame = CapturedFrame(445, 800, b"\x00" * 445 * 800 * 4)
+    layout = load_layout_profile()
+    region = layout.seat_anchors[3].player_panel_region
+    panel = crop_frame(frame, normalized_box(frame, region))
+    scaled = _scaled_panel_crop(frame, layout, 3)
+
+    assert (scaled.width, scaled.height) == (panel.width * 2, panel.height * 2)
 
 
 def test_normalized_box_is_half_open_and_inside_frame() -> None:
@@ -275,6 +289,17 @@ def test_scheduled_bomb_pot_normalizes_ocr_letter_i_as_countdown_one() -> None:
     assert result.big_blind_native == 2
     assert result.blind_confidence == 0.99
     assert "native_blinds" in result.matched_signals
+
+
+def test_live_ocr_a_prefix_still_parses_exact_native_blinds() -> None:
+    result = classify_rule_label(
+        "Bomb Pot: After 3 hands(4-6) alinds: 1/2 Voluntary Straddle(Button)"
+    )
+
+    assert result.supported_standard_nlh is True
+    assert result.small_blind_native == 1
+    assert result.big_blind_native == 2
+    assert result.blind_confidence == 0.99
 
 
 def test_scheduled_bomb_pot_normalizes_spaced_ocr_digits() -> None:

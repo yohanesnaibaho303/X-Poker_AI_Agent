@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type CSSProperties, type ReactNode } from "react";
+import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
 import {
   fetchLatestCaptureDiagnostic,
   fetchLiveHeroStatus,
@@ -13,7 +13,7 @@ import {
   stopReplay,
 } from "./api";
 import { formatPercent, formatStack } from "./format";
-import { buildActionRows, buildStrategyComparisonRows } from "./strategy";
+import { buildStrategyComparisonRows } from "./strategy";
 import type {
   HandEvent,
   HandState,
@@ -190,25 +190,23 @@ function RangeGrid({
   );
 }
 
-function ActionFrequencyChart({ cell }: { cell: RangeMatrix["cells"][number] | null }) {
-  const actions = buildActionRows(cell);
+function LiveGtoRecommendation({ hero }: { hero: LiveHeroCalculation | null }) {
   return (
-    <div className="action-chart" aria-label="Selected hand action frequencies">
+    <div className="action-chart" aria-label="Live GTO action frequencies">
       <div className="action-chart-heading">
-        <span>Selected-hand frequencies</span>
-        <strong>{cell?.hand_class ?? "—"}</strong>
+        <span>Live GTO recommendation</span>
+        <strong>{hero?.recommended_action?.replace("@", " ") ?? "Unavailable"}</strong>
       </div>
-      {actions.length === 0 && <small>No resolved action frequencies.</small>}
-      {actions.map(({ action, frequency, evChips }) => (
-        <div className="action-frequency" key={action}>
-          <div><span>{action}</span><strong>{formatPercent(frequency)}</strong></div>
-          <i><b style={{ width: `${frequency * 100}%` }} /></i>
-          <small>
-            EV {evChips != null ? `${formatStack(evChips)} chips` : "unavailable"}
-          </small>
+      {(hero?.strategy_actions ?? []).map((action) => (
+        <div className="action-frequency" key={action.action}>
+          <div><span>{action.action.replace("@", " ")}</span><strong>{formatPercent(action.frequency)}</strong></div>
+          <i><b style={{ width: `${action.frequency * 100}%` }} /></i>
+          <small>EV {action.ev_chips == null ? "unavailable" : `${formatStack(action.ev_chips)} chips`}</small>
         </div>
       ))}
-      {cell?.equity != null && <small>Equity {formatPercent(cell.equity)}</small>}
+      {!hero?.recommendation_ready && <small>{hero?.recommendation_issues.join(", ") || "Waiting for validated live decision context."}</small>}
+      {hero?.strategy_equity != null && <small>Equity {formatPercent(hero.strategy_equity)}</small>}
+      {hero?.recommendation_ready && <small>Source {hero.strategy_source_artifact_id} · confidence {formatPercent(hero.strategy_confidence)} · {hero.strategy_status}. {hero.strategy_assumptions.join(" ")}</small>}
     </div>
   );
 }
@@ -287,11 +285,6 @@ export default function App() {
   const rangePosition = liveObservation?.running
     ? liveObservation.detected_hero_position
     : position;
-  const heroRangeCell = useMemo(
-    () => matrix?.cells.find((cell) => cell.hand_class === liveHero?.hand_class) ?? null,
-    [liveHero?.hand_class, matrix],
-  );
-
   useEffect(() => {
     if (!RANGE_POSITIONS.includes(position)) setPosition("BTN");
     if (!rangePosition || !RANGE_POSITIONS.includes(rangePosition)) {
@@ -517,21 +510,17 @@ export default function App() {
                 <span>Detected hand</span><strong>{liveHero?.cards.length === 2 ? `${liveHero.cards.join(" ")} · ${liveHero.hand_class}` : "—"}</strong>
                 <small>{liveHero?.hero_seat != null ? `Seat ${liveHero.hero_seat + 1} · ${liveHero.hero_position ?? "position pending"}` : "Waiting for local hero evidence."}</small>
               </div>
-              <div className="strategy-block">
-                <span>Detected range action</span><strong>{heroRangeCell ? `Open 4 chips ${formatPercent(heroRangeCell.action_mix["raise@4chips"] ?? 0)}` : "Unavailable"}</strong>
-                <small>{liveHero?.hero_position ? `${liveHero.hand_class ?? "Hand pending"} at ${liveHero.hero_position} selected automatically · ${liveHero.dealt_player_count}-handed · range mismatch ${liveHero.range_seat_mismatch} seat(s). Reference prior, not exact GTO.` : "Waiting for a resolved dealt position."}</small>
-              </div>
-              <ActionFrequencyChart cell={heroRangeCell} />
+              <LiveGtoRecommendation hero={liveHero} />
               <div className="strategy-block">
                 <span>Live blockers</span><strong>{liveHero?.issues.length ?? 0}</strong>
                 <small>{liveHero?.issues.join(", ") || "Accepted live inputs are internally consistent."}</small>
               </div>
               <div className="strategy-block">
-                <span>Resolved strategy</span><strong>{snapshot?.strategy.status ?? "unavailable"}</strong>
+                <span>Resolved live strategy</span><strong>{liveHero?.strategy_status ?? "unavailable"}</strong>
                 <small>
-                  {snapshot
-                    ? `${snapshot.strategy.role.replaceAll("_", " ")} · confidence ${formatPercent(snapshot.strategy.confidence)} · ${snapshot.strategy.assumptions.join(" ")}`
-                    : "Waiting for strategy status."}
+                  {liveHero?.recommendation_ready
+                    ? `${liveHero.strategy_role.replaceAll("_", " ")} · legal ${liveHero.legal_actions.join(", ")}`
+                    : "Waiting for a compatible provenance-bearing GTO node."}
                 </small>
               </div>
               <StrategyComparison snapshot={snapshot} />

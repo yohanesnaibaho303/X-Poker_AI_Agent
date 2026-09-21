@@ -34,6 +34,32 @@ begins on the flop. Contribution amounts are reconstructed from observations and
 invariants rather than inferred from a displayed configuration range. Double-board, Omaha,
 ambiguous-board, and uncertain-contribution states remain quarantined.
 
+## 1.1 MVP Delivery Priorities
+
+### Priority 1 — Read-only live GTO recommendation
+
+Deliver the smallest end-to-end hero decision loop before adding control:
+
+1. Detect temporally stable hero cards and the authorized nine-seat table.
+2. Resolve the hero seat and position from the dealer and active-seat ring.
+3. Validate the current decision surface, legal actions, native-chip stack, pot, amount to call,
+   street, and action history required by the strategy key.
+4. Match a provenance-bearing compatible GTO solution and display Fold, Call, and Raise frequencies
+   when those actions are legal; display Check or Bet instead when those are the legal equivalents.
+5. Show the detected combination's equity/EV or other solver-provided strength evidence when the
+   matched artifact contains it. Do not replace missing strategy data with a generic hand-strength
+   heuristic or label a reference prior as GTO.
+
+Any uncertain card, seat, position, amount, legal action, or strategy match keeps the recommendation
+unavailable. This priority reuses the narrow required slice of Milestones 3, 4, 6, and 8; unrelated
+replay polish and broader opponent-history presentation are outside its critical path.
+
+### Priority 2 — Milestone 9 authorized control
+
+After Priority 1 passes its held-out recognition, reconstruction, strategy, and live-session gates,
+implement Milestone 9. Control remains manually armed, private-test-table-only, verified after every
+input, and disabled on ambiguity or mismatch.
+
 ## 2. Product Vision
 
 The final agent should operate as an inspectable perception–reasoning–action system:
@@ -880,15 +906,14 @@ full legal reducer can reproduce the street totals and resulting pot.
 The first useful version will:
 
 1. Detect the authorized X-Poker window.
-2. Support explicitly classified 9-max NLH table layouts only.
-3. Recognize hero cards, board, seats, positions, stacks, bets, pot, and available actions.
-4. Reconstruct complete hands.
-5. Display recognition confidence and replay evidence.
-6. Show hero and estimated opponent ranges.
-7. Calculate equity, EV, and pot odds.
-8. Produce source-backed GTO and confidence-scaled exploitative recommendations.
-9. Log every observation and decision.
-10. Keep control disabled until all required acceptance thresholds are satisfied.
+2. Recognize stable hero cards and resolve the hero's seat and position on the supported 9-max NLH
+   layout.
+3. Validate the current hand context and legal decision surface.
+4. Display provenance-bearing GTO Fold/Call/Raise frequencies when legal, or Check/Bet equivalents,
+   for the matched hero combination and spot.
+5. Show confidence, assumptions, abstraction mismatch, and solver-provided equity/EV when available.
+6. Log every observation and recommendation.
+7. Keep control disabled until all required acceptance thresholds are satisfied.
 
 ## 17. Build Order
 
@@ -904,8 +929,8 @@ Project foundation
 → poker mathematics
 → GTO strategy
 → exploitative strategy
-→ monitoring dashboard
-→ authorized control
+→ read-only live GTO recommendation (Priority 1)
+→ authorized control (Priority 2 / Milestone 9)
 → hardening and packaging
 ```
 

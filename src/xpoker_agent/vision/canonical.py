@@ -21,6 +21,7 @@ from xpoker_agent.vision.models import (
     LiveCanonicalHandPrefix,
     StackIncreaseCandidate,
 )
+from xpoker_agent.vision.positions import assign_dealt_positions
 
 
 def _confidence(score: float, calibration_id: str, stable_frames: int = 3) -> Confidence:
@@ -72,7 +73,11 @@ def build_standard_live_hand_prefix(
         config_version=f"game-{table_size}max-nlh-v1",
         hero_seat=hero_seat,
         occupied_stacks_chips=stacks_chips,
-        positions={},
+        positions=assign_dealt_positions(
+            table_size=table_size,
+            dealer_seat=dealer_seat,
+            active_seats=set(stacks_chips),
+        ),
         table_size=table_size,
     )
     reducer = HandStateReducer()

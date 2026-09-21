@@ -156,6 +156,16 @@ def _scaled_pot_crop(frame: CapturedFrame, layout: LayoutProfile) -> CapturedFra
     return normalize_frame(crop, crop.width * 4, crop.height * 4)
 
 
+def _scaled_panel_crop(
+    frame: CapturedFrame, layout: LayoutProfile, seat: int
+) -> CapturedFrame:
+    crop = crop_frame(
+        frame,
+        normalized_box(frame, layout.seat_anchors[seat].player_panel_region),
+    )
+    return normalize_frame(crop, crop.width * 2, crop.height * 2)
+
+
 async def diagnose_captured_frame(
     *, frame: CapturedFrame, record: CaptureFrameRecord, layout: LayoutProfile
 ) -> LiveCaptureDiagnostic:
@@ -170,13 +180,7 @@ async def diagnose_captured_frame(
     panel_seats = [
         observation.seat for observation in seat_observations if observation.status != "empty"
     ]
-    panel_crops = [
-        crop_frame(
-            frame,
-            normalized_box(frame, layout.seat_anchors[seat].player_panel_region),
-        )
-        for seat in panel_seats
-    ]
+    panel_crops = [_scaled_panel_crop(frame, layout, seat) for seat in panel_seats]
     action_crops = []
     for seat in panel_seats:
         crop = crop_frame(

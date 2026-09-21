@@ -1,5 +1,51 @@
 {
   "$defs": {
+    "ComboActionResult": {
+      "additionalProperties": false,
+      "properties": {
+        "action": {
+          "title": "Action",
+          "type": "string"
+        },
+        "frequency": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Frequency",
+          "type": "number"
+        },
+        "ev_chips": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ev Chips"
+        },
+        "ev_loss_chips": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ev Loss Chips"
+        }
+      },
+      "required": [
+        "action",
+        "frequency"
+      ],
+      "title": "ComboActionResult",
+      "type": "object"
+    },
     "Position": {
       "enum": [
         "UTG",
@@ -175,6 +221,103 @@
       ],
       "title": "Action Surface",
       "type": "string"
+    },
+    "legal_actions": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Legal Actions",
+      "type": "array"
+    },
+    "strategy_status": {
+      "default": "unavailable",
+      "enum": [
+        "exact",
+        "abstracted",
+        "unavailable"
+      ],
+      "title": "Strategy Status",
+      "type": "string"
+    },
+    "strategy_role": {
+      "default": "none",
+      "enum": [
+        "gto_solution",
+        "none"
+      ],
+      "title": "Strategy Role",
+      "type": "string"
+    },
+    "strategy_confidence": {
+      "default": 0.0,
+      "title": "Strategy Confidence",
+      "type": "number"
+    },
+    "strategy_source_artifact_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Strategy Source Artifact Id"
+    },
+    "strategy_equity": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Strategy Equity"
+    },
+    "strategy_actions": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/ComboActionResult"
+      },
+      "title": "Strategy Actions",
+      "type": "array"
+    },
+    "strategy_assumptions": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Strategy Assumptions",
+      "type": "array"
+    },
+    "recommended_action": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Recommended Action"
+    },
+    "recommendation_ready": {
+      "default": false,
+      "title": "Recommendation Ready",
+      "type": "boolean"
+    },
+    "recommendation_issues": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Recommendation Issues",
+      "type": "array"
     },
     "ready": {
       "title": "Ready",

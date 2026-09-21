@@ -65,6 +65,21 @@ class TargetIdentityChanged(RuntimeError):
     pass
 
 
+def _starting_stacks_from_opening_pot(
+    current_stacks: dict[int, Decimal],
+    active_seats: list[int],
+    blind_posts: list[BlindPostReconciliation],
+) -> dict[int, Decimal] | None:
+    matched = [post for post in blind_posts if post.status == "matched"]
+    if (
+        {post.blind_kind for post in matched} != {"small_blind", "big_blind"}
+        or not set(active_seats).issubset(current_stacks)
+    ):
+        return None
+    forced = {post.seat: post.amount_native for post in matched}
+    return {seat: current_stacks[seat] + forced.get(seat, 0) for seat in active_seats}
+
+
 class LiveObservationService:
     def __init__(
         self,
@@ -160,6 +175,7 @@ class LiveObservationService:
         self._hand_epoch = 0
         self._hand_epoch_start_sequence = 0
         self._hand_starting_stacks_native: dict[int, Decimal] = {}
+        self._opening_pot_stacks: dict[int, Decimal] = {}
         self._previous_epoch_dealer: int | None = None
         self._previous_epoch_active_seats: list[int] = []
         self._hand_boundary_validation = LiveHandBoundaryValidation(
@@ -275,6 +291,7 @@ class LiveObservationService:
         self._hand_epoch = 0
         self._hand_epoch_start_sequence = 0
         self._hand_starting_stacks_native = {}
+        self._opening_pot_stacks = {}
         self._previous_epoch_dealer = None
         self._previous_epoch_active_seats = []
         self._hand_boundary_validation = LiveHandBoundaryValidation(
@@ -487,6 +504,7 @@ class LiveObservationService:
                     self._epoch_dealer_evidence = None
                     self._epoch_active_evidence = []
                     self._hand_epoch += 1
+                    self._opening_pot_stacks = {}
                     self._hand_epoch_start_sequence = diagnostic.frame_sequence
                     self._epoch_mode_consensus = self._empty_consensus(
                         "new_hand_mode_unresolved"
@@ -722,6 +740,22 @@ class LiveObservationService:
                 SeatStackConsensus(seat=seat, player_status=state, consensus=result)
             )
         self._stack_consensus = stack_consensus
+        if (
+            self._hand_epoch > 0
+            and not self._opening_pot_stacks
+            and self._pot_consensus.accepted
+            and self._pot_consensus.value == "3"
+            and self._active_seats
+            and all(
+                stack_consensus[seat].consensus.accepted
+                and stack_consensus[seat].consensus.value is not None
+                for seat in self._active_seats
+            )
+        ):
+            self._opening_pot_stacks = {
+                seat: Decimal(stack_consensus[seat].consensus.value or "0")
+                for seat in self._active_seats
+            }
         street_by_cards = {0: "preflop", 3: "flop", 4: "turn", 5: "river"}
         stack_street = (
             street_by_cards.get(int(self._board_consensus.value or "-1"), "unknown")
@@ -1125,6 +1159,7 @@ class LiveObservationService:
                 self._previous_epoch_active_seats = previous_active
                 self._hand_epoch = next_epoch
                 self._hand_starting_stacks_native = {}
+                self._opening_pot_stacks = {}
                 self._epoch_mode_consensus = self._empty_consensus(
                     "new_hand_mode_unresolved"
                 )
@@ -1407,6 +1442,18 @@ class LiveObservationService:
                 issues.append("authoritative_native_blinds_not_observed")
             big_blind = Decimal(big_token)
         blind_posts = self._reconcile_blind_posts()
+        if (
+            self._hand_boundary_validation.status == "validated"
+            and self._epoch_mode_consensus.accepted
+            and self._epoch_mode_consensus.value == "standard_nlh"
+        ):
+            recovered = _starting_stacks_from_opening_pot(
+                self._opening_pot_stacks,
+                self._hand_boundary_validation.current_active_seats,
+                blind_posts,
+            )
+            if recovered is not None:
+                self._hand_starting_stacks_native = recovered
         for kind in ("small_blind", "big_blind"):
             result = next(
                 (item for item in blind_posts if item.blind_kind == kind), None

@@ -4,6 +4,29 @@
 
 `docs/PROJECT_PLAN.md` defines scope and milestone intent. This file is the execution checklist. A task is complete only with tests, documentation, and evidence appropriate to its risk. Do not begin live control work early merely because earlier interfaces have been scaffolded.
 
+## Current execution priorities
+
+### Priority 1 — Read-only live GTO recommendation
+
+- [x] Detect temporally stable hero cards on the authorized 9-max layout.
+- [x] Resolve hero seat and position from stable dealer and active-ring evidence.
+- [ ] Validate the decision surface, legal actions, street, native-chip amounts, and required action
+  history without inference.
+- [x] Resolve a compatible provenance-bearing GTO node for the detected combination and spot.
+- [x] Display legal Fold/Call/Raise frequencies, or Check/Bet equivalents, with confidence,
+  assumptions, and solver-provided equity/EV when available.
+- [ ] Pass the applicable held-out M3/M4 quality gates and an uninterrupted authorized live-session
+  monitoring check. Missing or ambiguous evidence must produce no recommendation.
+
+Exit: the dashboard automatically turns a validated live hero decision into a source-backed,
+read-only GTO recommendation. A generic card-strength heuristic and reference-prior-only result do
+not satisfy this priority.
+
+### Priority 2 — Milestone 9 authorized control
+
+Begin Milestone 9 only after Priority 1 exits. Control remains disabled until every control-enablement
+gate in `docs/QUALITY_GATES.md` passes.
+
 ## Milestone 0 — Requirements and reproducibility
 
 Goal: establish a lightweight, deterministic foundation that can represent a simulated hand end to end.
