@@ -33,7 +33,40 @@ ALL_SEATS = tuple(range(9))
 def inspect_session_evidence(session_dir: Path) -> dict[str, Any]:
     manifest_path = session_dir / "manifest.json" if session_dir.is_dir() else session_dir
     if not manifest_path.exists():
-        raise FileNotFoundError(f"Manifest not found at {manifest_path}")
+        raise FileNotFoundError(f"Manifest or report not found at {manifest_path}")
+
+    raw_text = manifest_path.read_text(encoding="utf-8")
+    payload = json.loads(raw_text)
+
+    # If this is a live observation status report from live_observe.py
+    if "evidence" in payload or "final_status" in payload:
+        final_st = payload.get("final_status", payload)
+        evidence = payload.get("evidence", {})
+        live_hero = final_st.get("live_hero", {})
+        seats = set(final_st.get("active_seats", []))
+        dealers: set[int] = set()
+        cards = set(final_st.get("hero_cards", []))
+        actions = set()
+        action_surf = live_hero.get("action_surface")
+        if action_surf and action_surf != "ambiguous":
+            actions.add(action_surf)
+        numeric = set()
+        if evidence.get("matched_blind_amounts"):
+            numeric.add("blind")
+        if live_hero.get("hero_stack_chips") or final_st.get("stack_consensus"):
+            numeric.add("stack")
+        if final_st.get("pot") or live_hero.get("pot_chips"):
+            numeric.add("pot")
+
+        return {
+            "session_id": manifest_path.stem,
+            "frame_count": final_st.get("frames_attempted", 0),
+            "observed_cards": sorted(cards),
+            "observed_dealers": sorted(dealers),
+            "observed_seats": sorted(seats),
+            "observed_actions": sorted(actions),
+            "numeric_channels": sorted(numeric),
+        }
 
     manifest, _ = load_capture_replay(manifest_path)
     layout = load_layout_profile(table_size=9)

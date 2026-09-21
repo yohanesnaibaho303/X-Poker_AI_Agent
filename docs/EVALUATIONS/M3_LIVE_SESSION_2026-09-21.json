@@ -1,0 +1,838 @@
+{
+  "evidence": {
+    "max_hand_epoch": 1,
+    "boundary_validated": true,
+    "hero_cards_accepted": false,
+    "max_derived_actions": 0,
+    "max_amount_matches": 0,
+    "max_pot_matches": 0,
+    "max_eligible_actions": 0,
+    "canonical_hand_observed": false,
+    "completed_hand_observed": false,
+    "latest_completed_hand": null,
+    "max_stack_increases": 1,
+    "retained_canonical_hand": null,
+    "matched_blind_amounts": [
+      "1",
+      "2"
+    ],
+    "gto_recommendation_observed": false,
+    "latest_gto_recommendation": null,
+    "epochs": {
+      "0": {
+        "hand_modes": [
+          "ambiguous"
+        ],
+        "boundary_validated": false,
+        "hero_cards_accepted": false,
+        "max_derived_actions": 0,
+        "max_amount_matches": 0,
+        "max_pot_matches": 0,
+        "max_eligible_actions": 0,
+        "canonical_hand_observed": false,
+        "canonical_hand": null,
+        "canonical_errors": [],
+        "matched_blind_amounts": [],
+        "fewest_readiness_issues": [
+          "hand_boundary_not_validated",
+          "hand_mode_not_stable",
+          "small_blind_post_not_reconciled",
+          "big_blind_post_not_reconciled",
+          "starting_stacks_not_captured",
+          "hero_cards_not_stable"
+        ]
+      },
+      "1": {
+        "hand_modes": [
+          "ambiguous"
+        ],
+        "boundary_validated": true,
+        "hero_cards_accepted": false,
+        "max_derived_actions": 0,
+        "max_amount_matches": 0,
+        "max_pot_matches": 0,
+        "max_eligible_actions": 0,
+        "canonical_hand_observed": false,
+        "canonical_hand": null,
+        "canonical_errors": [],
+        "matched_blind_amounts": [
+          "1",
+          "2"
+        ],
+        "fewest_readiness_issues": [
+          "hand_mode_not_stable",
+          "starting_stacks_not_captured",
+          "hero_seat_not_detected"
+        ]
+      }
+    }
+  },
+  "final_status": {
+    "schema_version": "1.0",
+    "running": false,
+    "table_size": 9,
+    "interval_ms": 400,
+    "started_at": "2026-09-21T07:58:03.719783Z",
+    "stopped_at": "2026-09-21T07:59:04.787598Z",
+    "latest_sequence": 150,
+    "frames_attempted": 150,
+    "frames_succeeded": 150,
+    "frames_failed": 0,
+    "consecutive_failures": 0,
+    "latest_captured_at": "2026-09-21T07:59:04.531341Z",
+    "latest_age_ms": 256.257,
+    "target_fingerprint": "81c8f570dadc79e4711ec1a8483b0affb7005b35b583e63a530c8a449f0bfaaf",
+    "target_stable": true,
+    "current_hand_mode": "ambiguous",
+    "current_hand_supported": false,
+    "mode_consensus": {
+      "accepted": false,
+      "value": null,
+      "confidence": 0.0,
+      "stable_frames": 0,
+      "alternatives": [],
+      "reason": "current_mode_ambiguous"
+    },
+    "epoch_mode_consensus": {
+      "accepted": false,
+      "value": null,
+      "confidence": 0.0,
+      "stable_frames": 0,
+      "alternatives": [],
+      "reason": "new_hand_mode_unresolved"
+    },
+    "blind_consensus": {
+      "accepted": true,
+      "value": "1/2",
+      "confidence": 1.0,
+      "stable_frames": 30,
+      "alternatives": [],
+      "reason": null
+    },
+    "session_blind_consensus": {
+      "accepted": true,
+      "value": "1/2",
+      "confidence": 1.0,
+      "stable_frames": 30,
+      "alternatives": [],
+      "reason": null
+    },
+    "board_consensus": {
+      "accepted": true,
+      "value": "3",
+      "confidence": 1.0,
+      "stable_frames": 30,
+      "alternatives": [],
+      "reason": null
+    },
+    "board_card_consensus": [],
+    "recognized_board_cards": [],
+    "board_cards_accepted": false,
+    "board_cards_reason": "current_cards_ambiguous",
+    "hero_card_consensus": [],
+    "recognized_hero_cards": [],
+    "hero_cards_accepted": false,
+    "hero_cards_reason": "two overlapped X-Poker hero-card surfaces isolated",
+    "detected_hero_seat": 0,
+    "hero_seat_confidence": 1.0,
+    "hero_seat_reason": "accepted local action-control surface",
+    "detected_hero_position": "LJ",
+    "dealer_consensus": {
+      "accepted": true,
+      "value": "4",
+      "confidence": 1.0,
+      "stable_frames": 30,
+      "alternatives": [],
+      "reason": null
+    },
+    "seat_status_consensus": [
+      {
+        "seat": 0,
+        "consensus": {
+          "accepted": true,
+          "value": "seated",
+          "confidence": 1.0,
+          "stable_frames": 30,
+          "alternatives": [],
+          "reason": null
+        }
+      },
+      {
+        "seat": 1,
+        "consensus": {
+          "accepted": true,
+          "value": "seated",
+          "confidence": 1.0,
+          "stable_frames": 22,
+          "alternatives": [],
+          "reason": null
+        }
+      },
+      {
+        "seat": 2,
+        "consensus": {
+          "accepted": true,
+          "value": "seated",
+          "confidence": 1.0,
+          "stable_frames": 30,
+          "alternatives": [],
+          "reason": null
+        }
+      },
+      {
+        "seat": 3,
+        "consensus": {
+          "accepted": true,
+          "value": "empty",
+          "confidence": 1.0,
+          "stable_frames": 30,
+          "alternatives": [],
+          "reason": null
+        }
+      },
+      {
+        "seat": 4,
+        "consensus": {
+          "accepted": true,
+          "value": "seated",
+          "confidence": 1.0,
+          "stable_frames": 30,
+          "alternatives": [],
+          "reason": null
+        }
+      },
+      {
+        "seat": 5,
+        "consensus": {
+          "accepted": true,
+          "value": "empty",
+          "confidence": 1.0,
+          "stable_frames": 30,
+          "alternatives": [],
+          "reason": null
+        }
+      },
+      {
+        "seat": 6,
+        "consensus": {
+          "accepted": true,
+          "value": "seated",
+          "confidence": 1.0,
+          "stable_frames": 30,
+          "alternatives": [],
+          "reason": null
+        }
+      },
+      {
+        "seat": 7,
+        "consensus": {
+          "accepted": true,
+          "value": "seated",
+          "confidence": 1.0,
+          "stable_frames": 30,
+          "alternatives": [],
+          "reason": null
+        }
+      },
+      {
+        "seat": 8,
+        "consensus": {
+          "accepted": true,
+          "value": "seated",
+          "confidence": 1.0,
+          "stable_frames": 30,
+          "alternatives": [],
+          "reason": null
+        }
+      }
+    ],
+    "active_seats": [
+      0,
+      1,
+      2,
+      4,
+      6,
+      7,
+      8
+    ],
+    "provisional_positions": {
+      "4": "BTN",
+      "6": "SB",
+      "7": "BB",
+      "8": "UTG",
+      "0": "LJ",
+      "1": "HJ",
+      "2": "CO"
+    },
+    "positions_reason": "7-handed positions resolved on 9-max layout; range seat mismatch 2",
+    "pot_consensus": {
+      "accepted": false,
+      "value": null,
+      "confidence": 1.0,
+      "stable_frames": 2,
+      "alternatives": [],
+      "reason": "insufficient_stable_frames"
+    },
+    "seat_stack_consensus": [
+      {
+        "seat": 0,
+        "player_status": "seated",
+        "consensus": {
+          "accepted": true,
+          "value": "106",
+          "confidence": 1.0,
+          "stable_frames": 30,
+          "alternatives": [],
+          "reason": null
+        }
+      },
+      {
+        "seat": 1,
+        "player_status": "seated",
+        "consensus": {
+          "accepted": true,
+          "value": "112.50",
+          "confidence": 1.0,
+          "stable_frames": 22,
+          "alternatives": [],
+          "reason": null
+        }
+      },
+      {
+        "seat": 2,
+        "player_status": "seated",
+        "consensus": {
+          "accepted": false,
+          "value": null,
+          "confidence": 1.0,
+          "stable_frames": 1,
+          "alternatives": [],
+          "reason": "insufficient_stable_frames"
+        }
+      },
+      {
+        "seat": 3,
+        "player_status": "empty",
+        "consensus": {
+          "accepted": false,
+          "value": null,
+          "confidence": 0.0,
+          "stable_frames": 0,
+          "alternatives": [],
+          "reason": "current_stack_ambiguous"
+        }
+      },
+      {
+        "seat": 4,
+        "player_status": "seated",
+        "consensus": {
+          "accepted": true,
+          "value": "147",
+          "confidence": 1.0,
+          "stable_frames": 30,
+          "alternatives": [],
+          "reason": null
+        }
+      },
+      {
+        "seat": 5,
+        "player_status": "empty",
+        "consensus": {
+          "accepted": false,
+          "value": null,
+          "confidence": 0.0,
+          "stable_frames": 0,
+          "alternatives": [],
+          "reason": "current_stack_ambiguous"
+        }
+      },
+      {
+        "seat": 6,
+        "player_status": "seated",
+        "consensus": {
+          "accepted": true,
+          "value": "140",
+          "confidence": 1.0,
+          "stable_frames": 30,
+          "alternatives": [],
+          "reason": null
+        }
+      },
+      {
+        "seat": 7,
+        "player_status": "seated",
+        "consensus": {
+          "accepted": true,
+          "value": "333",
+          "confidence": 1.0,
+          "stable_frames": 30,
+          "alternatives": [],
+          "reason": null
+        }
+      },
+      {
+        "seat": 8,
+        "player_status": "seated",
+        "consensus": {
+          "accepted": true,
+          "value": "130",
+          "confidence": 1.0,
+          "stable_frames": 30,
+          "alternatives": [],
+          "reason": null
+        }
+      }
+    ],
+    "seat_action_consensus": [
+      {
+        "seat": 0,
+        "consensus": {
+          "accepted": true,
+          "value": "check",
+          "confidence": 1.0,
+          "stable_frames": 23,
+          "alternatives": [],
+          "reason": null
+        }
+      },
+      {
+        "seat": 1,
+        "consensus": {
+          "accepted": false,
+          "value": null,
+          "confidence": 0.0,
+          "stable_frames": 0,
+          "alternatives": [],
+          "reason": "current_action_absent"
+        }
+      },
+      {
+        "seat": 2,
+        "consensus": {
+          "accepted": false,
+          "value": null,
+          "confidence": 1.0,
+          "stable_frames": 2,
+          "alternatives": [],
+          "reason": "insufficient_stable_frames"
+        }
+      },
+      {
+        "seat": 3,
+        "consensus": {
+          "accepted": false,
+          "value": null,
+          "confidence": 0.0,
+          "stable_frames": 0,
+          "alternatives": [],
+          "reason": "current_action_absent"
+        }
+      },
+      {
+        "seat": 4,
+        "consensus": {
+          "accepted": false,
+          "value": null,
+          "confidence": 0.0,
+          "stable_frames": 0,
+          "alternatives": [],
+          "reason": "current_action_absent"
+        }
+      },
+      {
+        "seat": 5,
+        "consensus": {
+          "accepted": false,
+          "value": null,
+          "confidence": 0.0,
+          "stable_frames": 0,
+          "alternatives": [],
+          "reason": "current_action_absent"
+        }
+      },
+      {
+        "seat": 6,
+        "consensus": {
+          "accepted": true,
+          "value": "check",
+          "confidence": 1.0,
+          "stable_frames": 27,
+          "alternatives": [],
+          "reason": null
+        }
+      },
+      {
+        "seat": 7,
+        "consensus": {
+          "accepted": true,
+          "value": "check",
+          "confidence": 1.0,
+          "stable_frames": 26,
+          "alternatives": [],
+          "reason": null
+        }
+      },
+      {
+        "seat": 8,
+        "consensus": {
+          "accepted": true,
+          "value": "fold",
+          "confidence": 1.0,
+          "stable_frames": 30,
+          "alternatives": [],
+          "reason": null
+        }
+      }
+    ],
+    "hero_control_consensus": {
+      "accepted": true,
+      "value": "pre_action::call_any:",
+      "confidence": 1.0,
+      "stable_frames": 22,
+      "alternatives": [],
+      "reason": null
+    },
+    "hand_epoch": 1,
+    "hand_boundary_validation": {
+      "hand_epoch": 1,
+      "previous_dealer_seat": 2,
+      "current_dealer_seat": 4,
+      "expected_dealer_seat": 4,
+      "previous_active_seats": [
+        0,
+        1,
+        2,
+        4,
+        6,
+        7,
+        8
+      ],
+      "current_active_seats": [
+        0,
+        1,
+        2,
+        4,
+        6,
+        7,
+        8
+      ],
+      "status": "validated",
+      "issues": [],
+      "canonical_event_accepted": false,
+      "reason": "dealer advanced to the next unchanged dealt seat"
+    },
+    "blind_post_reconciliations": [
+      {
+        "hand_epoch": 1,
+        "seat": 6,
+        "blind_kind": "small_blind",
+        "amount_native": "1",
+        "stack_delta_event_id": "e769a5f971059b36e4b44134160315437df62db23714aace15efaa33f2829970",
+        "badge_amount_event_id": null,
+        "status": "matched",
+        "canonical_event_accepted": false,
+        "reason": "exact early-epoch stack decrease at expected blind seat"
+      },
+      {
+        "hand_epoch": 1,
+        "seat": 7,
+        "blind_kind": "big_blind",
+        "amount_native": "2",
+        "stack_delta_event_id": "f6444a94b073edd267a1805a1c8e869fcc5b8d37e015babbf7e145f17f93873a",
+        "badge_amount_event_id": null,
+        "status": "matched",
+        "canonical_event_accepted": false,
+        "reason": "exact early-epoch stack decrease at expected blind seat"
+      }
+    ],
+    "hand_starting_stacks_native": {
+      "0": "110",
+      "2": "134",
+      "6": "144",
+      "7": "337",
+      "8": "130"
+    },
+    "reconstruction_readiness": {
+      "hand_epoch": 1,
+      "ready": false,
+      "big_blind_native": "2",
+      "eligible_action_event_ids": [],
+      "issues": [
+        "hand_mode_not_stable",
+        "active_stacks_not_stable",
+        "starting_stacks_not_captured",
+        "hero_cards_not_stable",
+        "board_cards_not_stable",
+        "current_pot_not_stable"
+      ],
+      "canonical_events_emitted": false,
+      "reason": "one or more fail-closed reconstruction gates remain"
+    },
+    "canonical_hand": null,
+    "retained_canonical_hand": null,
+    "latest_completed_hand": null,
+    "settlement_reason": "no retained hand is eligible for settlement",
+    "canonical_reconstruction_error": null,
+    "derived_action_candidates": [],
+    "seat_badge_amount_candidates": [],
+    "stack_delta_candidates": [
+      {
+        "event_id": "1ea7c45e38f7c9af3553cc3378a1e0bcb21bfeeb2b1191098efa5ada728e00c5",
+        "hand_epoch": 0,
+        "frame_sequence": 9,
+        "seat": 4,
+        "street": "preflop",
+        "previous_stack_native": "118",
+        "current_stack_native": "114",
+        "committed_native": "4",
+        "canonical_event_accepted": false,
+        "reason": "stable stack decrease; action and pot reconciliation pending"
+      },
+      {
+        "event_id": "089528285f5dccabc2f1ac9680d6a69b54eb991fa2c346561f75b0e8a2f224c6",
+        "hand_epoch": 0,
+        "frame_sequence": 10,
+        "seat": 6,
+        "street": "unknown",
+        "previous_stack_native": "147",
+        "current_stack_native": "144",
+        "committed_native": "3",
+        "canonical_event_accepted": false,
+        "reason": "stable stack decrease; action and pot reconciliation pending"
+      },
+      {
+        "event_id": "1b779d06676cd99b3ddfacf8cfddddab2279c2d831c953e442569812b1180c16",
+        "hand_epoch": 0,
+        "frame_sequence": 23,
+        "seat": 4,
+        "street": "flop",
+        "previous_stack_native": "114",
+        "current_stack_native": "110",
+        "committed_native": "4",
+        "canonical_event_accepted": false,
+        "reason": "stable stack decrease; action and pot reconciliation pending"
+      },
+      {
+        "event_id": "77fd537d62c26558844c2be00a6ef8b550b143fb2a066af87976fb73f0346bfe",
+        "hand_epoch": 0,
+        "frame_sequence": 33,
+        "seat": 7,
+        "street": "flop",
+        "previous_stack_native": "341",
+        "current_stack_native": "337",
+        "committed_native": "4",
+        "canonical_event_accepted": false,
+        "reason": "stable stack decrease; action and pot reconciliation pending"
+      },
+      {
+        "event_id": "406b62fa67c50375b888449d14f4bbe4a6853cf922f25cd6b77639912ccb447d",
+        "hand_epoch": 0,
+        "frame_sequence": 39,
+        "seat": 0,
+        "street": "flop",
+        "previous_stack_native": "114",
+        "current_stack_native": "110",
+        "committed_native": "4",
+        "canonical_event_accepted": false,
+        "reason": "stable stack decrease; action and pot reconciliation pending"
+      },
+      {
+        "event_id": "a3589709aec572f436bfbde57c1308fbccfeb784137df96159058246815687a5",
+        "hand_epoch": 0,
+        "frame_sequence": 58,
+        "seat": 4,
+        "street": "turn",
+        "previous_stack_native": "110",
+        "current_stack_native": "100",
+        "committed_native": "10",
+        "canonical_event_accepted": false,
+        "reason": "stable stack decrease; action and pot reconciliation pending"
+      },
+      {
+        "event_id": "e769a5f971059b36e4b44134160315437df62db23714aace15efaa33f2829970",
+        "hand_epoch": 1,
+        "frame_sequence": 87,
+        "seat": 6,
+        "street": "preflop",
+        "previous_stack_native": "144",
+        "current_stack_native": "143",
+        "committed_native": "1",
+        "canonical_event_accepted": false,
+        "reason": "stable stack decrease; action and pot reconciliation pending"
+      },
+      {
+        "event_id": "f6444a94b073edd267a1805a1c8e869fcc5b8d37e015babbf7e145f17f93873a",
+        "hand_epoch": 1,
+        "frame_sequence": 88,
+        "seat": 7,
+        "street": "preflop",
+        "previous_stack_native": "337",
+        "current_stack_native": "335",
+        "committed_native": "2",
+        "canonical_event_accepted": false,
+        "reason": "stable stack decrease; action and pot reconciliation pending"
+      },
+      {
+        "event_id": "d9a306a24f3b06f16c3a2d05951cc47a06aaf6fd90e60de7b0ebb7b094990c9f",
+        "hand_epoch": 1,
+        "frame_sequence": 106,
+        "seat": 2,
+        "street": "preflop",
+        "previous_stack_native": "134",
+        "current_stack_native": "130",
+        "committed_native": "4",
+        "canonical_event_accepted": false,
+        "reason": "stable stack decrease; action and pot reconciliation pending"
+      },
+      {
+        "event_id": "d3e51c2011f717287b4efcc4972329553ab2bc3a8c75388ec6a1c8e2d63823c0",
+        "hand_epoch": 1,
+        "frame_sequence": 115,
+        "seat": 7,
+        "street": "preflop",
+        "previous_stack_native": "335",
+        "current_stack_native": "333",
+        "committed_native": "2",
+        "canonical_event_accepted": false,
+        "reason": "stable stack decrease; action and pot reconciliation pending"
+      }
+    ],
+    "stack_increase_candidates": [
+      {
+        "event_id": "f155042a7613ab1cf004579080cf4abc92b52949eefa8daca71fe8e7b559576a",
+        "hand_epoch": 0,
+        "frame_sequence": 73,
+        "seat": 4,
+        "previous_stack_native": "100",
+        "current_stack_native": "147",
+        "increase_native": "47",
+        "canonical_event_accepted": false,
+        "reason": "stable stack increase; settlement or top-up role unresolved"
+      }
+    ],
+    "pot_delta_candidates": [
+      {
+        "event_id": "a3f8644a9a8f455589b3f424077a7497159ecfb0e03fdb9e46e0752bf87d9043",
+        "hand_epoch": 0,
+        "frame_sequence": 6,
+        "street": "preflop",
+        "previous_pot_native": "18",
+        "current_pot_native": "22",
+        "increase_native": "4",
+        "evidence_mode": "cross_signal_single_frame",
+        "confidence": 0.95,
+        "canonical_event_accepted": false,
+        "reason": "consecutive high-confidence pot observations; independent action and stack signals required"
+      },
+      {
+        "event_id": "6e90d92e2d6a2264f50967bb6334c7581293d0525dc48f0e9eb04d3864d2672a",
+        "hand_epoch": 0,
+        "frame_sequence": 7,
+        "street": "preflop",
+        "previous_pot_native": "22",
+        "current_pot_native": "25",
+        "increase_native": "3",
+        "evidence_mode": "cross_signal_single_frame",
+        "confidence": 0.95,
+        "canonical_event_accepted": false,
+        "reason": "consecutive high-confidence pot observations; independent action and stack signals required"
+      },
+      {
+        "event_id": "9ca13572a14afd3d936adf8f1500af2e622b4ebabf69e7ae153fd8d6348feab3",
+        "hand_epoch": 0,
+        "frame_sequence": 9,
+        "street": "preflop",
+        "previous_pot_native": "18",
+        "current_pot_native": "25",
+        "increase_native": "7",
+        "evidence_mode": "stable_endpoints",
+        "confidence": 1.0,
+        "canonical_event_accepted": false,
+        "reason": "stable pot increase; action and stack reconciliation pending"
+      },
+      {
+        "event_id": "8b198fc89b23e6dc7f0280959b315aff08065b2ce30620fcd93369216d2c7c5c",
+        "hand_epoch": 0,
+        "frame_sequence": 20,
+        "street": "flop",
+        "previous_pot_native": "25",
+        "current_pot_native": "29",
+        "increase_native": "4",
+        "evidence_mode": "stable_endpoints",
+        "confidence": 1.0,
+        "canonical_event_accepted": false,
+        "reason": "three-frame stable pot endpoints"
+      },
+      {
+        "event_id": "c54007421138c48169a60f96205479fe2e16f54a2b1d249d83fb3dab9a26659f",
+        "hand_epoch": 0,
+        "frame_sequence": 30,
+        "street": "flop",
+        "previous_pot_native": "29",
+        "current_pot_native": "33",
+        "increase_native": "4",
+        "evidence_mode": "stable_endpoints",
+        "confidence": 1.0,
+        "canonical_event_accepted": false,
+        "reason": "three-frame stable pot endpoints"
+      },
+      {
+        "event_id": "4eafa038c7c4406799919b5a38e9340bb2a495577596eeaf07049e274e75faa4",
+        "hand_epoch": 0,
+        "frame_sequence": 36,
+        "street": "flop",
+        "previous_pot_native": "33",
+        "current_pot_native": "37",
+        "increase_native": "4",
+        "evidence_mode": "stable_endpoints",
+        "confidence": 1.0,
+        "canonical_event_accepted": false,
+        "reason": "three-frame stable pot endpoints"
+      },
+      {
+        "event_id": "475aead5d9ebedc535974ed8b766b6ab9f0fb32c1577e9a212860a643d1609d3",
+        "hand_epoch": 1,
+        "frame_sequence": 99,
+        "street": "preflop",
+        "previous_pot_native": "3",
+        "current_pot_native": "7",
+        "increase_native": "4",
+        "evidence_mode": "stable_endpoints",
+        "confidence": 1.0,
+        "canonical_event_accepted": false,
+        "reason": "stable pot increase; action and stack reconciliation pending"
+      },
+      {
+        "event_id": "45bcb796c9f471f61359bda564560c9d0184a68f379c4579b8e4361861cd8af9",
+        "hand_epoch": 1,
+        "frame_sequence": 112,
+        "street": "preflop",
+        "previous_pot_native": "14",
+        "current_pot_native": "16",
+        "increase_native": "2",
+        "evidence_mode": "stable_endpoints",
+        "confidence": 1.0,
+        "canonical_event_accepted": false,
+        "reason": "three-frame stable pot endpoints"
+      },
+      {
+        "event_id": "cea0b215b127655bf8ebcec3938290fe3aeb93620ce740d83bdb0d85e0f057db",
+        "hand_epoch": 1,
+        "frame_sequence": 149,
+        "street": "flop",
+        "previous_pot_native": "16",
+        "current_pot_native": "21",
+        "increase_native": "5",
+        "evidence_mode": "cross_signal_single_frame",
+        "confidence": 0.95,
+        "canonical_event_accepted": false,
+        "reason": "consecutive high-confidence pot observations; independent action and stack signals required"
+      }
+    ],
+    "action_amount_reconciliations": [],
+    "action_pot_reconciliations": [],
+    "action_order_validations": [],
+    "last_error": null,
+    "controller_enabled": false
+  }
+}

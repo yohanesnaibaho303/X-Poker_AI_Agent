@@ -33,10 +33,18 @@ async def observe(seconds: int, interval_ms: int, output: Path | None) -> None:
         "epochs": {},
     }
     try:
-        for _ in range(seconds):
+        for sec in range(seconds):
             await asyncio.sleep(1)
             sample = service.status()
             hero = build_live_hero_calculation(sample)
+            print(
+                f"[{sec + 1:03d}s] epoch={sample.hand_epoch} "
+                f"mode={sample.current_hand_mode} "
+                f"hero_seat={hero.hero_seat} pos={hero.hero_position or '-'} "
+                f"cards={hero.cards} rec={hero.recommended_action or '-'} "
+                f"(ready={hero.recommendation_ready})",
+                flush=True,
+            )
             if hero.recommendation_ready:
                 evidence["gto_recommendation_observed"] = True
                 evidence["latest_gto_recommendation"] = hero.model_dump(mode="json")

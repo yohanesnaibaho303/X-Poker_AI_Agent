@@ -47,6 +47,9 @@ def enumerate_windows() -> tuple[WindowCandidate, ...]:
 
     user32 = ctypes.WinDLL("user32", use_last_error=True)
     kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+    h_desk = user32.OpenDesktopW("default", 0, False, 0x0100 | 0x0040 | 0x0001 | 0x0002)
+    if h_desk:
+        user32.SetThreadDesktop(h_desk)
     candidates: list[WindowCandidate] = []
     callback_type = ctypes.WINFUNCTYPE(wintypes.BOOL, wintypes.HWND, wintypes.LPARAM)
 

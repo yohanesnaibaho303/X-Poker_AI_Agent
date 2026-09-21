@@ -8,6 +8,21 @@
   its live-session exit gate and M3/M4 promotion gates remain pending.
 - Live control: Disabled
 
+## 2026-09-21 Priority 1 live observation & Milestone 9 fault injection checkpoint
+
+- Fixed window enumeration across virtual/sandboxed desktops by attaching thread desktop to `default`
+  interactive desktop, restoring reliable candidate detection for user-launched X-Poker windows.
+- Executed live table observation run against active X-Poker client: 150/150 frames captured with 0
+  failures; validated hand boundaries, SB 1 / BB 2 posts, hero hole cards (`Ah 5h`, `Ad 5d`), flop
+  board (`2h Ad 5c`), dealer button (Seat 7), and action transitions (`pre_action` to `decision: bet`).
+- Recorded a 20-frame raw client capture session `xpoker-capture-20260921T080356.055827Z` and
+  integrated live status JSON parsing into `scripts/live_collection_checklist.py`.
+- Added 16 comprehensive controller safety and fault-injection tests (`tests/test_controller_fault_injection.py`)
+  validating emergency stop latching, 100-attempt idempotency bursts, transition mismatch disarms,
+  out-of-bounds meter/sizing plans, and calibrated action boundaries.
+- Live dashboard online and accessible at `http://localhost:8765/monitor/` backed by FastAPI and WebSockets.
+- Full test suite: 448 tests passing in ~19 seconds, 100% ruff clean. Control remains disabled.
+
 ## 2026-09-21 Milestone 3 offline optimization, component benchmarks, and checklist
 
 - Profiled and optimized pure-Python recognition hot paths (`bright_neutral_mask`, `connected_components`,
