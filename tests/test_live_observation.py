@@ -51,11 +51,14 @@ def test_recovers_preblind_stacks_only_with_both_exact_opening_posts() -> None:
         [0, 1, 2],
         posts,
     ) == {0: Decimal("100"), 1: Decimal("100"), 2: Decimal("100")}
-    assert _starting_stacks_from_opening_pot(
-        {0: Decimal("100"), 1: Decimal("99"), 2: Decimal("98")},
-        [0, 1, 2],
-        posts[:1],
-    ) is None
+    assert (
+        _starting_stacks_from_opening_pot(
+            {0: Decimal("100"), 1: Decimal("99"), 2: Decimal("98")},
+            [0, 1, 2],
+            posts[:1],
+        )
+        is None
+    )
 
 
 def _diagnostic(
@@ -190,9 +193,7 @@ def test_pre_action_controls_stabilize_without_becoming_legal_actions() -> None:
         )
 
         async def capture(_: int, sequence: int):
-            return _diagnostic(sequence, hero_controls=controls), CapturedFrame(
-                1, 1, b"\x00" * 4
-            )
+            return _diagnostic(sequence, hero_controls=controls), CapturedFrame(1, 1, b"\x00" * 4)
 
         service = LiveObservationService(capture)
         for _ in range(3):
@@ -220,9 +221,7 @@ def test_numeric_badge_becomes_one_temporal_candidate() -> None:
         )
 
         async def capture(_: int, sequence: int):
-            return _diagnostic(sequence, seat_actions=[badge]), CapturedFrame(
-                1, 1, b"\x00" * 4
-            )
+            return _diagnostic(sequence, seat_actions=[badge]), CapturedFrame(1, 1, b"\x00" * 4)
 
         service = LiveObservationService(capture)
         for _ in range(5):
@@ -247,9 +246,7 @@ def test_numeric_badge_value_is_not_also_accepted_as_a_stack() -> None:
         )
 
         async def capture(_: int, sequence: int):
-            return _diagnostic(sequence, seat_actions=[badge]), CapturedFrame(
-                1, 1, b"\x00" * 4
-            )
+            return _diagnostic(sequence, seat_actions=[badge]), CapturedFrame(1, 1, b"\x00" * 4)
 
         service = LiveObservationService(capture)
         for _ in range(3):
@@ -432,10 +429,7 @@ def test_high_confidence_pot_transition_is_candidate_only_until_cross_signal_mat
         assert status.pot_consensus.accepted is False
         assert len(status.pot_delta_candidates) == 1
         assert status.pot_delta_candidates[0].increase_native == Decimal("2")
-        assert (
-            status.pot_delta_candidates[0].evidence_mode
-            == "cross_signal_single_frame"
-        )
+        assert status.pot_delta_candidates[0].evidence_mode == "cross_signal_single_frame"
         assert status.pot_delta_candidates[0].canonical_event_accepted is False
 
     asyncio.run(scenario())

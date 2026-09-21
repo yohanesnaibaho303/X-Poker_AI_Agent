@@ -37,19 +37,17 @@ def _templates() -> dict[str, tuple[tuple[str, bytes], ...]]:
     return {position: tuple(items) for position, items in grouped.items()}
 
 
-def match_hero_rank_signature(
-    signature: bytes, position: str
-) -> tuple[str | None, float, float]:
+def match_hero_rank_signature(signature: bytes, position: str) -> tuple[str | None, float, float]:
     if position not in {"left", "right"}:
         raise ValueError("hero-card position must be left or right")
     if len(signature) != (_BIT_COUNT + 7) // 8:
         raise ValueError("hero-card rank signature has the wrong size")
     distances: dict[str, float] = {}
     for rank, template in _templates()[position]:
-        distance = sum(
-            (left ^ right).bit_count()
-            for left, right in zip(signature, template, strict=True)
-        ) / _BIT_COUNT
+        distance = (
+            sum((left ^ right).bit_count() for left, right in zip(signature, template, strict=True))
+            / _BIT_COUNT
+        )
         distances[rank] = min(distances.get(rank, 1.0), distance)
     ordered = sorted(distances.items(), key=lambda item: (item[1], item[0]))
     rank, distance = ordered[0]
@@ -59,9 +57,7 @@ def match_hero_rank_signature(
     return rank, distance, margin
 
 
-def classify_hero_suit(
-    card_crop: CapturedFrame, position: str
-) -> tuple[str | None, float]:
+def classify_hero_suit(card_crop: CapturedFrame, position: str) -> tuple[str | None, float]:
     """Exclude the adjacent overlapped card before applying palette evidence."""
     if position not in {"left", "right"}:
         raise ValueError("hero-card position must be left or right")

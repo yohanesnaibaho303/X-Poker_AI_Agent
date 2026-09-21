@@ -79,8 +79,7 @@ def collect_runtime_artifacts() -> list[RuntimeArtifact]:
         ),
     ]
     required.extend(
-        (path, "schema")
-        for path in sorted((PROJECT_ROOT / "schemas" / "v1").glob("*.schema.json"))
+        (path, "schema") for path in sorted((PROJECT_ROOT / "schemas" / "v1").glob("*.schema.json"))
     )
     missing = [str(path) for path, _kind in required if not path.is_file()]
     if missing:

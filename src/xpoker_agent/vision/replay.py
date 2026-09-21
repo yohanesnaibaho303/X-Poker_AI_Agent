@@ -35,6 +35,9 @@ class RecognitionReplayFrame(StrictModel):
     hero_action_surface: Literal["absent", "pre_action", "decision", "ambiguous"]
     occupied_seats: int = Field(ge=0, le=9)
     total_latency_ms: float = Field(ge=0)
+    processing_latency_ms: float = Field(ge=0)
+    ocr_wall_latency_ms: float = Field(ge=0)
+    summed_ocr_latency_ms: float = Field(ge=0)
 
 
 class RecognitionReplayReport(StrictModel):
@@ -46,6 +49,9 @@ class RecognitionReplayReport(StrictModel):
     layout_exact: bool
     frame_count: int = Field(ge=1)
     p95_total_latency_ms: float = Field(ge=0)
+    p95_ocr_wall_latency_ms: float = Field(ge=0)
+    p95_non_ocr_latency_ms: float = Field(ge=0)
+    p95_summed_ocr_latency_ms: float = Field(ge=0)
     frames: list[RecognitionReplayFrame]
     hero_action_surface_counts: dict[str, int]
     max_consecutive_decision_frames: int = Field(ge=0)
@@ -83,6 +89,10 @@ async def diagnose_capture_replay(
         if digest != record.content_sha256:
             raise ValueError(f"frame {record.sequence} content hash mismatch")
         diagnostic = await runner(frame, record, layout)
+        processing_latency_ms = (
+            diagnostic.processing_latency_ms
+            or diagnostic.capture_latency_ms + diagnostic.ocr_latency_ms
+        )
         results.append(
             RecognitionReplayFrame(
                 sequence=record.sequence,
@@ -95,11 +105,17 @@ async def diagnose_capture_replay(
                 occupied_seats=sum(
                     item.status == "occupied" for item in diagnostic.seat_observations
                 ),
-                total_latency_ms=diagnostic.capture_latency_ms + diagnostic.ocr_latency_ms,
+                total_latency_ms=processing_latency_ms,
+                processing_latency_ms=processing_latency_ms,
+                ocr_wall_latency_ms=diagnostic.ocr_wall_latency_ms,
+                summed_ocr_latency_ms=diagnostic.ocr_latency_ms,
             )
         )
-    latencies = sorted(item.total_latency_ms for item in results)
-    p95 = latencies[max(0, (len(latencies) * 95 + 99) // 100 - 1)]
+
+    def p95(values: list[float]) -> float:
+        ordered = sorted(values)
+        return ordered[max(0, (len(ordered) * 95 + 99) // 100 - 1)]
+
     max_decision_run = 0
     decision_run = 0
     for frame in results:
@@ -112,11 +128,14 @@ async def diagnose_capture_replay(
         evaluation_layout_id=layout.layout_id,
         layout_exact=layout_exact,
         frame_count=len(results),
-        p95_total_latency_ms=p95,
-        frames=results,
-        hero_action_surface_counts=dict(
-            Counter(frame.hero_action_surface for frame in results)
+        p95_total_latency_ms=p95([item.total_latency_ms for item in results]),
+        p95_ocr_wall_latency_ms=p95([item.ocr_wall_latency_ms for item in results]),
+        p95_non_ocr_latency_ms=p95(
+            [max(0.0, item.processing_latency_ms - item.ocr_wall_latency_ms) for item in results]
         ),
+        p95_summed_ocr_latency_ms=p95([item.summed_ocr_latency_ms for item in results]),
+        frames=results,
+        hero_action_surface_counts=dict(Counter(frame.hero_action_surface for frame in results)),
         max_consecutive_decision_frames=max_decision_run,
         limitations=[
             "Recorded replay execution is regression evidence, not labeled holdout accuracy.",

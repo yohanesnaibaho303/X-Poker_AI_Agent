@@ -6,12 +6,7 @@ from xpoker_agent.vision.hero_cards import classify_hero_suit, match_hero_rank_s
 
 
 def test_enrolled_hero_rank_masks_match_only_their_declared_position() -> None:
-    path = (
-        PROJECT_ROOT
-        / "data"
-        / "card_templates"
-        / "xpoker_portrait_hero_rank_templates_v1.json"
-    )
+    path = PROJECT_ROOT / "data" / "card_templates" / "xpoker_portrait_hero_rank_templates_v1.json"
     payload = json.loads(path.read_text(encoding="utf-8"))
 
     assert payload["schema_version"] == "1.0"

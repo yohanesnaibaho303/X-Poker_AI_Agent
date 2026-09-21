@@ -141,9 +141,7 @@ def build_standard_live_hand_prefix(
         calibration_id="xpoker-hero-card-temporal-v1",
     )
 
-    amount_by_id = {
-        result.action_event_id: result for result in amount_reconciliations
-    }
+    amount_by_id = {result.action_event_id: result for result in amount_reconciliations}
     actions_by_street = {
         street: sorted(
             (action for action in actions if action.street == street),

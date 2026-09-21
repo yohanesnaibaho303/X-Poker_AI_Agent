@@ -1,0 +1,75 @@
+{
+  "checklist_version": "1.0",
+  "total_categories": 6,
+  "satisfied_categories": 4,
+  "completion_percentage": 66.7,
+  "items": [
+    {
+      "id": "cards_52_coverage",
+      "category": "card_recognition",
+      "description": "Evidence for all 52 card rank/suit combinations across hero and board",
+      "required_count": 52,
+      "observed_count": 42,
+      "satisfied": false,
+      "missing": [
+        "3d",
+        "4c",
+        "4d",
+        "4h",
+        "4s",
+        "7s",
+        "9s",
+        "Td",
+        "Th",
+        "Jh"
+      ]
+    },
+    {
+      "id": "dealer_button_9_seats",
+      "category": "dealer_detection",
+      "description": "Dealer button observation for all 9 seats (0-8)",
+      "required_count": 9,
+      "observed_count": 8,
+      "satisfied": false,
+      "missing": [
+        "seat_2"
+      ]
+    },
+    {
+      "id": "seat_occupancy_9_seats",
+      "category": "seat_occupancy",
+      "description": "Occupied and empty observations for all 9 seats",
+      "required_count": 9,
+      "observed_count": 9,
+      "satisfied": true,
+      "missing": []
+    },
+    {
+      "id": "numeric_pot_stack_blinds",
+      "category": "numeric_ocr",
+      "description": "Native chips OCR proof for pot, blind posts, and starting/active stacks",
+      "required_count": 3,
+      "observed_count": 3,
+      "satisfied": true,
+      "missing": []
+    },
+    {
+      "id": "action_control_states",
+      "category": "action_control",
+      "description": "Pre-action, decision (Fold/Call/Raise and Check/Bet), and ambiguous overlay evidence",
+      "required_count": 3,
+      "observed_count": 3,
+      "satisfied": true,
+      "missing": []
+    },
+    {
+      "id": "latency_p95_decision_window",
+      "category": "performance",
+      "description": "End-to-end recognition diagnostic latency p95 <= 200 ms",
+      "required_count": 1,
+      "observed_count": 1,
+      "satisfied": true,
+      "missing": []
+    }
+  ]
+}

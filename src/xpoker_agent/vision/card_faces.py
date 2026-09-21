@@ -9,9 +9,7 @@ from xpoker_agent.capture.frames import CapturedFrame, normalize_frame
 from xpoker_agent.config import PROJECT_ROOT
 from xpoker_agent.vision.models import CardFaceObservation
 
-_TEMPLATE_PATH = (
-    PROJECT_ROOT / "data" / "card_templates" / "xpoker_portrait_rank_templates_v1.json"
-)
+_TEMPLATE_PATH = PROJECT_ROOT / "data" / "card_templates" / "xpoker_portrait_rank_templates_v1.json"
 _BIT_COUNT = 18 * 26
 
 
@@ -70,8 +68,7 @@ def match_rank_signature(signature: bytes) -> tuple[str | None, float, float]:
     by_rank: dict[str, float] = {}
     for rank, template in _templates():
         distance = sum(
-            (left ^ right).bit_count()
-            for left, right in zip(signature, template, strict=True)
+            (left ^ right).bit_count() for left, right in zip(signature, template, strict=True)
         )
         by_rank[rank] = min(by_rank.get(rank, 1.0), distance / _BIT_COUNT)
     ordered = sorted(by_rank.items(), key=lambda item: (item[1], item[0]))

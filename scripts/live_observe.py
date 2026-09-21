@@ -40,12 +40,8 @@ async def observe(seconds: int, interval_ms: int, output: Path | None) -> None:
             if hero.recommendation_ready:
                 evidence["gto_recommendation_observed"] = True
                 evidence["latest_gto_recommendation"] = hero.model_dump(mode="json")
-            evidence["max_hand_epoch"] = max(
-                evidence["max_hand_epoch"], sample.hand_epoch
-            )
-            evidence["boundary_validated"] |= (
-                sample.hand_boundary_validation.status == "validated"
-            )
+            evidence["max_hand_epoch"] = max(evidence["max_hand_epoch"], sample.hand_epoch)
+            evidence["boundary_validated"] |= sample.hand_boundary_validation.status == "validated"
             evidence["hero_cards_accepted"] |= sample.hero_cards_accepted
             evidence["max_derived_actions"] = max(
                 evidence["max_derived_actions"], len(sample.derived_action_candidates)
@@ -68,12 +64,12 @@ async def observe(seconds: int, interval_ms: int, output: Path | None) -> None:
             )
             if sample.latest_completed_hand is not None:
                 evidence["completed_hand_observed"] = True
-                evidence["latest_completed_hand"] = (
-                    sample.latest_completed_hand.model_dump(mode="json")
+                evidence["latest_completed_hand"] = sample.latest_completed_hand.model_dump(
+                    mode="json"
                 )
             if sample.retained_canonical_hand is not None:
-                evidence["retained_canonical_hand"] = (
-                    sample.retained_canonical_hand.model_dump(mode="json")
+                evidence["retained_canonical_hand"] = sample.retained_canonical_hand.model_dump(
+                    mode="json"
                 )
             matched_blinds = {
                 str(item.amount_native)
@@ -101,9 +97,7 @@ async def observe(seconds: int, interval_ms: int, output: Path | None) -> None:
                 },
             )
             epoch["hand_modes"] = sorted({*epoch["hand_modes"], sample.current_hand_mode})
-            epoch["boundary_validated"] |= (
-                sample.hand_boundary_validation.status == "validated"
-            )
+            epoch["boundary_validated"] |= sample.hand_boundary_validation.status == "validated"
             epoch["hero_cards_accepted"] |= sample.hero_cards_accepted
             epoch["max_derived_actions"] = max(
                 epoch["max_derived_actions"], len(sample.derived_action_candidates)

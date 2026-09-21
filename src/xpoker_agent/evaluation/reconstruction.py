@@ -66,8 +66,7 @@ class ReconstructionEvaluationReport(StrictModel):
             and self.metrics.exact_accuracy >= self.target_accuracy
         )
         safe_passed = (
-            self.metrics.unsupported_safe_rate is None
-            or self.metrics.unsupported_safe_rate == 1.0
+            self.metrics.unsupported_safe_rate is None or self.metrics.unsupported_safe_rate == 1.0
         )
         if self.gate_passed != (self.promotion_eligible and exact_passed and safe_passed):
             raise ValueError("gate status must include holdout, accuracy, and safe rejection")
@@ -99,9 +98,7 @@ def evaluate_reconstruction_cases(
         sum(case.exact_match for case in supported) / len(supported) if supported else None
     )
     safe_rate = (
-        sum(case.safely_stopped for case in unsupported) / len(unsupported)
-        if unsupported
-        else None
+        sum(case.safely_stopped for case in unsupported) / len(unsupported) if unsupported else None
     )
     metrics = ReconstructionMetrics(
         total=len(cases),

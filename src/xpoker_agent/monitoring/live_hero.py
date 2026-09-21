@@ -47,9 +47,7 @@ class LiveHeroCalculation(StrictModel):
     effective_stack_chips: Decimal | None = None
     required_equity: Decimal | None = None
     spr: Decimal | None = None
-    action_surface: Literal["absent", "pre_action", "decision", "ambiguous"] = (
-        "ambiguous"
-    )
+    action_surface: Literal["absent", "pre_action", "decision", "ambiguous"] = "ambiguous"
     legal_actions: list[str] = []
     strategy_status: Literal["exact", "abstracted", "unavailable"] = "unavailable"
     strategy_role: Literal["gto_solution", "none"] = "none"
@@ -114,9 +112,7 @@ def _resolve_strategy(
         return None, ["canonical_hero_position_mismatch"]
     if state.hero_cards != cards:
         return None, ["canonical_hero_cards_mismatch"]
-    occupied_positions = {
-        seat.position for seat in state.seats if seat.starting_stack_chips > 0
-    }
+    occupied_positions = {seat.position for seat in state.seats if seat.starting_stack_chips > 0}
     if None in occupied_positions or not 3 <= len(occupied_positions) <= 9:
         return None, ["canonical_starting_ring_unavailable"]
     position_order = positions_for_table_size(9)
@@ -150,14 +146,10 @@ def _resolve_strategy(
         players_remaining=active,
         action_sequence=action_sequence,
     )
-    resolution = _strategy_resolver().resolve(
-        spot, player_ref="hero", hand_id=state.hand_id
-    )
+    resolution = _strategy_resolver().resolve(spot, player_ref="hero", hand_id=state.hand_id)
     if resolution.strategy is None:
         return None, ["compatible_gto_strategy_unavailable"]
-    result = _strategy_resolver().summarize_combo(
-        resolution, canonical_combo(cards[0], cards[1])
-    )
+    result = _strategy_resolver().summarize_combo(resolution, canonical_combo(cards[0], cards[1]))
     if len(occupied_positions) < 9:
         result = result.model_copy(
             update={
@@ -203,11 +195,7 @@ def build_live_hero_calculation(status: LiveObservationStatus) -> LiveHeroCalcul
     hero_stack = stack_values.get(seat) if seat is not None else None
     if hero_stack is None:
         issues.append("hero_stack_not_stable")
-    pot = (
-        _accepted_decimal(status.pot_consensus.value)
-        if status.pot_consensus.accepted
-        else None
-    )
+    pot = _accepted_decimal(status.pot_consensus.value) if status.pot_consensus.accepted else None
     if pot is None:
         issues.append("pot_not_stable")
     call = _call_amount(status)
@@ -215,9 +203,7 @@ def build_live_hero_calculation(status: LiveObservationStatus) -> LiveHeroCalcul
     opponent_stacks_chips = [
         amount
         for opponent, amount in stack_values.items()
-        if amount is not None
-        and opponent != seat
-        and opponent in status.active_seats
+        if amount is not None and opponent != seat and opponent in status.active_seats
     ]
     effective_chips = (
         effective_stack(hero_stack, *opponent_stacks_chips)
@@ -269,9 +255,7 @@ def build_live_hero_calculation(status: LiveObservationStatus) -> LiveHeroCalcul
         strategy_status=strategy.match_status if strategy is not None else "unavailable",
         strategy_role=strategy.strategy_role if strategy is not None else "none",
         strategy_confidence=strategy.confidence if strategy is not None else 0.0,
-        strategy_source_artifact_id=(
-            strategy.source_artifact_id if strategy is not None else None
-        ),
+        strategy_source_artifact_id=(strategy.source_artifact_id if strategy is not None else None),
         strategy_equity=strategy.equity if strategy is not None else None,
         strategy_actions=strategy_actions,
         strategy_assumptions=strategy.assumptions if strategy is not None else [],

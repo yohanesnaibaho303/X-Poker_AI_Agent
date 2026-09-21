@@ -8,6 +8,23 @@
   its live-session exit gate and M3/M4 promotion gates remain pending.
 - Live control: Disabled
 
+## 2026-09-21 Milestone 3 offline optimization, component benchmarks, and checklist
+
+- Profiled and optimized pure-Python recognition hot paths (`bright_neutral_mask`, `connected_components`,
+  `seats._dark_fraction`, `seats._plus_strokes`, `dealer` candidate filter, and strided scaling).
+- Reduced exact-layout replay p95 latency from 211.10 ms to 151.62 ms (`152616`) and 275.10 ms to
+  180.60 ms (`153413`), meeting the <=200 ms decision-window budget.
+- Benchmarked all recognition components separately in `scripts/benchmark_recognition_components.py`
+  (Card p95 36.5 ms, Seat/Dealer p95 46.6 ms, Numeric OCR p95 13.6 ms, Action Controls p95 30.2 ms).
+- Expanded regression coverage to 440 canonical regression cases across all 8 capture sessions in
+  `docs/EVALUATIONS/M3_RECOGNITION_REGRESSION_CASES_2026-09-21.json`.
+- Added 61 comprehensive fail-closed regression tests (`tests/test_fail_closed_regression.py`)
+  covering duplicate/scattered cards, corrupt amounts/pots/panels, conflicting action controls, and
+  unsupported game variants/overlays.
+- Automated live collection checklist (`scripts/live_collection_checklist.py`, `docs/LIVE_COLLECTION_CHECKLIST.md`)
+  enables zero-curation automated auditing of missing holdout evidence during future live capture runs.
+- Full test suite: 432 passed in ~14 seconds, 100% ruff clean. Live control remains disabled.
+
 ## 2026-09-21 Milestone 3 offline evidence audit
 
 - Hash-inventoried 598 local evidence files totaling 744,273,756 bytes into 512 unique artifacts;

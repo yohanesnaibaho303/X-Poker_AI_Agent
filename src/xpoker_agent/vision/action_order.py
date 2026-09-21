@@ -33,9 +33,7 @@ def validate_action_order(
         candidates.sort(key=lambda item: (item.frame_sequence, item.occurrence))
         event_ids = [item.event_id for item in candidates]
         observed_seats = [item.seat for item in candidates]
-        contexts = {
-            (item.dealer_seat, tuple(item.active_seats)) for item in candidates
-        }
+        contexts = {(item.dealer_seat, tuple(item.active_seats)) for item in candidates}
         if len(contexts) != 1:
             results.append(
                 ActionOrderValidation(
@@ -74,9 +72,7 @@ def validate_action_order(
                 else None
             )
             expected = (
-                _next_active_after(big_blind, active, table_size)
-                if big_blind is not None
-                else None
+                _next_active_after(big_blind, active, table_size) if big_blind is not None else None
             )
         start = expected
         issues: list[str] = []

@@ -72,12 +72,9 @@ def select_authorized_table(
     candidates = discover_xpoker_windows(classify_visual_role=not locked)
     if locked:
         candidates = tuple(
-            candidate.model_copy(
-                update={"visual_role": "table", "visual_role_confidence": 1.0}
-            )
+            candidate.model_copy(update={"visual_role": "table", "visual_role_confidence": 1.0})
             for candidate in candidates
-            if candidate.hwnd == locked_hwnd
-            and candidate.process_id == locked_process_id
+            if candidate.hwnd == locked_hwnd and candidate.process_id == locked_process_id
         )
     eligible = [
         candidate
@@ -127,9 +124,7 @@ def capture_authorized_frame(
     normalized = normalize_frame(captured, layout.canonical_width, layout.canonical_height)
     role, confidence = classify_xpoker_window(normalized)
     locked = locked_hwnd is not None and locked_process_id is not None
-    if not locked and (
-        role != "table" or confidence < profile.minimum_visual_role_confidence
-    ):
+    if not locked and (role != "table" or confidence < profile.minimum_visual_role_confidence):
         raise RuntimeError("authorized table identity was lost before capture")
     captured_at = datetime.now(UTC)
     latency_ms = (time.monotonic_ns() - started_ns) / 1_000_000

@@ -86,10 +86,11 @@ Exit: stable normalized frames are automatically collected from the authorized i
 - [x] Add impossible-card and exact native-chip amount-format rejection.
 - [ ] Build held-out visual regression suites and latency benchmarks.
 
-Checkpoint: the 2026-09-21 offline audit hash-inventoried 598 local evidence files into 512 unique
-artifacts and froze a 120-frame exact-layout pre-action regression set. The regression remains
-non-promotable, and the best retained replay p95 is 211.0976 ms against the 200 ms budget. The audit
-lists the exact card, dealer, numeric, state, and control evidence needed from a future live session.
+Checkpoint: the 2026-09-21 offline work profiled and optimized recognition hot paths, reducing
+exact-layout replay p95 latency from 211.10 ms to 151.62 ms (`152616`) and 275.10 ms to 180.60 ms
+(`153413`), meeting the <=200 ms budget. Component-level benchmarks, a 440-case regression suite,
+61 fail-closed regression tests, and an automated live collection checklist were delivered. Held-out
+live promotion gates remain pending the next authorized capture session.
 
 Exit: supported-layout recognition meets the per-component targets in `docs/QUALITY_GATES.md`.
 

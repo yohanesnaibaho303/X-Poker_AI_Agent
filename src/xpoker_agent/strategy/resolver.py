@@ -71,9 +71,7 @@ def compare_combo_results(
                 baseline_ev_chips=left_ev,
                 candidate_ev_chips=right_ev,
                 ev_delta_chips=(
-                    right_ev - left_ev
-                    if left_ev is not None and right_ev is not None
-                    else None
+                    right_ev - left_ev if left_ev is not None and right_ev is not None else None
                 ),
             )
         )
@@ -208,9 +206,7 @@ class PreflopStrategyResolver:
                 frequency=frequency,
                 ev_chips=strategy.ev_chips.get(action),
                 ev_loss_chips=(
-                    max(0.0, best_ev - strategy.ev_chips[action])
-                    if best_ev is not None
-                    else None
+                    max(0.0, best_ev - strategy.ev_chips[action]) if best_ev is not None else None
                 ),
             )
             for action, frequency in sorted(strategy.actions.items())

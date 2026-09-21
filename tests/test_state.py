@@ -244,6 +244,7 @@ def test_bomb_pot_flop_rejects_unexplained_unequal_contributions() -> None:
             ),
         )
 
+
 def test_reducer_does_not_mutate_previous_state(initial_state) -> None:
     next_state = HandStateReducer().apply(
         initial_state, make_event(1, EventCategory.LIFECYCLE, "hand_started")

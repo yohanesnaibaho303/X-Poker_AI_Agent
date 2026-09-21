@@ -32,15 +32,10 @@ def validate_live_hand_boundary(
             if candidate in current:
                 expected = candidate
                 break
-    if (
-        previous_dealer_seat is not None
-        and current_dealer_seat == previous_dealer_seat
-    ):
+    if previous_dealer_seat is not None and current_dealer_seat == previous_dealer_seat:
         issues.append("dealer_not_advanced_yet")
     elif (
-        expected is not None
-        and current_dealer_seat is not None
-        and current_dealer_seat != expected
+        expected is not None and current_dealer_seat is not None and current_dealer_seat != expected
     ):
         issues.append("dealer_did_not_move_to_next_dealt_seat")
 

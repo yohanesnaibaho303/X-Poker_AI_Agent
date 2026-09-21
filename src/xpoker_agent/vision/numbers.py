@@ -7,9 +7,7 @@ from decimal import Decimal, InvalidOperation
 
 from xpoker_agent.vision.models import NumericRecognition
 
-_AMOUNT_PATTERN = re.compile(
-    r"^(?P<number>(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?)$"
-)
+_AMOUNT_PATTERN = re.compile(r"^(?P<number>(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?)$")
 
 
 def parse_chip_amount(raw_text: str, *, confidence: float) -> NumericRecognition:

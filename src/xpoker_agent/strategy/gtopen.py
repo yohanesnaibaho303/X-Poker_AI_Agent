@@ -108,8 +108,7 @@ def import_gtopen_rfi_node(
         if total <= 0:
             raise ValueError(f"GTOpen class {_class_label(class_index)} has no strategy mass")
         actions = {
-            key: frequency / total
-            for key, frequency in zip(action_keys, frequencies, strict=True)
+            key: frequency / total for key, frequency in zip(action_keys, frequencies, strict=True)
         }
         for combo in expand_hand_class(_class_label(class_index)):
             combos[combo] = ComboStrategy(weight=1, actions=actions)

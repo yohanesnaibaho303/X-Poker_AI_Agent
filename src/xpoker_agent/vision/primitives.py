@@ -75,55 +75,86 @@ def bright_neutral_mask(
     validate_frame(frame)
     if not 0 <= minimum_channel <= 255 or not 0 <= maximum_channel_spread <= 255:
         raise ValueError("thresholds must be bytes")
-    mask = bytearray(frame.width * frame.height)
-    for y_top in range(frame.height):
-        y_bottom = frame.height - 1 - y_top
-        source_row = y_bottom * frame.width * 4
-        target_row = y_top * frame.width
-        for x in range(frame.width):
-            offset = source_row + x * 4
-            blue, green, red = frame.bgra_bottom_up[offset : offset + 3]
-            bright = min(blue, green, red) >= minimum_channel
-            neutral = max(blue, green, red) - min(blue, green, red) <= maximum_channel_spread
-            mask[target_row + x] = int(bright and neutral)
-    return BinaryMask(frame.width, frame.height, bytes(mask))
+    w = frame.width
+    h = frame.height
+    mask = bytearray(w * h)
+    bgra = frame.bgra_bottom_up
+    row_bytes = w * 4
+    for y_top in range(h):
+        y_bottom = h - 1 - y_top
+        row = bgra[y_bottom * row_bytes : (y_bottom + 1) * row_bytes]
+        target_row = y_top * w
+        for x in range(w):
+            idx = x * 4
+            b = row[idx]
+            if b < minimum_channel:
+                continue
+            g = row[idx + 1]
+            if g < minimum_channel:
+                continue
+            r = row[idx + 2]
+            if r < minimum_channel:
+                continue
+            lo = b if b < g else g
+            if r < lo:
+                lo = r
+            hi = b if b > g else g
+            if r > hi:
+                hi = r
+            if hi - lo <= maximum_channel_spread:
+                mask[target_row + x] = 1
+    return BinaryMask(w, h, bytes(mask))
 
 
 def connected_components(mask: BinaryMask, *, minimum_area: int = 1) -> list[PixelBox]:
     """Return four-connected component bounds in deterministic reading order."""
     if minimum_area < 1:
         raise ValueError("minimum area must be positive")
-    visited = bytearray(len(mask.top_down))
+    width = mask.width
+    height = mask.height
+    top_down = mask.top_down
+    visited = bytearray(len(top_down))
     components: list[PixelBox] = []
-    for seed in range(len(mask.top_down)):
-        if not mask.top_down[seed] or visited[seed]:
+    for seed in range(len(top_down)):
+        if not top_down[seed] or visited[seed]:
             continue
         visited[seed] = 1
-        queue = deque([seed])
+        seed_y, seed_x = divmod(seed, width)
+        queue = deque([(seed_x, seed_y, seed)])
         area = 0
-        min_x = mask.width
-        max_x = -1
-        min_y = mask.height
-        max_y = -1
+        min_x = max_x = seed_x
+        min_y = max_y = seed_y
         while queue:
-            index = queue.popleft()
-            y, x = divmod(index, mask.width)
+            x, y, idx = queue.popleft()
             area += 1
-            min_x, max_x = min(min_x, x), max(max_x, x)
-            min_y, max_y = min(min_y, y), max(max_y, y)
-            neighbours = []
+            if x < min_x:
+                min_x = x
+            elif x > max_x:
+                max_x = x
+            if y < min_y:
+                min_y = y
+            elif y > max_y:
+                max_y = y
             if x:
-                neighbours.append(index - 1)
-            if x + 1 < mask.width:
-                neighbours.append(index + 1)
+                n = idx - 1
+                if top_down[n] and not visited[n]:
+                    visited[n] = 1
+                    queue.append((x - 1, y, n))
+            if x + 1 < width:
+                n = idx + 1
+                if top_down[n] and not visited[n]:
+                    visited[n] = 1
+                    queue.append((x + 1, y, n))
             if y:
-                neighbours.append(index - mask.width)
-            if y + 1 < mask.height:
-                neighbours.append(index + mask.width)
-            for neighbour in neighbours:
-                if mask.top_down[neighbour] and not visited[neighbour]:
-                    visited[neighbour] = 1
-                    queue.append(neighbour)
+                n = idx - width
+                if top_down[n] and not visited[n]:
+                    visited[n] = 1
+                    queue.append((x, y - 1, n))
+            if y + 1 < height:
+                n = idx + width
+                if top_down[n] and not visited[n]:
+                    visited[n] = 1
+                    queue.append((x, y + 1, n))
         if area >= minimum_area:
             components.append(PixelBox(left=min_x, top=min_y, right=max_x + 1, bottom=max_y + 1))
     return sorted(components, key=lambda box: (box.top, box.left))

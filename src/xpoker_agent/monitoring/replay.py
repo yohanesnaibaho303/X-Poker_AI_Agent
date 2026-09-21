@@ -68,9 +68,7 @@ def _synthetic_equity(hero_combo: str) -> float:
     opponent = _synthetic_opponent_artifact().to_weighted_range(
         player_ref="synthetic-opponent", hand_id=SIMULATED_HAND_ID
     )
-    return monte_carlo_equity(
-        hero_combo, [opponent], [], trials=256, random_seed=7
-    ).equity
+    return monte_carlo_equity(hero_combo, [opponent], [], trials=256, random_seed=7).equity
 
 
 def _replay_math(state: HandState) -> PokerMathSnapshot:

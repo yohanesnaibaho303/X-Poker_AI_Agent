@@ -61,6 +61,21 @@
           "minimum": 0,
           "title": "Total Latency Ms",
           "type": "number"
+        },
+        "processing_latency_ms": {
+          "minimum": 0,
+          "title": "Processing Latency Ms",
+          "type": "number"
+        },
+        "ocr_wall_latency_ms": {
+          "minimum": 0,
+          "title": "Ocr Wall Latency Ms",
+          "type": "number"
+        },
+        "summed_ocr_latency_ms": {
+          "minimum": 0,
+          "title": "Summed Ocr Latency Ms",
+          "type": "number"
         }
       },
       "required": [
@@ -72,7 +87,10 @@
         "hero_cards",
         "hero_action_surface",
         "occupied_seats",
-        "total_latency_ms"
+        "total_latency_ms",
+        "processing_latency_ms",
+        "ocr_wall_latency_ms",
+        "summed_ocr_latency_ms"
       ],
       "title": "RecognitionReplayFrame",
       "type": "object"
@@ -116,6 +134,21 @@
     "p95_total_latency_ms": {
       "minimum": 0,
       "title": "P95 Total Latency Ms",
+      "type": "number"
+    },
+    "p95_ocr_wall_latency_ms": {
+      "minimum": 0,
+      "title": "P95 Ocr Wall Latency Ms",
+      "type": "number"
+    },
+    "p95_non_ocr_latency_ms": {
+      "minimum": 0,
+      "title": "P95 Non Ocr Latency Ms",
+      "type": "number"
+    },
+    "p95_summed_ocr_latency_ms": {
+      "minimum": 0,
+      "title": "P95 Summed Ocr Latency Ms",
       "type": "number"
     },
     "frames": {
@@ -172,6 +205,9 @@
     "layout_exact",
     "frame_count",
     "p95_total_latency_ms",
+    "p95_ocr_wall_latency_ms",
+    "p95_non_ocr_latency_ms",
+    "p95_summed_ocr_latency_ms",
     "frames",
     "hero_action_surface_counts",
     "max_consecutive_decision_frames",

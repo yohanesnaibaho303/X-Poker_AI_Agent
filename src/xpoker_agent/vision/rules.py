@@ -15,6 +15,15 @@ def _ocr_count(value: str) -> int:
 
 def classify_rule_label(text: str) -> RuleLabelClassification:
     normalized = " ".join(text.casefold().split())
+    for unsupported in ("double board", "omaha", "plo", "short deck", "pineapple"):
+        if unsupported in normalized:
+            return RuleLabelClassification(
+                supported_standard_nlh=False,
+                supported_single_board_bomb_pot=False,
+                confidence=0.99,
+                matched_signals=[f"unsupported_variant_{unsupported.replace(' ', '_')}"],
+                reason=f"unsupported game variant or overlay: {unsupported}",
+            )
     signals: list[str] = []
     blind_values: dict[str, object] = {}
     blind_match = re.search(

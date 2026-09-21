@@ -72,9 +72,7 @@ class CardRecognition(StrictModel):
 
 class CardFaceObservation(StrictModel):
     card: str | None = None
-    derived_rank_signature_hex: str | None = Field(
-        default=None, min_length=118, max_length=118
-    )
+    derived_rank_signature_hex: str | None = Field(default=None, min_length=118, max_length=118)
     confidence: float = Field(ge=0.0, le=1.0)
     rank_distance: float = Field(ge=0.0, le=1.0)
     rank_margin: float = Field(ge=0.0, le=1.0)
@@ -214,12 +212,10 @@ class SeatActionConsensus(StrictModel):
 
 class HeroActionControlsObservation(StrictModel):
     mode: Literal["absent", "pre_action", "decision", "ambiguous"]
-    available_actions: list[
-        Literal["fold", "check", "call", "bet", "raise", "all_in"]
-    ] = Field(default_factory=list)
-    pre_action_toggles: list[Literal["fold_or_check", "call_any"]] = Field(
+    available_actions: list[Literal["fold", "check", "call", "bet", "raise", "all_in"]] = Field(
         default_factory=list
     )
+    pre_action_toggles: list[Literal["fold_or_check", "call_any"]] = Field(default_factory=list)
     call_amount_native: Decimal | None = Field(default=None, ge=0)
     confidence: float = Field(ge=0.0, le=1.0)
     accepted: Literal[False] = False
@@ -291,9 +287,7 @@ class PotDeltaCandidate(StrictModel):
     previous_pot_native: Decimal = Field(ge=0)
     current_pot_native: Decimal = Field(gt=0)
     increase_native: Decimal = Field(gt=0)
-    evidence_mode: Literal["stable_endpoints", "cross_signal_single_frame"] = (
-        "stable_endpoints"
-    )
+    evidence_mode: Literal["stable_endpoints", "cross_signal_single_frame"] = "stable_endpoints"
     confidence: float = Field(default=0.0, ge=0.0, le=1.0)
     canonical_event_accepted: Literal[False] = False
     reason: str = "stable pot increase; action and stack reconciliation pending"
@@ -394,6 +388,8 @@ class LiveCaptureDiagnostic(StrictModel):
     target_fingerprint: str = Field(min_length=64, max_length=64)
     capture_latency_ms: float = Field(ge=0.0)
     ocr_latency_ms: float = Field(ge=0.0)
+    ocr_wall_latency_ms: float = Field(default=0.0, ge=0.0)
+    processing_latency_ms: float = Field(default=0.0, ge=0.0)
     visual_role_confidence: float = Field(ge=0.0, le=1.0)
     current_hand_supported: bool
     current_hand_mode: Literal["standard_nlh", "single_board_bomb_pot", "ambiguous"]
@@ -478,9 +474,7 @@ class LiveObservationStatus(StrictModel):
     hero_control_consensus: TemporalConsensus
     hand_epoch: int = Field(ge=0)
     hand_boundary_validation: LiveHandBoundaryValidation
-    blind_post_reconciliations: list[BlindPostReconciliation] = Field(
-        default_factory=list
-    )
+    blind_post_reconciliations: list[BlindPostReconciliation] = Field(default_factory=list)
     hand_starting_stacks_native: dict[int, Decimal] = Field(default_factory=dict)
     reconstruction_readiness: LiveReconstructionReadiness
     canonical_hand: LiveCanonicalHandPrefix | None = None
@@ -489,15 +483,11 @@ class LiveObservationStatus(StrictModel):
     settlement_reason: str = "no retained hand is eligible for settlement"
     canonical_reconstruction_error: str | None = None
     derived_action_candidates: list[DerivedActionCandidate] = Field(default_factory=list)
-    seat_badge_amount_candidates: list[SeatBadgeAmountCandidate] = Field(
-        default_factory=list
-    )
+    seat_badge_amount_candidates: list[SeatBadgeAmountCandidate] = Field(default_factory=list)
     stack_delta_candidates: list[StackDeltaCandidate] = Field(default_factory=list)
     stack_increase_candidates: list[StackIncreaseCandidate] = Field(default_factory=list)
     pot_delta_candidates: list[PotDeltaCandidate] = Field(default_factory=list)
-    action_amount_reconciliations: list[ActionAmountReconciliation] = Field(
-        default_factory=list
-    )
+    action_amount_reconciliations: list[ActionAmountReconciliation] = Field(default_factory=list)
     action_pot_reconciliations: list[ActionPotReconciliation] = Field(default_factory=list)
     action_order_validations: list[ActionOrderValidation] = Field(default_factory=list)
     last_error: str | None = None

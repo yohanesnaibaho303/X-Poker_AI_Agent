@@ -78,9 +78,7 @@ def reconcile_blind_posts(
                     blind_kind=kind,
                     amount_native=amount,
                     stack_delta_event_id=matches[0].event_id if matches else None,
-                    badge_amount_event_id=(
-                        badge_matches[0].event_id if badge_matches else None
-                    ),
+                    badge_amount_event_id=(badge_matches[0].event_id if badge_matches else None),
                     status="matched",
                     reason=(
                         "corroborating exact stack decrease and numeric badge at "
@@ -102,9 +100,7 @@ def reconcile_blind_posts(
                     blind_kind=kind,
                     amount_native=amount,
                     status=(
-                        "ambiguous"
-                        if len(matches) > 1 or len(badge_matches) > 1
-                        else "pending"
+                        "ambiguous" if len(matches) > 1 or len(badge_matches) > 1 else "pending"
                     ),
                     reason=(
                         "multiple exact early-epoch evidence candidates at expected blind seat"

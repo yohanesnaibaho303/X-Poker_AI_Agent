@@ -146,13 +146,24 @@ def normalize_frame(frame: CapturedFrame, width: int, height: int) -> CapturedFr
         x_scale = width // frame.width
         y_scale = height // frame.height
         row_size = frame.width * 4
+        scaled_row_len = width * 4
+        stride = x_scale * 4
+        src = frame.bgra_bottom_up
         rows = []
-        for offset in range(0, len(frame.bgra_bottom_up), row_size):
-            source_row = frame.bgra_bottom_up[offset : offset + row_size]
-            expanded = b"".join(
-                source_row[x : x + 4] * x_scale for x in range(0, row_size, 4)
-            )
-            rows.append(expanded * y_scale)
+        for offset in range(0, len(src), row_size):
+            source_row = src[offset : offset + row_size]
+            c0 = source_row[0::4]
+            c1 = source_row[1::4]
+            c2 = source_row[2::4]
+            c3 = source_row[3::4]
+            expanded = bytearray(scaled_row_len)
+            for k in range(x_scale):
+                base = k * 4
+                expanded[base::stride] = c0
+                expanded[base + 1 :: stride] = c1
+                expanded[base + 2 :: stride] = c2
+                expanded[base + 3 :: stride] = c3
+            rows.append(bytes(expanded) * y_scale)
         return CapturedFrame(width=width, height=height, bgra_bottom_up=b"".join(rows))
 
     x_source = [min(frame.width - 1, x * frame.width // width) for x in range(width)]

@@ -50,6 +50,30 @@ def parse_hero_action_controls(text: str | None) -> HeroActionControlsObservatio
             ocr_text_sha256=digest,
             reason="control text does not establish pre-action or decision mode",
         )
+    if "check" in available and "call" in available:
+        return HeroActionControlsObservation(
+            mode="ambiguous",
+            confidence=0.0,
+            ocr_text_sha256=digest,
+            reason="conflicting action controls: check and call both observed",
+        )
+    if "bet" in available and "raise" in available:
+        return HeroActionControlsObservation(
+            mode="ambiguous",
+            confidence=0.0,
+            ocr_text_sha256=digest,
+            reason="conflicting action controls: bet and raise both observed",
+        )
+    if "check" in available and "fold" in available:
+        return HeroActionControlsObservation(
+            mode="ambiguous",
+            confidence=0.0,
+            ocr_text_sha256=digest,
+            reason=(
+                "conflicting action controls: check and fold both observed "
+                "without pre-action toggle"
+            ),
+        )
     call_amount = None
     call_match = re.search(r"\bcall\s+(?P<amount>\S+)", normalized)
     if call_match:

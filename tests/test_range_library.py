@@ -67,9 +67,7 @@ def _artifact(stack: str = "200", *, validation_status: str = "validated") -> Ra
 def test_spot_key_encodes_authoritative_configuration_action_and_size() -> None:
     key = _spot().canonical_key()
 
-    assert key == (
-        "NLH|cash|9max|rake0|blinds1-2chips|UTG|remaining9|stack200chips|raise@4chips"
-    )
+    assert key == ("NLH|cash|9max|rake0|blinds1-2chips|UTG|remaining9|stack200chips|raise@4chips")
     assert _spot(raise_size="5").canonical_key() != key
 
 
@@ -167,8 +165,6 @@ def test_seed_manifests_publish_reference_priors_without_calling_them_gto() -> N
     assert manifest["status"] == "reference_priors_seeded"
     assert len(manifest["artifacts"]) == 8
     assert {entry["strategy_role"] for entry in manifest["artifacts"]} == {"reference_prior"}
-
-
 
 
 def test_six_max_spot_is_rejected() -> None:

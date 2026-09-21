@@ -628,6 +628,18 @@
       "title": "Ocr Latency Ms",
       "type": "number"
     },
+    "ocr_wall_latency_ms": {
+      "default": 0.0,
+      "minimum": 0.0,
+      "title": "Ocr Wall Latency Ms",
+      "type": "number"
+    },
+    "processing_latency_ms": {
+      "default": 0.0,
+      "minimum": 0.0,
+      "title": "Processing Latency Ms",
+      "type": "number"
+    },
     "visual_role_confidence": {
       "maximum": 1.0,
       "minimum": 0.0,

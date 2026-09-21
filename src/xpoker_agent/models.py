@@ -342,9 +342,7 @@ class HandEvent(StrictModel):
             "all_in",
             "blind_posted",
             "bomb_ante_posted",
-        } and (
-            self.amount is None or self.amount.added_chips <= 0
-        ):
+        } and (self.amount is None or self.amount.added_chips <= 0):
             raise ValueError(f"{self.type} requires a positive added amount")
         return self
 

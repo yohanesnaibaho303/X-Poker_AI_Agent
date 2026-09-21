@@ -1,0 +1,154 @@
+{
+  "card": {
+    "schema_version": "1.0",
+    "component": "card",
+    "component_version": "card-recognition-v1",
+    "dataset_id": "xpoker-portrait-card-regression-v1",
+    "dataset_role": "regression",
+    "dataset_sha256": "1b6d3a92c6dceb7cbdd6773a20b4a93f44194cd60bdc6c65fe21c4b4777dab79",
+    "target_accuracy": 1.0,
+    "overall": {
+      "dataset_slice": "all",
+      "total": 110,
+      "correct": 60,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "exact_accuracy": 0.5454545454545454,
+      "safe_rejection_rate": 1.0,
+      "mean_confidence": 0.15947940947940947,
+      "p95_latency_ms": 36.50480000214884
+    },
+    "slices": [
+      {
+        "dataset_slice": "hero_cards_portrait",
+        "total": 110,
+        "correct": 60,
+        "false_positives": 0,
+        "false_negatives": 0,
+        "exact_accuracy": 0.5454545454545454,
+        "safe_rejection_rate": 1.0,
+        "mean_confidence": 0.15947940947940947,
+        "p95_latency_ms": 36.50480000214884
+      }
+    ],
+    "promotion_eligible": false,
+    "gate_passed": false,
+    "limitations": [
+      "Calibration and regression data cannot satisfy a promotion gate."
+    ]
+  },
+  "seat": {
+    "schema_version": "1.0",
+    "component": "seat",
+    "component_version": "seat-occupancy-v1",
+    "dataset_id": "xpoker-portrait-seat-regression-v1",
+    "dataset_role": "regression",
+    "dataset_sha256": "ef01cf297296f48b598e13c0ae0f2947ac3c2fb37959686cf36ab5b85f82dac1",
+    "target_accuracy": 1.0,
+    "overall": {
+      "dataset_slice": "all",
+      "total": 110,
+      "correct": 110,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "exact_accuracy": 1.0,
+      "safe_rejection_rate": null,
+      "mean_confidence": 0.818264880194502,
+      "p95_latency_ms": 46.59139999785111
+    },
+    "slices": [
+      {
+        "dataset_slice": "occupancy_portrait_9max",
+        "total": 110,
+        "correct": 110,
+        "false_positives": 0,
+        "false_negatives": 0,
+        "exact_accuracy": 1.0,
+        "safe_rejection_rate": null,
+        "mean_confidence": 0.818264880194502,
+        "p95_latency_ms": 46.59139999785111
+      }
+    ],
+    "promotion_eligible": false,
+    "gate_passed": false,
+    "limitations": [
+      "Calibration and regression data cannot satisfy a promotion gate."
+    ]
+  },
+  "numeric_ocr": {
+    "schema_version": "1.0",
+    "component": "numeric_ocr",
+    "component_version": "numeric-ocr-v1",
+    "dataset_id": "xpoker-portrait-numeric-regression-v1",
+    "dataset_role": "regression",
+    "dataset_sha256": "43ae4d596566e36e84cf3076b925596ac5c3a1eda06fdc57bda84144c605b39b",
+    "target_accuracy": 1.0,
+    "overall": {
+      "dataset_slice": "all",
+      "total": 110,
+      "correct": 69,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "exact_accuracy": 0.6272727272727273,
+      "safe_rejection_rate": 1.0,
+      "mean_confidence": 0.5959090909090908,
+      "p95_latency_ms": 13.630100002046674
+    },
+    "slices": [
+      {
+        "dataset_slice": "pot_and_blinds_ocr",
+        "total": 110,
+        "correct": 69,
+        "false_positives": 0,
+        "false_negatives": 0,
+        "exact_accuracy": 0.6272727272727273,
+        "safe_rejection_rate": 1.0,
+        "mean_confidence": 0.5959090909090908,
+        "p95_latency_ms": 13.630100002046674
+      }
+    ],
+    "promotion_eligible": false,
+    "gate_passed": false,
+    "limitations": [
+      "Calibration and regression data cannot satisfy a promotion gate."
+    ]
+  },
+  "action_control": {
+    "schema_version": "1.0",
+    "component": "action_control",
+    "component_version": "action-control-v1",
+    "dataset_id": "xpoker-portrait-action-regression-v1",
+    "dataset_role": "regression",
+    "dataset_sha256": "12ef07a4e51863f2bd05c07d4048b716843d10d0fde6c75ca6cfd59a6a935f27",
+    "target_accuracy": 1.0,
+    "overall": {
+      "dataset_slice": "all",
+      "total": 110,
+      "correct": 98,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "exact_accuracy": 0.8909090909090909,
+      "safe_rejection_rate": 1.0,
+      "mean_confidence": 0.39127272727272727,
+      "p95_latency_ms": 30.193299997336
+    },
+    "slices": [
+      {
+        "dataset_slice": "hero_action_surface",
+        "total": 110,
+        "correct": 98,
+        "false_positives": 0,
+        "false_negatives": 0,
+        "exact_accuracy": 0.8909090909090909,
+        "safe_rejection_rate": 1.0,
+        "mean_confidence": 0.39127272727272727,
+        "p95_latency_ms": 30.193299997336
+      }
+    ],
+    "promotion_eligible": false,
+    "gate_passed": false,
+    "limitations": [
+      "Calibration and regression data cannot satisfy a promotion gate."
+    ]
+  }
+}

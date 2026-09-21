@@ -38,8 +38,7 @@ def detect_card_slots(frame: CapturedFrame) -> list[CardSlotCandidate]:
             and other.box.top <= candidate.box.top
             and other.box.right >= candidate.box.right
             and other.box.bottom >= candidate.box.bottom
-            and other.box.width * other.box.height
-            >= candidate.box.width * candidate.box.height * 2
+            and other.box.width * other.box.height >= candidate.box.width * candidate.box.height * 2
             for other in candidates
             if other is not candidate
         )

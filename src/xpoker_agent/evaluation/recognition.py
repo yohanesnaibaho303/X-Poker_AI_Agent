@@ -72,9 +72,7 @@ class RecognitionEvaluationReport(StrictModel):
 
 def _metrics(dataset_slice: str, cases: list[RecognitionEvaluationCase]) -> RecognitionSliceMetrics:
     correct = sum(case.accepted and case.predicted == case.expected for case in cases)
-    false_positives = sum(
-        case.accepted and case.predicted != case.expected for case in cases
-    )
+    false_positives = sum(case.accepted and case.predicted != case.expected for case in cases)
     false_negatives = sum(
         case.expected is not None and not (case.accepted and case.predicted == case.expected)
         for case in cases
@@ -111,8 +109,7 @@ def evaluate_recognition_cases(
     if len(case_ids) != len(set(case_ids)):
         raise ValueError("recognition case IDs must be unique")
     normalized = [
-        case.model_dump(mode="json")
-        for case in sorted(cases, key=lambda item: item.case_id)
+        case.model_dump(mode="json") for case in sorted(cases, key=lambda item: item.case_id)
     ]
     dataset_sha256 = hashlib.sha256(
         json.dumps(normalized, sort_keys=True, separators=(",", ":")).encode("utf-8")

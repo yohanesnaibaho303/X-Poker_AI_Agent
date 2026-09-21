@@ -24,26 +24,26 @@ def _accepted(value: str, confidence: float = 0.95) -> TemporalConsensus:
 
 
 def test_builds_native_chip_live_hero_calculation() -> None:
-    status = LiveObservationService().status().model_copy(
-        update={
-            "active_seats": [0, 1],
-            "detected_hero_seat": 0,
-            "hero_seat_confidence": 0.95,
-            "detected_hero_position": Position.BTN,
-            "recognized_hero_cards": ["As", "Kd"],
-            "hero_cards_accepted": True,
-            "session_blind_consensus": _accepted("1/2"),
-            "pot_consensus": _accepted("6"),
-            "hero_control_consensus": _accepted("decision:fold,call,raise::2"),
-            "seat_stack_consensus": [
-                SeatStackConsensus(
-                    seat=0, player_status="seated", consensus=_accepted("100")
-                ),
-                SeatStackConsensus(
-                    seat=1, player_status="seated", consensus=_accepted("80")
-                ),
-            ],
-        }
+    status = (
+        LiveObservationService()
+        .status()
+        .model_copy(
+            update={
+                "active_seats": [0, 1],
+                "detected_hero_seat": 0,
+                "hero_seat_confidence": 0.95,
+                "detected_hero_position": Position.BTN,
+                "recognized_hero_cards": ["As", "Kd"],
+                "hero_cards_accepted": True,
+                "session_blind_consensus": _accepted("1/2"),
+                "pot_consensus": _accepted("6"),
+                "hero_control_consensus": _accepted("decision:fold,call,raise::2"),
+                "seat_stack_consensus": [
+                    SeatStackConsensus(seat=0, player_status="seated", consensus=_accepted("100")),
+                    SeatStackConsensus(seat=1, player_status="seated", consensus=_accepted("80")),
+                ],
+            }
+        )
     )
 
     result = build_live_hero_calculation(status)
@@ -70,8 +70,12 @@ def test_withholds_calculation_when_hero_evidence_is_missing() -> None:
 
 
 def test_withholds_recommendation_on_pre_action_surface() -> None:
-    status = LiveObservationService().status().model_copy(
-        update={"hero_control_consensus": _accepted("pre_action:fold_or_check,call_any:")}
+    status = (
+        LiveObservationService()
+        .status()
+        .model_copy(
+            update={"hero_control_consensus": _accepted("pre_action:fold_or_check,call_any:")}
+        )
     )
 
     result = build_live_hero_calculation(status)
@@ -94,17 +98,21 @@ def test_resolves_live_unopened_preflop_gto_actions() -> None:
         events=events[:state_index],
         state=state,
     )
-    status = LiveObservationService().status().model_copy(
-        update={
-            "active_seats": [6, 7, 8],
-            "detected_hero_seat": state.hero_seat,
-            "hero_seat_confidence": 0.95,
-            "detected_hero_position": state.hero_position,
-            "recognized_hero_cards": state.hero_cards,
-            "hero_cards_accepted": True,
-            "hero_control_consensus": _accepted("decision:fold,call,raise::0"),
-            "canonical_hand": prefix,
-        }
+    status = (
+        LiveObservationService()
+        .status()
+        .model_copy(
+            update={
+                "active_seats": [6, 7, 8],
+                "detected_hero_seat": state.hero_seat,
+                "hero_seat_confidence": 0.95,
+                "detected_hero_position": state.hero_position,
+                "recognized_hero_cards": state.hero_cards,
+                "hero_cards_accepted": True,
+                "hero_control_consensus": _accepted("decision:fold,call,raise::0"),
+                "canonical_hand": prefix,
+            }
+        )
     )
 
     result = build_live_hero_calculation(status)
@@ -122,14 +130,18 @@ def test_resolves_live_unopened_preflop_gto_actions() -> None:
 
 
 def test_withholds_live_gto_without_canonical_hand() -> None:
-    status = LiveObservationService().status().model_copy(
-        update={
-            "detected_hero_seat": 0,
-            "detected_hero_position": Position.BTN,
-            "recognized_hero_cards": ["As", "Kd"],
-            "hero_cards_accepted": True,
-            "hero_control_consensus": _accepted("decision:fold,call,raise::0"),
-        }
+    status = (
+        LiveObservationService()
+        .status()
+        .model_copy(
+            update={
+                "detected_hero_seat": 0,
+                "detected_hero_position": Position.BTN,
+                "recognized_hero_cards": ["As", "Kd"],
+                "hero_cards_accepted": True,
+                "hero_control_consensus": _accepted("decision:fold,call,raise::0"),
+            }
+        )
     )
 
     result = build_live_hero_calculation(status)
@@ -146,20 +158,24 @@ def test_maps_short_dealt_ring_to_explicit_lower_confidence_nine_max_abstraction
         for index, item in enumerate(states)
         if item.next_to_act_seat == item.hero_seat and item.hero_cards
     )
-    status = LiveObservationService().status().model_copy(
-        update={
-            "detected_hero_seat": state.hero_seat,
-            "detected_hero_position": state.hero_position,
-            "recognized_hero_cards": state.hero_cards,
-            "hero_cards_accepted": True,
-            "hero_control_consensus": _accepted("decision:fold,call,raise::0"),
-            "canonical_hand": LiveCanonicalHandPrefix(
-                hand_epoch=1,
-                hand_id=state.hand_id,
-                events=events[:state_index],
-                state=state,
-            ),
-        }
+    status = (
+        LiveObservationService()
+        .status()
+        .model_copy(
+            update={
+                "detected_hero_seat": state.hero_seat,
+                "detected_hero_position": state.hero_position,
+                "recognized_hero_cards": state.hero_cards,
+                "hero_cards_accepted": True,
+                "hero_control_consensus": _accepted("decision:fold,call,raise::0"),
+                "canonical_hand": LiveCanonicalHandPrefix(
+                    hand_epoch=1,
+                    hand_id=state.hand_id,
+                    events=events[:state_index],
+                    state=state,
+                ),
+            }
+        )
     )
 
     result = build_live_hero_calculation(status)

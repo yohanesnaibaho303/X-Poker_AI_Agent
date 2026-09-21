@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+from time import perf_counter_ns
 
 from xpoker_agent.capture.frames import CapturedFrame, normalize_frame
 from xpoker_agent.capture.layout import load_layout_profile
@@ -156,9 +157,7 @@ def _scaled_pot_crop(frame: CapturedFrame, layout: LayoutProfile) -> CapturedFra
     return normalize_frame(crop, crop.width * 4, crop.height * 4)
 
 
-def _scaled_panel_crop(
-    frame: CapturedFrame, layout: LayoutProfile, seat: int
-) -> CapturedFrame:
+def _scaled_panel_crop(frame: CapturedFrame, layout: LayoutProfile, seat: int) -> CapturedFrame:
     crop = crop_frame(
         frame,
         normalized_box(frame, layout.seat_anchors[seat].player_panel_region),
@@ -170,6 +169,7 @@ async def diagnose_captured_frame(
     *, frame: CapturedFrame, record: CaptureFrameRecord, layout: LayoutProfile
 ) -> LiveCaptureDiagnostic:
     """Run the same privacy-scoped recognition path for live or recorded evidence."""
+    started = perf_counter_ns()
     seat_observations = classify_seat_occupancy(frame, layout)
     rule_crop = crop_layout_region(frame, layout, "rule_label")
     pot_crop = _scaled_pot_crop(frame, layout)
@@ -188,6 +188,7 @@ async def diagnose_captured_frame(
             normalized_box(frame, action_badge_region(layout.seat_anchors[seat])),
         )
         action_crops.append(normalize_frame(crop, crop.width * 5, crop.height * 5))
+    ocr_started = perf_counter_ns()
     results = await asyncio.gather(
         recognize_text(rule_crop),
         recognize_text(pot_crop),
@@ -195,12 +196,13 @@ async def diagnose_captured_frame(
         *(recognize_text(crop) for crop in panel_crops),
         *(recognize_text(crop) for crop in action_crops),
     )
+    ocr_wall_latency_ms = (perf_counter_ns() - ocr_started) / 1_000_000
     rule_ocr, pot_ocr, controls_ocr, *seat_results = results
     panel_results = seat_results[: len(panel_seats)]
     action_results = seat_results[len(panel_seats) :]
     panel_ocr = dict(zip(panel_seats, panel_results, strict=True))
     action_ocr = dict(zip(panel_seats, action_results, strict=True))
-    return build_live_capture_diagnostic(
+    diagnostic = build_live_capture_diagnostic(
         frame=frame,
         record=record,
         layout=layout,
@@ -210,6 +212,12 @@ async def diagnose_captured_frame(
         panel_ocr=panel_ocr,
         action_ocr=action_ocr,
         controls_ocr=controls_ocr,
+    )
+    return diagnostic.model_copy(
+        update={
+            "ocr_wall_latency_ms": ocr_wall_latency_ms,
+            "processing_latency_ms": (perf_counter_ns() - started) / 1_000_000,
+        }
     )
 
 

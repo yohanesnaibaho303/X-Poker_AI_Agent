@@ -175,9 +175,7 @@ class HandStateReducer:
         if state.dealer_seat is None:
             raise StateTransitionError("dealer must be assigned before blinds")
         active_seats = [
-            seat.seat
-            for seat in state.seats
-            if seat.participation is ParticipationStatus.ACTIVE
+            seat.seat for seat in state.seats if seat.participation is ParticipationStatus.ACTIVE
         ]
         if len(active_seats) < 2:
             raise StateTransitionError("blinds require at least two active players")
@@ -249,8 +247,7 @@ class HandStateReducer:
             participants = [
                 seat
                 for seat in state.seats
-                if seat.participation
-                in {ParticipationStatus.ACTIVE, ParticipationStatus.ALL_IN}
+                if seat.participation in {ParticipationStatus.ACTIVE, ParticipationStatus.ALL_IN}
             ]
             contributions = [
                 seat.committed_by_street_chips.get(Street.PREFLOP, Decimal("0"))
@@ -262,8 +259,7 @@ class HandStateReducer:
                 )
             full_contribution = max(contributions)
             if any(
-                amount != full_contribution
-                and seat.participation is not ParticipationStatus.ALL_IN
+                amount != full_contribution and seat.participation is not ParticipationStatus.ALL_IN
                 for seat, amount in zip(participants, contributions, strict=True)
             ):
                 raise StateTransitionError(

@@ -5,9 +5,7 @@ from xpoker_agent.vision.positions import assign_dealt_positions, assign_full_ri
 
 
 def test_nine_max_positions_follow_dealer_clockwise() -> None:
-    positions = assign_full_ring_positions(
-        table_size=9, dealer_seat=4, active_seats=set(range(9))
-    )
+    positions = assign_full_ring_positions(table_size=9, dealer_seat=4, active_seats=set(range(9)))
 
     assert positions[4] is Position.BTN
     assert positions[5] is Position.SB

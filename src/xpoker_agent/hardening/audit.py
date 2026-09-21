@@ -55,9 +55,7 @@ def run_compatibility_audit(
             CompatibilityCheck(
                 check="authoritative_game_config",
                 passed=(
-                    game.seats == 9
-                    and game.native_small_blind == 1
-                    and game.native_big_blind == 2
+                    game.seats == 9 and game.native_small_blind == 1 and game.native_big_blind == 2
                 ),
                 detail="9-max NLH, native SB 1 / BB 2 loaded and validated.",
                 content_sha256=_hash_file(game_path),
@@ -177,8 +175,7 @@ def run_compatibility_audit(
                 check="published_schemas",
                 passed=not missing and not extra and not drifted,
                 detail=(
-                    f"Schema set checked; missing={missing}, extra={extra}, "
-                    f"drifted={drifted}."
+                    f"Schema set checked; missing={missing}, extra={extra}, drifted={drifted}."
                 ),
             )
         )

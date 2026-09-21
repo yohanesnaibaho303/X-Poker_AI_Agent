@@ -1,0 +1,39 @@
+{
+  "benchmark_timestamp": "2026-09-21T07:38:05Z",
+  "sessions_analyzed": 8,
+  "total_frames_evaluated": 110,
+  "components": {
+    "card_recognition": {
+      "min": 8.137,
+      "p50": 23.504,
+      "p90": 35.148,
+      "p95": 36.505,
+      "max": 44.494,
+      "mean": 22.839
+    },
+    "seat_dealer_detection": {
+      "min": 32.533,
+      "p50": 37.749,
+      "p90": 45.049,
+      "p95": 46.591,
+      "max": 53.67,
+      "mean": 38.762
+    },
+    "numeric_ocr": {
+      "min": 7.817,
+      "p50": 9.642,
+      "p90": 12.093,
+      "p95": 13.63,
+      "max": 18.696,
+      "mean": 10.139
+    },
+    "action_control": {
+      "min": 11.486,
+      "p50": 18.25,
+      "p90": 27.678,
+      "p95": 30.193,
+      "max": 32.361,
+      "mean": 19.527
+    }
+  }
+}

@@ -13,42 +13,47 @@ from xpoker_agent.vision.primitives import (
 )
 
 
-def detect_dealer_button(
-    frame: CapturedFrame, layout: LayoutProfile
-) -> DealerButtonObservation:
-    candidates: list[tuple[PixelBox, int]] = []
-    top = round(frame.height * 0.07)
-    bottom = round(frame.height * 0.86)
-    crop = crop_frame(frame, PixelBox(left=0, top=top, right=frame.width, bottom=bottom))
-    mask = bright_neutral_mask(crop, minimum_channel=175, maximum_channel_spread=35)
-    for component in connected_components(mask, minimum_area=120):
-        pixels = sum(
-            sum(
-                mask.top_down[
-                    y * mask.width + component.left : y * mask.width + component.right
-                ]
-            )
-            for y in range(component.top, component.bottom)
+def detect_dealer_button(frame: CapturedFrame, layout: LayoutProfile) -> DealerButtonObservation:
+    candidates: dict[tuple[int, int, int, int], tuple[PixelBox, int]] = {}
+    search_radius = 60
+    for anchor in layout.seat_anchors:
+        anchor_box = normalized_box(frame, anchor.anchor_region)
+        center_x = (anchor_box.left + anchor_box.right) // 2
+        center_y = (anchor_box.top + anchor_box.bottom) // 2
+        search_box = PixelBox(
+            left=max(0, center_x - search_radius),
+            top=max(0, center_y - search_radius),
+            right=min(frame.width, center_x + search_radius),
+            bottom=min(frame.height, center_y + search_radius),
         )
-        if 16 <= component.width <= 19 and 14 <= component.height <= 16 and pixels <= 300:
-            candidates.append(
-                (
-                    PixelBox(
-                        left=component.left,
-                        top=component.top + top,
-                        right=component.right,
-                        bottom=component.bottom + top,
-                    ),
-                    pixels,
+        crop = crop_frame(frame, search_box)
+        mask = bright_neutral_mask(crop, minimum_channel=175, maximum_channel_spread=35)
+        if sum(mask.top_down) < 120:
+            continue
+        for component in connected_components(mask, minimum_area=120):
+            pixels = sum(
+                sum(
+                    mask.top_down[
+                        y * mask.width + component.left : y * mask.width + component.right
+                    ]
                 )
+                for y in range(component.top, component.bottom)
             )
+            if 16 <= component.width <= 19 and 14 <= component.height <= 16 and pixels <= 300:
+                box = PixelBox(
+                    left=component.left + search_box.left,
+                    top=component.top + search_box.top,
+                    right=component.right + search_box.left,
+                    bottom=component.bottom + search_box.top,
+                )
+                candidates[(box.left, box.top, box.right, box.bottom)] = (box, pixels)
     if len(candidates) != 1:
         return DealerButtonObservation(
             seat=None,
             confidence=0.0,
             reason=f"expected one dealer-button component; observed {len(candidates)}",
         )
-    box, pixels = candidates[0]
+    box, pixels = next(iter(candidates.values()))
     center_x = (box.left + box.right) / 2
     center_y = (box.top + box.bottom) / 2
     distances = []

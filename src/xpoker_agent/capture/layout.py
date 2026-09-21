@@ -14,9 +14,7 @@ NINE_MAX_LAYOUT_PROFILE = (
 )
 
 
-def load_layout_profile(
-    path: Path | None = None, *, table_size: Literal[9] = 9
-) -> LayoutProfile:
+def load_layout_profile(path: Path | None = None, *, table_size: Literal[9] = 9) -> LayoutProfile:
     selected = path or NINE_MAX_LAYOUT_PROFILE
     with selected.open("r", encoding="utf-8") as handle:
         payload = json.load(handle)

@@ -100,9 +100,7 @@ class PreflopSpotKey(StrictModel):
                 and action.size_chips is not None
                 and action.size_chips <= self.native_big_blind
             ):
-                raise ValueError(
-                    "an opening raise must exceed the 2-chip forced big blind"
-                )
+                raise ValueError("an opening raise must exceed the 2-chip forced big blind")
             if action.type != "fold":
                 previous_voluntary_action = True
         return self

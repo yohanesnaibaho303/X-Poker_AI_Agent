@@ -8,57 +8,90 @@ from xpoker_agent.vision.models import PixelBox, SeatOccupancyObservation
 from xpoker_agent.vision.primitives import normalized_box
 
 
-def _rgb(frame: CapturedFrame, x: int, y_top_down: int) -> tuple[int, int, int]:
-    y_bottom_up = frame.height - 1 - y_top_down
-    offset = (y_bottom_up * frame.width + x) * 4
-    blue, green, red, _ = frame.bgra_bottom_up[offset : offset + 4]
-    return red, green, blue
-
-
 def _dark_fraction(frame: CapturedFrame, region: NormalizedRect) -> float:
     box = normalized_box(frame, region)
+    w = box.right - box.left
+    total = w * (box.bottom - box.top)
+    frame_width_4 = frame.width * 4
+    frame_height = frame.height
+    bgra = frame.bgra_bottom_up
+    left_4 = box.left * 4
+    right_4 = box.right * 4
     dark = 0
-    total = box.width * box.height
     for y in range(box.top, box.bottom):
-        for x in range(box.left, box.right):
-            red, green, blue = _rgb(frame, x, y)
-            dark += int((red + green + blue) / 3 < 25)
+        source_row = (frame_height - 1 - y) * frame_width_4
+        row = bgra[source_row + left_4 : source_row + right_4]
+        for i in range(0, len(row), 4):
+            if row[i] + row[i + 1] + row[i + 2] < 75:
+                dark += 1
     return dark / total
-
-
-def _neutral(red: int, green: int, blue: int) -> bool:
-    return min(red, green, blue) >= 90 and max(red, green, blue) - min(red, green, blue) <= 45
 
 
 def _plus_strokes(frame: CapturedFrame, box: PixelBox) -> tuple[int, int]:
     radius = max(5, min(12, box.width // 4, box.height // 4))
-    neutral = [
-        [_neutral(*_rgb(frame, box.left + x, box.top + y)) for x in range(box.width)]
-        for y in range(box.height)
-    ]
-    row_prefix = [[0] * (box.width + 1) for _ in range(box.height)]
-    column_prefix = [[0] * (box.height + 1) for _ in range(box.width)]
-    for y in range(box.height):
-        for x in range(box.width):
-            row_prefix[y][x + 1] = row_prefix[y][x] + int(neutral[y][x])
-            column_prefix[x][y + 1] = column_prefix[x][y] + int(neutral[y][x])
-    best = (0, 0)
-    for center_y in range(radius, box.height - radius):
-        for center_x in range(radius, box.width - radius):
-            horizontal = (
-                row_prefix[center_y][center_x + radius + 1]
-                - row_prefix[center_y][center_x - radius]
+    width = box.width
+    height = box.height
+    frame_width_4 = frame.width * 4
+    frame_height = frame.height
+    bgra = frame.bgra_bottom_up
+    left_4 = box.left * 4
+    right_4 = box.right * 4
+
+    row_prefix = [0] * (height * (width + 1))
+    column_prefix = [0] * (width * (height + 1))
+
+    row_stride = width + 1
+    col_stride = height + 1
+
+    for y in range(height):
+        source_row = (frame_height - 1 - box.top - y) * frame_width_4
+        row = bgra[source_row + left_4 : source_row + right_4]
+        row_offset = y * row_stride
+        row_total = 0
+        for x in range(width):
+            idx = x * 4
+            b = row[idx]
+            g = row[idx + 1]
+            r = row[idx + 2]
+            neutral = int(
+                r >= 90
+                and g >= 90
+                and b >= 90
+                and abs(r - g) <= 45
+                and abs(r - b) <= 45
+                and abs(g - b) <= 45
             )
+            row_total += neutral
+            row_prefix[row_offset + x + 1] = row_total
+            col_idx = x * col_stride + y
+            column_prefix[col_idx + 1] = column_prefix[col_idx] + neutral
+
+    best_h = 0
+    best_v = 0
+    best_min = 0
+    best_sum = 0
+
+    for center_y in range(radius, height - radius):
+        row_offset = center_y * row_stride
+        h_r_base = row_offset + radius + 1
+        h_l_base = row_offset - radius
+        for center_x in range(radius, width - radius):
+            horizontal = row_prefix[h_r_base + center_x] - row_prefix[h_l_base + center_x]
+            col_offset = center_x * col_stride
             vertical = (
-                column_prefix[center_x][center_y + radius + 1]
-                - column_prefix[center_x][center_y - radius]
+                column_prefix[col_offset + center_y + radius + 1]
+                - column_prefix[col_offset + center_y - radius]
             )
-            if (min(horizontal, vertical), horizontal + vertical) > (
-                min(best),
-                sum(best),
-            ):
-                best = (horizontal, vertical)
-    return best
+
+            cur_min = horizontal if horizontal < vertical else vertical
+            cur_sum = horizontal + vertical
+            if cur_min > best_min or (cur_min == best_min and cur_sum > best_sum):
+                best_h = horizontal
+                best_v = vertical
+                best_min = cur_min
+                best_sum = cur_sum
+
+    return (best_h, best_v)
 
 
 def classify_seat_occupancy(
